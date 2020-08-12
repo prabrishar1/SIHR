@@ -32,7 +32,6 @@ These are basic examples which show how to solve the common
 high-dimensional inference problems:
 
     library(FIHR)
-    ## basic example code
 
 Inference for linear functional in high-dimensional linear regression
 model
@@ -58,19 +57,19 @@ model
     y = X%*%beta + rnorm(100)
     Est = FIHR::LF_Inference(X = X, y = y, loading = c(1,rep(0,399)), intercept = TRUE)
     #> [1] 1
-    #> [1] 0.1493282
+    #> [1] 0.143535
     #> [1] 2
-    #> [1] 0.2540496
+    #> [1] 0.2403207
     #> [1] 3
-    #> [1] 0.3639112
+    #> [1] 0.3372713
     #> [1] 4
     #> [1] 3
     #> [1] "step is 3"
     Est$prop.est
     #>            [,1]
-    #> [1,] 0.09887364
+    #> [1,] -0.1799599
     Est$se
-    #> [1] 0.1942838
+    #> [1] 0.2007252
 
 Inference for linear functional in high-dimensional logistic regression
 model
@@ -101,9 +100,9 @@ model
     #> [1] 3
     #> [1] "step is 3"
     Est$prop.est
-    #> [1] 0.1946291
+    #> [1] 0.5129078
     Est$se
-    #> [1] 0.3491008
+    #> [1] 0.3451269
 
 Quadratic Functional (Group\_Covariance) Linear Model (will be removed)
 
@@ -112,10 +111,10 @@ Quadratic Functional (Group\_Covariance) Linear Model (will be removed)
     y = X%*%beta + rnorm(100,0,1)
     Est = FIHR::QF_Cov(X = X, y = y, test.set=c(30:50))
     Est$prop.est
-    #>          [,1]
-    #> [1,] 658.0961
+    #>      [,1]
+    #> [1,]    0
     Est$se
-    #> [1] 32124.4
+    #> [1] 0.1
 
 Inference for sqaure norm of the regression vector in high-dimensional
 linear model
@@ -145,19 +144,19 @@ linear model
     #y = X%*%beta + rnorm(100,0,1)
     Est = FIHR::QF_Norm(X = X, y = y, test.set=test.set)
     #> [1] 1
-    #> [1] 0.02772465
+    #> [1] 0.02649632
     #> [1] 2
-    #> [1] 0.04324236
+    #> [1] 0.04036754
     #> [1] 3
-    #> [1] 0.0598843
+    #> [1] 0.06425587
     #> [1] 4
     #> [1] 3
     #> [1] "step is 3"
     Est$prop.est
     #>           [,1]
-    #> [1,] 0.3334263
+    #> [1,] 0.2873742
     Est$se
-    #> [1] 0.1460349
+    #> [1] 0.1563356
 
 Inference for quadratic functional in high-dimensional linear model
 
@@ -187,6 +186,6 @@ Inference for quadratic functional in high-dimensional linear model
     Est = FIHR::QF(X = X, y = y, test.set=test.set)
     Est$prop.est
     #>           [,1]
-    #> [1,] 0.2328281
+    #> [1,] 0.1853232
     Est$se
-    #> [1] 0.1054539
+    #> [1] 0.1025665

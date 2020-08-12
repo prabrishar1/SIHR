@@ -254,16 +254,11 @@ Direction_searchtuning_robust <- function(Xc, loading, mu = NULL, resol = 1.5,
 #'
 #' @references
 #'
-#' \insertRef{CVXR}{FIHR}
-#'
-#' \insertRef{glmnet1}{FIHR}
-#'
-#' \insertRef{Matrix}{FIHR}
-#'
-#' \insertRef{stats}{FIHR}
+#' \insertRef{grouplin}{FIHR}
 QF <- function(X, y, test.set, A = "sigma",init.Lasso = NULL, tau.vec = NULL,
                            lambda = NULL, intercept = FALSE, mu = NULL,
                            step = NULL, resol = 1.5, maxiter = 6) {
+
   if (is.null(init.Lasso)) {
     ### Inital Lasso estimate of beta and sigma
     init.Lasso <- Initialization.step(X, y, lambda, intercept)

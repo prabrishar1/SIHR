@@ -17,7 +17,6 @@ Lasso <- function(X, y, lambda = NULL, intercept = TRUE) {
 
   p <- ncol(X)
   n <- nrow(X)
-
   htheta <- if (is.null(lambda)) {
     outLas <- cv.glmnet(X, y, family = "gaussian", alpha = 1,
                         intercept = intercept)
@@ -188,15 +187,7 @@ Direction_searchtuning<-function(Wc,test.vec,mu=NULL, resol, maxiter){
 #'
 #' @references
 #'
-#' \insertRef{CVXR}{FIHR}
-#'
-#' \insertRef{glmnet1}{FIHR}
-#'
-#' \insertRef{Matrix}{FIHR}
-#'
-#' \insertRef{stats}{FIHR}
-#'
-
+#' \insertRef{grouplin}{FIHR}
 QF_Norm<-function(X,y,test.set,init.Lasso = NULL,tau.vec=NULL,lambda=NULL,intercept=FALSE,mu=NULL,step=NULL,resol = 1.5,maxiter=10){
   p=ncol(X)
   n=nrow(X)

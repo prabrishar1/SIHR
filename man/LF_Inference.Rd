@@ -60,11 +60,5 @@ y = X\%*\%beta + rnorm(100,0,1)
 LF_Inference(X = X, y = y, loading = c(1,rep(0,399)), intercept = TRUE)
 }
 \references{
-\insertRef{CVXR}{FIHR}
-
-\insertRef{glmnet1}{FIHR}
-
-\insertRef{Matrix}{FIHR}
-
-\insertRef{stats}{FIHR}
+\insertRef{linlin}{FIHR}
 }

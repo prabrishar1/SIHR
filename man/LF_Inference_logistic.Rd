@@ -59,11 +59,5 @@ LF_Inference_logistic(X = matrix(sample(-2:2,50*300,replace = TRUE),nrow=50,ncol
                       intercept = TRUE, weight = rep(1,50))
 }
 \references{
-\insertRef{CVXR}{FIHR}
-
-\insertRef{glmnet1}{FIHR}
-
-\insertRef{Matrix}{FIHR}
-
-\insertRef{stats}{FIHR}
+\insertRef{linlog}{FIHR}
 }

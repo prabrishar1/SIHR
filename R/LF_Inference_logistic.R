@@ -134,14 +134,7 @@ Direction_searchtuning_weight<-function(Xc,loading,mu=NULL,weight,f_prime,resol,
 #'
 #' @references
 #'
-#' \insertRef{CVXR}{FIHR}
-#'
-#' \insertRef{glmnet1}{FIHR}
-#'
-#' \insertRef{Matrix}{FIHR}
-#'
-#' \insertRef{stats}{FIHR}
-#'
+#' \insertRef{linlog}{FIHR}
 #' @examples
 #' LF_Inference_logistic(X = matrix(sample(-2:2,50*300,replace = TRUE),nrow=50,ncol=300),
 #'                       y = rbinom(50,1,0.5), loading = c(1,rep(0,299)),

@@ -40,7 +40,6 @@ These are basic examples which show how to solve the common high-dimensional inf
 
 ```{r example}
 library(FIHR)
-## basic example code
 ```
 
 Inference for linear functional in high-dimensional linear regression model

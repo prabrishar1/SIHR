@@ -64,11 +64,5 @@ QF(X = X, y = y, test.set=c(30:50))
 
 }
 \references{
-\insertRef{CVXR}{FIHR}
-
-\insertRef{glmnet1}{FIHR}
-
-\insertRef{Matrix}{FIHR}
-
-\insertRef{stats}{FIHR}
+\insertRef{grouplin}{FIHR}
 }

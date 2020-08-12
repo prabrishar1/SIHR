@@ -222,14 +222,8 @@ Direction_searchtuning<-function(Xc,loading,mu=NULL, resol, maxiter){
 #'
 #' @references
 #'
-#' \insertRef{CVXR}{FIHR}
+#' \insertRef{linlin}{FIHR}
 #'
-#' \insertRef{glmnet1}{FIHR}
-#'
-#' \insertRef{Matrix}{FIHR}
-#'
-#' \insertRef{stats}{FIHR}
-#
 #' @examples
 #' X = matrix(sample(-2:2,100*400,replace = TRUE),nrow=100,ncol=400)
 #' beta = (1:400)/25
