@@ -1,9 +1,9 @@
 Package: FIHR
 Type: Package
-Title: Functional Inference in High-dimensional Regression
+Title: Functional Inference in High Dimensional Regression
 Version: 0.1.0
 Author: Prabrisha Rakshit <pr412@scarletmail.rutgers.edu>
-Maintainer: Prabrisha Rakshit
+Maintainer: Prabrisha Rakshit <pr412@scarletmail.rutgers.edu>
 Description: It provides inference for linear and quadratic functionals in high-dimensional linear and logistic regression models. It computes bias-corrected estimators and corresponding standard errors for the linear and quadratic functionals.
 License: GPL-3
 Encoding: UTF-8
@@ -12,4 +12,7 @@ RoxygenNote: 7.1.1
 Imports: 
     CVXR,
     Matrix,
-    glmnet
+    glmnet,
+    Rdpack
+RdMacros: 
+    Rdpack

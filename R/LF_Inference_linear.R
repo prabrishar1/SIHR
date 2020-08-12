@@ -44,6 +44,30 @@ Lasso <- function(X, y, lambda = NULL, intercept = TRUE) {
   }
 }
 
+Initialization.step<-function(X,y,lambda=NULL,intercept=FALSE){
+  p <- ncol(X);
+  n <- nrow(X);
+  ### implement Lasso
+  col.norm <- 1/sqrt((1/n)*diag(t(X)%*%X));
+  Xnor <- X %*% diag(col.norm);
+  htheta <- Lasso (Xnor,y,lambda=lambda,intercept=intercept);
+  if (intercept==TRUE){
+    Xb <- cbind(rep(1,n),Xnor);
+    col.norm <- c(1,col.norm);
+    pp <- (p+1);
+  }else {
+    Xb <- Xnor;
+    pp <- p
+  }
+  sparsity<-sum(abs(htheta)>0.001)
+  sd.est<-sum((y-Xb%*%htheta)^2)/(n-sparsity)
+  htheta <- htheta*col.norm;
+  returnList <- list("lasso.est" = htheta,
+                     "sigma"=sd.est,
+                     "sparsity"=sparsity)
+  return(returnList)
+}
+
 #Lasso <- function( X, y, lambda = NULL, intercept = TRUE){
   #
   # Compute the Lasso estimator:
@@ -166,67 +190,97 @@ Direction_searchtuning<-function(Xc,loading,mu=NULL, resol, maxiter){
 #' Inference for linear functional in the high-dimensional linear regression model
 #'
 #' @description
-#' Computes the bias corrected estimator for \eqn{x_*^{\top}\beta} for the following high-dimensional linear regression model
-#' \deqn{y=X\beta+\epsilon} as \deqn{\widehat{x_{*}^{\top}\beta}=x_{*}^{\top}\widehat{\beta}+\widehat{u}^{\top}\frac{1}{n}\sum_{i=1}^{n}X_{i.}\left(y_i-X_{i.}^{\top}\beta\right)}
-#' and the corresponding standard error.
+#' Computes the bias corrected estimator of linear functional for the high-dimensional linear regression model and the corresponding standard error.
 #'
-#' @param X Design matrix, of dimensions nobs(n) x nvar(p)
+#' @param X Design matrix
 #' @param y Response variable
-#' @param loading \eqn{x_{*}} in \eqn{x_{*}^{\top}\beta}
-#' @param lambda Tuning parameter \eqn{\lambda} in construction of LASSO estimator \eqn{\widehat{\beta}}
+#' @param loading observation vector in the linear functional
+#' @param init.Lasso initial LASSO estimator of the regression vector (default = \code{NULL})
+#' @param lambda Tuning parameter in construction of LASSO estimator of the regression vector (default = \code{NULL})
 #' @param intercept Should intercept(s) be fitted (default = \code{FALSE})
-#' @param mu Tuning parameter \eqn{\mu} in construction of projection direction \eqn{\widehat{u}}
+#' @param mu Tuning parameter in construction of projection direction (default = \code{NULL})
 #' @param step Number of steps (< \code{maxiter}) to obtain the smallest \code{mu} that gives convergence of the
-#' optimization problem for constructing the projection direction \eqn{\widehat{u}} (default = \code{NULL})
+#' optimization problem for constructing the projection direction (default = \code{NULL})
 #' @param resol Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-#' that gives convergence of the optimization problem for constructing the projection direction \eqn{\widehat{u}}
+#' that gives convergence of the optimization problem for constructing the projection direction (default = 1.5)
 #' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-#' that gives convergence of the optimization problem for constructing the projection direction \eqn{\widehat{u}}
+#' that gives convergence of the optimization problem for constructing the projection direction (default = 10)
 #'
 #' @return
-#' \item{prop.est}{The bias-corrected estimator \deqn{\widehat{x_{*}^{\top}\beta}}}
-#' \item{sigma}{Estimate of the variance of error term \eqn{\epsilon} in the linear regression model}
-#' \item{se}{Standard error of \eqn{\widehat{x_{*}^{\top}\beta}}}
-#' \item{proj}{Projection direction \eqn{\widehat{u}} in \eqn{\widehat{x_*^{\top}\beta}}}
+#' \item{prop.est}{The bias-corrected estimator for the linear functional}
+#' \item{sigma}{Estimate of the error variance in the linear regression model}
+#' \item{se}{Standard error of the bias-corrected estimator}
+#' \item{proj}{Optimal projection direction}
 #' \item{step}{Number of steps (< \code{maxiter}) to obtain the smallest \code{mu} that gives convergence of the
-#' optimization problem for constructing the projection direction \eqn{\widehat{u}}}
-#' \item{plug.in}{Plug-in LASSO estimator \eqn{x_{*}^{\top}\widehat{\beta}}}
+#' optimization problem for constructing the projection direction}
+#' \item{plug.in}{Plug-in LASSO estimator for the linear functional}
 #' @export
 #'
+#' @importFrom Rdpack reprompt
 #' @importFrom stats coef qnorm
 #' @import CVXR Matrix glmnet
 #'
+#' @references
+#'
+#' \insertRef{CVXR}{FIHR}
+#'
+#' \insertRef{glmnet1}{FIHR}
+#'
+#' \insertRef{Matrix}{FIHR}
+#'
+#' \insertRef{stats}{FIHR}
+#
 #' @examples
 #' X = matrix(sample(-2:2,100*400,replace = TRUE),nrow=100,ncol=400)
 #' beta = (1:400)/25
 #' y = X%*%beta + rnorm(100,0,1)
 #' LF_Inference(X = X, y = y, loading = c(1,rep(0,399)), intercept = TRUE)
-LF_Inference<-function(X,y,loading,lambda=NULL,intercept=FALSE,mu=NULL,step=NULL,resol = 1.5,maxiter=10){
+LF_Inference<-function(X,y,loading,init.Lasso=NULL,lambda=NULL,intercept=FALSE,mu=NULL,step=NULL,resol = 1.5,maxiter=10){
   ### Option 1: search tuning parameter with steps determined by the ill conditioned case (n=p/2)
   ### Option 2: search tuning parameter with maximum 10 steps.
   ####### Option 3: fixed tuning parameter and this is not recommended without exploring the tuning parameter selection
   xnew<-loading
   p <- ncol(X);
   n <- nrow(X);
-  col.norm <- 1/sqrt((1/n)*diag(t(X)%*%X));
 
-  Xnor <- X %*% diag(col.norm);
-  ### implement Lasso
-  htheta <- Lasso (Xnor,y,lambda=lambda,intercept=intercept);
+  if(is.null(init.Lasso)){
+    ####### implement a lasso algorithm to get beta and sigma
+    Ini.Est<-Initialization.step(X,y,lambda,intercept)
+  }
+  htheta<-Ini.Est$lasso.est
+  sd.est<-Ini.Est$sigma
+  spar.est<-Ini.Est$sparsity
+  ####### implement the correction of the initial estimator
+  ####### set up the randomization step
   if (intercept==TRUE){
-    Xb <- cbind(rep(1,n),Xnor);
     Xc <- cbind(rep(1,n),X);
-    col.norm <- c(1,col.norm);
     pp <- (p+1);
   } else {
-    Xb <- Xnor;
     Xc <- X;
     pp <- p
   }
-  sparsity<-sum(abs(htheta)>0.001)
-  sd.est<-sum((y-Xb%*%htheta)^2)/(n-sparsity)
-  htheta <- htheta*col.norm;
-  ### compute the initial estimator
+
+#  col.norm <- 1/sqrt((1/n)*diag(t(X)%*%X));
+
+#  Xnor <- X %*% diag(col.norm);
+  ### implement Lasso
+#  htheta <- Lasso (Xnor,y,lambda=lambda,intercept=intercept);
+#  if (intercept==TRUE){
+#    Xb <- cbind(rep(1,n),Xnor);
+#    Xc <- cbind(rep(1,n),X);
+#    col.norm <- c(1,col.norm);
+#    pp <- (p+1);
+#  } else {
+#    Xb <- Xnor;
+#    Xc <- X;
+#    pp <- p
+#  }
+#  sparsity<-sum(abs(htheta)>0.001)
+#  sd.est<-sum((y-Xb%*%htheta)^2)/(n-sparsity)
+#  htheta <- htheta*col.norm;
+
+
+    ### compute the initial estimator
   if(intercept==TRUE){
     loading=rep(0,pp)
     loading[1]=1

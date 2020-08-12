@@ -8,6 +8,7 @@ LF_Inference(
   X,
   y,
   loading,
+  init.Lasso = NULL,
   lambda = NULL,
   intercept = FALSE,
   mu = NULL,
@@ -17,44 +18,53 @@ LF_Inference(
 )
 }
 \arguments{
-\item{X}{Design matrix, of dimensions nobs(n) x nvar(p)}
+\item{X}{Design matrix}
 
 \item{y}{Response variable}
 
-\item{loading}{\eqn{x_{*}} in \eqn{x_{*}^{\top}\beta}}
+\item{loading}{observation vector in the linear functional}
 
-\item{lambda}{Tuning parameter \eqn{\lambda} in construction of LASSO estimator \eqn{\widehat{\beta}}}
+\item{init.Lasso}{initial LASSO estimator of the regression vector (default = \code{NULL})}
+
+\item{lambda}{Tuning parameter in construction of LASSO estimator of the regression vector (default = \code{NULL})}
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{FALSE})}
 
-\item{mu}{Tuning parameter \eqn{\mu} in construction of projection direction \eqn{\widehat{u}}}
+\item{mu}{Tuning parameter in construction of projection direction (default = \code{NULL})}
 
 \item{step}{Number of steps (< \code{maxiter}) to obtain the smallest \code{mu} that gives convergence of the
-optimization problem for constructing the projection direction \eqn{\widehat{u}} (default = \code{NULL})}
+optimization problem for constructing the projection direction (default = \code{NULL})}
 
 \item{resol}{Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-that gives convergence of the optimization problem for constructing the projection direction \eqn{\widehat{u}}}
+that gives convergence of the optimization problem for constructing the projection direction (default = 1.5)}
 
 \item{maxiter}{Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-that gives convergence of the optimization problem for constructing the projection direction \eqn{\widehat{u}}}
+that gives convergence of the optimization problem for constructing the projection direction (default = 10)}
 }
 \value{
-\item{prop.est}{The bias-corrected estimator \deqn{\widehat{x_{*}^{\top}\beta}}}
-\item{sigma}{Estimate of the variance of error term \eqn{\epsilon} in the linear regression model}
-\item{se}{Standard error of \eqn{\widehat{x_{*}^{\top}\beta}}}
-\item{proj}{Projection direction \eqn{\widehat{u}} in \eqn{\widehat{x_*^{\top}\beta}}}
+\item{prop.est}{The bias-corrected estimator for the linear functional}
+\item{sigma}{Estimate of the error variance in the linear regression model}
+\item{se}{Standard error of the bias-corrected estimator}
+\item{proj}{Optimal projection direction}
 \item{step}{Number of steps (< \code{maxiter}) to obtain the smallest \code{mu} that gives convergence of the
-optimization problem for constructing the projection direction \eqn{\widehat{u}}}
-\item{plug.in}{Plug-in LASSO estimator \eqn{x_{*}^{\top}\widehat{\beta}}}
+optimization problem for constructing the projection direction}
+\item{plug.in}{Plug-in LASSO estimator for the linear functional}
 }
 \description{
-Computes the bias corrected estimator for \eqn{x_*^{\top}\beta} for the following high-dimensional linear regression model
-\deqn{y=X\beta+\epsilon} as \deqn{\widehat{x_{*}^{\top}\beta}=x_{*}^{\top}\widehat{\beta}+\widehat{u}^{\top}\frac{1}{n}\sum_{i=1}^{n}X_{i.}\left(y_i-X_{i.}^{\top}\beta\right)}
-and the corresponding standard error.
+Computes the bias corrected estimator of linear functional for the high-dimensional linear regression model and the corresponding standard error.
 }
 \examples{
 X = matrix(sample(-2:2,100*400,replace = TRUE),nrow=100,ncol=400)
 beta = (1:400)/25
 y = X\%*\%beta + rnorm(100,0,1)
 LF_Inference(X = X, y = y, loading = c(1,rep(0,399)), intercept = TRUE)
+}
+\references{
+\insertRef{CVXR}{FIHR}
+
+\insertRef{glmnet1}{FIHR}
+
+\insertRef{Matrix}{FIHR}
+
+\insertRef{stats}{FIHR}
 }

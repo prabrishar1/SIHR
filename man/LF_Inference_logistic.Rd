@@ -2,12 +2,13 @@
 % Please edit documentation in R/LF_Inference_logistic.R
 \name{LF_Inference_logistic}
 \alias{LF_Inference_logistic}
-\title{Inference for linear functional in high dimensional logistic regression}
+\title{Inference for linear functional in the high-dimensional logistic regression model}
 \usage{
 LF_Inference_logistic(
   X,
   y,
   loading,
+  weight,
   lambda = NULL,
   intercept = FALSE,
   mu = NULL,
@@ -17,31 +18,52 @@ LF_Inference_logistic(
 )
 }
 \arguments{
-\item{X}{input matrix, of dimension nobs x nvar; each row is an observation vector}
+\item{X}{Design matrix}
 
-\item{y}{response variable}
+\item{y}{Response vector}
 
-\item{loading}{the vector of covariates in the linear functional to be estimated}
+\item{loading}{observation vector in the linear functional}
 
-\item{lambda}{tuning parameter}
+\item{weight}{The vector of weights used in correcting the plug-in estimator}
+
+\item{lambda}{Tuning parameter in construction of the LASSO estimator of the regression vector (default = \code{NULL})}
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{FALSE})}
 
-\item{mu}{tuning parameter for construction of projection direction}
+\item{mu}{Tuning parameter in construction of the projection direction (default = \code{NULL})}
 
-\item{step}{number of steps (< \code{maxiter}) to obtain the smallest \code{mu} that gives convergence}
+\item{step}{Number of steps (< \code{maxiter}) to obtain the smallest \code{mu} that gives convergence of the
+optimization problem for constructing the projection direction (default = \code{NULL})}
 
-\item{resol}{resolution or the factor by which \code{mu} is increased/decreased till smallest with convergence}
+\item{resol}{Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
+that gives convergence of the optimization problem for constructing the projection direction (default = 1.5)}
 
-\item{maxiter}{maximum number of steps along which we increase/decrease \code{mu} till smallest with convergence}
+\item{maxiter}{Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
+that gives convergence of the optimization problem for constructing the projection direction (default = 6)}
 }
 \value{
-bias corrected linear  functional estimate and corresponding standard error for high dimensional logistic regression model
+\item{prop.est}{The bias corrected estimator of the linear functional}
+\item{se}{Standard error of the bias-corrected estimator}
+\item{proj}{Optimal projection direction}
+\item{step}{Number of steps (< \code{maxiter}) to obtain the smallest \code{mu} that gives convergence of the
+optimization problem for constructing the projection direction}
+\item{plug.in}{Plug-in LASSO estimator of the linear functional}
+\item{support}{Estimated support for the regression vector (using LASSO estimate)}
 }
 \description{
-Inference for linear functional in high dimensional logistic regression
+Computes the bias corrected estimator of the linear functional for the high-dimensional logistic regression model and the corresponding standard error.
 }
 \examples{
-LF_Inference_logistic(X = matrix(sample(-2:2,100*400,replace = TRUE),nrow=100,ncol=400),
-                      y = rbinom(100,1,0.5), loading = c(1,rep(0,399)), intercept = TRUE)
+LF_Inference_logistic(X = matrix(sample(-2:2,50*300,replace = TRUE),nrow=50,ncol=300),
+                      y = rbinom(50,1,0.5), loading = c(1,rep(0,299)),
+                      intercept = TRUE, weight = rep(1,50))
+}
+\references{
+\insertRef{CVXR}{FIHR}
+
+\insertRef{glmnet1}{FIHR}
+
+\insertRef{Matrix}{FIHR}
+
+\insertRef{stats}{FIHR}
 }
