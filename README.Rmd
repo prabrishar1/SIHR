@@ -106,7 +106,7 @@ Quadratic Functional (Group_Covariance) Linear Model (will be removed)
 X = matrix(sample(-2:2,100*400,replace = TRUE),nrow=100,ncol=400)
 beta = (1:400)/25
 y = X%*%beta + rnorm(100,0,1)
-Est = FIHR::Group_Test_Cov(X = X, y = y, test.set=c(30:50))
+Est = FIHR::QF_Cov(X = X, y = y, test.set=c(30:50))
 Est$prop.est
 Est$se
 ```
@@ -137,7 +137,7 @@ test.set <- c(30:100)
 #X = matrix(sample(-2:2,100*400,replace = TRUE),nrow=100,ncol=400)
 #beta = (1:400)/25
 #y = X%*%beta + rnorm(100,0,1)
-Est = FIHR::Group_Test_Norm(X = X, y = y, test.set=test.set)
+Est = FIHR::QF_Norm(X = X, y = y, test.set=test.set)
 Est$prop.est
 Est$se
 ```
@@ -168,7 +168,7 @@ test.set <- c(30:100)
 #beta = (1:400)/25
 #y = X%*%beta + rnorm(100,0,1)
 #Est = FIHR::Group_Test(X = X, y = y, test.set=c(30:50))
-Est = FIHR::Group_Test(X = X, y = y, test.set=test.set)
+Est = FIHR::QF(X = X, y = y, test.set=test.set)
 Est$prop.est
 Est$se
 ```

@@ -57,13 +57,20 @@ model
     X <- MASS::mvrnorm(100,mu,Cov)
     y = X%*%beta + rnorm(100)
     Est = FIHR::LF_Inference(X = X, y = y, loading = c(1,rep(0,399)), intercept = TRUE)
+    #> [1] 1
+    #> [1] 0.1493282
+    #> [1] 2
+    #> [1] 0.2540496
+    #> [1] 3
+    #> [1] 0.3639112
+    #> [1] 4
     #> [1] 3
     #> [1] "step is 3"
     Est$prop.est
-    #>           [,1]
-    #> [1,] 0.1632126
+    #>            [,1]
+    #> [1,] 0.09887364
     Est$se
-    #> [1] 0.2438177
+    #> [1] 0.1942838
 
 Inference for linear functional in high-dimensional logistic regression
 model
@@ -91,24 +98,24 @@ model
     #                      y = rbinom(50,1,0.5), loading = c(1,rep(0,299)),
     #                       intercept = TRUE, weight = rep(1,50))
     Est = FIHR::LF_Inference_logistic(X = X, y = y, loading = c(1,rep(0,399)), intercept = TRUE, weight = rep(1,100))
-    #> [1] 4
-    #> [1] "step is 4"
+    #> [1] 3
+    #> [1] "step is 3"
     Est$prop.est
-    #> [1] -0.3923554
+    #> [1] 0.1946291
     Est$se
-    #> [1] 2.021654
+    #> [1] 0.3491008
 
 Quadratic Functional (Group\_Covariance) Linear Model (will be removed)
 
     X = matrix(sample(-2:2,100*400,replace = TRUE),nrow=100,ncol=400)
     beta = (1:400)/25
     y = X%*%beta + rnorm(100,0,1)
-    Est = FIHR::Group_Test_Cov(X = X, y = y, test.set=c(30:50))
+    Est = FIHR::QF_Cov(X = X, y = y, test.set=c(30:50))
     Est$prop.est
-    #>      [,1]
-    #> [1,]    0
+    #>          [,1]
+    #> [1,] 658.0961
     Est$se
-    #> [1] 0
+    #> [1] 32124.4
 
 Inference for sqaure norm of the regression vector in high-dimensional
 linear model
@@ -136,14 +143,21 @@ linear model
     #X = matrix(sample(-2:2,100*400,replace = TRUE),nrow=100,ncol=400)
     #beta = (1:400)/25
     #y = X%*%beta + rnorm(100,0,1)
-    Est = FIHR::Group_Test_Norm(X = X, y = y, test.set=test.set)
+    Est = FIHR::QF_Norm(X = X, y = y, test.set=test.set)
+    #> [1] 1
+    #> [1] 0.02772465
+    #> [1] 2
+    #> [1] 0.04324236
+    #> [1] 3
+    #> [1] 0.0598843
+    #> [1] 4
     #> [1] 3
     #> [1] "step is 3"
     Est$prop.est
     #>           [,1]
-    #> [1,] 0.5671803
+    #> [1,] 0.3334263
     Est$se
-    #> [1] 0.1496111
+    #> [1] 0.1460349
 
 Inference for quadratic functional in high-dimensional linear model
 
@@ -170,11 +184,9 @@ Inference for quadratic functional in high-dimensional linear model
     #beta = (1:400)/25
     #y = X%*%beta + rnorm(100,0,1)
     #Est = FIHR::Group_Test(X = X, y = y, test.set=c(30:50))
-    Est = FIHR::Group_Test_Norm(X = X, y = y, test.set=test.set)
-    #> [1] 3
-    #> [1] "step is 3"
+    Est = FIHR::QF(X = X, y = y, test.set=test.set)
     Est$prop.est
     #>           [,1]
-    #> [1,] 0.2345145
+    #> [1,] 0.2328281
     Est$se
-    #> [1] 0.1558902
+    #> [1] 0.1054539
