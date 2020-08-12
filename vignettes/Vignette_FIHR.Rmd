@@ -1,44 +1,20 @@
 ---
-output: github_document
+title: "Vignette_FIHR"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette_FIHR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
-
-<!-- README.md is generated from README.Rmd. Please edit that file -->
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%"
+  comment = "#>"
 )
 ```
 
-# FIHR
-
-<!-- badges: start -->
-<!-- badges: end -->
-
-The goal of FIHR is to provide inference for linear and quadratic functionals in high-dimensional linear and logistic regression models. It computes bias-corrected estimators and corresponding standard errors for the linear and quadratic functionals.
-
-## Installation
-
-You can install the released version of FIHR from [CRAN](https://CRAN.R-project.org) with:
-
-``` r
-install.packages("FIHR")
-```
-
-And the development version from [GitHub](https://github.com/) with:
-
-``` r
-# install.packages("devtools")
-devtools::install_github("prabrishar1/FIHR")
-```
-## Example
-
-These are basic examples which show how to solve the common high-dimensional inference problems:
-
-```{r example}
+```{r setup}
 library(FIHR)
 ```
 
@@ -91,21 +67,7 @@ X <- MASS::mvrnorm(100,mu,Cov)
 exp_val <- X%*%beta
 prob <- exp(exp_val)/(1+exp(exp_val))
 y <- rbinom(100,1,prob)
-#Est = FIHR::LF_Inference_logistic(X = matrix(sample(-2:2,50*300,replace = TRUE),nrow=50,ncol=300),
-#                      y = rbinom(50,1,0.5), loading = c(1,rep(0,299)),
-#                       intercept = TRUE, weight = rep(1,50))
 Est = FIHR::LF_Inference_logistic(X = X, y = y, loading = c(1,rep(0,399)), intercept = TRUE, weight = rep(1,100))
-Est$prop.est
-Est$se
-```
-
-Quadratic Functional (Group_Covariance) Linear Model (will be removed) 
-
-```{r Group Covariance Linear Model}
-X = matrix(sample(-2:2,100*400,replace = TRUE),nrow=100,ncol=400)
-beta = (1:400)/25
-y = X%*%beta + rnorm(100,0,1)
-Est = FIHR::QF_Cov(X = X, y = y, test.set=c(30:50))
 Est$prop.est
 Est$se
 ```
@@ -113,7 +75,6 @@ Est$se
 Inference for sqaure norm of the regression vector in high-dimensional linear model
 
 ```{r Group Norm Linear Model}
-
 library(MASS)
 A1gen <- function(rho,p){
   A1=matrix(0,p,p)
@@ -133,10 +94,6 @@ beta[25:50] <- 0.08
 X <- MASS::mvrnorm(100,mu,Cov)
 y <- X%*%beta + rnorm(100)
 test.set <- c(30:100)
-#X = MASS::mvrnorm(n = 100, mu = rep(0,400), Sigma = diag(1,400))
-#X = matrix(sample(-2:2,100*400,replace = TRUE),nrow=100,ncol=400)
-#beta = (1:400)/25
-#y = X%*%beta + rnorm(100,0,1)
 Est = FIHR::QF_Norm(X = X, y = y, test.set=test.set)
 Est$prop.est
 Est$se
@@ -164,10 +121,6 @@ beta[25:50] <- 0.08
 X <- MASS::mvrnorm(100,mu,Cov)
 y <- X%*%beta + rnorm(100)
 test.set <- c(30:100)
-#X = matrix(sample(-2:2,100*400,replace = TRUE),nrow=100,ncol=400)
-#beta = (1:400)/25
-#y = X%*%beta + rnorm(100,0,1)
-#Est = FIHR::Group_Test(X = X, y = y, test.set=c(30:50))
 Est = FIHR::QF(X = X, y = y, test.set=test.set)
 Est$prop.est
 Est$se
