@@ -12,7 +12,6 @@ getmode <- function(v) {
 Direction_fixedtuning_weight<-function(Xc,loading,mu=NULL,weight,f_prime){      ####### included functions weight and f_prime
   pp<-ncol(Xc)
   n<-nrow(Xc)
-
   if(is.null(mu)){
     mu<-sqrt(2.01*log(pp)/n)
   }
