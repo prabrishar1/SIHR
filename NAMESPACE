@@ -3,6 +3,7 @@
 export(LF_Inference)
 export(LF_Inference_logistic)
 export(QF)
+export(QF_Cov)
 export(QF_Norm)
 import(CVXR)
 import(Matrix)
