@@ -35,6 +35,7 @@ library(FIHR)
 Inference for linear functional in high-dimensional linear regression model
 
 ``` r
+
 #X = matrix(sample(-2:2,100*400,replace = TRUE),nrow=100,ncol=400)
 library(MASS)
 A1gen <- function(rho,p){
@@ -56,19 +57,19 @@ X <- MASS::mvrnorm(100,mu,Cov)
 y = X%*%beta + rnorm(100)
 Est = FIHR::LF_Inference(X = X, y = y, loading = c(1,rep(0,399)), intercept = TRUE)
 #> [1] 1
-#> [1] 0.1503437
+#> [1] 0.1578344
 #> [1] 2
-#> [1] 0.2298888
+#> [1] 0.2288057
 #> [1] 3
-#> [1] 0.3127514
+#> [1] 0.30179
 #> [1] 4
 #> [1] 3
 #> [1] "step is 3"
 Est$prop.est
-#>            [,1]
-#> [1,] -0.1028775
+#>         [,1]
+#> [1,] 0.23689
 Est$se
-#> [1] 0.1380554
+#> [1] 0.1646678
 ```
 
 Inference for linear functional in high-dimensional logistic regression model
@@ -100,9 +101,9 @@ Est = FIHR::LF_Inference_logistic(X = X, y = y, loading = c(1,rep(0,399)), inter
 #> [1] 3
 #> [1] "step is 3"
 Est$prop.est
-#> [1] 0.1033063
+#> [1] -0.2664569
 Est$se
-#> [1] 0.35585
+#> [1] 0.5373868
 ```
 
 Quadratic Functional (Group\_Covariance) Linear Model (will be removed)
@@ -113,10 +114,10 @@ beta = (1:400)/25
 y = X%*%beta + rnorm(100,0,1)
 Est = FIHR::QF_Cov(X = X, y = y, test.set=c(30:50))
 Est$prop.est
-#>      [,1]
-#> [1,]    0
+#>          [,1]
+#> [1,] 928.5145
 Est$se
-#> [1] 0
+#> [1] 19538.58
 ```
 
 Inference for sqaure norm of the regression vector in high-dimensional linear model
@@ -148,19 +149,19 @@ test.set <- c(30:100)
 #y = X%*%beta + rnorm(100,0,1)
 Est = FIHR::QF_Norm(X = X, y = y, test.set=test.set)
 #> [1] 1
-#> [1] 0.01587779
+#> [1] 0.02683212
 #> [1] 2
-#> [1] 0.02118426
+#> [1] 0.03950055
 #> [1] 3
-#> [1] 0.02849635
+#> [1] 0.05150157
 #> [1] 4
 #> [1] 3
 #> [1] "step is 3"
 Est$prop.est
 #>           [,1]
-#> [1,] 0.1146435
+#> [1,] 0.2686378
 Est$se
-#> [1] 0.1462043
+#> [1] 0.1466222
 ```
 
 Inference for quadratic functional in high-dimensional linear model
@@ -190,9 +191,13 @@ test.set <- c(30:100)
 #y = X%*%beta + rnorm(100,0,1)
 #Est = FIHR::Group_Test(X = X, y = y, test.set=c(30:50))
 Est = FIHR::QF(X = X, y = y, test.set=test.set)
+#> Warning in FIHR::QF(X = X, y = y, test.set = test.set): The model is most likely
+#> misspecified because the correction term is larger than the lasso estimate
+#> in absolute value. See cluster or group: . The value of the lasso.plugin and
+#> correction are 0.01916 respectively 0.02101 .
 Est$prop.est
-#>           [,1]
-#> [1,] 0.3083293
+#>            [,1]
+#> [1,] 0.04017795
 Est$se
-#> [1] 0.1068759
+#> [1] 0.1002837
 ```
