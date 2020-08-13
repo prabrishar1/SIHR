@@ -45,6 +45,7 @@ library(FIHR)
 Inference for linear functional in high-dimensional linear regression model
 
 ```{r Linear Functional Linear Model}
+
 #X = matrix(sample(-2:2,100*400,replace = TRUE),nrow=100,ncol=400)
 library(MASS)
 A1gen <- function(rho,p){

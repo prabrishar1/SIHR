@@ -18,5 +18,6 @@ RdMacros:
     Rdpack
 Suggests:
     knitr,
-    rmarkdown
+    rmarkdown,
+    MASS
 VignetteBuilder: knitr
