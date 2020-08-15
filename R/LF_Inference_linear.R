@@ -228,8 +228,8 @@ Direction_searchtuning<-function(Xc,loading,mu=NULL, resol, maxiter){
 #' X = matrix(sample(-2:2,100*400,replace = TRUE),nrow=100,ncol=400)
 #' beta = (1:400)/25
 #' y = X%*%beta + rnorm(100,0,1)
-#' LF_Inference(X = X, y = y, loading = c(1,rep(0,399)), intercept = TRUE)
-LF_Inference<-function(X,y,loading,init.Lasso=NULL,lambda=NULL,intercept=FALSE,mu=NULL,step=NULL,resol = 1.5,maxiter=10){
+#' LF(X = X, y = y, loading = c(1,rep(0,399)), intercept = TRUE)
+LF<-function(X,y,loading,init.Lasso=NULL,lambda=NULL,intercept=FALSE,mu=NULL,step=NULL,resol = 1.5,maxiter=10){
   ### Option 1: search tuning parameter with steps determined by the ill conditioned case (n=p/2)
   ### Option 2: search tuning parameter with maximum 10 steps.
   ####### Option 3: fixed tuning parameter and this is not recommended without exploring the tuning parameter selection

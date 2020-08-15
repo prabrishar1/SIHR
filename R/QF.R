@@ -243,7 +243,7 @@ Direction_searchtuning_robust <- function(Xc, loading, mu = NULL, resol = 1.5,
 #' @export
 #'
 #' @importFrom Rdpack reprompt
-#' @importFrom stats coef qnorm
+#' @importFrom stats coef qnorm median
 #' @import CVXR Matrix glmnet
 #'
 #' @examples
@@ -288,6 +288,7 @@ QF <- function(X, y, test.set, A = "sigma",init.Lasso = NULL, tau.vec = NULL,
     }
     else
     {
+      print("A is not sigma 1")
       lasso.plugin <- t(htheta)%*%A%*%htheta
     }
     direction <- htheta
@@ -308,6 +309,7 @@ QF <- function(X, y, test.set, A = "sigma",init.Lasso = NULL, tau.vec = NULL,
     }
     else
     {
+      print("A is not sigma 2")
       loading[test.set] <- (A %*% test.vec)[test.set]
       lasso.plugin <- t(test.vec)%*%A%*%test.vec
     }
@@ -382,6 +384,7 @@ QF <- function(X, y, test.set, A = "sigma",init.Lasso = NULL, tau.vec = NULL,
   }
   else
   {
+    print("A is not sigma 3")
     se<-2*sd.est*sqrt(sum((Xc%*%direction)^2)/(n)^2)*loading.norm
     #tau=0
     if(is.null(tau.vec)){

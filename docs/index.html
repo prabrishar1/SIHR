@@ -69,166 +69,126 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>You can install the released version of FIHR from <a href="https://CRAN.R-project.org">CRAN</a> with:</p>
-<div class="sourceCode"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"FIHR"</span>)</pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="kw">install.packages</span>(<span class="st">"FIHR"</span>)</span></code></pre></div>
 <p>And the development version from <a href="https://github.com/">GitHub</a> with:</p>
-<div class="sourceCode"><pre class="r"><span class="co"># install.packages("devtools")</span>
-<span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">"prabrishar1/FIHR"</span>)</pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="co"># install.packages("devtools")</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">"prabrishar1/FIHR"</span>)</span></code></pre></div>
 </div>
 <div id="example" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h2>
 <p>These are basic examples which show how to solve the common high-dimensional inference problems:</p>
-<div class="sourceCode"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">FIHR</span>)</pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="kw">library</span>(FIHR)</span></code></pre></div>
 <p>Inference for linear functional in high-dimensional linear regression model</p>
-<div class="sourceCode"><pre class="r">
-<span class="co">#X = matrix(sample(-2:2,100*400,replace = TRUE),nrow=100,ncol=400)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">MASS</span>)
-<span class="no">A1gen</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">rho</span>,<span class="no">p</span>){
-  <span class="no">A1</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="fl">0</span>,<span class="no">p</span>,<span class="no">p</span>)
-  <span class="kw">for</span>(<span class="no">i</span> <span class="kw">in</span> <span class="fl">1</span>:<span class="no">p</span>){
-    <span class="kw">for</span>(<span class="no">j</span> <span class="kw">in</span> <span class="fl">1</span>:<span class="no">p</span>){
-      <span class="no">A1</span>[<span class="no">i</span>,<span class="no">j</span>]<span class="kw">&lt;-</span><span class="no">rho</span>^(<span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span>(<span class="no">i</span>-<span class="no">j</span>))
-    }
-  }
-  <span class="no">A1</span>
-}
-<span class="no">mu</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">0</span>,<span class="fl">400</span>)
-<span class="no">mu</span>[<span class="fl">1</span>:<span class="fl">5</span>] <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>:<span class="fl">5</span>)/<span class="fl">5</span>
-<span class="no">rho</span> <span class="kw">=</span> <span class="fl">0.5</span>
-<span class="no">Cov</span> <span class="kw">&lt;-</span> (<span class="fu">A1gen</span>(<span class="no">rho</span>,<span class="fl">400</span>))/<span class="fl">2</span>
-<span class="no">beta</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">0</span>,<span class="fl">400</span>)
-<span class="no">beta</span>[<span class="fl">1</span>:<span class="fl">10</span>] <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>:<span class="fl">10</span>)/<span class="fl">5</span>
-<span class="no">X</span> <span class="kw">&lt;-</span> <span class="kw pkg">MASS</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html">mvrnorm</a></span>(<span class="fl">100</span>,<span class="no">mu</span>,<span class="no">Cov</span>)
-<span class="no">y</span> <span class="kw">=</span> <span class="no">X</span><span class="kw">%*%</span><span class="no">beta</span> + <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="fl">100</span>)
-<span class="no">Est</span> <span class="kw">=</span> <span class="kw pkg">FIHR</span><span class="kw ns">::</span><span class="fu"><a href="reference/LF_Inference.html">LF_Inference</a></span>(<span class="kw">X</span> <span class="kw">=</span> <span class="no">X</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">y</span>, <span class="kw">loading</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">0</span>,<span class="fl">399</span>)), <span class="kw">intercept</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
-<span class="co">#&gt; [1] 1</span>
-<span class="co">#&gt; [1] 0.1578344</span>
-<span class="co">#&gt; [1] 2</span>
-<span class="co">#&gt; [1] 0.2288057</span>
-<span class="co">#&gt; [1] 3</span>
-<span class="co">#&gt; [1] 0.30179</span>
-<span class="co">#&gt; [1] 4</span>
-<span class="co">#&gt; [1] 3</span>
-<span class="co">#&gt; [1] "step is 3"</span>
-<span class="no">Est</span>$<span class="no">prop.est</span>
-<span class="co">#&gt;         [,1]</span>
-<span class="co">#&gt; [1,] 0.23689</span>
-<span class="no">Est</span>$<span class="no">se</span>
-<span class="co">#&gt; [1] 0.1646678</span></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="kw">library</span>(MASS)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a>A1gen &lt;-<span class="st"> </span><span class="cf">function</span>(rho,p){</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a>  A1=<span class="kw">matrix</span>(<span class="dv">0</span>,p,p)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>p){</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a>    <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>p){</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true"></a>      A1[i,j]&lt;-rho<span class="op">^</span>(<span class="kw">abs</span>(i<span class="op">-</span>j))</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true"></a>    } </span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true"></a>  }</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true"></a>  A1</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true"></a>}</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true"></a>mu &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>,<span class="dv">400</span>)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true"></a>mu[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>] &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)<span class="op">/</span><span class="dv">5</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true"></a>rho =<span class="st"> </span><span class="fl">0.5</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true"></a>Cov &lt;-<span class="st"> </span>(<span class="kw">A1gen</span>(rho,<span class="dv">400</span>))<span class="op">/</span><span class="dv">2</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true"></a>beta &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>,<span class="dv">400</span>)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true"></a>beta[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>] &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)<span class="op">/</span><span class="dv">5</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true"></a>X &lt;-<span class="st"> </span>MASS<span class="op">::</span><span class="kw">mvrnorm</span>(<span class="dv">100</span>,mu,Cov)</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true"></a>y =<span class="st"> </span>X<span class="op">%*%</span>beta <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">100</span>)</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true"></a>Est =<span class="st"> </span>FIHR<span class="op">::</span><span class="kw">LF</span>(<span class="dt">X =</span> X, <span class="dt">y =</span> y, <span class="dt">loading =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="kw">rep</span>(<span class="dv">0</span>,<span class="dv">399</span>)), <span class="dt">intercept =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true"></a><span class="co">#&gt; [1] 3</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true"></a><span class="co">#&gt; [1] "step is 3"</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true"></a>Est<span class="op">$</span>prop.est</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true"></a><span class="co">#&gt;           [,1]</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true"></a><span class="co">#&gt; [1,] 0.6120607</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true"></a>Est<span class="op">$</span>se</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true"></a><span class="co">#&gt; [1] 0.04910674</span></span></code></pre></div>
 <p>Inference for linear functional in high-dimensional logistic regression model</p>
-<div class="sourceCode"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">MASS</span>)
-<span class="no">A1gen</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">rho</span>,<span class="no">p</span>){
-  <span class="no">A1</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="fl">0</span>,<span class="no">p</span>,<span class="no">p</span>)
-  <span class="kw">for</span>(<span class="no">i</span> <span class="kw">in</span> <span class="fl">1</span>:<span class="no">p</span>){
-    <span class="kw">for</span>(<span class="no">j</span> <span class="kw">in</span> <span class="fl">1</span>:<span class="no">p</span>){
-      <span class="no">A1</span>[<span class="no">i</span>,<span class="no">j</span>]<span class="kw">&lt;-</span><span class="no">rho</span>^(<span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span>(<span class="no">i</span>-<span class="no">j</span>))
-    }
-  }
-  <span class="no">A1</span>
-}
-<span class="no">mu</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">0</span>,<span class="fl">400</span>)
-<span class="no">rho</span> <span class="kw">=</span> <span class="fl">0.5</span>
-<span class="no">Cov</span> <span class="kw">&lt;-</span> (<span class="fu">A1gen</span>(<span class="no">rho</span>,<span class="fl">400</span>))/<span class="fl">2</span>
-<span class="no">beta</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">0</span>,<span class="fl">400</span>)
-<span class="no">beta</span>[<span class="fl">1</span>:<span class="fl">10</span>] <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>:<span class="fl">10</span>)/<span class="fl">5</span>
-<span class="no">X</span> <span class="kw">&lt;-</span> <span class="kw pkg">MASS</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html">mvrnorm</a></span>(<span class="fl">100</span>,<span class="no">mu</span>,<span class="no">Cov</span>)
-<span class="no">exp_val</span> <span class="kw">&lt;-</span> <span class="no">X</span><span class="kw">%*%</span><span class="no">beta</span>
-<span class="no">prob</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(<span class="no">exp_val</span>)/(<span class="fl">1</span>+<span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(<span class="no">exp_val</span>))
-<span class="no">y</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span>(<span class="fl">100</span>,<span class="fl">1</span>,<span class="no">prob</span>)
-<span class="co">#Est = FIHR::LF_Inference_logistic(X = matrix(sample(-2:2,50*300,replace = TRUE),nrow=50,ncol=300),</span>
-<span class="co">#                      y = rbinom(50,1,0.5), loading = c(1,rep(0,299)),</span>
-<span class="co">#                       intercept = TRUE, weight = rep(1,50))</span>
-<span class="no">Est</span> <span class="kw">=</span> <span class="kw pkg">FIHR</span><span class="kw ns">::</span><span class="fu"><a href="reference/LF_Inference_logistic.html">LF_Inference_logistic</a></span>(<span class="kw">X</span> <span class="kw">=</span> <span class="no">X</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">y</span>, <span class="kw">loading</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">0</span>,<span class="fl">399</span>)), <span class="kw">intercept</span> <span class="kw">=</span> <span class="fl">TRUE</span>, <span class="kw">weight</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">1</span>,<span class="fl">100</span>))
-<span class="co">#&gt; [1] 3</span>
-<span class="co">#&gt; [1] "step is 3"</span>
-<span class="no">Est</span>$<span class="no">prop.est</span>
-<span class="co">#&gt; [1] -0.2664569</span>
-<span class="no">Est</span>$<span class="no">se</span>
-<span class="co">#&gt; [1] 0.5373868</span></pre></div>
-<p>Quadratic Functional (Group_Covariance) Linear Model (will be removed)</p>
-<div class="sourceCode"><pre class="r"><span class="no">X</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span>(-<span class="fl">2</span>:<span class="fl">2</span>,<span class="fl">100</span>*<span class="fl">400</span>,<span class="kw">replace</span> <span class="kw">=</span> <span class="fl">TRUE</span>),<span class="kw">nrow</span><span class="kw">=</span><span class="fl">100</span>,<span class="kw">ncol</span><span class="kw">=</span><span class="fl">400</span>)
-<span class="no">beta</span> <span class="kw">=</span> (<span class="fl">1</span>:<span class="fl">400</span>)/<span class="fl">25</span>
-<span class="no">y</span> <span class="kw">=</span> <span class="no">X</span><span class="kw">%*%</span><span class="no">beta</span> + <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="fl">100</span>,<span class="fl">0</span>,<span class="fl">1</span>)
-<span class="no">Est</span> <span class="kw">=</span> <span class="kw pkg">FIHR</span><span class="kw ns">::</span><span class="fu"><a href="reference/QF_Cov.html">QF_Cov</a></span>(<span class="kw">X</span> <span class="kw">=</span> <span class="no">X</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">y</span>, <span class="kw">test.set</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">30</span>:<span class="fl">50</span>))
-<span class="no">Est</span>$<span class="no">prop.est</span>
-<span class="co">#&gt;          [,1]</span>
-<span class="co">#&gt; [1,] 928.5145</span>
-<span class="no">Est</span>$<span class="no">se</span>
-<span class="co">#&gt; [1] 19538.58</span></pre></div>
-<p>Inference for sqaure norm of the regression vector in high-dimensional linear model</p>
-<div class="sourceCode"><pre class="r">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">MASS</span>)
-<span class="no">A1gen</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">rho</span>,<span class="no">p</span>){
-  <span class="no">A1</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="fl">0</span>,<span class="no">p</span>,<span class="no">p</span>)
-  <span class="kw">for</span>(<span class="no">i</span> <span class="kw">in</span> <span class="fl">1</span>:<span class="no">p</span>){
-    <span class="kw">for</span>(<span class="no">j</span> <span class="kw">in</span> <span class="fl">1</span>:<span class="no">p</span>){
-      <span class="no">A1</span>[<span class="no">i</span>,<span class="no">j</span>]<span class="kw">&lt;-</span><span class="no">rho</span>^(<span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span>(<span class="no">i</span>-<span class="no">j</span>))
-    }
-  }
-  <span class="no">A1</span>
-}
-<span class="no">rho</span> <span class="kw">=</span> <span class="fl">0.6</span>
-<span class="no">Cov</span> <span class="kw">&lt;-</span> (<span class="fu">A1gen</span>(<span class="no">rho</span>,<span class="fl">400</span>))
-<span class="no">mu</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">0</span>,<span class="fl">400</span>)
-<span class="no">mu</span>[<span class="fl">1</span>:<span class="fl">5</span>] <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>:<span class="fl">5</span>)/<span class="fl">5</span>
-<span class="no">beta</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">0</span>,<span class="fl">400</span>)
-<span class="no">beta</span>[<span class="fl">25</span>:<span class="fl">50</span>] <span class="kw">&lt;-</span> <span class="fl">0.08</span>
-<span class="no">X</span> <span class="kw">&lt;-</span> <span class="kw pkg">MASS</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html">mvrnorm</a></span>(<span class="fl">100</span>,<span class="no">mu</span>,<span class="no">Cov</span>)
-<span class="no">y</span> <span class="kw">&lt;-</span> <span class="no">X</span><span class="kw">%*%</span><span class="no">beta</span> + <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="fl">100</span>)
-<span class="no">test.set</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">30</span>:<span class="fl">100</span>)
-<span class="co">#X = MASS::mvrnorm(n = 100, mu = rep(0,400), Sigma = diag(1,400))</span>
-<span class="co">#X = matrix(sample(-2:2,100*400,replace = TRUE),nrow=100,ncol=400)</span>
-<span class="co">#beta = (1:400)/25</span>
-<span class="co">#y = X%*%beta + rnorm(100,0,1)</span>
-<span class="no">Est</span> <span class="kw">=</span> <span class="kw pkg">FIHR</span><span class="kw ns">::</span><span class="fu"><a href="reference/QF_Norm.html">QF_Norm</a></span>(<span class="kw">X</span> <span class="kw">=</span> <span class="no">X</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">y</span>, <span class="kw">test.set</span><span class="kw">=</span><span class="no">test.set</span>)
-<span class="co">#&gt; [1] 1</span>
-<span class="co">#&gt; [1] 0.02683212</span>
-<span class="co">#&gt; [1] 2</span>
-<span class="co">#&gt; [1] 0.03950055</span>
-<span class="co">#&gt; [1] 3</span>
-<span class="co">#&gt; [1] 0.05150157</span>
-<span class="co">#&gt; [1] 4</span>
-<span class="co">#&gt; [1] 3</span>
-<span class="co">#&gt; [1] "step is 3"</span>
-<span class="no">Est</span>$<span class="no">prop.est</span>
-<span class="co">#&gt;           [,1]</span>
-<span class="co">#&gt; [1,] 0.2686378</span>
-<span class="no">Est</span>$<span class="no">se</span>
-<span class="co">#&gt; [1] 0.1466222</span></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a><span class="kw">library</span>(MASS)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a>A1gen &lt;-<span class="st"> </span><span class="cf">function</span>(rho,p){</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true"></a>  A1=<span class="kw">matrix</span>(<span class="dv">0</span>,p,p)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>p){</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true"></a>    <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>p){</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true"></a>      A1[i,j]&lt;-rho<span class="op">^</span>(<span class="kw">abs</span>(i<span class="op">-</span>j))</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true"></a>    } </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true"></a>  }</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true"></a>  A1</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true"></a>}</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true"></a>mu &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>,<span class="dv">400</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true"></a>rho =<span class="st"> </span><span class="fl">0.5</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true"></a>Cov &lt;-<span class="st"> </span>(<span class="kw">A1gen</span>(rho,<span class="dv">400</span>))<span class="op">/</span><span class="dv">2</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true"></a>beta &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>,<span class="dv">400</span>)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true"></a>beta[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>] &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)<span class="op">/</span><span class="dv">5</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true"></a>X &lt;-<span class="st"> </span>MASS<span class="op">::</span><span class="kw">mvrnorm</span>(<span class="dv">100</span>,mu,Cov)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true"></a>exp_val &lt;-<span class="st"> </span>X<span class="op">%*%</span>beta</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true"></a>prob &lt;-<span class="st"> </span><span class="kw">exp</span>(exp_val)<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span><span class="kw">exp</span>(exp_val))</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true"></a>y &lt;-<span class="st"> </span><span class="kw">rbinom</span>(<span class="dv">100</span>,<span class="dv">1</span>,prob)</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true"></a>Est =<span class="st"> </span>FIHR<span class="op">::</span><span class="kw">LF_logistic</span>(<span class="dt">X =</span> X, <span class="dt">y =</span> y, <span class="dt">loading =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="kw">rep</span>(<span class="dv">0</span>,<span class="dv">399</span>)), <span class="dt">intercept =</span> <span class="ot">TRUE</span>, <span class="dt">weight =</span> <span class="kw">rep</span>(<span class="dv">1</span>,<span class="dv">100</span>))</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true"></a><span class="co">#&gt; [1] 3</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true"></a><span class="co">#&gt; [1] "step is 3"</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true"></a>Est<span class="op">$</span>prop.est</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true"></a><span class="co">#&gt; [1] 0.3313114</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true"></a>Est<span class="op">$</span>se</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true"></a><span class="co">#&gt; [1] 0.4169103</span></span></code></pre></div>
 <p>Inference for quadratic functional in high-dimensional linear model</p>
-<div class="sourceCode"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">MASS</span>)
-<span class="no">A1gen</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">rho</span>,<span class="no">p</span>){
-  <span class="no">A1</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="fl">0</span>,<span class="no">p</span>,<span class="no">p</span>)
-  <span class="kw">for</span>(<span class="no">i</span> <span class="kw">in</span> <span class="fl">1</span>:<span class="no">p</span>){
-    <span class="kw">for</span>(<span class="no">j</span> <span class="kw">in</span> <span class="fl">1</span>:<span class="no">p</span>){
-      <span class="no">A1</span>[<span class="no">i</span>,<span class="no">j</span>]<span class="kw">&lt;-</span><span class="no">rho</span>^(<span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span>(<span class="no">i</span>-<span class="no">j</span>))
-    }
-  }
-  <span class="no">A1</span>
-}
-<span class="no">rho</span> <span class="kw">=</span> <span class="fl">0.6</span>
-<span class="no">Cov</span> <span class="kw">&lt;-</span> (<span class="fu">A1gen</span>(<span class="no">rho</span>,<span class="fl">400</span>))
-<span class="no">mu</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">0</span>,<span class="fl">400</span>)
-<span class="no">mu</span>[<span class="fl">1</span>:<span class="fl">5</span>] <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>:<span class="fl">5</span>)/<span class="fl">5</span>
-<span class="no">beta</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">0</span>,<span class="fl">400</span>)
-<span class="no">beta</span>[<span class="fl">25</span>:<span class="fl">50</span>] <span class="kw">&lt;-</span> <span class="fl">0.08</span>
-<span class="no">X</span> <span class="kw">&lt;-</span> <span class="kw pkg">MASS</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html">mvrnorm</a></span>(<span class="fl">100</span>,<span class="no">mu</span>,<span class="no">Cov</span>)
-<span class="no">y</span> <span class="kw">&lt;-</span> <span class="no">X</span><span class="kw">%*%</span><span class="no">beta</span> + <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="fl">100</span>)
-<span class="no">test.set</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">30</span>:<span class="fl">100</span>)
-<span class="co">#X = matrix(sample(-2:2,100*400,replace = TRUE),nrow=100,ncol=400)</span>
-<span class="co">#beta = (1:400)/25</span>
-<span class="co">#y = X%*%beta + rnorm(100,0,1)</span>
-<span class="co">#Est = FIHR::Group_Test(X = X, y = y, test.set=c(30:50))</span>
-<span class="no">Est</span> <span class="kw">=</span> <span class="kw pkg">FIHR</span><span class="kw ns">::</span><span class="fu"><a href="reference/QF.html">QF</a></span>(<span class="kw">X</span> <span class="kw">=</span> <span class="no">X</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">y</span>, <span class="kw">test.set</span><span class="kw">=</span><span class="no">test.set</span>)
-<span class="co">#&gt; Warning in FIHR::QF(X = X, y = y, test.set = test.set): The model is most likely</span>
-<span class="co">#&gt; misspecified because the correction term is larger than the lasso estimate</span>
-<span class="co">#&gt; in absolute value. See cluster or group: . The value of the lasso.plugin and</span>
-<span class="co">#&gt; correction are 0.01916 respectively 0.02101 .</span>
-<span class="no">Est</span>$<span class="no">prop.est</span>
-<span class="co">#&gt;            [,1]</span>
-<span class="co">#&gt; [1,] 0.04017795</span>
-<span class="no">Est</span>$<span class="no">se</span>
-<span class="co">#&gt; [1] 0.1002837</span></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="kw">library</span>(MASS)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a>A1gen &lt;-<span class="st"> </span><span class="cf">function</span>(rho,p){</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true"></a>  A1=<span class="kw">matrix</span>(<span class="dv">0</span>,p,p)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>p){</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true"></a>    <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>p){</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true"></a>      A1[i,j]&lt;-rho<span class="op">^</span>(<span class="kw">abs</span>(i<span class="op">-</span>j))</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true"></a>    } </span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true"></a>  }</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true"></a>  A1</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true"></a>}</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true"></a>rho =<span class="st"> </span><span class="fl">0.6</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true"></a>Cov &lt;-<span class="st"> </span>(<span class="kw">A1gen</span>(rho,<span class="dv">400</span>))</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true"></a>mu &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>,<span class="dv">400</span>)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true"></a>mu[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>] &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)<span class="op">/</span><span class="dv">5</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true"></a>beta &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>,<span class="dv">400</span>)</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true"></a>beta[<span class="dv">25</span><span class="op">:</span><span class="dv">50</span>] &lt;-<span class="st"> </span><span class="fl">0.08</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true"></a>X &lt;-<span class="st"> </span>MASS<span class="op">::</span><span class="kw">mvrnorm</span>(<span class="dv">100</span>,mu,Cov)</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true"></a>y &lt;-<span class="st"> </span>X<span class="op">%*%</span>beta <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">100</span>)</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true"></a>test.set &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">30</span><span class="op">:</span><span class="dv">100</span>)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true"></a><span class="co">## Inference for Quadratic Functional with Population Covariance Matrix in middle</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true"></a>Est =<span class="st"> </span>FIHR<span class="op">::</span><span class="kw">QF</span>(<span class="dt">X =</span> X, <span class="dt">y =</span> y, <span class="dt">test.set=</span>test.set)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true"></a>Est<span class="op">$</span>prop.est</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true"></a><span class="co">#&gt;           [,1]</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true"></a><span class="co">#&gt; [1,] 0.5345461</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true"></a>Est<span class="op">$</span>se</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true"></a><span class="co">#&gt; [1] 0.1209907</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true"></a></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true"></a><span class="co">## Inference for Quadratic Functional with known matrix A in middle</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true"></a></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true"></a>Est =<span class="st"> </span>FIHR<span class="op">::</span><span class="kw">QF</span>(<span class="dt">X =</span> X, <span class="dt">y =</span> y, <span class="dt">test.set=</span>test.set, <span class="dt">A =</span> <span class="kw">diag</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">400</span>,<span class="dv">400</span>))</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true"></a><span class="co">#&gt; Warning in if (A == "sigma") {: the condition has length &gt; 1 and only the first</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true"></a><span class="co">#&gt; element will be used</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true"></a><span class="co">#&gt; Warning in if (A == "sigma") {: the condition has length &gt; 1 and only the first</span></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true"></a><span class="co">#&gt; element will be used</span></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true"></a>Est<span class="op">$</span>prop.est</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true"></a><span class="co">#&gt;          [,1]</span></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true"></a><span class="co">#&gt; [1,] 8.880047</span></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true"></a>Est<span class="op">$</span>se</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true"></a><span class="co">#&gt; [1] 0.3381186</span></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true"></a></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true"></a><span class="co">## Inference for square norm of regression vector</span></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true"></a></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true"></a>Est =<span class="st"> </span>FIHR<span class="op">::</span><span class="kw">QF</span>(<span class="dt">X =</span> X, <span class="dt">y =</span> y, <span class="dt">test.set=</span>test.set, <span class="dt">A =</span> <span class="kw">diag</span>(<span class="dv">1</span>,<span class="dv">400</span>))</span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true"></a><span class="co">#&gt; Warning in if (A == "sigma") {: the condition has length &gt; 1 and only the first</span></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true"></a><span class="co">#&gt; element will be used</span></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true"></a></span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true"></a><span class="co">#&gt; Warning in if (A == "sigma") {: the condition has length &gt; 1 and only the first</span></span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true"></a><span class="co">#&gt; element will be used</span></span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true"></a>Est<span class="op">$</span>prop.est</span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true"></a><span class="co">#&gt;           [,1]</span></span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true"></a><span class="co">#&gt; [1,] 0.2277406</span></span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true"></a>Est<span class="op">$</span>se</span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true"></a><span class="co">#&gt; [1] 0.141658</span></span></code></pre></div>
 </div>
 </div>
   </div>

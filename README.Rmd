@@ -46,7 +46,6 @@ Inference for linear functional in high-dimensional linear regression model
 
 ```{r Linear Functional Linear Model}
 
-#X = matrix(sample(-2:2,100*400,replace = TRUE),nrow=100,ncol=400)
 library(MASS)
 A1gen <- function(rho,p){
   A1=matrix(0,p,p)
@@ -65,7 +64,7 @@ beta <- rep(0,400)
 beta[1:10] <- c(1:10)/5
 X <- MASS::mvrnorm(100,mu,Cov)
 y = X%*%beta + rnorm(100)
-Est = FIHR::LF_Inference(X = X, y = y, loading = c(1,rep(0,399)), intercept = TRUE)
+Est = FIHR::LF(X = X, y = y, loading = c(1,rep(0,399)), intercept = TRUE)
 Est$prop.est
 Est$se
 ```
@@ -92,53 +91,7 @@ X <- MASS::mvrnorm(100,mu,Cov)
 exp_val <- X%*%beta
 prob <- exp(exp_val)/(1+exp(exp_val))
 y <- rbinom(100,1,prob)
-#Est = FIHR::LF_Inference_logistic(X = matrix(sample(-2:2,50*300,replace = TRUE),nrow=50,ncol=300),
-#                      y = rbinom(50,1,0.5), loading = c(1,rep(0,299)),
-#                       intercept = TRUE, weight = rep(1,50))
-Est = FIHR::LF_Inference_logistic(X = X, y = y, loading = c(1,rep(0,399)), intercept = TRUE, weight = rep(1,100))
-Est$prop.est
-Est$se
-```
-
-Quadratic Functional (Group_Covariance) Linear Model (will be removed) 
-
-```{r Group Covariance Linear Model}
-X = matrix(sample(-2:2,100*400,replace = TRUE),nrow=100,ncol=400)
-beta = (1:400)/25
-y = X%*%beta + rnorm(100,0,1)
-Est = FIHR::QF_Cov(X = X, y = y, test.set=c(30:50))
-Est$prop.est
-Est$se
-```
-
-Inference for sqaure norm of the regression vector in high-dimensional linear model
-
-```{r Group Norm Linear Model}
-
-library(MASS)
-A1gen <- function(rho,p){
-  A1=matrix(0,p,p)
-  for(i in 1:p){
-    for(j in 1:p){
-      A1[i,j]<-rho^(abs(i-j))
-    } 
-  }
-  A1
-}
-rho = 0.6
-Cov <- (A1gen(rho,400))
-mu <- rep(0,400)
-mu[1:5] <- c(1:5)/5
-beta <- rep(0,400)
-beta[25:50] <- 0.08
-X <- MASS::mvrnorm(100,mu,Cov)
-y <- X%*%beta + rnorm(100)
-test.set <- c(30:100)
-#X = MASS::mvrnorm(n = 100, mu = rep(0,400), Sigma = diag(1,400))
-#X = matrix(sample(-2:2,100*400,replace = TRUE),nrow=100,ncol=400)
-#beta = (1:400)/25
-#y = X%*%beta + rnorm(100,0,1)
-Est = FIHR::QF_Norm(X = X, y = y, test.set=test.set)
+Est = FIHR::LF_logistic(X = X, y = y, loading = c(1,rep(0,399)), intercept = TRUE, weight = rep(1,100))
 Est$prop.est
 Est$se
 ```
@@ -165,11 +118,22 @@ beta[25:50] <- 0.08
 X <- MASS::mvrnorm(100,mu,Cov)
 y <- X%*%beta + rnorm(100)
 test.set <- c(30:100)
-#X = matrix(sample(-2:2,100*400,replace = TRUE),nrow=100,ncol=400)
-#beta = (1:400)/25
-#y = X%*%beta + rnorm(100,0,1)
-#Est = FIHR::Group_Test(X = X, y = y, test.set=c(30:50))
+
+## Inference for Quadratic Functional with Population Covariance Matrix in middle
+
 Est = FIHR::QF(X = X, y = y, test.set=test.set)
+Est$prop.est
+Est$se
+
+## Inference for Quadratic Functional with known matrix A in middle
+
+Est = FIHR::QF(X = X, y = y, test.set=test.set, A = diag(1:400,400))
+Est$prop.est
+Est$se
+
+## Inference for square norm of regression vector
+
+Est = FIHR::QF(X = X, y = y, test.set=test.set, A = diag(1,400))
 Est$prop.est
 Est$se
 ```

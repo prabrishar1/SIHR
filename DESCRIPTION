@@ -18,6 +18,5 @@ RdMacros:
     Rdpack
 Suggests:
     knitr,
-    rmarkdown,
-    MASS
+    rmarkdown
 
