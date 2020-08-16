@@ -9,7 +9,41 @@ getmode <- function(v) {
 #  return(g)
 #}
 
-Direction_fixedtuning_weight<-function(Xc,loading,mu=NULL,weight,f_prime){      ####### included functions weight and f_prime
+#' Constructs the projection direction with fixed tuning parameter toestimate functional in high-dimensional logistic regression
+#'
+#' @param Xc Design matrix
+#' @param loading observation vector in the linear functional
+#' @param mu Tuning parameter in construction of projection direction
+#' @param weight A vector of weights used in re-weighting the correction term of the estimator
+#' @param f_prime The first derivative of the logit function at the plug-in LASSO estimate of the linear functional
+#'
+#' @return
+#' \item{proj}{The projection direction}
+#' @export
+#'
+#' @examples
+#' X = matrix(sample(-2:2,50*400,replace = TRUE),nrow=50,ncol=400)
+#' y = rbinom(50,1,0.5)
+#' p <- ncol(X);
+#' n <- nrow(X);
+#' col.norm <- 1/sqrt((1/n)*diag(t(X)%*%X)+0.0001);
+#' Xnor <- X %*% diag(col.norm);
+#' fit = glmnet::cv.glmnet(Xnor, y, alpha=1,family = "binomial")
+#' htheta <- as.vector(coef(fit, s = "lambda.min"))
+#' support<-(abs(htheta)>0.001)
+#' Xb <- cbind(rep(1,n),Xnor);
+#' Xc <- cbind(rep(1,n),X);
+#' col.norm <- c(1,col.norm);
+#' pp <- (p+1);
+#' xnew = c(1,rep(0,399))
+#' loading=rep(0,pp)
+#' loading[1]=1
+#' loading[-1]=xnew
+#' htheta <- htheta*col.norm;
+#' htheta <- as.vector(htheta)
+#' f_prime <- exp(Xc%*%htheta)/(1+exp(Xc%*%htheta))^2
+#' Direction_fixedtuning_logistic(Xc,loading,mu=2,weight=rep(1,50),f_prime)
+Direction_fixedtuning_logistic<-function(Xc,loading,mu=NULL,weight,f_prime){      ####### included functions weight and f_prime
   pp<-ncol(Xc)
   n<-nrow(Xc)
   if(is.null(mu)){
@@ -31,7 +65,46 @@ Direction_fixedtuning_weight<-function(Xc,loading,mu=NULL,weight,f_prime){      
   return(returnList)
 }
 
-Direction_searchtuning_weight<-function(Xc,loading,mu=NULL,weight,f_prime,resol, maxiter){     #included weight and f_prime
+#' Constructs the projection direction with "optimal" tuning parameter for estimating functional in high-dimensional logistic regression
+#'
+#' @param Xc Design matrix
+#' @param loading observation vector in linear functional
+#' @param mu Tuning parameter in construction of the projection direction
+#' @param weight A vector of weights used in re-weighting the correction term of the estimator
+#' @param f_prime The first derivative of the logit function at the plug-in LASSO estimate of the linear functional
+#' @param resol Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
+#' that gives convergence of the optimization problem for constructing the projection direction
+#' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
+#' that gives convergence of the optimization problem for constructing the projection direction
+#'
+#' @return
+#' \item{proj}{The projection direction}
+#' @export
+#'
+#' @examples
+#' X = matrix(sample(-2:2,50*400,replace = TRUE),nrow=50,ncol=400)
+#' y = rbinom(50,1,0.5)
+#' p <- ncol(X);
+#' n <- nrow(X);
+#' col.norm <- 1/sqrt((1/n)*diag(t(X)%*%X)+0.0001);
+#' Xnor <- X %*% diag(col.norm);
+#' fit = glmnet::cv.glmnet(Xnor, y, alpha=1,family = "binomial")
+#' htheta <- as.vector(coef(fit, s = "lambda.min"))
+#' support<-(abs(htheta)>0.001)
+#' Xb <- cbind(rep(1,n),Xnor);
+#' Xc <- cbind(rep(1,n),X);
+#' col.norm <- c(1,col.norm);
+#' pp <- (p+1);
+#' xnew = c(1,rep(0,399))
+#' loading=rep(0,pp)
+#' loading[1]=1
+#' loading[-1]=xnew
+#' htheta <- htheta*col.norm;
+#' htheta <- as.vector(htheta)
+#' f_prime <- exp(Xc%*%htheta)/(1+exp(Xc%*%htheta))^2
+#' Direction_searchtuning_logistic(Xc,loading,weight=rep(1,50),f_prime = f_prime,
+#'                                 resol = 1.5, maxiter = 6)
+Direction_searchtuning_logistic<-function(Xc,loading,mu=NULL,weight,f_prime,resol, maxiter){     #included weight and f_prime
   pp<-ncol(Xc)
   n<-nrow(Xc)
   tryno = 1;
@@ -205,16 +278,16 @@ LF_logistic<-function(X,y,loading,weight,lambda=NULL,intercept=FALSE,mu=NULL,ste
         step.vec<-rep(NA,3)
         for(t in 1:3){
           index.sel<-sample(1:n,size=ceiling(0.5*min(n,p)), replace=FALSE)
-          Direction.Est.temp<-Direction_searchtuning_weight(Xc[index.sel,],loading,mu=NULL,weight = weight,f_prime = f_prime,resol,maxiter)
+          Direction.Est.temp<-Direction_searchtuning_logistic(Xc[index.sel,],loading,mu=NULL,weight = weight,f_prime = f_prime,resol,maxiter)
           step.vec[t]<-Direction.Est.temp$step
         }
         step<-getmode(step.vec)
       }
       print(paste("step is", step))
-      Direction.Est<-Direction_fixedtuning_weight(Xc,loading,mu=sqrt(2.01*log(pp)/n)*resol^{-(step-1)},weight = weight,f_prime = f_prime)
+      Direction.Est<-Direction_fixedtuning_logistic(Xc,loading,mu=sqrt(2.01*log(pp)/n)*resol^{-(step-1)},weight = weight,f_prime = f_prime)
     }else{
       ### for option 2
-      Direction.Est<-Direction_searchtuning_weight(Xc,loading,mu=NULL,weight = weight,f_prime = f_prime,resol, maxiter)
+      Direction.Est<-Direction_searchtuning_logistic(Xc,loading,mu=NULL,weight = weight,f_prime = f_prime,resol, maxiter)
       step<-Direction.Est$step
       print(paste("step is", step))
     }

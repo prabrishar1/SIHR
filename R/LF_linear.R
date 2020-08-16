@@ -98,7 +98,21 @@ Initialization.step<-function(X,y,lambda=NULL,intercept=FALSE){
 #}
 
 
-Direction_fixedtuning<-function(Xc,loading,mu=NULL){ #mu is tuning parameter
+#' Constructs the projection direction with fixed tuning parameter for estimating functional in high-dimensional linear regression model
+#'
+#' @param Xc Design matrix
+#' @param loading observation vector in the linear functional
+#' @param mu Tuning parameter in construction of projection direction
+#'
+#' @return
+#' \item{proj}{The projection direction}
+#' @export
+#'
+#' @examples
+#' X = matrix(sample(-2:2,100*400,replace = TRUE),nrow=100,ncol=400)
+#' Direction_fixedtuning(X,loading=c(1,rep(0,399)),mu=2)
+#'
+Direction_fixedtuning<-function(Xc,loading,mu=NULL){
   pp<-ncol(Xc)
   n<-nrow(Xc)
   if(is.null(mu)){
@@ -120,6 +134,24 @@ Direction_fixedtuning<-function(Xc,loading,mu=NULL){ #mu is tuning parameter
   return(returnList)
 }
 
+#' Constructs the projection direction with "optimal" tuning parameter for estimating functional in high-dimensional linear regression model
+#'
+#' @param Xc Design matrix
+#' @param loading observation vector in the linear functional
+#' @param mu Tuning parameter in construction of projection direction
+#' @param resol Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
+#' that gives convergence of the optimization problem for constructing the projection direction
+#' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
+#' that gives convergence of the optimization problem for constructing the projection direction
+#'
+#' @return
+#' \item{proj}{The projection direction}
+#'
+#' @export
+#'
+#' @examples
+#' X = matrix(sample(-2:2,100*400,replace = TRUE),nrow=100,ncol=400)
+#' Direction_searchtuning(X,loading=c(1,rep(0,399)),mu=NULL,resol=1.5,maxiter=10)
 Direction_searchtuning<-function(Xc,loading,mu=NULL, resol, maxiter){
   pp<-ncol(Xc)
   n<-nrow(Xc)
