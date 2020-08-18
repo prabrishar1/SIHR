@@ -8,11 +8,11 @@ QF(
   X,
   y,
   test.set,
-  A = "sigma",
+  A = "Sigma",
   init.Lasso = NULL,
   tau.vec = NULL,
   lambda = NULL,
-  intercept = FALSE,
+  intercept = TRUE,
   mu = NULL,
   step = NULL,
   resol = 1.5,
@@ -20,13 +20,13 @@ QF(
 )
 }
 \arguments{
-\item{X}{Design matrix}
+\item{X}{Design matrix, of dimension nvar(\eqn{n})xnobs(\eqn{p})}
 
-\item{y}{Response variable}
+\item{y}{Response variable, of length \eqn{n}}
 
 \item{test.set}{set of indices, \code{G} in the quadratic functional}
 
-\item{A}{Matrix A in the quadratic functional (either the population covariance matrix \code{sigma} or a known matrix of suitable dimension ; default = \code{sigma})}
+\item{A}{Matrix A in the quadratic functional, of dimension \eqn{p}x\eqn{p} (either the population covariance matrix \code{Sigma} or a known matrix of suitable dimension ; default = \code{Sigma})}
 
 \item{init.Lasso}{initial LASSO estimator for the regression vector (default = \code{NULL})}
 
@@ -34,7 +34,7 @@ QF(
 
 \item{lambda}{Tuning parameter used in construction of initial LASSO estimator of the regression vector if \code{init.Lasso = NULL} (default = \code{NULL})}
 
-\item{intercept}{Should intercept(s) be fitted (default = \code{FALSE})}
+\item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
 
 \item{mu}{Tuning parameter in construction of the projection direction (default = \code{NULL})}
 

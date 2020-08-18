@@ -15,13 +15,13 @@ Direction_searchtuning_logistic(
 )
 }
 \arguments{
-\item{Xc}{Design matrix}
+\item{Xc}{Design matrix of dimension nvar(\eqn{n})xnobs(\eqn{p})}
 
-\item{loading}{observation vector in linear functional}
+\item{loading}{observation vector in linear functional, of length \eqn{n}}
 
 \item{mu}{Tuning parameter in construction of the projection direction}
 
-\item{weight}{A vector of weights used in re-weighting the correction term of the estimator}
+\item{weight}{A vector, of length \eqn{n}, of weights used in re-weighting the correction term of the estimator}
 
 \item{f_prime}{The first derivative of the logit function at the plug-in LASSO estimate of the linear functional}
 

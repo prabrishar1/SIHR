@@ -9,8 +9,8 @@ LF_logistic(
   y,
   loading,
   weight,
-  lambda = NULL,
-  intercept = FALSE,
+  init.Lasso = NULL,
+  intercept = TRUE,
   mu = NULL,
   step = NULL,
   resol = 1.5,
@@ -18,17 +18,17 @@ LF_logistic(
 )
 }
 \arguments{
-\item{X}{Design matrix}
+\item{X}{Design matrix, of dimension nvar(\eqn{n})xnobs(\eqn{p})}
 
-\item{y}{Response vector}
+\item{y}{Response vector, of length \eqn{n}}
 
-\item{loading}{observation vector in the linear functional}
+\item{loading}{observation vector in the linear functional, of length \eqn{p}}
 
-\item{weight}{The vector of weights used in correcting the plug-in estimator}
+\item{weight}{The vector, of length \eqn{n}, of weights used in correcting the plug-in estimator}
 
-\item{lambda}{Tuning parameter in construction of the LASSO estimator of the regression vector (default = \code{NULL})}
+\item{init.Lasso}{initial LASSO estimator of the regression vector (default = \code{NULL})}
 
-\item{intercept}{Should intercept(s) be fitted (default = \code{FALSE})}
+\item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
 
 \item{mu}{Tuning parameter in construction of the projection direction (default = \code{NULL})}
 

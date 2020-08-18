@@ -100,8 +100,8 @@ Initialization.step<-function(X,y,lambda=NULL,intercept=FALSE){
 
 #' Constructs the projection direction with fixed tuning parameter for estimating functional in high-dimensional linear regression model
 #'
-#' @param Xc Design matrix
-#' @param loading observation vector in the linear functional
+#' @param Xc Design matrix, of dimension nvar(\eqn{n})xnobs(\eqn{p})
+#' @param loading observation vector in the linear functional, of length \eqn{p}
 #' @param mu Tuning parameter in construction of projection direction
 #'
 #' @return
@@ -136,8 +136,8 @@ Direction_fixedtuning<-function(Xc,loading,mu=NULL){
 
 #' Constructs the projection direction with "optimal" tuning parameter for estimating functional in high-dimensional linear regression model
 #'
-#' @param Xc Design matrix
-#' @param loading observation vector in the linear functional
+#' @param Xc Design matrix, of dimension nvar(\eqn{n})xnobs(\eqn{p})
+#' @param loading observation vector in the linear functional, of length \eqn{p}
 #' @param mu Tuning parameter in construction of projection direction
 #' @param resol Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' that gives convergence of the optimization problem for constructing the projection direction
@@ -224,12 +224,12 @@ Direction_searchtuning<-function(Xc,loading,mu=NULL, resol, maxiter){
 #' @description
 #' Computes the bias corrected estimator of linear functional for the high-dimensional linear regression model and the corresponding standard error.
 #'
-#' @param X Design matrix
-#' @param y Response variable
-#' @param loading observation vector in the linear functional
+#' @param X Design matrix, of dimension nobs(\eqn{n})xnvar(\eqn{p})
+#' @param y Response variable, a vector of length \eqn{n}
+#' @param loading observation vector in the linear functional, of length \eqn{p}
 #' @param init.Lasso initial LASSO estimator of the regression vector (default = \code{NULL})
 #' @param lambda Tuning parameter in construction of LASSO estimator of the regression vector (default = \code{NULL})
-#' @param intercept Should intercept(s) be fitted (default = \code{FALSE})
+#' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
 #' @param mu Tuning parameter in construction of projection direction (default = \code{NULL})
 #' @param step Number of steps (< \code{maxiter}) to obtain the smallest \code{mu} that gives convergence of the
 #' optimization problem for constructing the projection direction (default = \code{NULL})
@@ -261,7 +261,7 @@ Direction_searchtuning<-function(Xc,loading,mu=NULL, resol, maxiter){
 #' beta = (1:400)/25
 #' y = X%*%beta + rnorm(100,0,1)
 #' LF(X = X, y = y, loading = c(1,rep(0,399)), intercept = TRUE)
-LF<-function(X,y,loading,init.Lasso=NULL,lambda=NULL,intercept=FALSE,mu=NULL,step=NULL,resol = 1.5,maxiter=10){
+LF<-function(X,y,loading,init.Lasso=NULL,lambda=NULL,intercept=TRUE,mu=NULL,step=NULL,resol = 1.5,maxiter=10){
   ### Option 1: search tuning parameter with steps determined by the ill conditioned case (n=p/2)
   ### Option 2: search tuning parameter with maximum 10 steps.
   ####### Option 3: fixed tuning parameter and this is not recommended without exploring the tuning parameter selection
@@ -271,11 +271,11 @@ LF<-function(X,y,loading,init.Lasso=NULL,lambda=NULL,intercept=FALSE,mu=NULL,ste
 
   if(is.null(init.Lasso)){
     ####### implement a lasso algorithm to get beta and sigma
-    Ini.Est<-Initialization.step(X,y,lambda,intercept)
+    init.Lasso<-Initialization.step(X,y,lambda,intercept)
   }
-  htheta<-Ini.Est$lasso.est
-  sd.est<-Ini.Est$sigma
-  spar.est<-Ini.Est$sparsity
+  htheta<-init.Lasso$lasso.est
+  sd.est<-init.Lasso$sigma
+  spar.est<-init.Lasso$sparsity
   ####### implement the correction of the initial estimator
   ####### set up the randomization step
   if (intercept==TRUE){

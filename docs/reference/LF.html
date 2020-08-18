@@ -118,7 +118,7 @@
   <span class='no'>loading</span>,
   <span class='kw'>init.Lasso</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>lambda</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>intercept</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>intercept</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>mu</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>step</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>resol</span> <span class='kw'>=</span> <span class='fl'>1.5</span>,
@@ -130,15 +130,15 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>X</th>
-      <td><p>Design matrix</p></td>
+      <td><p>Design matrix, of dimension nobs(\(n\))xnvar(\(p\))</p></td>
     </tr>
     <tr>
       <th>y</th>
-      <td><p>Response variable</p></td>
+      <td><p>Response variable, a vector of length \(n\)</p></td>
     </tr>
     <tr>
       <th>loading</th>
-      <td><p>observation vector in the linear functional</p></td>
+      <td><p>observation vector in the linear functional, of length \(p\)</p></td>
     </tr>
     <tr>
       <th>init.Lasso</th>
@@ -150,7 +150,7 @@
     </tr>
     <tr>
       <th>intercept</th>
-      <td><p>Should intercept(s) be fitted (default = <code>FALSE</code>)</p></td>
+      <td><p>Should intercept(s) be fitted (default = <code>TRUE</code>)</p></td>
     </tr>
     <tr>
       <th>mu</th>

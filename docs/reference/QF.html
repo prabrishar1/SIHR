@@ -116,11 +116,11 @@
   <span class='no'>X</span>,
   <span class='no'>y</span>,
   <span class='no'>test.set</span>,
-  <span class='kw'>A</span> <span class='kw'>=</span> <span class='st'>"sigma"</span>,
+  <span class='kw'>A</span> <span class='kw'>=</span> <span class='st'>"Sigma"</span>,
   <span class='kw'>init.Lasso</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>tau.vec</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>lambda</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>intercept</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>intercept</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>mu</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>step</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>resol</span> <span class='kw'>=</span> <span class='fl'>1.5</span>,
@@ -132,11 +132,11 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>X</th>
-      <td><p>Design matrix</p></td>
+      <td><p>Design matrix, of dimension nvar(\(n\))xnobs(\(p\))</p></td>
     </tr>
     <tr>
       <th>y</th>
-      <td><p>Response variable</p></td>
+      <td><p>Response variable, of length \(n\)</p></td>
     </tr>
     <tr>
       <th>test.set</th>
@@ -144,7 +144,7 @@
     </tr>
     <tr>
       <th>A</th>
-      <td><p>Matrix A in the quadratic functional (either the population covariance matrix <code>sigma</code> or a known matrix of suitable dimension ; default = <code>sigma</code>)</p></td>
+      <td><p>Matrix A in the quadratic functional, of dimension \(p\)x\(p\) (either the population covariance matrix <code>Sigma</code> or a known matrix of suitable dimension ; default = <code>Sigma</code>)</p></td>
     </tr>
     <tr>
       <th>init.Lasso</th>
@@ -160,7 +160,7 @@
     </tr>
     <tr>
       <th>intercept</th>
-      <td><p>Should intercept(s) be fitted (default = <code>FALSE</code>)</p></td>
+      <td><p>Should intercept(s) be fitted (default = <code>TRUE</code>)</p></td>
     </tr>
     <tr>
       <th>mu</th>
@@ -194,7 +194,7 @@ that gives convergence of the optimization problem for constructing the projecti
 
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p>Guo Z, Renaux C, B愼㸸uhlmann P, Cai TT (2019).
+    <p>Guo Z, Renaux C, Buhlmann P, Cai TT (2019).
 &#8220;Group Inference in High Dimensions with Applications to Hierarchical Testing.&#8221;
 <em>Unknown</em>.
 <a href='https://statistics.rutgers.edu/home/zijguo/Guo-Renaux-Buhlman-Cai-Group-Inference.pdf'>https://statistics.rutgers.edu/home/zijguo/Guo-Renaux-Buhlman-Cai-Group-Inference.pdf</a>.</p>
@@ -204,17 +204,17 @@ that gives convergence of the optimization problem for constructing the projecti
 <span class='no'>beta</span> <span class='kw'>=</span> (<span class='fl'>1</span>:<span class='fl'>400</span>)/<span class='fl'>25</span>
 <span class='no'>y</span> <span class='kw'>=</span> <span class='no'>X</span><span class='kw'>%*%</span><span class='no'>beta</span> + <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>100</span>,<span class='fl'>0</span>,<span class='fl'>1</span>)
 <span class='fu'>QF</span>(<span class='kw'>X</span> <span class='kw'>=</span> <span class='no'>X</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>y</span>, <span class='kw'>test.set</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>30</span>:<span class='fl'>50</span>))</div><div class='output co'>#&gt; $prop.est
-#&gt;      [,1]
-#&gt; [1,]    0
+#&gt;          [,1]
+#&gt; [1,] 275.6737
 #&gt; 
 #&gt; $sigma
-#&gt; [1] 66321.45
+#&gt; [1] 1021.399
 #&gt; 
 #&gt; $se
-#&gt; [1] 0.1
+#&gt; [1] 674.7659
 #&gt; 
 #&gt; $plug.in
-#&gt; [1] 0
+#&gt; [1] 243.1263
 #&gt; </div><div class='input'>
 </div></pre>
   </div>

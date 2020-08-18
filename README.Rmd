@@ -100,6 +100,7 @@ Inference for quadratic functional in high-dimensional linear model
 
 ```{r Group Linear Model}
 library(MASS)
+
 A1gen <- function(rho,p){
   A1=matrix(0,p,p)
   for(i in 1:p){
@@ -127,13 +128,13 @@ Est$se
 
 ## Inference for Quadratic Functional with known matrix A in middle
 
-Est = FIHR::QF(X = X, y = y, test.set=test.set, A = diag(1:400,400))
+Est = FIHR::QF(X = X, y = y, test.set=test.set, A = diag(1:400,400),intercept = F)
 Est$prop.est
 Est$se
 
 ## Inference for square norm of regression vector
 
-Est = FIHR::QF(X = X, y = y, test.set=test.set, A = diag(1,400))
+Est = FIHR::QF(X = X, y = y, test.set=test.set, A = diag(1,400),intercept = F)
 Est$prop.est
 Est$se
 ```

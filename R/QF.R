@@ -219,14 +219,14 @@ Direction_searchtuning_robust <- function(Xc, loading, mu = NULL, resol = 1.5,
 #'
 #' @description Computes the bias-corrected estimator of the quadratic functional restricted to group \code{G} for the high-dimensional linear regression model and the corresponding standard error
 #'
-#' @param X Design matrix
-#' @param y Response variable
+#' @param X Design matrix, of dimension nvar(\eqn{n})xnobs(\eqn{p})
+#' @param y Response variable, of length \eqn{n}
 #' @param test.set set of indices, \code{G} in the quadratic functional
-#' @param A Matrix A in the quadratic functional (either the population covariance matrix \code{sigma} or a known matrix of suitable dimension ; default = \code{sigma})
+#' @param A Matrix A in the quadratic functional, of dimension \eqn{p}x\eqn{p} (either the population covariance matrix \code{Sigma} or a known matrix of suitable dimension ; default = \code{Sigma})
 #' @param init.Lasso initial LASSO estimator for the regression vector (default = \code{NULL})
 #' @param tau.vec Vector of enlargement factors for asymptotic variance of the bias-corrected estimator to handle super-efficiency (default = \code{NULL})
 #' @param lambda Tuning parameter used in construction of initial LASSO estimator of the regression vector if \code{init.Lasso = NULL} (default = \code{NULL})
-#' @param intercept Should intercept(s) be fitted (default = \code{FALSE})
+#' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
 #' @param mu Tuning parameter in construction of the projection direction (default = \code{NULL})
 #' @param step Number of steps (< \code{maxiter}) to obtain the smallest \code{mu} that gives convergence of the
 #' optimization problem for constructing the projection direction (default = \code{NULL})
@@ -255,8 +255,8 @@ Direction_searchtuning_robust <- function(Xc, loading, mu = NULL, resol = 1.5,
 #' @references
 #'
 #' \insertRef{grouplin}{FIHR}
-QF <- function(X, y, test.set, A = "sigma",init.Lasso = NULL, tau.vec = NULL,
-                           lambda = NULL, intercept = FALSE, mu = NULL,
+QF <- function(X, y, test.set, A = "Sigma",init.Lasso = NULL, tau.vec = NULL,
+                           lambda = NULL, intercept = TRUE, mu = NULL,
                            step = NULL, resol = 1.5, maxiter = 6) {
 
   if (is.null(init.Lasso)) {
@@ -282,13 +282,13 @@ QF <- function(X, y, test.set, A = "sigma",init.Lasso = NULL, tau.vec = NULL,
   if (p == length(test.set)) {
     ## Global Test
     ## We do not need not search for a direction, i.e. hat{u} = hat{theta}.
-    if(A=="sigma")
+    if(A=="Sigma")
     {
       lasso.plugin <- mean((Xc %*% htheta)^2)
     }
     else
     {
-      print("A is not sigma 1")
+      print("A is not Sigma 1")
       lasso.plugin <- t(htheta)%*%A%*%htheta
     }
     direction <- htheta
@@ -302,14 +302,14 @@ QF <- function(X, y, test.set, A = "sigma",init.Lasso = NULL, tau.vec = NULL,
     loading <- matrix(0, ncol = 1, nrow = pp)
     test.vec[test.set] <- htheta[test.set]
 
-    if(A=="sigma")
+    if(A=="Sigma")
     {
       loading[test.set] <- (sigma.hat %*% test.vec)[test.set]
       lasso.plugin <- mean((Xc %*% test.vec)^2)
     }
     else
     {
-      print("A is not sigma 2")
+      print("A is not Sigma 2")
       loading[test.set] <- (A %*% test.vec)[test.set]
       lasso.plugin <- t(test.vec)%*%A%*%test.vec
     }
@@ -361,7 +361,7 @@ QF <- function(X, y, test.set, A = "sigma",init.Lasso = NULL, tau.vec = NULL,
   ### Correct the initial estimator by the constructed projection direction
   correction <- 2 * loading.norm * t(Xc %*% direction) %*% (y - Xc %*% htheta) / n
   debias.est <- lasso.plugin + correction
-  if(A=="sigma")
+  if(A=="Sigma")
   {
     se1 <- 2 * sd.est * sqrt(sum((Xc %*% direction)^2) / (n)^2) * loading.norm
     se2 <- sqrt(var.Sigma(Xc, test.vec) / n)
@@ -384,7 +384,7 @@ QF <- function(X, y, test.set, A = "sigma",init.Lasso = NULL, tau.vec = NULL,
   }
   else
   {
-    print("A is not sigma 3")
+    print("A is not Sigma 3")
     se<-2*sd.est*sqrt(sum((Xc%*%direction)^2)/(n)^2)*loading.norm
     #tau=0
     if(is.null(tau.vec)){

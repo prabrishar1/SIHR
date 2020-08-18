@@ -60,9 +60,9 @@ model
     #> [1] "step is 3"
     Est$prop.est
     #>           [,1]
-    #> [1,] 0.6120607
+    #> [1,] 0.6733196
     Est$se
-    #> [1] 0.04910674
+    #> [1] 0.08272112
 
 Inference for linear functional in high-dimensional logistic regression
 model
@@ -87,16 +87,19 @@ model
     prob <- exp(exp_val)/(1+exp(exp_val))
     y <- rbinom(100,1,prob)
     Est = FIHR::LF_logistic(X = X, y = y, loading = c(1,rep(0,399)), intercept = TRUE, weight = rep(1,100))
+    #> Warning in htheta * col.norm: longer object length is not a multiple of shorter
+    #> object length
     #> [1] 3
     #> [1] "step is 3"
     Est$prop.est
-    #> [1] 0.3313114
+    #> [1] 0.2863503
     Est$se
-    #> [1] 0.4169103
+    #> [1] 0.2783104
 
 Inference for quadratic functional in high-dimensional linear model
 
     library(MASS)
+
     A1gen <- function(rho,p){
       A1=matrix(0,p,p)
       for(i in 1:p){
@@ -121,33 +124,36 @@ Inference for quadratic functional in high-dimensional linear model
     Est = FIHR::QF(X = X, y = y, test.set=test.set)
     Est$prop.est
     #>           [,1]
-    #> [1,] 0.5345461
+    #> [1,] 0.1980238
     Est$se
-    #> [1] 0.1209907
+    #> [1] 0.1054297
 
     ## Inference for Quadratic Functional with known matrix A in middle
 
-    Est = FIHR::QF(X = X, y = y, test.set=test.set, A = diag(1:400,400))
-    #> Warning in if (A == "sigma") {: the condition has length > 1 and only the first
+    Est = FIHR::QF(X = X, y = y, test.set=test.set, A = diag(1:400,400),intercept = F)
+    #> Warning in if (A == "Sigma") {: the condition has length > 1 and only the first
     #> element will be used
-    #> Warning in if (A == "sigma") {: the condition has length > 1 and only the first
+    #> [1] "A is not Sigma 2"
+    #> Warning in if (A == "Sigma") {: the condition has length > 1 and only the first
     #> element will be used
+    #> [1] "A is not Sigma 3"
     Est$prop.est
     #>          [,1]
-    #> [1,] 8.880047
+    #> [1,] 7.070884
     Est$se
-    #> [1] 0.3381186
+    #> [1] 0.6062021
 
     ## Inference for square norm of regression vector
 
-    Est = FIHR::QF(X = X, y = y, test.set=test.set, A = diag(1,400))
-    #> Warning in if (A == "sigma") {: the condition has length > 1 and only the first
+    Est = FIHR::QF(X = X, y = y, test.set=test.set, A = diag(1,400),intercept = F)
+    #> Warning in if (A == "Sigma") {: the condition has length > 1 and only the first
     #> element will be used
-
-    #> Warning in if (A == "sigma") {: the condition has length > 1 and only the first
+    #> [1] "A is not Sigma 2"
+    #> Warning in if (A == "Sigma") {: the condition has length > 1 and only the first
     #> element will be used
+    #> [1] "A is not Sigma 3"
     Est$prop.est
     #>           [,1]
-    #> [1,] 0.2277406
+    #> [1,] 0.1473181
     Est$se
-    #> [1] 0.141658
+    #> [1] 0.142096

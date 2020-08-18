@@ -117,8 +117,8 @@
   <span class='no'>y</span>,
   <span class='no'>loading</span>,
   <span class='no'>weight</span>,
-  <span class='kw'>lambda</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>intercept</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>init.Lasso</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>intercept</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>mu</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>step</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>resol</span> <span class='kw'>=</span> <span class='fl'>1.5</span>,
@@ -130,27 +130,27 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>X</th>
-      <td><p>Design matrix</p></td>
+      <td><p>Design matrix, of dimension nvar(\(n\))xnobs(\(p\))</p></td>
     </tr>
     <tr>
       <th>y</th>
-      <td><p>Response vector</p></td>
+      <td><p>Response vector, of length \(n\)</p></td>
     </tr>
     <tr>
       <th>loading</th>
-      <td><p>observation vector in the linear functional</p></td>
+      <td><p>observation vector in the linear functional, of length \(p\)</p></td>
     </tr>
     <tr>
       <th>weight</th>
-      <td><p>The vector of weights used in correcting the plug-in estimator</p></td>
+      <td><p>The vector, of length \(n\), of weights used in correcting the plug-in estimator</p></td>
     </tr>
     <tr>
-      <th>lambda</th>
-      <td><p>Tuning parameter in construction of the LASSO estimator of the regression vector (default = <code>NULL</code>)</p></td>
+      <th>init.Lasso</th>
+      <td><p>initial LASSO estimator of the regression vector (default = <code>NULL</code>)</p></td>
     </tr>
     <tr>
       <th>intercept</th>
-      <td><p>Should intercept(s) be fitted (default = <code>FALSE</code>)</p></td>
+      <td><p>Should intercept(s) be fitted (default = <code>TRUE</code>)</p></td>
     </tr>
     <tr>
       <th>mu</th>
@@ -194,109 +194,84 @@ optimization problem for constructing the projection direction</p></dd>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>LF_logistic</span>(<span class='kw'>X</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(-<span class='fl'>2</span>:<span class='fl'>2</span>,<span class='fl'>50</span>*<span class='fl'>300</span>,<span class='kw'>replace</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>),<span class='kw'>nrow</span><span class='kw'>=</span><span class='fl'>50</span>,<span class='kw'>ncol</span><span class='kw'>=</span><span class='fl'>300</span>),
                       <span class='kw'>y</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Binomial.html'>rbinom</a></span>(<span class='fl'>50</span>,<span class='fl'>1</span>,<span class='fl'>0.5</span>), <span class='kw'>loading</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span>,<span class='fl'>299</span>)),
-                      <span class='kw'>intercept</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>weight</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>1</span>,<span class='fl'>50</span>))</div><div class='output co'>#&gt; [1] 2
+                      <span class='kw'>intercept</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>weight</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>1</span>,<span class='fl'>50</span>))</div><div class='output co'>#&gt; <span class='warning'>Warning: longer object length is not a multiple of shorter object length</span></div><div class='output co'>#&gt; [1] 2
 #&gt; [1] "step is 2"</div><div class='output co'>#&gt; $prop.est
-#&gt; [1] 0.2812116
+#&gt; [1] 0.171091
 #&gt; 
 #&gt; $se
-#&gt; [1] 0.2403733
+#&gt; [1] 0.2386363
 #&gt; 
 #&gt; $proj
-#&gt;   [1]  1.730114e+00  1.464229e+00  1.096121e-20 -2.380769e-20 -1.527051e-20
-#&gt;   [6]  1.683891e-20  2.452025e-20 -2.931417e-20 -1.305886e-20 -2.084379e-20
-#&gt;  [11] -2.074505e-20  4.175312e-20  2.096838e-20 -3.797969e-20  3.021915e-21
-#&gt;  [16]  4.064425e-21 -1.579717e-20 -1.450474e-21 -1.809581e-20 -4.052890e-20
-#&gt;  [21] -3.978002e-20 -2.400746e-20 -2.738445e-20  4.578886e-20  9.977090e-21
-#&gt;  [26]  2.053183e-20  1.075832e-20 -1.664695e-20 -6.907292e-21 -1.336949e-20
-#&gt;  [31]  3.705863e-20 -1.841321e-20 -2.518722e-20  8.154728e-22 -7.227225e-20
-#&gt;  [36]  2.068253e-21 -3.628896e-20  4.247174e-21 -2.009011e-20  2.889834e-21
-#&gt;  [41]  7.209901e-21  9.362476e-22  3.016039e-21 -5.794124e-20 -3.980828e-20
-#&gt;  [46]  2.906863e-20 -1.738548e-20 -1.043501e-21  2.688867e-21 -1.102794e-20
-#&gt;  [51] -1.017493e-20 -2.141121e-20  2.927253e-21 -2.549707e-21  1.124738e-21
-#&gt;  [56] -1.022523e-20 -6.888658e-20 -4.824587e-20  4.473545e-20  3.355398e-20
-#&gt;  [61] -6.257550e-21 -1.537511e-20  1.185588e-20  2.112652e-20  2.217205e-20
-#&gt;  [66] -4.117983e-21  5.743067e-21 -1.769691e-20  1.535179e-21 -4.066319e-21
-#&gt;  [71]  3.434802e-20 -4.057328e-24 -3.442056e-20  2.409564e-20 -4.524828e-21
-#&gt;  [76]  4.598946e-21  3.306309e-20  3.152672e-21  4.481027e-20  7.193150e-21
-#&gt;  [81]  5.288364e-20  1.327498e-20  1.971933e-20 -4.718107e-21  1.090656e-20
-#&gt;  [86] -2.735860e-20  8.561333e-21  4.198696e-21  3.717980e-20  3.799960e-20
-#&gt;  [91] -9.158241e-21  5.114089e-20 -1.376716e-20 -2.096612e-20  1.565873e-20
-#&gt;  [96]  3.717051e-20  2.836295e-20 -1.712364e-20 -2.845006e-21  3.230361e-03
-#&gt; [101]  1.425009e-20  2.968231e-20  5.446642e-20  1.648545e-20 -1.878245e-20
-#&gt; [106]  7.720120e-20 -1.255839e-20  3.113200e-20  2.500681e-20  3.204555e-20
-#&gt; [111]  2.705325e-20 -1.701039e-20  9.783250e-21  4.522307e-21 -1.873712e-20
-#&gt; [116] -6.632789e-21  4.172915e-20  1.656890e-20  4.029207e-20  8.612210e-21
-#&gt; [121] -1.148929e-20 -3.218393e-20 -2.293802e-20 -4.836537e-20 -1.844283e-20
-#&gt; [126] -1.366058e-20  2.526139e-20 -1.547570e-20  1.457807e-20  5.830897e-20
-#&gt; [131] -2.736274e-20 -3.346888e-20 -4.898152e-20 -3.550726e-20  3.068154e-20
-#&gt; [136]  2.857463e-20  3.210360e-20 -1.208583e-20 -9.117168e-21  2.230831e-20
-#&gt; [141] -4.230916e-20 -9.654725e-21 -7.344001e-21  2.561686e-20 -1.058455e-20
-#&gt; [146] -3.611837e-21 -1.477016e-20 -4.785066e-22 -6.174826e-21 -1.547889e-20
-#&gt; [151]  1.227458e-20 -3.093684e-20  5.557875e-21  1.452940e-20  1.858453e-20
-#&gt; [156]  8.829611e-21 -1.441908e-20 -1.864904e-20 -1.608913e-20 -3.822988e-20
-#&gt; [161]  1.343835e-20 -2.548175e-21  3.973804e-20 -6.399285e-21 -7.238920e-21
-#&gt; [166] -1.543264e-20 -1.800479e-20  5.978217e-21  1.323098e-21  2.670660e-22
-#&gt; [171] -1.269510e-20  7.441164e-20  2.797970e-20  2.487229e-20  5.602159e-21
-#&gt; [176] -3.815496e-21  1.302672e-20  1.234467e-20 -9.183404e-21  4.420886e-20
-#&gt; [181]  2.635929e-21  3.052517e-20 -8.359521e-21  6.826724e-21  1.346749e-20
-#&gt; [186]  1.402858e-20 -5.144377e-20 -1.755700e-20 -2.157976e-23 -3.593770e-21
-#&gt; [191]  1.368244e-20  1.034554e-20 -3.800812e-21  4.253662e-21  2.476814e-20
-#&gt; [196] -2.194797e-20  2.138628e-20 -2.207539e-20 -2.980434e-20 -1.044476e-20
-#&gt; [201] -1.530841e-21 -1.326061e-21 -1.124654e-20  2.798017e-21  1.753459e-21
-#&gt; [206] -8.974915e-21 -1.048871e-20 -4.862268e-20 -4.067999e-21  2.620372e-22
-#&gt; [211]  2.586704e-20 -5.069810e-20 -2.655717e-20 -5.236707e-20 -2.262514e-20
-#&gt; [216]  8.192117e-21  2.828285e-21 -1.147175e-20 -3.387834e-20  1.183914e-20
-#&gt; [221] -1.117093e-20  2.034068e-20 -9.948117e-22  1.796190e-20  3.054913e-20
-#&gt; [226] -2.374410e-20 -1.289783e-20 -6.209266e-21 -2.178571e-20 -1.260326e-20
-#&gt; [231]  1.537623e-20 -2.092358e-21 -3.547747e-20  7.877986e-21  6.544562e-21
-#&gt; [236] -3.774372e-20  1.727900e-20 -5.168015e-21 -4.452928e-21  1.113055e-20
-#&gt; [241] -1.561679e-20  2.101050e-01  5.749813e-21  5.866120e-21 -8.764909e-21
-#&gt; [246]  1.692944e-20  4.032988e-20 -3.608811e-20 -3.115150e-21 -3.047611e-20
-#&gt; [251] -1.069405e-20  4.533990e-21 -3.708255e-20  2.868477e-20  1.596561e-20
-#&gt; [256]  6.071692e-22  5.537169e-20 -2.251409e-20  1.028242e-20  3.887744e-20
-#&gt; [261]  3.184066e-20  5.996695e-21 -1.176205e-23 -1.066039e-20 -1.669490e-20
-#&gt; [266] -2.462409e-20  1.344886e-20 -2.576317e-21 -4.004926e-20 -1.048408e-20
-#&gt; [271]  4.231298e-20  4.673691e-21  1.287166e-20  1.841775e-20  1.791926e-20
-#&gt; [276] -5.005941e-21 -3.654816e-20  1.960425e-20 -2.147327e-20  3.593999e-20
-#&gt; [281] -3.456575e-20  2.263470e-20  1.206497e-20 -4.656906e-20 -3.927503e-20
-#&gt; [286] -6.794266e-22 -1.223377e-20  8.997593e-21  8.415035e-21  1.495130e-20
-#&gt; [291]  1.798059e-20  7.938294e-21 -1.004084e-20  1.086437e-20  1.227686e-20
-#&gt; [296]  1.325083e-20 -1.781339e-20  1.414904e-20  1.115756e-20 -1.902727e-20
-#&gt; [301]  1.993289e-20
+#&gt;   [1]  1.705200e+00  1.443144e+00  1.049184e-20 -2.279830e-20 -1.459109e-20
+#&gt;   [6]  1.614109e-20  2.345555e-20 -2.806371e-20 -1.248395e-20 -1.994544e-20
+#&gt;  [11] -1.986145e-20  4.000462e-20  2.012333e-20 -3.633683e-20  2.894078e-21
+#&gt;  [16]  3.865969e-21 -1.515960e-20 -1.407974e-21 -1.735501e-20 -3.884473e-20
+#&gt;  [21] -3.807159e-20 -2.298529e-20 -2.623879e-20  4.384593e-20  9.623911e-21
+#&gt;  [26]  1.960222e-20  1.027197e-20 -1.591352e-20 -6.637170e-21 -1.280178e-20
+#&gt;  [31]  3.547712e-20 -1.761525e-20 -2.413398e-20  7.929610e-22 -6.918784e-20
+#&gt;  [36]  1.997197e-21 -3.474912e-20  4.074902e-21 -1.917044e-20  2.771487e-21
+#&gt;  [41]  6.910004e-21  8.961425e-22  2.863480e-21 -5.543765e-20 -3.809566e-20
+#&gt;  [46]  2.783315e-20 -1.670178e-20 -1.009258e-21  2.546416e-21 -1.057530e-20
+#&gt;  [51] -9.743768e-21 -2.047550e-20  2.782709e-21 -2.473229e-21  1.072781e-21
+#&gt;  [56] -9.738598e-21 -6.591771e-20 -4.616533e-20  4.285347e-20  3.210983e-20
+#&gt;  [61] -6.009165e-21 -1.473382e-20  1.130462e-20  2.020351e-20  2.123668e-20
+#&gt;  [66] -3.944253e-21  5.491160e-21 -1.699559e-20  1.502382e-21 -3.869810e-21
+#&gt;  [71]  3.278909e-20 -1.497345e-23 -3.291842e-20  2.309926e-20 -4.308789e-21
+#&gt;  [76]  4.398682e-21  3.162805e-20  3.019884e-21  4.290231e-20  6.870625e-21
+#&gt;  [81]  5.060333e-20  1.272463e-20  1.890467e-20 -4.488100e-21  1.037720e-20
+#&gt;  [86] -2.617738e-20  8.170859e-21  4.054546e-21  3.557556e-20  3.635668e-20
+#&gt;  [91] -8.791695e-21  4.895599e-20 -1.322209e-20 -2.010957e-20  1.500060e-20
+#&gt;  [96]  3.553478e-20  2.711597e-20 -1.641077e-20 -2.718856e-21  3.183844e-03
+#&gt; [101]  1.363597e-20  2.840228e-20  5.212118e-20  1.579081e-20 -1.795609e-20
+#&gt; [106]  7.385842e-20 -1.206527e-20  2.978791e-20  2.390269e-20  3.065427e-20
+#&gt; [111]  2.588829e-20 -1.630812e-20  9.449231e-21  4.337521e-21 -1.790502e-20
+#&gt; [116] -6.420261e-21  4.000389e-20  1.584141e-20  3.857152e-20  8.249978e-21
+#&gt; [121] -1.105772e-20 -3.082510e-20 -2.196072e-20 -4.630964e-20 -1.761215e-20
+#&gt; [126] -1.308499e-20  2.419614e-20 -1.480438e-20  1.397644e-20  5.578898e-20
+#&gt; [131] -2.618157e-20 -3.206351e-20 -4.692248e-20 -3.394858e-20  2.933718e-20
+#&gt; [136]  2.733332e-20  3.071978e-20 -1.160565e-20 -8.744836e-21  2.135204e-20
+#&gt; [141] -4.046378e-20 -9.249227e-21 -7.007925e-21  2.452332e-20 -1.008222e-20
+#&gt; [146] -3.474735e-21 -1.410995e-20 -4.660676e-22 -5.892429e-21 -1.480628e-20
+#&gt; [151]  1.173786e-20 -2.961378e-20  5.345104e-21  1.387197e-20  1.776999e-20
+#&gt; [156]  8.462861e-21 -1.379208e-20 -1.789920e-20 -1.539944e-20 -3.660619e-20
+#&gt; [161]  1.285391e-20 -2.418115e-21  3.808894e-20 -6.124489e-21 -6.940745e-21
+#&gt; [166] -1.480533e-20 -1.728659e-20  5.769612e-21  1.262033e-21  2.921381e-22
+#&gt; [171] -1.216306e-20  7.122412e-20  2.675011e-20  2.377731e-20  5.340335e-21
+#&gt; [176] -3.607785e-21  1.242245e-20  1.180237e-20 -8.774878e-21  4.232887e-20
+#&gt; [181]  2.535407e-21  2.918879e-20 -7.975972e-21  6.502885e-21  1.287273e-20
+#&gt; [186]  1.338492e-20 -4.926845e-20 -1.681885e-20 -5.255058e-23 -3.418944e-21
+#&gt; [191]  1.307916e-20  9.850303e-21 -3.599312e-21  4.033974e-21  2.373026e-20
+#&gt; [196] -2.099064e-20  2.049058e-20 -2.113956e-20 -2.853982e-20 -9.996077e-21
+#&gt; [201] -1.427279e-21 -1.274802e-21 -1.080326e-20  2.682637e-21  1.660100e-21
+#&gt; [206] -8.599254e-21 -9.989906e-21 -4.648292e-20 -3.887982e-21  2.467686e-22
+#&gt; [211]  2.475230e-20 -4.856135e-20 -2.539844e-20 -5.019550e-20 -2.165517e-20
+#&gt; [216]  7.868107e-21  2.724663e-21 -1.101409e-20 -3.237965e-20  1.129671e-20
+#&gt; [221] -1.069191e-20  1.943962e-20 -9.392313e-22  1.719347e-20  2.925563e-20
+#&gt; [226] -2.272046e-20 -1.234013e-20 -5.965006e-21 -2.088057e-20 -1.202692e-20
+#&gt; [231]  1.470995e-20 -2.018243e-21 -3.395532e-20  7.534612e-21  6.281386e-21
+#&gt; [236] -3.613716e-20  1.653295e-20 -4.927842e-21 -4.285864e-21  1.067559e-20
+#&gt; [241] -1.494116e-20  2.070795e-01  5.504316e-21  5.631069e-21 -8.408501e-21
+#&gt; [246]  1.615167e-20  3.862994e-20 -3.456178e-20 -2.962223e-21 -2.913560e-20
+#&gt; [251] -1.025099e-20  4.373900e-21 -3.546768e-20  2.741879e-20  1.524938e-20
+#&gt; [256]  5.793529e-22  5.298774e-20 -2.157422e-20  9.810359e-21  3.717226e-20
+#&gt; [261]  3.049779e-20  5.761590e-21 -1.996171e-23 -1.018558e-20 -1.602781e-20
+#&gt; [266] -2.356311e-20  1.282516e-20 -2.499405e-21 -3.835366e-20 -1.004853e-20
+#&gt; [271]  4.049105e-20  4.505365e-21  1.231034e-20  1.761146e-20  1.720894e-20
+#&gt; [276] -4.783428e-21 -3.494966e-20  1.875562e-20 -2.054449e-20  3.438707e-20
+#&gt; [281] -3.309454e-20  2.171383e-20  1.152301e-20 -4.457368e-20 -3.761527e-20
+#&gt; [286] -6.730135e-22 -1.170121e-20  8.569427e-21  8.045115e-21  1.432911e-20
+#&gt; [291]  1.719639e-20  7.603364e-21 -9.592684e-21  1.040036e-20  1.179287e-20
+#&gt; [296]  1.271101e-20 -1.700730e-20  1.355715e-20  1.068672e-20 -1.819678e-20
+#&gt; [301]  1.902868e-20
 #&gt; 
 #&gt; $step
 #&gt; [1] 2
 #&gt; 
 #&gt; $plug.in
-#&gt; [1] 0.2411621
+#&gt; [1] 0
 #&gt; 
 #&gt; $support
-#&gt;   [1]  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt;  [13] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt;  [25] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt;  [37] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt;  [49] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt;  [61] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt;  [73] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt;  [85] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt;  [97] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt; [109] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt; [121] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt; [133] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt; [145] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt; [157] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt; [169] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt; [181] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt; [193] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt; [205] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt; [217] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt; [229] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt; [241] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt; [253] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt; [265] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt; [277] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt; [289] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt; [301] FALSE
+#&gt; NULL
 #&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

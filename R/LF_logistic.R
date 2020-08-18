@@ -9,12 +9,26 @@ getmode <- function(v) {
 #  return(g)
 #}
 
+Initialization.step <- function(X,y)
+{
+  X<-as.matrix(X)
+  p <- ncol(X);
+  n <- nrow(X);
+  col.norm <- 1/sqrt((1/n)*diag(t(X)%*%X)+0.0001);
+  fit = cv.glmnet(Xnor, y, alpha=1,family = "binomial")
+  htheta <- as.vector(coef(fit, s = "lambda.min"))
+  support<-(abs(htheta)>0.001)
+  returnList <- list("lasso.est" = htheta,
+                     "support"=support)
+  return(returnList)
+}
+
 #' Constructs the projection direction with fixed tuning parameter toestimate functional in high-dimensional logistic regression
 #'
-#' @param Xc Design matrix
-#' @param loading observation vector in the linear functional
+#' @param Xc Design matrix, of dimension nvar(\eqn{n})xnobs(\eqn{p})
+#' @param loading observation vector in the linear functional, of length \eqn{p}
 #' @param mu Tuning parameter in construction of projection direction
-#' @param weight A vector of weights used in re-weighting the correction term of the estimator
+#' @param weight A vector, of length \eqn{n}, of weights used in re-weighting the correction term of the estimator
 #' @param f_prime The first derivative of the logit function at the plug-in LASSO estimate of the linear functional
 #'
 #' @return
@@ -67,10 +81,10 @@ Direction_fixedtuning_logistic<-function(Xc,loading,mu=NULL,weight,f_prime){    
 
 #' Constructs the projection direction with "optimal" tuning parameter for estimating functional in high-dimensional logistic regression
 #'
-#' @param Xc Design matrix
-#' @param loading observation vector in linear functional
+#' @param Xc Design matrix of dimension nvar(\eqn{n})xnobs(\eqn{p})
+#' @param loading observation vector in linear functional, of length \eqn{n}
 #' @param mu Tuning parameter in construction of the projection direction
-#' @param weight A vector of weights used in re-weighting the correction term of the estimator
+#' @param weight A vector, of length \eqn{n}, of weights used in re-weighting the correction term of the estimator
 #' @param f_prime The first derivative of the logit function at the plug-in LASSO estimate of the linear functional
 #' @param resol Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' that gives convergence of the optimization problem for constructing the projection direction
@@ -176,12 +190,12 @@ Direction_searchtuning_logistic<-function(Xc,loading,mu=NULL,weight,f_prime,reso
 #' @description
 #' Computes the bias corrected estimator of the linear functional for the high-dimensional logistic regression model and the corresponding standard error.
 #'
-#' @param X Design matrix
-#' @param y Response vector
-#' @param loading observation vector in the linear functional
-#' @param weight The vector of weights used in correcting the plug-in estimator
-#' @param lambda Tuning parameter in construction of the LASSO estimator of the regression vector (default = \code{NULL})
-#' @param intercept Should intercept(s) be fitted (default = \code{FALSE})
+#' @param X Design matrix, of dimension nvar(\eqn{n})xnobs(\eqn{p})
+#' @param y Response vector, of length \eqn{n}
+#' @param loading observation vector in the linear functional, of length \eqn{p}
+#' @param weight The vector, of length \eqn{n}, of weights used in correcting the plug-in estimator
+#' @param init.Lasso initial LASSO estimator of the regression vector (default = \code{NULL})
+#' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
 #' @param mu Tuning parameter in construction of the projection direction (default = \code{NULL})
 #' @param step Number of steps (< \code{maxiter}) to obtain the smallest \code{mu} that gives convergence of the
 #' optimization problem for constructing the projection direction (default = \code{NULL})
@@ -212,7 +226,7 @@ Direction_searchtuning_logistic<-function(Xc,loading,mu=NULL,weight,f_prime,reso
 #' LF_logistic(X = matrix(sample(-2:2,50*300,replace = TRUE),nrow=50,ncol=300),
 #'                       y = rbinom(50,1,0.5), loading = c(1,rep(0,299)),
 #'                       intercept = TRUE, weight = rep(1,50))
-LF_logistic<-function(X,y,loading,weight,lambda=NULL,intercept=FALSE,mu=NULL,step=NULL,resol = 1.5,maxiter=6){
+LF_logistic<-function(X,y,loading,weight,init.Lasso=NULL,intercept=TRUE,mu=NULL,step=NULL,resol = 1.5,maxiter=6){
 
   ### included weight, f_prime to be constructed
 
@@ -227,9 +241,15 @@ LF_logistic<-function(X,y,loading,weight,lambda=NULL,intercept=FALSE,mu=NULL,ste
 
   Xnor <- X %*% diag(col.norm);
   ### implement Lasso
-  fit = cv.glmnet(Xnor, y, alpha=1,family = "binomial")
-  htheta <- as.vector(coef(fit, s = "lambda.min"))
-  support<-(abs(htheta)>0.001)
+  #fit = cv.glmnet(Xnor, y, alpha=1,family = "binomial")
+  #htheta <- as.vector(coef(fit, s = "lambda.min"))
+  #support<-(abs(htheta)>0.001)
+  if(is.null(init.Lasso))
+  {
+    init.Lasso <- Initialization.step(X,y)
+  }
+  htheta <- init.Lasso$lasso.est
+  support <- init.Lasso$support
   if (intercept==TRUE){
     Xb <- cbind(rep(1,n),Xnor);
     Xc <- cbind(rep(1,n),X);

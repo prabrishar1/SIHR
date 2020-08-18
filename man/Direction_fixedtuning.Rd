@@ -7,9 +7,9 @@
 Direction_fixedtuning(Xc, loading, mu = NULL)
 }
 \arguments{
-\item{Xc}{Design matrix}
+\item{Xc}{Design matrix, of dimension nvar(\eqn{n})xnobs(\eqn{p})}
 
-\item{loading}{observation vector in the linear functional}
+\item{loading}{observation vector in the linear functional, of length \eqn{p}}
 
 \item{mu}{Tuning parameter in construction of projection direction}
 }

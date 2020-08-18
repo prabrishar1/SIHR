@@ -7,13 +7,13 @@
 Direction_fixedtuning_logistic(Xc, loading, mu = NULL, weight, f_prime)
 }
 \arguments{
-\item{Xc}{Design matrix}
+\item{Xc}{Design matrix, of dimension nvar(\eqn{n})xnobs(\eqn{p})}
 
-\item{loading}{observation vector in the linear functional}
+\item{loading}{observation vector in the linear functional, of length \eqn{p}}
 
 \item{mu}{Tuning parameter in construction of projection direction}
 
-\item{weight}{A vector of weights used in re-weighting the correction term of the estimator}
+\item{weight}{A vector, of length \eqn{n}, of weights used in re-weighting the correction term of the estimator}
 
 \item{f_prime}{The first derivative of the logit function at the plug-in LASSO estimate of the linear functional}
 }

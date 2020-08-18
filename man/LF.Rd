@@ -10,7 +10,7 @@ LF(
   loading,
   init.Lasso = NULL,
   lambda = NULL,
-  intercept = FALSE,
+  intercept = TRUE,
   mu = NULL,
   step = NULL,
   resol = 1.5,
@@ -18,17 +18,17 @@ LF(
 )
 }
 \arguments{
-\item{X}{Design matrix}
+\item{X}{Design matrix, of dimension nobs(\eqn{n})xnvar(\eqn{p})}
 
-\item{y}{Response variable}
+\item{y}{Response variable, a vector of length \eqn{n}}
 
-\item{loading}{observation vector in the linear functional}
+\item{loading}{observation vector in the linear functional, of length \eqn{p}}
 
 \item{init.Lasso}{initial LASSO estimator of the regression vector (default = \code{NULL})}
 
 \item{lambda}{Tuning parameter in construction of LASSO estimator of the regression vector (default = \code{NULL})}
 
-\item{intercept}{Should intercept(s) be fitted (default = \code{FALSE})}
+\item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
 
 \item{mu}{Tuning parameter in construction of projection direction (default = \code{NULL})}
 
