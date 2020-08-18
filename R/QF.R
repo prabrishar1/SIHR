@@ -278,6 +278,19 @@ QF <- function(X, y, test.set, A = "Sigma",init.Lasso = NULL, tau.vec = NULL,
     pp <- p
   }
 
+  if(A!="Sigma")
+  {
+    A_h <- A^0.5
+    if(intercept==TRUE)
+    {
+      Ac <- cbind(rep(1,p),A_h)
+    }
+    else
+    {
+      Ac <- A_h
+    }
+  }
+
   ## search for projection direction
   if (p == length(test.set)) {
     ## Global Test
@@ -289,7 +302,7 @@ QF <- function(X, y, test.set, A = "Sigma",init.Lasso = NULL, tau.vec = NULL,
     else
     {
       print("A is not Sigma 1")
-      lasso.plugin <- t(htheta)%*%A%*%htheta
+      lasso.plugin <- sum((Ac %*% htheta)^2)
     }
     direction <- htheta
     loading.norm <- 1
@@ -310,8 +323,8 @@ QF <- function(X, y, test.set, A = "Sigma",init.Lasso = NULL, tau.vec = NULL,
     else
     {
       print("A is not Sigma 2")
-      loading[test.set] <- (A %*% test.vec)[test.set]
-      lasso.plugin <- t(test.vec)%*%A%*%test.vec
+      loading[test.set] <- (Ac %*% test.vec)[test.set]
+      lasso.plugin <- sum((Ac %*% htheta)^2)
     }
 
     loading.norm <- sqrt(sum(loading^2))
@@ -339,8 +352,7 @@ QF <- function(X, y, test.set, A = "Sigma",init.Lasso = NULL, tau.vec = NULL,
               index.sel <- sample(1:n, size = ceiling(0.5 * min(n, p)), replace = FALSE)
               Direction.Est.temp <- Direction_searchtuning_robust(Xc[index.sel, ],
                                                                   loading, mu = NULL,
-                                                                  resol = 1.5,
-                                                                  maxiter = 6)
+                                                                  resol = 1.5,maxiter = 6)
               step.vec[t] <- Direction.Est.temp$step
             }
             step <- getmode(step.vec)

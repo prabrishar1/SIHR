@@ -9,14 +9,24 @@ getmode <- function(v) {
 #  return(g)
 #}
 
-Initialization.step <- function(X,y)
+Initialization.step <- function(X,y,intercept)
 {
   X<-as.matrix(X)
   p <- ncol(X);
   n <- nrow(X);
   col.norm <- 1/sqrt((1/n)*diag(t(X)%*%X)+0.0001);
+  Xnor <- X %*% diag(col.norm)
   fit = cv.glmnet(Xnor, y, alpha=1,family = "binomial")
-  htheta <- as.vector(coef(fit, s = "lambda.min"))
+  coef <- as.vector(coef(fit, s = "lambda.min"))
+  if(intercept==TRUE)
+  {
+    htheta <- coef
+  }
+  else
+  {
+    htheta <- coef[2:(p+1)]
+  }
+  htheta <- as.vector(htheta)
   support<-(abs(htheta)>0.001)
   returnList <- list("lasso.est" = htheta,
                      "support"=support)
@@ -246,7 +256,7 @@ LF_logistic<-function(X,y,loading,weight,init.Lasso=NULL,intercept=TRUE,mu=NULL,
   #support<-(abs(htheta)>0.001)
   if(is.null(init.Lasso))
   {
-    init.Lasso <- Initialization.step(X,y)
+    init.Lasso <- Initialization.step(X,y,intercept)
   }
   htheta <- init.Lasso$lasso.est
   support <- init.Lasso$support

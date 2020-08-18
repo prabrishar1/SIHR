@@ -59,10 +59,10 @@ model
     #> [1] 3
     #> [1] "step is 3"
     Est$prop.est
-    #>           [,1]
-    #> [1,] 0.6733196
+    #>          [,1]
+    #> [1,] 0.614247
     Est$se
-    #> [1] 0.08272112
+    #> [1] 0.05697304
 
 Inference for linear functional in high-dimensional logistic regression
 model
@@ -92,9 +92,9 @@ model
     #> [1] 3
     #> [1] "step is 3"
     Est$prop.est
-    #> [1] 0.2863503
+    #> [1] 0.4588216
     Est$se
-    #> [1] 0.2783104
+    #> [1] 0.3604841
 
 Inference for quadratic functional in high-dimensional linear model
 
@@ -124,13 +124,15 @@ Inference for quadratic functional in high-dimensional linear model
     Est = FIHR::QF(X = X, y = y, test.set=test.set)
     Est$prop.est
     #>           [,1]
-    #> [1,] 0.1980238
+    #> [1,] 0.2086047
     Est$se
-    #> [1] 0.1054297
+    #> [1] 0.1028442
 
     ## Inference for Quadratic Functional with known matrix A in middle
 
-    Est = FIHR::QF(X = X, y = y, test.set=test.set, A = diag(1:400,400),intercept = F)
+    Est = FIHR::QF(X = X, y = y, test.set=test.set, A = diag(1:400,400))
+    #> Warning in if (A != "Sigma") {: the condition has length > 1 and only the first
+    #> element will be used
     #> Warning in if (A == "Sigma") {: the condition has length > 1 and only the first
     #> element will be used
     #> [1] "A is not Sigma 2"
@@ -139,14 +141,17 @@ Inference for quadratic functional in high-dimensional linear model
     #> [1] "A is not Sigma 3"
     Est$prop.est
     #>          [,1]
-    #> [1,] 7.070884
+    #> [1,] 8.256503
     Est$se
-    #> [1] 0.6062021
+    #> [1] 0.1604048
 
     ## Inference for square norm of regression vector
 
-    Est = FIHR::QF(X = X, y = y, test.set=test.set, A = diag(1,400),intercept = F)
-    #> Warning in if (A == "Sigma") {: the condition has length > 1 and only the first
+    Est = FIHR::QF(X = X, y = y, test.set=test.set, A = diag(1,400))
+    #> Warning in if (A != "Sigma") {: the condition has length > 1 and only the first
+    #> element will be used
+
+    #> Warning in if (A != "Sigma") {: the condition has length > 1 and only the first
     #> element will be used
     #> [1] "A is not Sigma 2"
     #> Warning in if (A == "Sigma") {: the condition has length > 1 and only the first
@@ -154,6 +159,6 @@ Inference for quadratic functional in high-dimensional linear model
     #> [1] "A is not Sigma 3"
     Est$prop.est
     #>           [,1]
-    #> [1,] 0.1473181
+    #> [1,] 0.1307794
     Est$se
-    #> [1] 0.142096
+    #> [1] 0.1414214

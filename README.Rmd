@@ -128,13 +128,13 @@ Est$se
 
 ## Inference for Quadratic Functional with known matrix A in middle
 
-Est = FIHR::QF(X = X, y = y, test.set=test.set, A = diag(1:400,400),intercept = F)
+Est = FIHR::QF(X = X, y = y, test.set=test.set, A = diag(1:400,400))
 Est$prop.est
 Est$se
 
 ## Inference for square norm of regression vector
 
-Est = FIHR::QF(X = X, y = y, test.set=test.set, A = diag(1,400),intercept = F)
+Est = FIHR::QF(X = X, y = y, test.set=test.set, A = diag(1,400))
 Est$prop.est
 Est$se
 ```
