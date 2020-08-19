@@ -100,7 +100,6 @@ Inference for quadratic functional in high-dimensional linear model
 
 ```{r Group Linear Model}
 library(MASS)
-
 A1gen <- function(rho,p){
   A1=matrix(0,p,p)
   for(i in 1:p){

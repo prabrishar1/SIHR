@@ -59,10 +59,10 @@ model
     #> [1] 3
     #> [1] "step is 3"
     Est$prop.est
-    #>          [,1]
-    #> [1,] 0.614247
+    #>            [,1]
+    #> [1,] 0.02886183
     Est$se
-    #> [1] 0.05697304
+    #> [1] 0.1182428
 
 Inference for linear functional in high-dimensional logistic regression
 model
@@ -92,14 +92,13 @@ model
     #> [1] 3
     #> [1] "step is 3"
     Est$prop.est
-    #> [1] 0.4588216
+    #> [1] -0.02808497
     Est$se
-    #> [1] 0.3604841
+    #> [1] 0.2971103
 
 Inference for quadratic functional in high-dimensional linear model
 
     library(MASS)
-
     A1gen <- function(rho,p){
       A1=matrix(0,p,p)
       for(i in 1:p){
@@ -124,9 +123,9 @@ Inference for quadratic functional in high-dimensional linear model
     Est = FIHR::QF(X = X, y = y, test.set=test.set)
     Est$prop.est
     #>           [,1]
-    #> [1,] 0.2086047
+    #> [1,] 0.3471611
     Est$se
-    #> [1] 0.1028442
+    #> [1] 0.1079703
 
     ## Inference for Quadratic Functional with known matrix A in middle
 
@@ -141,9 +140,9 @@ Inference for quadratic functional in high-dimensional linear model
     #> [1] "A is not Sigma 3"
     Est$prop.est
     #>          [,1]
-    #> [1,] 8.256503
+    #> [1,] 50.81775
     Est$se
-    #> [1] 0.1604048
+    #> [1] 0.1435641
 
     ## Inference for square norm of regression vector
 
@@ -159,6 +158,6 @@ Inference for quadratic functional in high-dimensional linear model
     #> [1] "A is not Sigma 3"
     Est$prop.est
     #>           [,1]
-    #> [1,] 0.1307794
+    #> [1,] 0.8310707
     Est$se
-    #> [1] 0.1414214
+    #> [1] 0.1414572

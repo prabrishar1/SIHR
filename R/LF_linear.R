@@ -249,7 +249,7 @@ Direction_searchtuning<-function(Xc,loading,mu=NULL, resol, maxiter){
 #' @export
 #'
 #' @importFrom Rdpack reprompt
-#' @importFrom stats coef qnorm
+#' @importFrom stats coef qnorm na.omit
 #' @import CVXR Matrix glmnet
 #'
 #' @references
@@ -268,106 +268,119 @@ LF<-function(X,y,loading,init.Lasso=NULL,lambda=NULL,intercept=TRUE,mu=NULL,step
   xnew<-loading
   p <- ncol(X);
   n <- nrow(X);
+  n_y <- length(y)
 
-  if(is.null(init.Lasso)){
-    ####### implement a lasso algorithm to get beta and sigma
-    init.Lasso<-Initialization.step(X,y,lambda,intercept)
+  if(n_y!=n)
+  {
+    print("Check dimensions of X and y")
   }
-  htheta<-init.Lasso$lasso.est
-  sd.est<-init.Lasso$sigma
-  spar.est<-init.Lasso$sparsity
-  ####### implement the correction of the initial estimator
-  ####### set up the randomization step
-  if (intercept==TRUE){
-    Xc <- cbind(rep(1,n),X);
-    pp <- (p+1);
-  } else {
-    Xc <- X;
-    pp <- p
-  }
+  else
+  {
+    data = na.omit(data.frame(y,X))
+    X <- as.matrix(data[,-1])
+    y <- as.vector(data[,1])
+    p <- ncol(X);
+    n <- nrow(X);
+    if(is.null(init.Lasso)){
+      ####### implement a lasso algorithm to get beta and sigma
+      init.Lasso<-Initialization.step(X,y,lambda,intercept)
+    }
+    htheta<-init.Lasso$lasso.est
+    sd.est<-init.Lasso$sigma
+    spar.est<-init.Lasso$sparsity
+    ####### implement the correction of the initial estimator
+    ####### set up the randomization step
+    if (intercept==TRUE){
+      Xc <- cbind(rep(1,n),X);
+      pp <- (p+1);
+    } else {
+      Xc <- X;
+      pp <- p
+    }
 
-#  col.norm <- 1/sqrt((1/n)*diag(t(X)%*%X));
+    #  col.norm <- 1/sqrt((1/n)*diag(t(X)%*%X));
 
-#  Xnor <- X %*% diag(col.norm);
-  ### implement Lasso
-#  htheta <- Lasso (Xnor,y,lambda=lambda,intercept=intercept);
-#  if (intercept==TRUE){
-#    Xb <- cbind(rep(1,n),Xnor);
-#    Xc <- cbind(rep(1,n),X);
-#    col.norm <- c(1,col.norm);
-#    pp <- (p+1);
-#  } else {
-#    Xb <- Xnor;
-#    Xc <- X;
-#    pp <- p
-#  }
-#  sparsity<-sum(abs(htheta)>0.001)
-#  sd.est<-sum((y-Xb%*%htheta)^2)/(n-sparsity)
-#  htheta <- htheta*col.norm;
+    #  Xnor <- X %*% diag(col.norm);
+    ### implement Lasso
+    #  htheta <- Lasso (Xnor,y,lambda=lambda,intercept=intercept);
+    #  if (intercept==TRUE){
+    #    Xb <- cbind(rep(1,n),Xnor);
+    #    Xc <- cbind(rep(1,n),X);
+    #    col.norm <- c(1,col.norm);
+    #    pp <- (p+1);
+    #  } else {
+    #    Xb <- Xnor;
+    #    Xc <- X;
+    #    pp <- p
+    #  }
+    #  sparsity<-sum(abs(htheta)>0.001)
+    #  sd.est<-sum((y-Xb%*%htheta)^2)/(n-sparsity)
+    #  htheta <- htheta*col.norm;
 
 
     ### compute the initial estimator
-  if(intercept==TRUE){
-    loading=rep(0,pp)
-    loading[1]=1
-    loading[-1]=xnew
-  }else{
-    loading=xnew
-  }
-  loading.norm<-sqrt(sum(loading^2))
-  lasso.plugin<-sum(loading*htheta)
-
-
-  #####################################################################################################
-  ################## Correction step
-
-
-  if ((n>=6*p)){
-    sigma.hat <- (1/n)*(t(Xc)%*%Xc);
-    tmp <- eigen(sigma.hat)
-    tmp <- min(tmp$values)/max(tmp$values)
-  }else{
-    tmp <- 0
-  }
-  sigma.hat <- (1/n)*(t(Xc)%*%Xc);
-  if ((n>=6*p)&&(tmp>=1e-4)){
-    direction <- solve(sigma.hat)%*%loading
-  }else{
-    if(n>0.5*p){
-      ### for option 1
-      if(is.null(step)){
-        step.vec<-rep(NA,3)
-        for(t in 1:3){
-          index.sel<-sample(1:n,size=ceiling(0.5*min(n,p)), replace=FALSE)
-          Direction.Est.temp<-Direction_searchtuning(Xc[index.sel,],loading,mu=NULL, resol, maxiter)
-          step.vec[t]<-Direction.Est.temp$step
-        }
-        step<-getmode(step.vec)
-      }
-      print(paste("step is", step))
-      Direction.Est<-Direction_fixedtuning(Xc,loading,mu=sqrt(2.01*log(pp)/n)*resol^{-(step-1)})
+    if(intercept==TRUE){
+      loading=rep(0,pp)
+      loading[1]=1
+      loading[-1]=xnew
     }else{
-      ### for option 2
-      Direction.Est<-Direction_searchtuning(Xc,loading,mu=NULL, resol, maxiter)
-      step<-Direction.Est$step
-      print(paste("step is", step))
+      loading=xnew
     }
-    direction<-Direction.Est$proj
+    loading.norm<-sqrt(sum(loading^2))
+    lasso.plugin<-sum(loading*htheta)
+
+
+    #####################################################################################################
+    ################## Correction step
+
+
+    if ((n>=6*p)){
+      sigma.hat <- (1/n)*(t(Xc)%*%Xc);
+      tmp <- eigen(sigma.hat)
+      tmp <- min(tmp$values)/max(tmp$values)
+    }else{
+      tmp <- 0
+    }
+    sigma.hat <- (1/n)*(t(Xc)%*%Xc);
+    if ((n>=6*p)&&(tmp>=1e-4)){
+      direction <- solve(sigma.hat)%*%loading
+    }else{
+      if(n>0.5*p){
+        ### for option 1
+        if(is.null(step)){
+          step.vec<-rep(NA,3)
+          for(t in 1:3){
+            index.sel<-sample(1:n,size=ceiling(0.5*min(n,p)), replace=FALSE)
+            Direction.Est.temp<-Direction_searchtuning(Xc[index.sel,],loading,mu=NULL, resol, maxiter)
+            step.vec[t]<-Direction.Est.temp$step
+          }
+          step<-getmode(step.vec)
+        }
+        print(paste("step is", step))
+        Direction.Est<-Direction_fixedtuning(Xc,loading,mu=sqrt(2.01*log(pp)/n)*resol^{-(step-1)})
+      }else{
+        ### for option 2
+        Direction.Est<-Direction_searchtuning(Xc,loading,mu=NULL, resol, maxiter)
+        step<-Direction.Est$step
+        print(paste("step is", step))
+      }
+      direction<-Direction.Est$proj
+    }
+    correction = t(Xc%*%direction)%*%(y - Xc%*%htheta)/n;
+    debias.est=lasso.plugin+correction*loading.norm
+    #cbind(true,linear.plugin,linear.plugin+correct,correct)
+    se<-sd.est*sqrt(sum((Xc%*%direction)^2)/(n)^2)*loading.norm
+    #sd
+    #c(linear.plugin+correct-1.96*sd,linear.plugin+correct+1.96*sd)
+    returnList <- list("prop.est" = debias.est,
+                       "sigma"=sd.est,
+                       "se" = se,
+                       "proj"=direction,
+                       "step"=step,
+                       "plug.in"=lasso.plugin
+    )
+    return(returnList)
   }
-  correction = t(Xc%*%direction)%*%(y - Xc%*%htheta)/n;
-  debias.est=lasso.plugin+correction*loading.norm
-  #cbind(true,linear.plugin,linear.plugin+correct,correct)
-  se<-sd.est*sqrt(sum((Xc%*%direction)^2)/(n)^2)*loading.norm
-  #sd
-  #c(linear.plugin+correct-1.96*sd,linear.plugin+correct+1.96*sd)
-  returnList <- list("prop.est" = debias.est,
-                     "sigma"=sd.est,
-                     "se" = se,
-                     "proj"=direction,
-                     "step"=step,
-                     "plug.in"=lasso.plugin
-  )
-  return(returnList)
 }
 
 

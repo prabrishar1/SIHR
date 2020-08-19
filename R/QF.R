@@ -243,7 +243,7 @@ Direction_searchtuning_robust <- function(Xc, loading, mu = NULL, resol = 1.5,
 #' @export
 #'
 #' @importFrom Rdpack reprompt
-#' @importFrom stats coef qnorm median
+#' @importFrom stats coef qnorm median na.omit
 #' @import CVXR Matrix glmnet
 #'
 #' @examples
@@ -258,163 +258,175 @@ Direction_searchtuning_robust <- function(Xc, loading, mu = NULL, resol = 1.5,
 QF <- function(X, y, test.set, A = "Sigma",init.Lasso = NULL, tau.vec = NULL,
                            lambda = NULL, intercept = TRUE, mu = NULL,
                            step = NULL, resol = 1.5, maxiter = 6) {
-
-  if (is.null(init.Lasso)) {
-    ### Inital Lasso estimate of beta and sigma
-    init.Lasso <- Initialization.step(X, y, lambda, intercept)
-  }
-  htheta <- init.Lasso$lasso.est # beta
-  sd.est <- init.Lasso$sigma # sigma
-  spar.est <- init.Lasso$sparsity
-
   p <- ncol(X)
   n <- nrow(X)
-  if (intercept == TRUE) {
-    Xc <- cbind(rep(1, n), X)
-    pp <- (p + 1)
-    test.set <- test.set + 1
-  } else {
-    Xc <- X
-    pp <- p
-  }
+  n_y <- length(y)
 
-  if(A!="Sigma")
+  if(n_y!=n)
   {
-    A_h <- A^0.5
-    if(intercept==TRUE)
-    {
-      Ac <- cbind(rep(1,p),A_h)
-    }
-    else
-    {
-      Ac <- A_h
-    }
-  }
-
-  ## search for projection direction
-  if (p == length(test.set)) {
-    ## Global Test
-    ## We do not need not search for a direction, i.e. hat{u} = hat{theta}.
-    if(A=="Sigma")
-    {
-      lasso.plugin <- mean((Xc %*% htheta)^2)
-    }
-    else
-    {
-      print("A is not Sigma 1")
-      lasso.plugin <- sum((Ac %*% htheta)^2)
-    }
-    direction <- htheta
-    loading.norm <- 1
-    test.vec <- htheta
-  } else {
-
-    ## Prepare all quantities
-    sigma.hat <- (1 / (n-1)) * (t(Xc) %*% Xc)
-    test.vec <- matrix(0, ncol = 1, nrow = pp)
-    loading <- matrix(0, ncol = 1, nrow = pp)
-    test.vec[test.set] <- htheta[test.set]
-
-    if(A=="Sigma")
-    {
-      loading[test.set] <- (sigma.hat %*% test.vec)[test.set]
-      lasso.plugin <- mean((Xc %*% test.vec)^2)
-    }
-    else
-    {
-      print("A is not Sigma 2")
-      loading[test.set] <- (Ac %*% test.vec)[test.set]
-      lasso.plugin <- sum((Ac %*% htheta)^2)
-    }
-
-    loading.norm <- sqrt(sum(loading^2))
-
-    if (loading.norm == 0) {
-      direction <- rep(0, pp)
-    } else {
-      if (n >= 6 * p) {
-        tmp <- eigen(sigma.hat)
-        tmp <- min(tmp$values) / max(tmp$values)
-      } else {
-        tmp <- 0
-      }
-
-      ## Search for projection direction u
-      if ((n >= 6 * p) && (tmp >= 1e-4)) {
-        # sigma.hat matrix is well conditioned
-        direction <- solve(sigma.hat) %*% loading
-      } else {
-        if (n > 0.5 * p) {
-          # for option 1
-          if (is.null(step)) {
-            step.vec <- rep(NA, 3)
-            for (t in 1:3) {
-              index.sel <- sample(1:n, size = ceiling(0.5 * min(n, p)), replace = FALSE)
-              Direction.Est.temp <- Direction_searchtuning_robust(Xc[index.sel, ],
-                                                                  loading, mu = NULL,
-                                                                  resol = 1.5,maxiter = 6)
-              step.vec[t] <- Direction.Est.temp$step
-            }
-            step <- getmode(step.vec)
-          }
-          Direction.Est <- Direction_fixedtuning_robust(Xc, loading, mu = sqrt(2.01 * log(pp) / n) * resol^{-(step - 1)})
-        } else {
-          # for option 2
-          Direction.Est <- Direction_searchtuning_robust(Xc, loading, mu = NULL, resol, maxiter)
-          step <- Direction.Est$step
-        }
-        # print(paste("step is", step))
-        direction <- Direction.Est$proj
-      }
-    }
-
-  }
-
-  ### Correct the initial estimator by the constructed projection direction
-  correction <- 2 * loading.norm * t(Xc %*% direction) %*% (y - Xc %*% htheta) / n
-  debias.est <- lasso.plugin + correction
-  if(A=="Sigma")
-  {
-    se1 <- 2 * sd.est * sqrt(sum((Xc %*% direction)^2) / (n)^2) * loading.norm
-    se2 <- sqrt(var.Sigma(Xc, test.vec) / n)
-
-    if (is.null(tau.vec)) { # TODO maybe just set as default argument in function call.
-      tau.vec <- 1
-    }
-
-    if (abs(correction) > abs(lasso.plugin)) {
-      warning(paste("The model is most likely misspecified because the correction term is larger than the lasso estimate in absolute value.",
-                    "See cluster or group: ", paste(colnames(Xc)[test.set], collapse = ", "),
-                    ". The value of the lasso.plugin and correction are", round(lasso.plugin, 5),
-                    " respectively ", round(correction, 5), "."))
-    }
-
-    # TODO Is tau.vec a vector in the future? Or change pmin to min.
-    ### Correct standard error value by tau.
-    tau <- pmin(tau.vec, spar.est * log(p) / sqrt(n))
-    se.vec <- sqrt(se1^2 + se2^2 + (tau / n))
+    print("Check dimensions of X and y")
   }
   else
   {
-    print("A is not Sigma 3")
-    se<-2*sd.est*sqrt(sum((Xc%*%direction)^2)/(n)^2)*loading.norm
-    #tau=0
-    if(is.null(tau.vec)){
-      tau.vec=c(2)
+    data = na.omit(data.frame(y,X))
+    X <- as.matrix(data[,-1])
+    y <- as.vector(data[,1])
+    p <- ncol(X);
+    n <- nrow(X);
+    if (is.null(init.Lasso)) {
+      ### Inital Lasso estimate of beta and sigma
+      init.Lasso <- Initialization.step(X, y, lambda, intercept)
     }
-    se.vec<-rep(NA,length(tau.vec))
-    for (i in 1: length(tau.vec)){
-      tau=min(tau.vec[i],spar.est*log(p)/sqrt(n))
-      se<-sqrt(se^2+tau/n)
-      se.vec[i]<-se
+    htheta <- init.Lasso$lasso.est # beta
+    sd.est <- init.Lasso$sigma # sigma
+    spar.est <- init.Lasso$sparsity
+
+    if (intercept == TRUE) {
+      Xc <- cbind(rep(1, n), X)
+      pp <- (p + 1)
+      test.set <- test.set + 1
+    } else {
+      Xc <- X
+      pp <- p
     }
+
+    if(A!="Sigma")
+    {
+      A_h <- A^0.5
+      if(intercept==TRUE)
+      {
+        Ac <- cbind(rep(1,p),A_h)
+      }
+      else
+      {
+        Ac <- A_h
+      }
+    }
+
+    ## search for projection direction
+    if (p == length(test.set)) {
+      ## Global Test
+      ## We do not need not search for a direction, i.e. hat{u} = hat{theta}.
+      if(A=="Sigma")
+      {
+        lasso.plugin <- mean((Xc %*% htheta)^2)
+      }
+      else
+      {
+        print("A is not Sigma 1")
+        lasso.plugin <- sum((Ac %*% htheta)^2)
+      }
+      direction <- htheta
+      loading.norm <- 1
+      test.vec <- htheta
+    } else {
+
+      ## Prepare all quantities
+      sigma.hat <- (1 / (n-1)) * (t(Xc) %*% Xc)
+      test.vec <- matrix(0, ncol = 1, nrow = pp)
+      loading <- matrix(0, ncol = 1, nrow = pp)
+      test.vec[test.set] <- htheta[test.set]
+
+      if(A=="Sigma")
+      {
+        loading[test.set] <- (sigma.hat %*% test.vec)[test.set]
+        lasso.plugin <- mean((Xc %*% test.vec)^2)
+      }
+      else
+      {
+        print("A is not Sigma 2")
+        loading[test.set] <- (Ac %*% test.vec)[test.set]
+        lasso.plugin <- sum((Ac %*% htheta)^2)
+      }
+
+      loading.norm <- sqrt(sum(loading^2))
+
+      if (loading.norm == 0) {
+        direction <- rep(0, pp)
+      } else {
+        if (n >= 6 * p) {
+          tmp <- eigen(sigma.hat)
+          tmp <- min(tmp$values) / max(tmp$values)
+        } else {
+          tmp <- 0
+        }
+
+        ## Search for projection direction u
+        if ((n >= 6 * p) && (tmp >= 1e-4)) {
+          # sigma.hat matrix is well conditioned
+          direction <- solve(sigma.hat) %*% loading
+        } else {
+          if (n > 0.5 * p) {
+            # for option 1
+            if (is.null(step)) {
+              step.vec <- rep(NA, 3)
+              for (t in 1:3) {
+                index.sel <- sample(1:n, size = ceiling(0.5 * min(n, p)), replace = FALSE)
+                Direction.Est.temp <- Direction_searchtuning_robust(Xc[index.sel, ],
+                                                                    loading, mu = NULL,
+                                                                    resol = 1.5,maxiter = 6)
+                step.vec[t] <- Direction.Est.temp$step
+              }
+              step <- getmode(step.vec)
+            }
+            Direction.Est <- Direction_fixedtuning_robust(Xc, loading, mu = sqrt(2.01 * log(pp) / n) * resol^{-(step - 1)})
+          } else {
+            # for option 2
+            Direction.Est <- Direction_searchtuning_robust(Xc, loading, mu = NULL, resol, maxiter)
+            step <- Direction.Est$step
+          }
+          # print(paste("step is", step))
+          direction <- Direction.Est$proj
+        }
+      }
+
+    }
+
+    ### Correct the initial estimator by the constructed projection direction
+    correction <- 2 * loading.norm * t(Xc %*% direction) %*% (y - Xc %*% htheta) / n
+    debias.est <- lasso.plugin + correction
+    if(A=="Sigma")
+    {
+      se1 <- 2 * sd.est * sqrt(sum((Xc %*% direction)^2) / (n)^2) * loading.norm
+      se2 <- sqrt(var.Sigma(Xc, test.vec) / n)
+
+      if (is.null(tau.vec)) { # TODO maybe just set as default argument in function call.
+        tau.vec <- 1
+      }
+
+      if (abs(correction) > abs(lasso.plugin)) {
+        warning(paste("The model is most likely misspecified because the correction term is larger than the lasso estimate in absolute value.",
+                      "See cluster or group: ", paste(colnames(Xc)[test.set], collapse = ", "),
+                      ". The value of the lasso.plugin and correction are", round(lasso.plugin, 5),
+                      " respectively ", round(correction, 5), "."))
+      }
+
+      # TODO Is tau.vec a vector in the future? Or change pmin to min.
+      ### Correct standard error value by tau.
+      tau <- pmin(tau.vec, spar.est * log(p) / sqrt(n))
+      se.vec <- sqrt(se1^2 + se2^2 + (tau / n))
+    }
+    else
+    {
+      print("A is not Sigma 3")
+      se<-2*sd.est*sqrt(sum((Xc%*%direction)^2)/(n)^2)*loading.norm
+      #tau=0
+      if(is.null(tau.vec)){
+        tau.vec=c(2)
+      }
+      se.vec<-rep(NA,length(tau.vec))
+      for (i in 1: length(tau.vec)){
+        tau=min(tau.vec[i],spar.est*log(p)/sqrt(n))
+        se<-sqrt(se^2+tau/n)
+        se.vec[i]<-se
+      }
+    }
+
+
+    returnList <- list("prop.est" = debias.est,
+                       "sigma"= sd.est,
+                       "se" = se.vec,
+                       "plug.in" = lasso.plugin)
+    return(returnList)
   }
-
-
-  returnList <- list("prop.est" = debias.est,
-                     "sigma"= sd.est,
-                     "se" = se.vec,
-                     "plug.in" = lasso.plugin)
-  return(returnList)
 }
-

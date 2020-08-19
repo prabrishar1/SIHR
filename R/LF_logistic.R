@@ -20,7 +20,7 @@ Initialization.step <- function(X,y,intercept)
   coef <- as.vector(coef(fit, s = "lambda.min"))
   if(intercept==TRUE)
   {
-    htheta <- coef
+    htheta <- coef[1:(p+1)]
   }
   else
   {
@@ -226,7 +226,7 @@ Direction_searchtuning_logistic<-function(Xc,loading,mu=NULL,weight,f_prime,reso
 #' @export
 #'
 #' @importFrom Rdpack reprompt
-#' @importFrom stats coef
+#' @importFrom stats coef na.omit
 #' @import CVXR Matrix glmnet
 #'
 #' @references
@@ -247,109 +247,122 @@ LF_logistic<-function(X,y,loading,weight,init.Lasso=NULL,intercept=TRUE,mu=NULL,
   X<-as.matrix(X)
   p <- ncol(X);
   n <- nrow(X);
-  col.norm <- 1/sqrt((1/n)*diag(t(X)%*%X)+0.0001);
-
-  Xnor <- X %*% diag(col.norm);
   ### implement Lasso
   #fit = cv.glmnet(Xnor, y, alpha=1,family = "binomial")
   #htheta <- as.vector(coef(fit, s = "lambda.min"))
   #support<-(abs(htheta)>0.001)
-  if(is.null(init.Lasso))
+  n_y <- length(y)
+
+  if(n_y!=n)
   {
-    init.Lasso <- Initialization.step(X,y,intercept)
+    print("Check dimensions of X and y")
   }
-  htheta <- init.Lasso$lasso.est
-  support <- init.Lasso$support
-  if (intercept==TRUE){
-    Xb <- cbind(rep(1,n),Xnor);
-    Xc <- cbind(rep(1,n),X);
-    col.norm <- c(1,col.norm);
-    pp <- (p+1);
-  } else {
-    Xb <- Xnor;
-    Xc <- X;
-    pp <- p
-  }
-  #sparsity<-sum(abs(htheta)>0.001)
-  #sd.est<-sum((y-Xb%*%htheta)^2)/(n-sparsity)
-  htheta <- htheta*col.norm;
-  htheta <- as.vector(htheta)
-  ### compute the initial estimator
-  if(intercept==TRUE){
-    loading=rep(0,pp)
-    loading[1]=1
-    loading[-1]=xnew
-  }else{
-    loading=xnew
-  }
-  loading.norm<-sqrt(sum(loading^2))
-  lasso.plugin<-sum(loading*htheta)
-  f_prime <- exp(Xc%*%htheta)/(1+exp(Xc%*%htheta))^2    ###### computed f_prime
-
-  #####################################################################################################
-  ################## Correction step
-
-
-  if ((n>=6*p)){
-    #sigma.hat <- (1/n)*(t(Xc)%*%Xc);
-    gamma.hat <- (1/n)*sum((Xc^2)*weight*f_prime)   ##### computed gamma.hat instead of sigma.hat
-    tmp <- eigen(gamma.hat)                         ##### computed eigen values of gamma.hat instead of sigma.hat
-    tmp <- min(tmp$values)/max(tmp$values)
-  }else{
-    tmp <- 0
-  }
-
-  if ((n>=6*p)&&(tmp>=1e-4)){
-    direction <- solve(gamma.hat)%*%loading         ##### computed direction as gamma.hat inverse loading
-  }else{
-    if(n>0.5*p){
-      ### for option 1
-      if(is.null(step)){
-        step.vec<-rep(NA,3)
-        for(t in 1:3){
-          index.sel<-sample(1:n,size=ceiling(0.5*min(n,p)), replace=FALSE)
-          Direction.Est.temp<-Direction_searchtuning_logistic(Xc[index.sel,],loading,mu=NULL,weight = weight,f_prime = f_prime,resol,maxiter)
-          step.vec[t]<-Direction.Est.temp$step
-        }
-        step<-getmode(step.vec)
-      }
-      print(paste("step is", step))
-      Direction.Est<-Direction_fixedtuning_logistic(Xc,loading,mu=sqrt(2.01*log(pp)/n)*resol^{-(step-1)},weight = weight,f_prime = f_prime)
-    }else{
-      ### for option 2
-      Direction.Est<-Direction_searchtuning_logistic(Xc,loading,mu=NULL,weight = weight,f_prime = f_prime,resol, maxiter)
-      step<-Direction.Est$step
-      print(paste("step is", step))
+  else
+  {
+    data = na.omit(data.frame(y,X))
+    X <- as.matrix(data[,-1])
+    y <- as.vector(data[,1])
+    p <- ncol(X);
+    n <- nrow(X);
+    col.norm <- 1/sqrt((1/n)*diag(t(X)%*%X)+0.0001);
+    Xnor <- X %*% diag(col.norm);
+    if(is.null(init.Lasso))
+    {
+      init.Lasso <- Initialization.step(X,y,intercept)
     }
-    direction<-Direction.Est$proj
+    htheta <- init.Lasso$lasso.est
+    support <- init.Lasso$support
+    if (intercept==TRUE){
+      Xb <- cbind(rep(1,n),Xnor);
+      Xc <- cbind(rep(1,n),X);
+      col.norm <- c(1,col.norm);
+      pp <- (p+1);
+    } else {
+      Xb <- Xnor;
+      Xc <- X;
+      pp <- p
+    }
+    #sparsity<-sum(abs(htheta)>0.001)
+    #sd.est<-sum((y-Xb%*%htheta)^2)/(n-sparsity)
+    htheta <- htheta*col.norm;
+    htheta <- as.vector(htheta)
+    ### compute the initial estimator
+    if(intercept==TRUE){
+      loading=rep(0,pp)
+      loading[1]=1
+      loading[-1]=xnew
+    }else{
+      loading=xnew
+    }
+    loading.norm<-sqrt(sum(loading^2))
+    lasso.plugin<-sum(loading*htheta)
+    f_prime <- exp(Xc%*%htheta)/(1+exp(Xc%*%htheta))^2    ###### computed f_prime
+
+    #####################################################################################################
+    ################## Correction step
+
+
+    if ((n>=6*p)){
+      #sigma.hat <- (1/n)*(t(Xc)%*%Xc);
+      gamma.hat <- (1/n)*sum((Xc^2)*weight*f_prime)   ##### computed gamma.hat instead of sigma.hat
+      tmp <- eigen(gamma.hat)                         ##### computed eigen values of gamma.hat instead of sigma.hat
+      tmp <- min(tmp$values)/max(tmp$values)
+    }else{
+      tmp <- 0
+    }
+
+    if ((n>=6*p)&&(tmp>=1e-4)){
+      direction <- solve(gamma.hat)%*%loading         ##### computed direction as gamma.hat inverse loading
+    }else{
+      if(n>0.5*p){
+        ### for option 1
+        if(is.null(step)){
+          step.vec<-rep(NA,3)
+          for(t in 1:3){
+            index.sel<-sample(1:n,size=ceiling(0.5*min(n,p)), replace=FALSE)
+            Direction.Est.temp<-Direction_searchtuning_logistic(Xc[index.sel,],loading,mu=NULL,weight = weight,f_prime = f_prime,resol,maxiter)
+            step.vec[t]<-Direction.Est.temp$step
+          }
+          step<-getmode(step.vec)
+        }
+        print(paste("step is", step))
+        Direction.Est<-Direction_fixedtuning_logistic(Xc,loading,mu=sqrt(2.01*log(pp)/n)*resol^{-(step-1)},weight = weight,f_prime = f_prime)
+      }else{
+        ### for option 2
+        Direction.Est<-Direction_searchtuning_logistic(Xc,loading,mu=NULL,weight = weight,f_prime = f_prime,resol, maxiter)
+        step<-Direction.Est$step
+        print(paste("step is", step))
+      }
+      direction<-Direction.Est$proj
+    }
+    exp_pred=Xc%*%(htheta)
+    #weighed.residual=(y - exp(exp_pred)/(1+ exp(exp_pred)))*(1+exp(exp_pred))^2/exp(exp_pred)
+
+    weighed.residual=(y - exp(exp_pred)/(1+ exp(exp_pred)))*weight   ##### modified weight
+    #exp_val=a0+X%*%beta
+    #weighed.residual.ora=(y - exp(exp_val)/(1+ exp(exp_val)))*(1+exp(exp_val))^2/exp(exp_val)
+
+    correction = sum((Xc%*%direction)*weighed.residual)/n;
+    debias.est=lasso.plugin+correction*loading.norm
+    #cbind(true,linear.plugin,linear.plugin+correct,correct)
+    #se<-sqrt(sum((Xc%*%direction*(1+exp(exp_pred))/exp(exp_pred/2))^2)/(n)^2)*loading.norm*sum((y - exp(exp_pred)/(1+ exp(exp_pred)))^2)/n
+    #se<-sqrt(mean((Xc%*%direction)^2*weighed.residual^2))*loading.norm/sqrt(n)
+    #se.ora<-sqrt(mean((Xc%*%direction)^2*weighed.residual.ora^2))*loading.norm/sqrt(n)
+    #se.another<-sqrt(mean((Xc%*%direction)^2*(1+exp(exp_pred))^2/exp(exp_pred)))*loading.norm/sqrt(n)
+
+    se<-sqrt(mean((Xc%*%direction)^2*weight^2*f_prime))*loading.norm/sqrt(n) ##### modified
+    #sd
+    #mean((y - exp(exp_pred)/(1+ exp(exp_pred)))^2)
+    #mean((y - exp(exp_val)/(1+ exp(exp_val)))^2)
+    #mean(exp(exp_pred)/(1+ exp(exp_pred))^2)
+    #c(linear.plugin+correct-1.96*sd,linear.plugin+correct+1.96*sd)
+    returnList <- list("prop.est" = debias.est,
+                       "se" = se,
+                       "proj"=direction,
+                       "step"=step,
+                       "plug.in"=lasso.plugin,
+                       "support"=support
+    )
+    return(returnList)
   }
-  exp_pred=Xc%*%(htheta)
-  #weighed.residual=(y - exp(exp_pred)/(1+ exp(exp_pred)))*(1+exp(exp_pred))^2/exp(exp_pred)
-
-  weighed.residual=(y - exp(exp_pred)/(1+ exp(exp_pred)))*weight   ##### modified weight
-  #exp_val=a0+X%*%beta
-  #weighed.residual.ora=(y - exp(exp_val)/(1+ exp(exp_val)))*(1+exp(exp_val))^2/exp(exp_val)
-
-  correction = sum((Xc%*%direction)*weighed.residual)/n;
-  debias.est=lasso.plugin+correction*loading.norm
-  #cbind(true,linear.plugin,linear.plugin+correct,correct)
-  #se<-sqrt(sum((Xc%*%direction*(1+exp(exp_pred))/exp(exp_pred/2))^2)/(n)^2)*loading.norm*sum((y - exp(exp_pred)/(1+ exp(exp_pred)))^2)/n
-  #se<-sqrt(mean((Xc%*%direction)^2*weighed.residual^2))*loading.norm/sqrt(n)
-  #se.ora<-sqrt(mean((Xc%*%direction)^2*weighed.residual.ora^2))*loading.norm/sqrt(n)
-  #se.another<-sqrt(mean((Xc%*%direction)^2*(1+exp(exp_pred))^2/exp(exp_pred)))*loading.norm/sqrt(n)
-
-  se<-sqrt(mean((Xc%*%direction)^2*weight^2*f_prime))*loading.norm/sqrt(n) ##### modified
-  #sd
-  #mean((y - exp(exp_pred)/(1+ exp(exp_pred)))^2)
-  #mean((y - exp(exp_val)/(1+ exp(exp_val)))^2)
-  #mean(exp(exp_pred)/(1+ exp(exp_pred))^2)
-  #c(linear.plugin+correct-1.96*sd,linear.plugin+correct+1.96*sd)
-  returnList <- list("prop.est" = debias.est,
-                     "se" = se,
-                     "proj"=direction,
-                     "step"=step,
-                     "plug.in"=lasso.plugin,
-                     "support"=support
-  )
-  return(returnList)
 }
