@@ -2,46 +2,46 @@
 % Please edit documentation in R/LF_logistic.R
 \name{Direction_searchtuning_logistic}
 \alias{Direction_searchtuning_logistic}
-\title{Constructs the projection direction with "optimal" tuning parameter for estimating functional in high-dimensional logistic regression}
+\title{Searches for the best step size and computes the projection direction in high dimensional logistic regression}
 \usage{
 Direction_searchtuning_logistic(
-  Xc,
+  X,
   loading,
   mu = NULL,
   weight,
   f_prime,
-  resol,
-  maxiter
+  resol = 1.5,
+  maxiter = 10
 )
 }
 \arguments{
-\item{Xc}{Design matrix of dimension nvar(\eqn{n})xnobs(\eqn{p})}
+\item{X}{Design matrix, of dimension \eqn{n} x \eqn{p}}
 
-\item{loading}{observation vector in linear functional, of length \eqn{n}}
+\item{loading}{Loading, of length \eqn{n}}
 
-\item{mu}{Tuning parameter in construction of the projection direction}
+\item{mu}{The tuning parameter used in the construction of the projection direction}
 
-\item{weight}{A vector, of length \eqn{n}, of weights used in re-weighting the correction term of the estimator}
+\item{weight}{The weight vector of length \eqn{n}, used in correcting the plug-in estimator}
 
 \item{f_prime}{The first derivative of the logit function at the plug-in LASSO estimate of the linear functional}
 
 \item{resol}{Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-that gives convergence of the optimization problem for constructing the projection direction}
+that gives convergence of the optimization problem for constructing the projection direction (default = 1.5)}
 
 \item{maxiter}{Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-that gives convergence of the optimization problem for constructing the projection direction}
+that gives convergence of the optimization problem for constructing the projection direction (default = 10)}
 }
 \value{
 \item{proj}{The projection direction}
 }
 \description{
-Constructs the projection direction with "optimal" tuning parameter for estimating functional in high-dimensional logistic regression
+Searches for the best step size and computes the projection direction in high dimensional logistic regression
 }
 \examples{
-X = matrix(sample(-2:2,50*400,replace = TRUE),nrow=50,ncol=400)
-y = rbinom(50,1,0.5)
-p <- ncol(X);
-n <- nrow(X);
+n = 50
+p = 400
+X = matrix(sample(-2:2,n*p,replace = TRUE),nrow=n,ncol=p)
+y = rbinom(n,1,0.5)
 col.norm <- 1/sqrt((1/n)*diag(t(X)\%*\%X)+0.0001);
 Xnor <- X \%*\% diag(col.norm);
 fit = glmnet::cv.glmnet(Xnor, y, alpha=1,family = "binomial")
@@ -51,7 +51,7 @@ Xb <- cbind(rep(1,n),Xnor);
 Xc <- cbind(rep(1,n),X);
 col.norm <- c(1,col.norm);
 pp <- (p+1);
-xnew = c(1,rep(0,399))
+xnew = c(1,rep(0,(p-1)))
 loading=rep(0,pp)
 loading[1]=1
 loading[-1]=xnew

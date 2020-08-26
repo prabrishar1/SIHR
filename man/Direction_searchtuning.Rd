@@ -2,30 +2,32 @@
 % Please edit documentation in R/LF_linear.R
 \name{Direction_searchtuning}
 \alias{Direction_searchtuning}
-\title{Constructs the projection direction with "optimal" tuning parameter for estimating functional in high-dimensional linear regression model}
+\title{Searches for the best step size and computes the projection direction in high dimensional linear regression}
 \usage{
-Direction_searchtuning(Xc, loading, mu = NULL, resol, maxiter)
+Direction_searchtuning(X, loading, mu = NULL, resol = 1.5, maxiter = 10)
 }
 \arguments{
-\item{Xc}{Design matrix, of dimension nvar(\eqn{n})xnobs(\eqn{p})}
+\item{X}{Design matrix, of dimension \eqn{n} x \eqn{p}}
 
-\item{loading}{observation vector in the linear functional, of length \eqn{p}}
+\item{loading}{Loading, of length \eqn{p}}
 
 \item{mu}{Tuning parameter in construction of projection direction}
 
 \item{resol}{Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-that gives convergence of the optimization problem for constructing the projection direction}
+that gives convergence of the optimization problem for constructing the projection direction (default = 1.5)}
 
 \item{maxiter}{Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-that gives convergence of the optimization problem for constructing the projection direction}
+that gives convergence of the optimization problem for constructing the projection direction (default = 10)}
 }
 \value{
 \item{proj}{The projection direction}
 }
 \description{
-Constructs the projection direction with "optimal" tuning parameter for estimating functional in high-dimensional linear regression model
+Searches for the best step size and computes the projection direction in high dimensional linear regression
 }
 \examples{
-X = matrix(sample(-2:2,100*400,replace = TRUE),nrow=100,ncol=400)
-Direction_searchtuning(X,loading=c(1,rep(0,399)),mu=NULL,resol=1.5,maxiter=10)
+n = 100
+p = 400
+X = matrix(sample(-2:2,n*p,replace = TRUE),nrow = n,ncol = p)
+Direction_searchtuning(X,loading=c(1,rep(0,(p-1))))
 }

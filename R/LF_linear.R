@@ -98,10 +98,10 @@ Initialization.step<-function(X,y,lambda=NULL,intercept=FALSE){
 #}
 
 
-#' Constructs the projection direction with fixed tuning parameter for estimating functional in high-dimensional linear regression model
+#' Constructs the projection direction with fixed tuning parameter in high dimensional linear regression model
 #'
-#' @param Xc Design matrix, of dimension nvar(\eqn{n})xnobs(\eqn{p})
-#' @param loading observation vector in the linear functional, of length \eqn{p}
+#' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
+#' @param loading Loading, of length \eqn{p}
 #' @param mu Tuning parameter in construction of projection direction
 #'
 #' @return
@@ -109,19 +109,21 @@ Initialization.step<-function(X,y,lambda=NULL,intercept=FALSE){
 #' @export
 #'
 #' @examples
-#' X = matrix(sample(-2:2,100*400,replace = TRUE),nrow=100,ncol=400)
-#' Direction_fixedtuning(X,loading=c(1,rep(0,399)),mu=2)
+#' n = 100
+#' p = 400
+#' X = matrix(sample(-2:2,n*p,replace = TRUE),nrow = n,ncol = p)
+#' Direction_fixedtuning(X,loading=c(1,rep(0,(p-1))),mu=2)
 #'
-Direction_fixedtuning<-function(Xc,loading,mu=NULL){
-  pp<-ncol(Xc)
-  n<-nrow(Xc)
+Direction_fixedtuning<-function(X,loading,mu=NULL){
+  pp<-ncol(X)
+  n<-nrow(X)
   if(is.null(mu)){
     mu<-sqrt(2.01*log(pp)/n)
   }
   loading.norm<-sqrt(sum(loading^2))
   H<-cbind(loading/loading.norm,diag(1,pp))
   v<-Variable(pp+1)
-  obj<-1/4*sum((Xc%*%H%*%v)^2)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
+  obj<-1/4*sum((X%*%H%*%v)^2)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
   prob<-Problem(Minimize(obj))
   result<-solve(prob)
   print("fixed mu")
@@ -134,15 +136,15 @@ Direction_fixedtuning<-function(Xc,loading,mu=NULL){
   return(returnList)
 }
 
-#' Constructs the projection direction with "optimal" tuning parameter for estimating functional in high-dimensional linear regression model
+#' Searches for the best step size and computes the projection direction in high dimensional linear regression
 #'
-#' @param Xc Design matrix, of dimension nvar(\eqn{n})xnobs(\eqn{p})
-#' @param loading observation vector in the linear functional, of length \eqn{p}
+#' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
+#' @param loading Loading, of length \eqn{p}
 #' @param mu Tuning parameter in construction of projection direction
 #' @param resol Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-#' that gives convergence of the optimization problem for constructing the projection direction
+#' that gives convergence of the optimization problem for constructing the projection direction (default = 1.5)
 #' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-#' that gives convergence of the optimization problem for constructing the projection direction
+#' that gives convergence of the optimization problem for constructing the projection direction (default = 10)
 #'
 #' @return
 #' \item{proj}{The projection direction}
@@ -150,11 +152,13 @@ Direction_fixedtuning<-function(Xc,loading,mu=NULL){
 #' @export
 #'
 #' @examples
-#' X = matrix(sample(-2:2,100*400,replace = TRUE),nrow=100,ncol=400)
-#' Direction_searchtuning(X,loading=c(1,rep(0,399)),mu=NULL,resol=1.5,maxiter=10)
-Direction_searchtuning<-function(Xc,loading,mu=NULL, resol, maxiter){
-  pp<-ncol(Xc)
-  n<-nrow(Xc)
+#' n = 100
+#' p = 400
+#' X = matrix(sample(-2:2,n*p,replace = TRUE),nrow = n,ncol = p)
+#' Direction_searchtuning(X,loading=c(1,rep(0,(p-1))))
+Direction_searchtuning<-function(X,loading,mu=NULL, resol = 1.5, maxiter = 10){
+  pp<-ncol(X)
+  n<-nrow(X)
   tryno = 1;
   opt.sol = rep(0,pp);
   lamstop = 0;
@@ -170,7 +174,7 @@ Direction_searchtuning<-function(Xc,loading,mu=NULL, resol, maxiter){
     loading.norm<-sqrt(sum(loading^2))
     H<-cbind(loading/loading.norm,diag(1,pp))
     v<-Variable(pp+1)
-    obj<-1/4*sum((Xc%*%H%*%v)^2)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
+    obj<-1/4*sum((X%*%H%*%v)^2)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
     prob<-Problem(Minimize(obj))
     result<-solve(prob)
     #print(result$value)
@@ -182,7 +186,7 @@ Direction_searchtuning<-function(Xc,loading,mu=NULL, resol, maxiter){
         incr = 0;
         mu=mu/resol;
         temp.vec<-(-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
-        initial.sd<-sqrt(sum((Xc%*% temp.vec)^2)/(n)^2)*loading.norm ##what's this?
+        initial.sd<-sqrt(sum((X%*% temp.vec)^2)/(n)^2)*loading.norm ##what's this?
         temp.sd<-initial.sd
       }else{
         incr = 1;
@@ -199,7 +203,7 @@ Direction_searchtuning<-function(Xc,loading,mu=NULL, resol, maxiter){
         if(cvxr_status=="optimal"&&temp.sd<3*initial.sd){ ##Why this condition on sd?
           mu = mu/resol;
           temp.vec<-(-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
-          temp.sd<-sqrt(sum((Xc%*% temp.vec)^2)/(n)^2)*loading.norm
+          temp.sd<-sqrt(sum((X%*% temp.vec)^2)/(n)^2)*loading.norm
           #print(temp.sd)
         }else{
           mu=mu*resol;
@@ -219,18 +223,18 @@ Direction_searchtuning<-function(Xc,loading,mu=NULL, resol, maxiter){
   return(returnList)
 }
 
-#' Inference for linear functional in the high-dimensional linear regression model
+#' Inference for linear functional in the high dimensional linear regression model
 #'
 #' @description
-#' Computes the bias corrected estimator of linear functional for the high-dimensional linear regression model and the corresponding standard error.
+#' Computes the bias corrected estimator of linear functional \code{loading}\eqn{^{\top}\beta} for the high dimensional linear regression model \eqn{Y_i=X_i^{\top}\beta + \epsilon_i} and the corresponding standard error.
 #'
-#' @param X Design matrix, of dimension nobs(\eqn{n})xnvar(\eqn{p})
-#' @param y Response variable, a vector of length \eqn{n}
-#' @param loading observation vector in the linear functional, of length \eqn{p}
-#' @param init.Lasso initial LASSO estimator of the regression vector (default = \code{NULL})
-#' @param lambda Tuning parameter in construction of LASSO estimator of the regression vector (default = \code{NULL})
+#' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
+#' @param y Outcome vector, of length \eqn{n}
+#' @param loading Loading, of length \eqn{p}
 #' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
-#' @param mu Tuning parameter in construction of projection direction (default = \code{NULL})
+#' @param init.Lasso Initial LASSO estimator of the regression vector (default = \code{NULL})
+#' @param lambda The tuning parameter in construction of LASSO estimator of the regression vector (default = \code{NULL})
+#' @param mu The tuning parameter in construction of projection direction (default = \code{NULL})
 #' @param step Number of steps (< \code{maxiter}) to obtain the smallest \code{mu} that gives convergence of the
 #' optimization problem for constructing the projection direction (default = \code{NULL})
 #' @param resol Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
@@ -257,10 +261,12 @@ Direction_searchtuning<-function(Xc,loading,mu=NULL, resol, maxiter){
 #' \insertRef{linlin}{FIHR}
 #'
 #' @examples
-#' X = matrix(sample(-2:2,100*400,replace = TRUE),nrow=100,ncol=400)
-#' beta = (1:400)/25
-#' y = X%*%beta + rnorm(100,0,1)
-#' LF(X = X, y = y, loading = c(1,rep(0,399)), intercept = TRUE)
+#' n = 100
+#' p = 400
+#' X = matrix(sample(-2:2,n*p,replace = TRUE),nrow = n,ncol = p)
+#' beta = (1:p)/25
+#' y = X%*%beta + rnorm(n,0,1)
+#' LF(X = X, y = y, loading = c(1,rep(0,(p-1))), intercept = TRUE)
 LF<-function(X,y,loading,init.Lasso=NULL,lambda=NULL,intercept=TRUE,mu=NULL,step=NULL,resol = 1.5,maxiter=10){
   ### Option 1: search tuning parameter with steps determined by the ill conditioned case (n=p/2)
   ### Option 2: search tuning parameter with maximum 10 steps.

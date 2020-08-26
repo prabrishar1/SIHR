@@ -2,14 +2,14 @@
 % Please edit documentation in R/LF_linear.R
 \name{Direction_fixedtuning}
 \alias{Direction_fixedtuning}
-\title{Constructs the projection direction with fixed tuning parameter for estimating functional in high-dimensional linear regression model}
+\title{Constructs the projection direction with fixed tuning parameter in high dimensional linear regression model}
 \usage{
-Direction_fixedtuning(Xc, loading, mu = NULL)
+Direction_fixedtuning(X, loading, mu = NULL)
 }
 \arguments{
-\item{Xc}{Design matrix, of dimension nvar(\eqn{n})xnobs(\eqn{p})}
+\item{X}{Design matrix, of dimension \eqn{n} x \eqn{p}}
 
-\item{loading}{observation vector in the linear functional, of length \eqn{p}}
+\item{loading}{Loading, of length \eqn{p}}
 
 \item{mu}{Tuning parameter in construction of projection direction}
 }
@@ -17,10 +17,12 @@ Direction_fixedtuning(Xc, loading, mu = NULL)
 \item{proj}{The projection direction}
 }
 \description{
-Constructs the projection direction with fixed tuning parameter for estimating functional in high-dimensional linear regression model
+Constructs the projection direction with fixed tuning parameter in high dimensional linear regression model
 }
 \examples{
-X = matrix(sample(-2:2,100*400,replace = TRUE),nrow=100,ncol=400)
-Direction_fixedtuning(X,loading=c(1,rep(0,399)),mu=2)
+n = 100
+p = 400
+X = matrix(sample(-2:2,n*p,replace = TRUE),nrow = n,ncol = p)
+Direction_fixedtuning(X,loading=c(1,rep(0,(p-1))),mu=2)
 
 }

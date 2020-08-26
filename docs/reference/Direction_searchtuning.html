@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Constructs the projection direction with "optimal" tuning parameter for estimating functional in high-dimensional linear regression model — Direction_searchtuning • FIHR</title>
+<title>Searches for the best step size and computes the projection direction in high dimensional linear regression — Direction_searchtuning • FIHR</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Constructs the projection direction with "optimal" tuning parameter for estimating functional in high-dimensional linear regression model — Direction_searchtuning" />
-<meta property="og:description" content="Constructs the projection direction with &quot;optimal&quot; tuning parameter for estimating functional in high-dimensional linear regression model" />
+<meta property="og:title" content="Searches for the best step size and computes the projection direction in high dimensional linear regression — Direction_searchtuning" />
+<meta property="og:description" content="Searches for the best step size and computes the projection direction in high dimensional linear regression" />
 
 
 
@@ -103,27 +103,27 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Constructs the projection direction with "optimal" tuning parameter for estimating functional in high-dimensional linear regression model</h1>
+    <h1>Searches for the best step size and computes the projection direction in high dimensional linear regression</h1>
     
     <div class="hidden name"><code>Direction_searchtuning.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Constructs the projection direction with "optimal" tuning parameter for estimating functional in high-dimensional linear regression model</p>
+    <p>Searches for the best step size and computes the projection direction in high dimensional linear regression</p>
     </div>
 
-    <pre class="usage"><span class='fu'>Direction_searchtuning</span>(<span class='no'>Xc</span>, <span class='no'>loading</span>, <span class='kw'>mu</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>resol</span>, <span class='no'>maxiter</span>)</pre>
+    <pre class="usage"><span class='fu'>Direction_searchtuning</span>(<span class='no'>X</span>, <span class='no'>loading</span>, <span class='kw'>mu</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>resol</span> <span class='kw'>=</span> <span class='fl'>1.5</span>, <span class='kw'>maxiter</span> <span class='kw'>=</span> <span class='fl'>10</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>Xc</th>
-      <td><p>Design matrix, of dimension nvar(\(n\))xnobs(\(p\))</p></td>
+      <th>X</th>
+      <td><p>Design matrix, of dimension \(n\) x \(p\)</p></td>
     </tr>
     <tr>
       <th>loading</th>
-      <td><p>observation vector in the linear functional, of length \(p\)</p></td>
+      <td><p>Loading, of length \(p\)</p></td>
     </tr>
     <tr>
       <th>mu</th>
@@ -132,12 +132,12 @@
     <tr>
       <th>resol</th>
       <td><p>Resolution or the factor by which <code>mu</code> is increased/decreased to obtain the smallest <code>mu</code>
-that gives convergence of the optimization problem for constructing the projection direction</p></td>
+that gives convergence of the optimization problem for constructing the projection direction (default = 1.5)</p></td>
     </tr>
     <tr>
       <th>maxiter</th>
       <td><p>Maximum number of steps along which <code>mu</code> is increased/decreased to obtain the smallest <code>mu</code>
-that gives convergence of the optimization problem for constructing the projection direction</p></td>
+that gives convergence of the optimization problem for constructing the projection direction (default = 10)</p></td>
     </tr>
     </table>
 
@@ -149,8 +149,10 @@ that gives convergence of the optimization problem for constructing the projecti
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>X</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(-<span class='fl'>2</span>:<span class='fl'>2</span>,<span class='fl'>100</span>*<span class='fl'>400</span>,<span class='kw'>replace</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>),<span class='kw'>nrow</span><span class='kw'>=</span><span class='fl'>100</span>,<span class='kw'>ncol</span><span class='kw'>=</span><span class='fl'>400</span>)
-<span class='fu'>Direction_searchtuning</span>(<span class='no'>X</span>,<span class='kw'>loading</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span>,<span class='fl'>399</span>)),<span class='kw'>mu</span><span class='kw'>=</span><span class='kw'>NULL</span>,<span class='kw'>resol</span><span class='kw'>=</span><span class='fl'>1.5</span>,<span class='kw'>maxiter</span><span class='kw'>=</span><span class='fl'>10</span>)</div><div class='output co'>#&gt; [1] 3</div><div class='output co'>#&gt; $proj
+    <pre class="examples"><div class='input'><span class='no'>n</span> <span class='kw'>=</span> <span class='fl'>100</span>
+<span class='no'>p</span> <span class='kw'>=</span> <span class='fl'>400</span>
+<span class='no'>X</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(-<span class='fl'>2</span>:<span class='fl'>2</span>,<span class='no'>n</span>*<span class='no'>p</span>,<span class='kw'>replace</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>),<span class='kw'>nrow</span> <span class='kw'>=</span> <span class='no'>n</span>,<span class='kw'>ncol</span> <span class='kw'>=</span> <span class='no'>p</span>)
+<span class='fu'>Direction_searchtuning</span>(<span class='no'>X</span>,<span class='kw'>loading</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span>,(<span class='no'>p</span>-<span class='fl'>1</span>))))</div><div class='output co'>#&gt; [1] 3</div><div class='output co'>#&gt; $proj
 #&gt;   [1]  6.371366e-01  1.174962e-21 -4.827311e-22 -5.103170e-22  3.307916e-22
 #&gt;   [6]  1.092495e-22  1.815365e-21  1.531152e-21 -1.746862e-21 -1.345230e-21
 #&gt;  [11]  5.847732e-22 -5.535838e-22 -6.915321e-22  2.889573e-02  4.474369e-22
@@ -246,7 +248,7 @@ that gives convergence of the optimization problem for constructing the projecti
 
       <footer>
       <div class="copyright">
-  <p>Developed by Prabrisha Rakshit.</p>
+  <p>Developed by Zijian Guo, Prabrisha Rakshit.</p>
 </div>
 
 <div class="pkgdown">

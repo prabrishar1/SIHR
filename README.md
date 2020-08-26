@@ -59,10 +59,10 @@ model
     #> [1] 3
     #> [1] "step is 3"
     Est$prop.est
-    #>            [,1]
-    #> [1,] 0.02886183
+    #>           [,1]
+    #> [1,] 0.4828349
     Est$se
-    #> [1] 0.1182428
+    #> [1] 0.1950697
 
 Inference for linear functional in high-dimensional logistic regression
 model
@@ -92,11 +92,12 @@ model
     #> [1] 3
     #> [1] "step is 3"
     Est$prop.est
-    #> [1] -0.02808497
+    #> [1] 0.1438719
     Est$se
-    #> [1] 0.2971103
+    #> [1] 0.3031516
 
 Inference for quadratic functional in high-dimensional linear model
+
 
     library(MASS)
     A1gen <- function(rho,p){
@@ -121,11 +122,19 @@ Inference for quadratic functional in high-dimensional linear model
     ## Inference for Quadratic Functional with Population Covariance Matrix in middle
 
     Est = FIHR::QF(X = X, y = y, test.set=test.set)
+    #> Warning in FIHR::QF(X = X, y = y, test.set = test.set): The model is most likely
+    #> misspecified because the correction term is larger than the lasso estimate in
+    #> absolute value. See cluster or group: X30, X31, X32, X33, X34, X35, X36, X37,
+    #> X38, X39, X40, X41, X42, X43, X44, X45, X46, X47, X48, X49, X50, X51, X52, X53,
+    #> X54, X55, X56, X57, X58, X59, X60, X61, X62, X63, X64, X65, X66, X67, X68, X69,
+    #> X70, X71, X72, X73, X74, X75, X76, X77, X78, X79, X80, X81, X82, X83, X84, X85,
+    #> X86, X87, X88, X89, X90, X91, X92, X93, X94, X95, X96, X97, X98, X99, X100 . The
+    #> value of the lasso.plugin and correction are 0.04077 respectively 0.07546 .
     Est$prop.est
     #>           [,1]
-    #> [1,] 0.3471611
+    #> [1,] 0.1162344
     Est$se
-    #> [1] 0.1079703
+    #> [1] 0.1026729
 
     ## Inference for Quadratic Functional with known matrix A in middle
 
@@ -140,9 +149,9 @@ Inference for quadratic functional in high-dimensional linear model
     #> [1] "A is not Sigma 3"
     Est$prop.est
     #>          [,1]
-    #> [1,] 50.81775
+    #> [1,] 84.20079
     Est$se
-    #> [1] 0.1435641
+    #> [1] 0.1461516
 
     ## Inference for square norm of regression vector
 
@@ -157,7 +166,7 @@ Inference for quadratic functional in high-dimensional linear model
     #> element will be used
     #> [1] "A is not Sigma 3"
     Est$prop.est
-    #>           [,1]
-    #> [1,] 0.8310707
+    #>          [,1]
+    #> [1,] 7.061244
     Est$se
-    #> [1] 0.1414572
+    #> [1] 0.1416576

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Inference for quadratic functional in high-dimensional linear regression model — QF • FIHR</title>
+<title>Inference for quadratic functional in high dimensional linear regression model — QF • FIHR</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Inference for quadratic functional in high-dimensional linear regression model — QF" />
-<meta property="og:description" content="Computes the bias-corrected estimator of the quadratic functional restricted to group G for the high-dimensional linear regression model and the corresponding standard error" />
+<meta property="og:title" content="Inference for quadratic functional in high dimensional linear regression model — QF" />
+<meta property="og:description" content="Computes the bias-corrected estimator of the quadratic functional \(\beta_G^{\top}A\beta_G\) for the high dimensional linear regression model \(Y_i = X_i^{\top}\beta + \epsilon\) and the corresponding standard error." />
 
 
 
@@ -103,13 +103,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Inference for quadratic functional in high-dimensional linear regression model</h1>
+    <h1>Inference for quadratic functional in high dimensional linear regression model</h1>
     
     <div class="hidden name"><code>QF.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Computes the bias-corrected estimator of the quadratic functional restricted to group <code>G</code> for the high-dimensional linear regression model and the corresponding standard error</p>
+    <p>Computes the bias-corrected estimator of the quadratic functional \(\beta_G^{\top}A\beta_G\) for the high dimensional linear regression model \(Y_i = X_i^{\top}\beta + \epsilon\) and the corresponding standard error.</p>
     </div>
 
     <pre class="usage"><span class='fu'>QF</span>(
@@ -124,7 +124,7 @@
   <span class='kw'>mu</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>step</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>resol</span> <span class='kw'>=</span> <span class='fl'>1.5</span>,
-  <span class='kw'>maxiter</span> <span class='kw'>=</span> <span class='fl'>6</span>
+  <span class='kw'>maxiter</span> <span class='kw'>=</span> <span class='fl'>10</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -132,31 +132,31 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>X</th>
-      <td><p>Design matrix, of dimension nvar(\(n\))xnobs(\(p\))</p></td>
+      <td><p>Design matrix, of dimension \(n\) x \(p\)</p></td>
     </tr>
     <tr>
       <th>y</th>
-      <td><p>Response variable, of length \(n\)</p></td>
+      <td><p>Outcome vector, of length \(n\)</p></td>
     </tr>
     <tr>
       <th>test.set</th>
-      <td><p>set of indices, <code>G</code> in the quadratic functional</p></td>
+      <td><p>The set of indices, <code>G</code> in the quadratic functional</p></td>
     </tr>
     <tr>
       <th>A</th>
-      <td><p>Matrix A in the quadratic functional, of dimension \(p\)x\(p\) (either the population covariance matrix <code>Sigma</code> or a known matrix of suitable dimension ; default = <code>Sigma</code>)</p></td>
+      <td><p>The matrix A in the quadratic functional, of dimension \(p\)x\(p\) (either the population covariance matrix <code>Sigma</code> or a known matrix of suitable dimension ; default = <code>Sigma</code>)</p></td>
     </tr>
     <tr>
       <th>init.Lasso</th>
-      <td><p>initial LASSO estimator for the regression vector (default = <code>NULL</code>)</p></td>
+      <td><p>Initial LASSO estimator for the regression vector (default = <code>NULL</code>)</p></td>
     </tr>
     <tr>
       <th>tau.vec</th>
-      <td><p>Vector of enlargement factors for asymptotic variance of the bias-corrected estimator to handle super-efficiency (default = <code>NULL</code>)</p></td>
+      <td><p>The vector of enlargement factors for asymptotic variance of the bias-corrected estimator to handle super-efficiency (default = <code>NULL</code>)</p></td>
     </tr>
     <tr>
       <th>lambda</th>
-      <td><p>Tuning parameter used in construction of initial LASSO estimator of the regression vector if <code>init.Lasso = NULL</code> (default = <code>NULL</code>)</p></td>
+      <td><p>The tuning parameter used in construction of initial LASSO estimator of the regression vector if <code>init.Lasso = NULL</code> (default = <code>NULL</code>)</p></td>
     </tr>
     <tr>
       <th>intercept</th>
@@ -164,7 +164,7 @@
     </tr>
     <tr>
       <th>mu</th>
-      <td><p>Tuning parameter in construction of the projection direction (default = <code>NULL</code>)</p></td>
+      <td><p>The tuning parameter in construction of the projection direction (default = <code>NULL</code>)</p></td>
     </tr>
     <tr>
       <th>step</th>
@@ -200,10 +200,13 @@ that gives convergence of the optimization problem for constructing the projecti
 <a href='https://statistics.rutgers.edu/home/zijguo/Guo-Renaux-Buhlman-Cai-Group-Inference.pdf'>https://statistics.rutgers.edu/home/zijguo/Guo-Renaux-Buhlman-Cai-Group-Inference.pdf</a>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>X</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(-<span class='fl'>2</span>:<span class='fl'>2</span>,<span class='fl'>100</span>*<span class='fl'>400</span>,<span class='kw'>replace</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>),<span class='kw'>nrow</span><span class='kw'>=</span><span class='fl'>100</span>,<span class='kw'>ncol</span><span class='kw'>=</span><span class='fl'>400</span>)
-<span class='no'>beta</span> <span class='kw'>=</span> (<span class='fl'>1</span>:<span class='fl'>400</span>)/<span class='fl'>25</span>
-<span class='no'>y</span> <span class='kw'>=</span> <span class='no'>X</span><span class='kw'>%*%</span><span class='no'>beta</span> + <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>100</span>,<span class='fl'>0</span>,<span class='fl'>1</span>)
-<span class='fu'>QF</span>(<span class='kw'>X</span> <span class='kw'>=</span> <span class='no'>X</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>y</span>, <span class='kw'>test.set</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>30</span>:<span class='fl'>50</span>))</div><div class='output co'>#&gt; $prop.est
+    <pre class="examples"><div class='input'><span class='no'>n</span> <span class='kw'>=</span> <span class='fl'>100</span>
+<span class='no'>p</span> <span class='kw'>=</span> <span class='fl'>400</span>
+<span class='no'>X</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(-<span class='fl'>2</span>:<span class='fl'>2</span>,<span class='no'>n</span>*<span class='no'>p</span>,<span class='kw'>replace</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>),<span class='kw'>nrow</span><span class='kw'>=</span><span class='no'>n</span>,<span class='kw'>ncol</span><span class='kw'>=</span><span class='no'>p</span>)
+<span class='no'>beta</span> <span class='kw'>=</span> (<span class='fl'>1</span>:<span class='no'>p</span>)/<span class='fl'>25</span>
+<span class='no'>y</span> <span class='kw'>=</span> <span class='no'>X</span><span class='kw'>%*%</span><span class='no'>beta</span> + <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='no'>n</span>,<span class='fl'>0</span>,<span class='fl'>1</span>)
+<span class='no'>test.set</span> <span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>30</span>:<span class='fl'>50</span>)
+<span class='fu'>QF</span>(<span class='kw'>X</span> <span class='kw'>=</span> <span class='no'>X</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>y</span>, <span class='no'>test.set</span>)</div><div class='output co'>#&gt; $prop.est
 #&gt;         [,1]
 #&gt; [1,] 1614.96
 #&gt; 
@@ -228,7 +231,7 @@ that gives convergence of the optimization problem for constructing the projecti
 
       <footer>
       <div class="copyright">
-  <p>Developed by Prabrisha Rakshit.</p>
+  <p>Developed by Zijian Guo, Prabrisha Rakshit.</p>
 </div>
 
 <div class="pkgdown">

@@ -2,7 +2,7 @@
 % Please edit documentation in R/QF.R
 \name{QF}
 \alias{QF}
-\title{Inference for quadratic functional in high-dimensional linear regression model}
+\title{Inference for quadratic functional in high dimensional linear regression model}
 \usage{
 QF(
   X,
@@ -16,27 +16,27 @@ QF(
   mu = NULL,
   step = NULL,
   resol = 1.5,
-  maxiter = 6
+  maxiter = 10
 )
 }
 \arguments{
-\item{X}{Design matrix, of dimension nvar(\eqn{n})xnobs(\eqn{p})}
+\item{X}{Design matrix, of dimension \eqn{n} x \eqn{p}}
 
-\item{y}{Response variable, of length \eqn{n}}
+\item{y}{Outcome vector, of length \eqn{n}}
 
-\item{test.set}{set of indices, \code{G} in the quadratic functional}
+\item{test.set}{The set of indices, \code{G} in the quadratic functional}
 
-\item{A}{Matrix A in the quadratic functional, of dimension \eqn{p}x\eqn{p} (either the population covariance matrix \code{Sigma} or a known matrix of suitable dimension ; default = \code{Sigma})}
+\item{A}{The matrix A in the quadratic functional, of dimension \eqn{p}x\eqn{p} (either the population covariance matrix \code{Sigma} or a known matrix of suitable dimension ; default = \code{Sigma})}
 
-\item{init.Lasso}{initial LASSO estimator for the regression vector (default = \code{NULL})}
+\item{init.Lasso}{Initial LASSO estimator for the regression vector (default = \code{NULL})}
 
-\item{tau.vec}{Vector of enlargement factors for asymptotic variance of the bias-corrected estimator to handle super-efficiency (default = \code{NULL})}
+\item{tau.vec}{The vector of enlargement factors for asymptotic variance of the bias-corrected estimator to handle super-efficiency (default = \code{NULL})}
 
-\item{lambda}{Tuning parameter used in construction of initial LASSO estimator of the regression vector if \code{init.Lasso = NULL} (default = \code{NULL})}
+\item{lambda}{The tuning parameter used in construction of initial LASSO estimator of the regression vector if \code{init.Lasso = NULL} (default = \code{NULL})}
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
 
-\item{mu}{Tuning parameter in construction of the projection direction (default = \code{NULL})}
+\item{mu}{The tuning parameter in construction of the projection direction (default = \code{NULL})}
 
 \item{step}{Number of steps (< \code{maxiter}) to obtain the smallest \code{mu} that gives convergence of the
 optimization problem for constructing the projection direction (default = \code{NULL})}
@@ -54,13 +54,16 @@ that gives convergence of the optimization problem for constructing the projecti
 \item{plug.in}{Plug-in LASSO estimator for the quadratic functional restricted to \code{G}}
 }
 \description{
-Computes the bias-corrected estimator of the quadratic functional restricted to group \code{G} for the high-dimensional linear regression model and the corresponding standard error
+Computes the bias-corrected estimator of the quadratic functional \eqn{\beta_G^{\top}A\beta_G} for the high dimensional linear regression model \eqn{Y_i = X_i^{\top}\beta + \epsilon} and the corresponding standard error.
 }
 \examples{
-X = matrix(sample(-2:2,100*400,replace = TRUE),nrow=100,ncol=400)
-beta = (1:400)/25
-y = X\%*\%beta + rnorm(100,0,1)
-QF(X = X, y = y, test.set=c(30:50))
+n = 100
+p = 400
+X = matrix(sample(-2:2,n*p,replace = TRUE),nrow=n,ncol=p)
+beta = (1:p)/25
+y = X\%*\%beta + rnorm(n,0,1)
+test.set =c(30:50)
+QF(X = X, y = y, test.set)
 
 }
 \references{

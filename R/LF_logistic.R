@@ -33,12 +33,12 @@ Initialization.step <- function(X,y,intercept)
   return(returnList)
 }
 
-#' Constructs the projection direction with fixed tuning parameter toestimate functional in high-dimensional logistic regression
+#' Constructs the projection direction with fixed tuning parameter in high dimensional logistic regression
 #'
-#' @param Xc Design matrix, of dimension nvar(\eqn{n})xnobs(\eqn{p})
-#' @param loading observation vector in the linear functional, of length \eqn{p}
-#' @param mu Tuning parameter in construction of projection direction
-#' @param weight A vector, of length \eqn{n}, of weights used in re-weighting the correction term of the estimator
+#' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
+#' @param loading Loading, of length \eqn{p}
+#' @param mu The tuning parameter used in the construction of the projection direction
+#' @param weight The weight vector, of length \eqn{n}, used in correcting the plug-in estimator
 #' @param f_prime The first derivative of the logit function at the plug-in LASSO estimate of the linear functional
 #'
 #' @return
@@ -46,10 +46,10 @@ Initialization.step <- function(X,y,intercept)
 #' @export
 #'
 #' @examples
-#' X = matrix(sample(-2:2,50*400,replace = TRUE),nrow=50,ncol=400)
-#' y = rbinom(50,1,0.5)
-#' p <- ncol(X);
-#' n <- nrow(X);
+#' n = 50
+#' p = 400
+#' X = matrix(sample(-2:2,n*p,replace = TRUE),nrow=n,ncol=p)
+#' y = rbinom(n,1,0.5)
 #' col.norm <- 1/sqrt((1/n)*diag(t(X)%*%X)+0.0001);
 #' Xnor <- X %*% diag(col.norm);
 #' fit = glmnet::cv.glmnet(Xnor, y, alpha=1,family = "binomial")
@@ -59,7 +59,7 @@ Initialization.step <- function(X,y,intercept)
 #' Xc <- cbind(rep(1,n),X);
 #' col.norm <- c(1,col.norm);
 #' pp <- (p+1);
-#' xnew = c(1,rep(0,399))
+#' xnew = c(1,rep(0,(p-1)))
 #' loading=rep(0,pp)
 #' loading[1]=1
 #' loading[-1]=xnew
@@ -67,16 +67,16 @@ Initialization.step <- function(X,y,intercept)
 #' htheta <- as.vector(htheta)
 #' f_prime <- exp(Xc%*%htheta)/(1+exp(Xc%*%htheta))^2
 #' Direction_fixedtuning_logistic(Xc,loading,mu=2,weight=rep(1,50),f_prime)
-Direction_fixedtuning_logistic<-function(Xc,loading,mu=NULL,weight,f_prime){      ####### included functions weight and f_prime
-  pp<-ncol(Xc)
-  n<-nrow(Xc)
+Direction_fixedtuning_logistic<-function(X,loading,mu=NULL,weight,f_prime){      ####### included functions weight and f_prime
+  pp<-ncol(X)
+  n<-nrow(X)
   if(is.null(mu)){
     mu<-sqrt(2.01*log(pp)/n)
   }
   loading.norm<-sqrt(sum(loading^2))
   H<-cbind(loading/loading.norm,diag(1,pp))
   v<-Variable(pp+1)
-  obj<-1/4*sum(((Xc%*%H%*%v)^2)*weight*f_prime)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))   #######modified
+  obj<-1/4*sum(((X%*%H%*%v)^2)*weight*f_prime)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))   #######modified
   prob<-Problem(Minimize(obj))
   result<-solve(prob)
   print("fixed mu")
@@ -89,27 +89,27 @@ Direction_fixedtuning_logistic<-function(Xc,loading,mu=NULL,weight,f_prime){    
   return(returnList)
 }
 
-#' Constructs the projection direction with "optimal" tuning parameter for estimating functional in high-dimensional logistic regression
+#' Searches for the best step size and computes the projection direction in high dimensional logistic regression
 #'
-#' @param Xc Design matrix of dimension nvar(\eqn{n})xnobs(\eqn{p})
-#' @param loading observation vector in linear functional, of length \eqn{n}
-#' @param mu Tuning parameter in construction of the projection direction
-#' @param weight A vector, of length \eqn{n}, of weights used in re-weighting the correction term of the estimator
+#' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
+#' @param loading Loading, of length \eqn{n}
+#' @param mu The tuning parameter used in the construction of the projection direction
+#' @param weight The weight vector of length \eqn{n}, used in correcting the plug-in estimator
 #' @param f_prime The first derivative of the logit function at the plug-in LASSO estimate of the linear functional
 #' @param resol Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-#' that gives convergence of the optimization problem for constructing the projection direction
+#' that gives convergence of the optimization problem for constructing the projection direction (default = 1.5)
 #' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-#' that gives convergence of the optimization problem for constructing the projection direction
+#' that gives convergence of the optimization problem for constructing the projection direction (default = 10)
 #'
 #' @return
 #' \item{proj}{The projection direction}
 #' @export
 #'
 #' @examples
-#' X = matrix(sample(-2:2,50*400,replace = TRUE),nrow=50,ncol=400)
-#' y = rbinom(50,1,0.5)
-#' p <- ncol(X);
-#' n <- nrow(X);
+#' n = 50
+#' p = 400
+#' X = matrix(sample(-2:2,n*p,replace = TRUE),nrow=n,ncol=p)
+#' y = rbinom(n,1,0.5)
 #' col.norm <- 1/sqrt((1/n)*diag(t(X)%*%X)+0.0001);
 #' Xnor <- X %*% diag(col.norm);
 #' fit = glmnet::cv.glmnet(Xnor, y, alpha=1,family = "binomial")
@@ -119,7 +119,7 @@ Direction_fixedtuning_logistic<-function(Xc,loading,mu=NULL,weight,f_prime){    
 #' Xc <- cbind(rep(1,n),X);
 #' col.norm <- c(1,col.norm);
 #' pp <- (p+1);
-#' xnew = c(1,rep(0,399))
+#' xnew = c(1,rep(0,(p-1)))
 #' loading=rep(0,pp)
 #' loading[1]=1
 #' loading[-1]=xnew
@@ -128,9 +128,9 @@ Direction_fixedtuning_logistic<-function(Xc,loading,mu=NULL,weight,f_prime){    
 #' f_prime <- exp(Xc%*%htheta)/(1+exp(Xc%*%htheta))^2
 #' Direction_searchtuning_logistic(Xc,loading,weight=rep(1,50),f_prime = f_prime,
 #'                                 resol = 1.5, maxiter = 6)
-Direction_searchtuning_logistic<-function(Xc,loading,mu=NULL,weight,f_prime,resol, maxiter){     #included weight and f_prime
-  pp<-ncol(Xc)
-  n<-nrow(Xc)
+Direction_searchtuning_logistic<-function(X,loading,mu=NULL,weight,f_prime,resol=1.5, maxiter=10){     #included weight and f_prime
+  pp<-ncol(X)
+  n<-nrow(X)
   tryno = 1;
   opt.sol = rep(0,pp);
   lamstop = 0;
@@ -146,7 +146,7 @@ Direction_searchtuning_logistic<-function(Xc,loading,mu=NULL,weight,f_prime,reso
     loading.norm<-sqrt(sum(loading^2))
     H<-cbind(loading/loading.norm,diag(1,pp))
     v<-Variable(pp+1)
-    obj<-1/4*sum(((Xc%*%H%*%v)^2)*weight*f_prime)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))    #######modified
+    obj<-1/4*sum(((X%*%H%*%v)^2)*weight*f_prime)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))    #######modified
     prob<-Problem(Minimize(obj))
     result<-solve(prob)
     #print(result$value)
@@ -158,7 +158,7 @@ Direction_searchtuning_logistic<-function(Xc,loading,mu=NULL,weight,f_prime,reso
         incr = 0;
         mu=mu/resol;
         temp.vec<-(-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
-        initial.sd<-sqrt(sum(((Xc%*% temp.vec)^2)*weight*f_prime)/(n)^2)*loading.norm   ############modified
+        initial.sd<-sqrt(sum(((X%*% temp.vec)^2)*weight*f_prime)/(n)^2)*loading.norm   ############modified
         temp.sd<-initial.sd
       }else{
         incr = 1;
@@ -175,7 +175,7 @@ Direction_searchtuning_logistic<-function(Xc,loading,mu=NULL,weight,f_prime,reso
         if(cvxr_status=="optimal"&&temp.sd<3*initial.sd){
           mu = mu/resol;
           temp.vec<-(-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
-          temp.sd<-sqrt(sum(((Xc%*% temp.vec)^2)*weight*f_prime)/(n)^2)*loading.norm     ############modified
+          temp.sd<-sqrt(sum(((X%*% temp.vec)^2)*weight*f_prime)/(n)^2)*loading.norm     ############modified
           #print(temp.sd)
         }else{
           mu=mu*resol;
@@ -195,24 +195,24 @@ Direction_searchtuning_logistic<-function(Xc,loading,mu=NULL,weight,f_prime,reso
   return(returnList)
 }
 
-#' Inference for linear functional in the high-dimensional logistic regression model
+#' Inference for linear functional in the high dimensional logistic regression model
 #'
 #' @description
-#' Computes the bias corrected estimator of the linear functional for the high-dimensional logistic regression model and the corresponding standard error.
+#' Computes the bias corrected estimator of the linear functional \code{loading}\eqn{^{\top}\beta} for the high dimensional logistic regression model \eqn{Y_i|X_i \sim } Bernoulli\eqn{(\frac{e^{X_i^{\top}\beta}}{1+e^{X_i^{\top}\beta}})} and the corresponding standard error.
 #'
-#' @param X Design matrix, of dimension nvar(\eqn{n})xnobs(\eqn{p})
-#' @param y Response vector, of length \eqn{n}
-#' @param loading observation vector in the linear functional, of length \eqn{p}
-#' @param weight The vector, of length \eqn{n}, of weights used in correcting the plug-in estimator
-#' @param init.Lasso initial LASSO estimator of the regression vector (default = \code{NULL})
+#' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
+#' @param y Outcome vector, of length \eqn{n}
+#' @param loading Loading, of length \eqn{p}
 #' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
-#' @param mu Tuning parameter in construction of the projection direction (default = \code{NULL})
+#' @param weight The weight vector, of length \eqn{n}, used in correcting the plug-in estimator
+#' @param init.Lasso Initial LASSO estimator of the regression vector (default = \code{NULL})
+#' @param mu The tuning parameter in construction of the projection direction (default = \code{NULL})
 #' @param step Number of steps (< \code{maxiter}) to obtain the smallest \code{mu} that gives convergence of the
 #' optimization problem for constructing the projection direction (default = \code{NULL})
 #' @param resol Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' that gives convergence of the optimization problem for constructing the projection direction (default = 1.5)
 #' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-#' that gives convergence of the optimization problem for constructing the projection direction (default = 6)
+#' that gives convergence of the optimization problem for constructing the projection direction (default = 10)
 #'
 #' @return
 #' \item{prop.est}{The bias corrected estimator of the linear functional}
@@ -233,10 +233,13 @@ Direction_searchtuning_logistic<-function(Xc,loading,mu=NULL,weight,f_prime,reso
 #'
 #' \insertRef{linlog}{FIHR}
 #' @examples
-#' LF_logistic(X = matrix(sample(-2:2,50*300,replace = TRUE),nrow=50,ncol=300),
-#'                       y = rbinom(50,1,0.5), loading = c(1,rep(0,299)),
-#'                       intercept = TRUE, weight = rep(1,50))
-LF_logistic<-function(X,y,loading,weight,init.Lasso=NULL,intercept=TRUE,mu=NULL,step=NULL,resol = 1.5,maxiter=6){
+#' n = 50
+#' p = 300
+#' X = matrix(sample(-2:2,n*p,replace = TRUE),nrow=n,ncol=p)
+#' y = rbinom(n,1,0.5)
+#' loading = c(1,rep(0,(p-1)))
+#' LF_logistic(X,y,loading,intercept = TRUE, weight = rep(1,50))
+LF_logistic<-function(X,y,loading,weight,init.Lasso=NULL,intercept=TRUE,mu=NULL,step=NULL,resol = 1.5,maxiter=10){
 
   ### included weight, f_prime to be constructed
 

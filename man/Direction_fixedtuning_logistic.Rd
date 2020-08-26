@@ -2,18 +2,18 @@
 % Please edit documentation in R/LF_logistic.R
 \name{Direction_fixedtuning_logistic}
 \alias{Direction_fixedtuning_logistic}
-\title{Constructs the projection direction with fixed tuning parameter toestimate functional in high-dimensional logistic regression}
+\title{Constructs the projection direction with fixed tuning parameter in high dimensional logistic regression}
 \usage{
-Direction_fixedtuning_logistic(Xc, loading, mu = NULL, weight, f_prime)
+Direction_fixedtuning_logistic(X, loading, mu = NULL, weight, f_prime)
 }
 \arguments{
-\item{Xc}{Design matrix, of dimension nvar(\eqn{n})xnobs(\eqn{p})}
+\item{X}{Design matrix, of dimension \eqn{n} x \eqn{p}}
 
-\item{loading}{observation vector in the linear functional, of length \eqn{p}}
+\item{loading}{Loading, of length \eqn{p}}
 
-\item{mu}{Tuning parameter in construction of projection direction}
+\item{mu}{The tuning parameter used in the construction of the projection direction}
 
-\item{weight}{A vector, of length \eqn{n}, of weights used in re-weighting the correction term of the estimator}
+\item{weight}{The weight vector, of length \eqn{n}, used in correcting the plug-in estimator}
 
 \item{f_prime}{The first derivative of the logit function at the plug-in LASSO estimate of the linear functional}
 }
@@ -21,13 +21,13 @@ Direction_fixedtuning_logistic(Xc, loading, mu = NULL, weight, f_prime)
 \item{proj}{The projection direction}
 }
 \description{
-Constructs the projection direction with fixed tuning parameter toestimate functional in high-dimensional logistic regression
+Constructs the projection direction with fixed tuning parameter in high dimensional logistic regression
 }
 \examples{
-X = matrix(sample(-2:2,50*400,replace = TRUE),nrow=50,ncol=400)
-y = rbinom(50,1,0.5)
-p <- ncol(X);
-n <- nrow(X);
+n = 50
+p = 400
+X = matrix(sample(-2:2,n*p,replace = TRUE),nrow=n,ncol=p)
+y = rbinom(n,1,0.5)
 col.norm <- 1/sqrt((1/n)*diag(t(X)\%*\%X)+0.0001);
 Xnor <- X \%*\% diag(col.norm);
 fit = glmnet::cv.glmnet(Xnor, y, alpha=1,family = "binomial")
@@ -37,7 +37,7 @@ Xb <- cbind(rep(1,n),Xnor);
 Xc <- cbind(rep(1,n),X);
 col.norm <- c(1,col.norm);
 pp <- (p+1);
-xnew = c(1,rep(0,399))
+xnew = c(1,rep(0,(p-1)))
 loading=rep(0,pp)
 loading[1]=1
 loading[-1]=xnew

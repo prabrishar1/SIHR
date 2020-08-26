@@ -215,19 +215,19 @@ Direction_searchtuning_robust <- function(Xc, loading, mu = NULL, resol = 1.5,
 # If the test.set is the vector 1:p, then the solution of global test
 # can be calculated explicitly.
 
-#' Inference for quadratic functional in high-dimensional linear regression model
+#' Inference for quadratic functional in high dimensional linear regression model
 #'
-#' @description Computes the bias-corrected estimator of the quadratic functional restricted to group \code{G} for the high-dimensional linear regression model and the corresponding standard error
+#' @description Computes the bias-corrected estimator of the quadratic functional \eqn{\beta_G^{\top}A\beta_G} for the high dimensional linear regression model \eqn{Y_i = X_i^{\top}\beta + \epsilon} and the corresponding standard error.
 #'
-#' @param X Design matrix, of dimension nvar(\eqn{n})xnobs(\eqn{p})
-#' @param y Response variable, of length \eqn{n}
-#' @param test.set set of indices, \code{G} in the quadratic functional
-#' @param A Matrix A in the quadratic functional, of dimension \eqn{p}x\eqn{p} (either the population covariance matrix \code{Sigma} or a known matrix of suitable dimension ; default = \code{Sigma})
-#' @param init.Lasso initial LASSO estimator for the regression vector (default = \code{NULL})
-#' @param tau.vec Vector of enlargement factors for asymptotic variance of the bias-corrected estimator to handle super-efficiency (default = \code{NULL})
-#' @param lambda Tuning parameter used in construction of initial LASSO estimator of the regression vector if \code{init.Lasso = NULL} (default = \code{NULL})
+#' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
+#' @param y Outcome vector, of length \eqn{n}
+#' @param test.set The set of indices, \code{G} in the quadratic functional
+#' @param A The matrix A in the quadratic functional, of dimension \eqn{p}x\eqn{p} (either the population covariance matrix \code{Sigma} or a known matrix of suitable dimension ; default = \code{Sigma})
 #' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
-#' @param mu Tuning parameter in construction of the projection direction (default = \code{NULL})
+#' @param init.Lasso Initial LASSO estimator for the regression vector (default = \code{NULL})
+#' @param tau.vec The vector of enlargement factors for asymptotic variance of the bias-corrected estimator to handle super-efficiency (default = \code{NULL})
+#' @param lambda The tuning parameter used in construction of initial LASSO estimator of the regression vector if \code{init.Lasso = NULL} (default = \code{NULL})
+#' @param mu The tuning parameter in construction of the projection direction (default = \code{NULL})
 #' @param step Number of steps (< \code{maxiter}) to obtain the smallest \code{mu} that gives convergence of the
 #' optimization problem for constructing the projection direction (default = \code{NULL})
 #' @param resol Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
@@ -247,17 +247,20 @@ Direction_searchtuning_robust <- function(Xc, loading, mu = NULL, resol = 1.5,
 #' @import CVXR Matrix glmnet
 #'
 #' @examples
-#' X = matrix(sample(-2:2,100*400,replace = TRUE),nrow=100,ncol=400)
-#' beta = (1:400)/25
-#' y = X%*%beta + rnorm(100,0,1)
-#' QF(X = X, y = y, test.set=c(30:50))
+#' n = 100
+#' p = 400
+#' X = matrix(sample(-2:2,n*p,replace = TRUE),nrow=n,ncol=p)
+#' beta = (1:p)/25
+#' y = X%*%beta + rnorm(n,0,1)
+#' test.set =c(30:50)
+#' QF(X = X, y = y, test.set)
 #'
 #' @references
 #'
 #' \insertRef{grouplin}{FIHR}
 QF <- function(X, y, test.set, A = "Sigma",init.Lasso = NULL, tau.vec = NULL,
                            lambda = NULL, intercept = TRUE, mu = NULL,
-                           step = NULL, resol = 1.5, maxiter = 6) {
+                           step = NULL, resol = 1.5, maxiter = 10) {
   p <- ncol(X)
   n <- nrow(X)
   n_y <- length(y)

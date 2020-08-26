@@ -2,7 +2,7 @@
 % Please edit documentation in R/LF_logistic.R
 \name{LF_logistic}
 \alias{LF_logistic}
-\title{Inference for linear functional in the high-dimensional logistic regression model}
+\title{Inference for linear functional in the high dimensional logistic regression model}
 \usage{
 LF_logistic(
   X,
@@ -14,23 +14,23 @@ LF_logistic(
   mu = NULL,
   step = NULL,
   resol = 1.5,
-  maxiter = 6
+  maxiter = 10
 )
 }
 \arguments{
-\item{X}{Design matrix, of dimension nvar(\eqn{n})xnobs(\eqn{p})}
+\item{X}{Design matrix, of dimension \eqn{n} x \eqn{p}}
 
-\item{y}{Response vector, of length \eqn{n}}
+\item{y}{Outcome vector, of length \eqn{n}}
 
-\item{loading}{observation vector in the linear functional, of length \eqn{p}}
+\item{loading}{Loading, of length \eqn{p}}
 
-\item{weight}{The vector, of length \eqn{n}, of weights used in correcting the plug-in estimator}
+\item{weight}{The weight vector, of length \eqn{n}, used in correcting the plug-in estimator}
 
-\item{init.Lasso}{initial LASSO estimator of the regression vector (default = \code{NULL})}
+\item{init.Lasso}{Initial LASSO estimator of the regression vector (default = \code{NULL})}
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
 
-\item{mu}{Tuning parameter in construction of the projection direction (default = \code{NULL})}
+\item{mu}{The tuning parameter in construction of the projection direction (default = \code{NULL})}
 
 \item{step}{Number of steps (< \code{maxiter}) to obtain the smallest \code{mu} that gives convergence of the
 optimization problem for constructing the projection direction (default = \code{NULL})}
@@ -39,7 +39,7 @@ optimization problem for constructing the projection direction (default = \code{
 that gives convergence of the optimization problem for constructing the projection direction (default = 1.5)}
 
 \item{maxiter}{Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-that gives convergence of the optimization problem for constructing the projection direction (default = 6)}
+that gives convergence of the optimization problem for constructing the projection direction (default = 10)}
 }
 \value{
 \item{prop.est}{The bias corrected estimator of the linear functional}
@@ -51,12 +51,15 @@ optimization problem for constructing the projection direction}
 \item{support}{Estimated support for the regression vector (using LASSO estimate)}
 }
 \description{
-Computes the bias corrected estimator of the linear functional for the high-dimensional logistic regression model and the corresponding standard error.
+Computes the bias corrected estimator of the linear functional \code{loading}\eqn{^{\top}\beta} for the high dimensional logistic regression model \eqn{Y_i|X_i \sim } Bernoulli\eqn{(\frac{e^{X_i^{\top}\beta}}{1+e^{X_i^{\top}\beta}})} and the corresponding standard error.
 }
 \examples{
-LF_logistic(X = matrix(sample(-2:2,50*300,replace = TRUE),nrow=50,ncol=300),
-                      y = rbinom(50,1,0.5), loading = c(1,rep(0,299)),
-                      intercept = TRUE, weight = rep(1,50))
+n = 50
+p = 300
+X = matrix(sample(-2:2,n*p,replace = TRUE),nrow=n,ncol=p)
+y = rbinom(n,1,0.5)
+loading = c(1,rep(0,(p-1)))
+LF_logistic(X,y,loading,intercept = TRUE, weight = rep(1,50))
 }
 \references{
 \insertRef{linlog}{FIHR}

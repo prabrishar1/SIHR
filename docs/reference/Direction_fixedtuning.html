@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Constructs the projection direction with fixed tuning parameter for estimating functional in high-dimensional linear regression model — Direction_fixedtuning • FIHR</title>
+<title>Constructs the projection direction with fixed tuning parameter in high dimensional linear regression model — Direction_fixedtuning • FIHR</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Constructs the projection direction with fixed tuning parameter for estimating functional in high-dimensional linear regression model — Direction_fixedtuning" />
-<meta property="og:description" content="Constructs the projection direction with fixed tuning parameter for estimating functional in high-dimensional linear regression model" />
+<meta property="og:title" content="Constructs the projection direction with fixed tuning parameter in high dimensional linear regression model — Direction_fixedtuning" />
+<meta property="og:description" content="Constructs the projection direction with fixed tuning parameter in high dimensional linear regression model" />
 
 
 
@@ -103,27 +103,27 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Constructs the projection direction with fixed tuning parameter for estimating functional in high-dimensional linear regression model</h1>
+    <h1>Constructs the projection direction with fixed tuning parameter in high dimensional linear regression model</h1>
     
     <div class="hidden name"><code>Direction_fixedtuning.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Constructs the projection direction with fixed tuning parameter for estimating functional in high-dimensional linear regression model</p>
+    <p>Constructs the projection direction with fixed tuning parameter in high dimensional linear regression model</p>
     </div>
 
-    <pre class="usage"><span class='fu'>Direction_fixedtuning</span>(<span class='no'>Xc</span>, <span class='no'>loading</span>, <span class='kw'>mu</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>Direction_fixedtuning</span>(<span class='no'>X</span>, <span class='no'>loading</span>, <span class='kw'>mu</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>Xc</th>
-      <td><p>Design matrix, of dimension nvar(\(n\))xnobs(\(p\))</p></td>
+      <th>X</th>
+      <td><p>Design matrix, of dimension \(n\) x \(p\)</p></td>
     </tr>
     <tr>
       <th>loading</th>
-      <td><p>observation vector in the linear functional, of length \(p\)</p></td>
+      <td><p>Loading, of length \(p\)</p></td>
     </tr>
     <tr>
       <th>mu</th>
@@ -139,8 +139,10 @@
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>X</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(-<span class='fl'>2</span>:<span class='fl'>2</span>,<span class='fl'>100</span>*<span class='fl'>400</span>,<span class='kw'>replace</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>),<span class='kw'>nrow</span><span class='kw'>=</span><span class='fl'>100</span>,<span class='kw'>ncol</span><span class='kw'>=</span><span class='fl'>400</span>)
-<span class='fu'>Direction_fixedtuning</span>(<span class='no'>X</span>,<span class='kw'>loading</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span>,<span class='fl'>399</span>)),<span class='kw'>mu</span><span class='kw'>=</span><span class='fl'>2</span>)</div><div class='output co'>#&gt; [1] "fixed mu"
+    <pre class="examples"><div class='input'><span class='no'>n</span> <span class='kw'>=</span> <span class='fl'>100</span>
+<span class='no'>p</span> <span class='kw'>=</span> <span class='fl'>400</span>
+<span class='no'>X</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(-<span class='fl'>2</span>:<span class='fl'>2</span>,<span class='no'>n</span>*<span class='no'>p</span>,<span class='kw'>replace</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>),<span class='kw'>nrow</span> <span class='kw'>=</span> <span class='no'>n</span>,<span class='kw'>ncol</span> <span class='kw'>=</span> <span class='no'>p</span>)
+<span class='fu'>Direction_fixedtuning</span>(<span class='no'>X</span>,<span class='kw'>loading</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span>,(<span class='no'>p</span>-<span class='fl'>1</span>))),<span class='kw'>mu</span><span class='kw'>=</span><span class='fl'>2</span>)</div><div class='output co'>#&gt; [1] "fixed mu"
 #&gt; [1] 2
 #&gt; [1] -1.391365e-21</div><div class='output co'>#&gt; $proj
 #&gt;   [1] -8.147375e-23  5.915362e-24 -4.154547e-24  2.083969e-24  3.759370e-24
@@ -236,7 +238,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Prabrisha Rakshit.</p>
+  <p>Developed by Zijian Guo, Prabrisha Rakshit.</p>
 </div>
 
 <div class="pkgdown">
