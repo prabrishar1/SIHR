@@ -115,8 +115,9 @@
     <pre class="usage"><span class='fu'>QF</span>(
   <span class='no'>X</span>,
   <span class='no'>y</span>,
-  <span class='no'>test.set</span>,
-  <span class='kw'>A</span> <span class='kw'>=</span> <span class='st'>"Sigma"</span>,
+  <span class='no'>G</span>,
+  <span class='kw'>Cov.weight</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>A</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>init.Lasso</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>tau.vec</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>lambda</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
@@ -139,12 +140,16 @@
       <td><p>Outcome vector, of length \(n\)</p></td>
     </tr>
     <tr>
-      <th>test.set</th>
-      <td><p>The set of indices, <code>G</code> in the quadratic functional</p></td>
+      <th>G</th>
+      <td><p>The set of indices, <code>G</code> in \(\beta_G^{\top}A\beta_G\)</p></td>
+    </tr>
+    <tr>
+      <th>Cov.weight</th>
+      <td><p>Logical, if set to <code>TRUE</code> then <code>A</code>\(=\Sigma\), else need to provide an <code>A</code> (default = TRUE)</p></td>
     </tr>
     <tr>
       <th>A</th>
-      <td><p>The matrix A in the quadratic functional, of dimension \(p\)x\(p\) (either the population covariance matrix <code>Sigma</code> or a known matrix of suitable dimension ; default = <code>Sigma</code>)</p></td>
+      <td><p>The matrix A in the quadratic functional, of dimension \(p\)x\(p\), when <code>Cov.weight = FALSE</code></p></td>
     </tr>
     <tr>
       <th>init.Lasso</th>
@@ -188,8 +193,8 @@ that gives convergence of the optimization problem for constructing the projecti
     
 
 <dt>prop.est</dt><dd><p>The bias-corrected estimator of the quadratic functional restricted to <code>G</code></p></dd>
-<dt>sigma</dt><dd><p>Estimate of the error variance in the linear regression model</p></dd>
 <dt>se</dt><dd><p>Standard error of the bias-corrected estimator</p></dd>
+<dt>proj</dt><dd><p>The projection direction, of length \(p\)</p></dd>
 <dt>plug.in</dt><dd><p>Plug-in LASSO estimator for the quadratic functional restricted to <code>G</code></p></dd>
 
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
@@ -197,27 +202,54 @@ that gives convergence of the optimization problem for constructing the projecti
     <p>Guo Z, Renaux C, Buhlmann P, Cai TT (2019).
 &#8220;Group Inference in High Dimensions with Applications to Hierarchical Testing.&#8221;
 <em>Unknown</em>.
-<a href='https://statistics.rutgers.edu/home/zijguo/Guo-Renaux-Buhlman-Cai-Group-Inference.pdf'>https://statistics.rutgers.edu/home/zijguo/Guo-Renaux-Buhlman-Cai-Group-Inference.pdf</a>.</p>
+<a href='https://arxiv.org/pdf/1909.01503.pdf'>https://arxiv.org/pdf/1909.01503.pdf</a>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>n</span> <span class='kw'>=</span> <span class='fl'>100</span>
 <span class='no'>p</span> <span class='kw'>=</span> <span class='fl'>400</span>
-<span class='no'>X</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(-<span class='fl'>2</span>:<span class='fl'>2</span>,<span class='no'>n</span>*<span class='no'>p</span>,<span class='kw'>replace</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>),<span class='kw'>nrow</span><span class='kw'>=</span><span class='no'>n</span>,<span class='kw'>ncol</span><span class='kw'>=</span><span class='no'>p</span>)
-<span class='no'>beta</span> <span class='kw'>=</span> (<span class='fl'>1</span>:<span class='no'>p</span>)/<span class='fl'>25</span>
-<span class='no'>y</span> <span class='kw'>=</span> <span class='no'>X</span><span class='kw'>%*%</span><span class='no'>beta</span> + <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='no'>n</span>,<span class='fl'>0</span>,<span class='fl'>1</span>)
+<span class='no'>A1gen</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>(<span class='no'>rho</span>,<span class='no'>p</span>){
+<span class='no'>A1</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fl'>0</span>,<span class='no'>p</span>,<span class='no'>p</span>)
+<span class='kw'>for</span>(<span class='no'>i</span> <span class='kw'>in</span> <span class='fl'>1</span>:<span class='no'>p</span>){
+ <span class='kw'>for</span>(<span class='no'>j</span> <span class='kw'>in</span> <span class='fl'>1</span>:<span class='no'>p</span>){
+   <span class='no'>A1</span>[<span class='no'>i</span>,<span class='no'>j</span>]<span class='kw'>&lt;-</span><span class='no'>rho</span>^(<span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>abs</a></span>(<span class='no'>i</span>-<span class='no'>j</span>))
+ }
+}
+<span class='no'>A1</span>
+}
+<span class='no'>mu</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span>,<span class='no'>p</span>)
+<span class='no'>mu</span>[<span class='fl'>1</span>:<span class='fl'>5</span>] <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>:<span class='fl'>5</span>)/<span class='fl'>5</span>
+<span class='no'>rho</span> <span class='kw'>=</span> <span class='fl'>0.5</span>
+<span class='no'>Cov</span> <span class='kw'>&lt;-</span> (<span class='fu'>A1gen</span>(<span class='no'>rho</span>,<span class='no'>p</span>))/<span class='fl'>2</span>
+<span class='no'>beta</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span>,<span class='no'>p</span>)
+<span class='no'>beta</span>[<span class='fl'>1</span>:<span class='fl'>10</span>] <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>:<span class='fl'>10</span>)/<span class='fl'>5</span>
+<span class='no'>X</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>MASS</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/MASS/man/mvrnorm.html'>mvrnorm</a></span>(<span class='no'>n</span>,<span class='no'>mu</span>,<span class='no'>Cov</span>)
+<span class='no'>y</span> <span class='kw'>=</span> <span class='no'>X</span><span class='kw'>%*%</span><span class='no'>beta</span> + <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='no'>n</span>)
 <span class='no'>test.set</span> <span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>30</span>:<span class='fl'>50</span>)
-<span class='fu'>QF</span>(<span class='kw'>X</span> <span class='kw'>=</span> <span class='no'>X</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>y</span>, <span class='no'>test.set</span>)</div><div class='output co'>#&gt; $prop.est
-#&gt;         [,1]
-#&gt; [1,] 1614.96
+<span class='fu'>QF</span>(<span class='kw'>X</span> <span class='kw'>=</span> <span class='no'>X</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>y</span>, <span class='kw'>G</span> <span class='kw'>=</span> <span class='no'>test.set</span>)</div><div class='output co'>#&gt; $prop.est
+#&gt;      [,1]
+#&gt; [1,]    0
 #&gt; 
 #&gt; $sigma
-#&gt; [1] 463.6927
+#&gt; [1] 0.5674678
 #&gt; 
 #&gt; $se
-#&gt; [1] 768.9034
+#&gt; [1] 0.1
 #&gt; 
 #&gt; $plug.in
-#&gt; [1] 1553.022
+#&gt; [1] 0
+#&gt; 
+#&gt; $proj
+#&gt;   [1] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+#&gt;  [38] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+#&gt;  [75] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+#&gt; [112] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+#&gt; [149] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+#&gt; [186] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+#&gt; [223] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+#&gt; [260] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+#&gt; [297] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+#&gt; [334] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+#&gt; [371] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 #&gt; </div><div class='input'>
 </div></pre>
   </div>

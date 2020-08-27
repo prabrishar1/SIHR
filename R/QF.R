@@ -212,7 +212,7 @@ Direction_searchtuning_robust <- function(Xc, loading, mu = NULL, resol = 1.5,
 
 ###### The following function calculates the debiased point estimate for the
 ###### group of interest
-# If the test.set is the vector 1:p, then the solution of global test
+# If the G is the vector 1:p, then the solution of global test
 # can be calculated explicitly.
 
 #' Inference for quadratic functional in high dimensional linear regression model
@@ -221,8 +221,9 @@ Direction_searchtuning_robust <- function(Xc, loading, mu = NULL, resol = 1.5,
 #'
 #' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
 #' @param y Outcome vector, of length \eqn{n}
-#' @param test.set The set of indices, \code{G} in the quadratic functional
-#' @param A The matrix A in the quadratic functional, of dimension \eqn{p}x\eqn{p} (either the population covariance matrix \code{Sigma} or a known matrix of suitable dimension ; default = \code{Sigma})
+#' @param G The set of indices, \code{G} in \eqn{\beta_G^{\top}A\beta_G}
+#' @param Cov.weight Logical, if set to \code{TRUE} then \code{A}\eqn{=\Sigma}, else need to provide an \code{A} (default = TRUE)
+#' @param A The matrix A in the quadratic functional, of dimension \eqn{p}x\eqn{p}, when \code{Cov.weight = FALSE}
 #' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
 #' @param init.Lasso Initial LASSO estimator for the regression vector (default = \code{NULL})
 #' @param tau.vec The vector of enlargement factors for asymptotic variance of the bias-corrected estimator to handle super-efficiency (default = \code{NULL})
@@ -237,8 +238,8 @@ Direction_searchtuning_robust <- function(Xc, loading, mu = NULL, resol = 1.5,
 #'
 #' @return
 #' \item{prop.est}{The bias-corrected estimator of the quadratic functional restricted to \code{G}}
-#' \item{sigma}{Estimate of the error variance in the linear regression model}
 #' \item{se}{Standard error of the bias-corrected estimator}
+#' \item{proj}{The projection direction, of length \eqn{p}}
 #' \item{plug.in}{Plug-in LASSO estimator for the quadratic functional restricted to \code{G}}
 #' @export
 #'
@@ -249,18 +250,32 @@ Direction_searchtuning_robust <- function(Xc, loading, mu = NULL, resol = 1.5,
 #' @examples
 #' n = 100
 #' p = 400
-#' X = matrix(sample(-2:2,n*p,replace = TRUE),nrow=n,ncol=p)
-#' beta = (1:p)/25
-#' y = X%*%beta + rnorm(n,0,1)
+#' A1gen <- function(rho,p){
+#' A1=matrix(0,p,p)
+#' for(i in 1:p){
+#'  for(j in 1:p){
+#'    A1[i,j]<-rho^(abs(i-j))
+#'  }
+#' }
+#' A1
+#' }
+#' mu <- rep(0,p)
+#' mu[1:5] <- c(1:5)/5
+#' rho = 0.5
+#' Cov <- (A1gen(rho,p))/2
+#' beta <- rep(0,p)
+#' beta[1:10] <- c(1:10)/5
+#' X <- MASS::mvrnorm(n,mu,Cov)
+#' y = X%*%beta + rnorm(n)
 #' test.set =c(30:50)
-#' QF(X = X, y = y, test.set)
+#' QF(X = X, y = y, G = test.set)
 #'
 #' @references
 #'
 #' \insertRef{grouplin}{FIHR}
-QF <- function(X, y, test.set, A = "Sigma",init.Lasso = NULL, tau.vec = NULL,
-                           lambda = NULL, intercept = TRUE, mu = NULL,
-                           step = NULL, resol = 1.5, maxiter = 10) {
+QF <- function(X, y, G, Cov.weight = TRUE, A = NULL,init.Lasso = NULL, tau.vec = NULL,
+               lambda = NULL, intercept = TRUE, mu = NULL,
+               step = NULL, resol = 1.5, maxiter = 10) {
   p <- ncol(X)
   n <- nrow(X)
   n_y <- length(y)
@@ -287,13 +302,13 @@ QF <- function(X, y, test.set, A = "Sigma",init.Lasso = NULL, tau.vec = NULL,
     if (intercept == TRUE) {
       Xc <- cbind(rep(1, n), X)
       pp <- (p + 1)
-      test.set <- test.set + 1
+      G <- G + 1
     } else {
       Xc <- X
       pp <- p
     }
 
-    if(A!="Sigma")
+    if(Cov.weight==FALSE)
     {
       A_h <- A^0.5
       if(intercept==TRUE)
@@ -307,17 +322,22 @@ QF <- function(X, y, test.set, A = "Sigma",init.Lasso = NULL, tau.vec = NULL,
     }
 
     ## search for projection direction
-    if (p == length(test.set)) {
+    if (p == length(G)) {
       ## Global Test
       ## We do not need not search for a direction, i.e. hat{u} = hat{theta}.
-      if(A=="Sigma")
+      if(Cov.weight==TRUE)
       {
         lasso.plugin <- mean((Xc %*% htheta)^2)
       }
       else
       {
-        print("A is not Sigma 1")
-        lasso.plugin <- sum((Ac %*% htheta)^2)
+        if(is.null(A))
+        {
+          print("Need to provide a known square matrix A of dimension p, results are faulty")
+        }
+        else{
+          lasso.plugin <- sum((Ac %*% htheta)^2)
+        }
       }
       direction <- htheta
       loading.norm <- 1
@@ -328,20 +348,24 @@ QF <- function(X, y, test.set, A = "Sigma",init.Lasso = NULL, tau.vec = NULL,
       sigma.hat <- (1 / (n-1)) * (t(Xc) %*% Xc)
       test.vec <- matrix(0, ncol = 1, nrow = pp)
       loading <- matrix(0, ncol = 1, nrow = pp)
-      test.vec[test.set] <- htheta[test.set]
+      test.vec[G] <- htheta[G]
 
-      if(A=="Sigma")
+      if(Cov.weight==TRUE)
       {
-        loading[test.set] <- (sigma.hat %*% test.vec)[test.set]
+        loading[G] <- (sigma.hat %*% test.vec)[G]
         lasso.plugin <- mean((Xc %*% test.vec)^2)
       }
       else
       {
-        print("A is not Sigma 2")
-        loading[test.set] <- (Ac %*% test.vec)[test.set]
-        lasso.plugin <- sum((Ac %*% htheta)^2)
+        if(is.null(A))
+        {
+          print("Need to provide a known square matrix A of dimension p, results are faulty")
+        }
+        else{
+          loading[G] <- (Ac %*% test.vec)[G]
+          lasso.plugin <- sum((Ac %*% htheta)^2)
+        }
       }
-
       loading.norm <- sqrt(sum(loading^2))
 
       if (loading.norm == 0) {
@@ -388,7 +412,7 @@ QF <- function(X, y, test.set, A = "Sigma",init.Lasso = NULL, tau.vec = NULL,
     ### Correct the initial estimator by the constructed projection direction
     correction <- 2 * loading.norm * t(Xc %*% direction) %*% (y - Xc %*% htheta) / n
     debias.est <- lasso.plugin + correction
-    if(A=="Sigma")
+    if(Cov.weight==TRUE)
     {
       se1 <- 2 * sd.est * sqrt(sum((Xc %*% direction)^2) / (n)^2) * loading.norm
       se2 <- sqrt(var.Sigma(Xc, test.vec) / n)
@@ -399,7 +423,7 @@ QF <- function(X, y, test.set, A = "Sigma",init.Lasso = NULL, tau.vec = NULL,
 
       if (abs(correction) > abs(lasso.plugin)) {
         warning(paste("The model is most likely misspecified because the correction term is larger than the lasso estimate in absolute value.",
-                      "See cluster or group: ", paste(colnames(Xc)[test.set], collapse = ", "),
+                      "See cluster or group: ", paste(colnames(Xc)[G], collapse = ", "),
                       ". The value of the lasso.plugin and correction are", round(lasso.plugin, 5),
                       " respectively ", round(correction, 5), "."))
       }
@@ -411,24 +435,27 @@ QF <- function(X, y, test.set, A = "Sigma",init.Lasso = NULL, tau.vec = NULL,
     }
     else
     {
-      print("A is not Sigma 3")
-      se<-2*sd.est*sqrt(sum((Xc%*%direction)^2)/(n)^2)*loading.norm
-      #tau=0
-      if(is.null(tau.vec)){
-        tau.vec=c(2)
+      if(is.null(A))
+      {
+        print("Need to provide a known square matrix A of dimension p, results are faulty")
       }
-      se.vec<-rep(NA,length(tau.vec))
-      for (i in 1: length(tau.vec)){
-        tau=min(tau.vec[i],spar.est*log(p)/sqrt(n))
-        se<-sqrt(se^2+tau/n)
-        se.vec[i]<-se
+      else{
+        se<-2*sd.est*sqrt(sum((Xc%*%direction)^2)/(n)^2)*loading.norm
+        #tau=0
+        if(is.null(tau.vec)){
+          tau.vec=c(2)
+        }
+        se.vec<-rep(NA,length(tau.vec))
+        for (i in 1: length(tau.vec)){
+          tau=min(tau.vec[i],spar.est*log(p)/sqrt(n))
+          se<-sqrt(se^2+tau/n)
+          se.vec[i]<-se
+          }
       }
     }
-
-
     returnList <- list("prop.est" = debias.est,
-                       "sigma"= sd.est,
                        "se" = se.vec,
+                       "proj"=direction,
                        "plug.in" = lasso.plugin)
     return(returnList)
   }

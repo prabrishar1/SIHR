@@ -16,5 +16,6 @@ RdMacros:
     Rdpack
 Suggests:
     knitr,
-    rmarkdown
+    rmarkdown,
+    MASS
 Authors@R: c(person("Zijian Guo", role = "aut", email = "zijguo@stat.rutgers.edu"),person("Prabrisha Rakshit", role = c("aut", "cre"), email = "pr412@scarletmail.rutgers.edu"))

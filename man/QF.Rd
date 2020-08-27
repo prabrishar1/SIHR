@@ -7,8 +7,9 @@
 QF(
   X,
   y,
-  test.set,
-  A = "Sigma",
+  G,
+  Cov.weight = TRUE,
+  A = NULL,
   init.Lasso = NULL,
   tau.vec = NULL,
   lambda = NULL,
@@ -24,9 +25,11 @@ QF(
 
 \item{y}{Outcome vector, of length \eqn{n}}
 
-\item{test.set}{The set of indices, \code{G} in the quadratic functional}
+\item{G}{The set of indices, \code{G} in \eqn{\beta_G^{\top}A\beta_G}}
 
-\item{A}{The matrix A in the quadratic functional, of dimension \eqn{p}x\eqn{p} (either the population covariance matrix \code{Sigma} or a known matrix of suitable dimension ; default = \code{Sigma})}
+\item{Cov.weight}{Logical, if set to \code{TRUE} then \code{A}\eqn{=\Sigma}, else need to provide an \code{A} (default = TRUE)}
+
+\item{A}{The matrix A in the quadratic functional, of dimension \eqn{p}x\eqn{p}, when \code{Cov.weight = FALSE}}
 
 \item{init.Lasso}{Initial LASSO estimator for the regression vector (default = \code{NULL})}
 
@@ -49,8 +52,8 @@ that gives convergence of the optimization problem for constructing the projecti
 }
 \value{
 \item{prop.est}{The bias-corrected estimator of the quadratic functional restricted to \code{G}}
-\item{sigma}{Estimate of the error variance in the linear regression model}
 \item{se}{Standard error of the bias-corrected estimator}
+\item{proj}{The projection direction, of length \eqn{p}}
 \item{plug.in}{Plug-in LASSO estimator for the quadratic functional restricted to \code{G}}
 }
 \description{
@@ -59,11 +62,25 @@ Computes the bias-corrected estimator of the quadratic functional \eqn{\beta_G^{
 \examples{
 n = 100
 p = 400
-X = matrix(sample(-2:2,n*p,replace = TRUE),nrow=n,ncol=p)
-beta = (1:p)/25
-y = X\%*\%beta + rnorm(n,0,1)
+A1gen <- function(rho,p){
+A1=matrix(0,p,p)
+for(i in 1:p){
+ for(j in 1:p){
+   A1[i,j]<-rho^(abs(i-j))
+ }
+}
+A1
+}
+mu <- rep(0,p)
+mu[1:5] <- c(1:5)/5
+rho = 0.5
+Cov <- (A1gen(rho,p))/2
+beta <- rep(0,p)
+beta[1:10] <- c(1:10)/5
+X <- MASS::mvrnorm(n,mu,Cov)
+y = X\%*\%beta + rnorm(n)
 test.set =c(30:50)
-QF(X = X, y = y, test.set)
+QF(X = X, y = y, G = test.set)
 
 }
 \references{

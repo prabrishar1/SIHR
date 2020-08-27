@@ -47,6 +47,8 @@ Inference for linear functional in high-dimensional linear regression model
 ```{r Linear Functional Linear Model}
 
 library(MASS)
+n = 100
+p = 400
 A1gen <- function(rho,p){
   A1=matrix(0,p,p)
   for(i in 1:p){
@@ -56,15 +58,22 @@ A1gen <- function(rho,p){
   }
   A1
 }
-mu <- rep(0,400)
+mu <- rep(0,p)
 mu[1:5] <- c(1:5)/5
 rho = 0.5
-Cov <- (A1gen(rho,400))/2
-beta <- rep(0,400)
+Cov <- (A1gen(rho,p))/2
+Cov2<-matrix(NA,nrow=p,ncol=p)
+for(i in 1:p){
+    for(j in 1:p){
+    Cov2[i,j]<-0.5^(1+abs(i-j))
+    } 
+  }
+beta <- rep(0,p)
 beta[1:10] <- c(1:10)/5
-X <- MASS::mvrnorm(100,mu,Cov)
-y = X%*%beta + rnorm(100)
-Est = FIHR::LF(X = X, y = y, loading = c(1,rep(0,399)), intercept = TRUE)
+X <- MASS::mvrnorm(n,mu,Cov)
+y = X%*%beta + rnorm(n)
+loading <- MASS::mvrnorm(1,rep(0,p),Cov2)
+Est = FIHR::LF(X = X, y = y, loading = loading, intercept = TRUE)
 Est$prop.est
 Est$se
 ```
@@ -82,16 +91,25 @@ A1gen <- function(rho,p){
   }
   A1
 }
-mu <- rep(0,400)
+n = 100
+p = 400
+mu <- rep(0,p)
 rho = 0.5
-Cov <- (A1gen(rho,400))/2
-beta <- rep(0,400)
+Cov <- (A1gen(rho,p))/2
+Cov2<-matrix(NA,nrow=p,ncol=p)
+for(i in 1:p){
+    for(j in 1:p){
+    Cov2[i,j]<-0.5^(1+abs(i-j))
+    } 
+  }
+beta <- rep(0,p)
 beta[1:10] <- c(1:10)/5
-X <- MASS::mvrnorm(100,mu,Cov)
+X <- MASS::mvrnorm(n,mu,Cov)
 exp_val <- X%*%beta
 prob <- exp(exp_val)/(1+exp(exp_val))
-y <- rbinom(100,1,prob)
-Est = FIHR::LF_logistic(X = X, y = y, loading = c(1,rep(0,399)), intercept = TRUE, weight = rep(1,100))
+y <- rbinom(n,1,prob)
+loading <- MASS::mvrnorm(1,mu,Cov2)
+Est = FIHR::LF_logistic(X = X, y = y, loading = loading, intercept = TRUE, weight = rep(1,n))
 Est$prop.est
 Est$se
 ```
@@ -122,19 +140,19 @@ test.set <- c(30:100)
 
 ## Inference for Quadratic Functional with Population Covariance Matrix in middle
 
-Est = FIHR::QF(X = X, y = y, test.set=test.set)
+Est = FIHR::QF(X = X, y = y, G=test.set)
 Est$prop.est
 Est$se
 
 ## Inference for Quadratic Functional with known matrix A in middle
 
-Est = FIHR::QF(X = X, y = y, test.set=test.set, A = diag(1:400,400))
+Est = FIHR::QF(X = X, y = y, G=test.set, Cov.weight = FALSE,A = diag(1:400,400))
 Est$prop.est
 Est$se
 
 ## Inference for square norm of regression vector
 
-Est = FIHR::QF(X = X, y = y, test.set=test.set, A = diag(1,400))
+Est = FIHR::QF(X = X, y = y, G=test.set, Cov.weight = FALSE,A = diag(1,400))
 Est$prop.est
 Est$se
 ```

@@ -116,9 +116,9 @@
   <span class='no'>X</span>,
   <span class='no'>y</span>,
   <span class='no'>loading</span>,
+  <span class='kw'>intercept</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>init.Lasso</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>lambda</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>intercept</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>mu</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>step</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>resol</span> <span class='kw'>=</span> <span class='fl'>1.5</span>,
@@ -141,16 +141,16 @@
       <td><p>Loading, of length \(p\)</p></td>
     </tr>
     <tr>
+      <th>intercept</th>
+      <td><p>Should intercept(s) be fitted (default = <code>TRUE</code>)</p></td>
+    </tr>
+    <tr>
       <th>init.Lasso</th>
       <td><p>Initial LASSO estimator of the regression vector (default = <code>NULL</code>)</p></td>
     </tr>
     <tr>
       <th>lambda</th>
       <td><p>The tuning parameter in construction of LASSO estimator of the regression vector (default = <code>NULL</code>)</p></td>
-    </tr>
-    <tr>
-      <th>intercept</th>
-      <td><p>Should intercept(s) be fitted (default = <code>TRUE</code>)</p></td>
     </tr>
     <tr>
       <th>mu</th>
@@ -164,7 +164,7 @@ optimization problem for constructing the projection direction (default = <code>
     <tr>
       <th>resol</th>
       <td><p>Resolution or the factor by which <code>mu</code> is increased/decreased to obtain the smallest <code>mu</code>
-that gives convergence of the optimization problem for constructing the projection direction (default = 1.5)</p></td>
+that gives convergence of the optimization problem of constructing the projection direction (default = 1.5)</p></td>
     </tr>
     <tr>
       <th>maxiter</th>
@@ -178,11 +178,8 @@ that gives convergence of the optimization problem for constructing the projecti
     
 
 <dt>prop.est</dt><dd><p>The bias-corrected estimator for the linear functional</p></dd>
-<dt>sigma</dt><dd><p>Estimate of the error variance in the linear regression model</p></dd>
 <dt>se</dt><dd><p>Standard error of the bias-corrected estimator</p></dd>
-<dt>proj</dt><dd><p>Optimal projection direction</p></dd>
-<dt>step</dt><dd><p>Number of steps (&lt; <code>maxiter</code>) to obtain the smallest <code>mu</code> that gives convergence of the
-optimization problem for constructing the projection direction</p></dd>
+<dt>proj</dt><dd><p>The projection direction, of length \(p\)</p></dd>
 <dt>plug.in</dt><dd><p>Plug-in LASSO estimator for the linear functional</p></dd>
 
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
@@ -190,113 +187,134 @@ optimization problem for constructing the projection direction</p></dd>
     <p>Cai T, Cai TT, Guo Z (2019).
 &#8220;Individualized Treatment Selection: An Optimal Hypothesis Testing Approach In High-dimensional Models.&#8221;
 <em>Unknown</em>.
-<a href='https://statistics.rutgers.edu/home/zijguo/Cai-Cai-Guo-ITE-Selection.pdf'>https://statistics.rutgers.edu/home/zijguo/Cai-Cai-Guo-ITE-Selection.pdf</a>.</p>
+<a href='https://arxiv.org/pdf/1904.12891.pdf'>https://arxiv.org/pdf/1904.12891.pdf</a>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>n</span> <span class='kw'>=</span> <span class='fl'>100</span>
 <span class='no'>p</span> <span class='kw'>=</span> <span class='fl'>400</span>
-<span class='no'>X</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(-<span class='fl'>2</span>:<span class='fl'>2</span>,<span class='no'>n</span>*<span class='no'>p</span>,<span class='kw'>replace</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>),<span class='kw'>nrow</span> <span class='kw'>=</span> <span class='no'>n</span>,<span class='kw'>ncol</span> <span class='kw'>=</span> <span class='no'>p</span>)
-<span class='no'>beta</span> <span class='kw'>=</span> (<span class='fl'>1</span>:<span class='no'>p</span>)/<span class='fl'>25</span>
-<span class='no'>y</span> <span class='kw'>=</span> <span class='no'>X</span><span class='kw'>%*%</span><span class='no'>beta</span> + <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='no'>n</span>,<span class='fl'>0</span>,<span class='fl'>1</span>)
-<span class='fu'>LF</span>(<span class='kw'>X</span> <span class='kw'>=</span> <span class='no'>X</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>y</span>, <span class='kw'>loading</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span>,(<span class='no'>p</span>-<span class='fl'>1</span>))), <span class='kw'>intercept</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; [1] 3
+<span class='no'>A1gen</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>(<span class='no'>rho</span>,<span class='no'>p</span>){
+<span class='no'>A1</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fl'>0</span>,<span class='no'>p</span>,<span class='no'>p</span>)
+<span class='kw'>for</span>(<span class='no'>i</span> <span class='kw'>in</span> <span class='fl'>1</span>:<span class='no'>p</span>){
+ <span class='kw'>for</span>(<span class='no'>j</span> <span class='kw'>in</span> <span class='fl'>1</span>:<span class='no'>p</span>){
+   <span class='no'>A1</span>[<span class='no'>i</span>,<span class='no'>j</span>]<span class='kw'>&lt;-</span><span class='no'>rho</span>^(<span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>abs</a></span>(<span class='no'>i</span>-<span class='no'>j</span>))
+ }
+}
+<span class='no'>A1</span>
+}
+<span class='no'>mu</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span>,<span class='no'>p</span>)
+<span class='no'>mu</span>[<span class='fl'>1</span>:<span class='fl'>5</span>] <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>:<span class='fl'>5</span>)/<span class='fl'>5</span>
+<span class='no'>rho</span> <span class='kw'>=</span> <span class='fl'>0.5</span>
+<span class='no'>Cov</span> <span class='kw'>&lt;-</span> (<span class='fu'>A1gen</span>(<span class='no'>rho</span>,<span class='no'>p</span>))/<span class='fl'>2</span>
+<span class='no'>Cov2</span><span class='kw'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fl'>NA</span>,<span class='kw'>nrow</span><span class='kw'>=</span><span class='no'>p</span>,<span class='kw'>ncol</span><span class='kw'>=</span><span class='no'>p</span>)
+<span class='kw'>for</span>(<span class='no'>i</span> <span class='kw'>in</span> <span class='fl'>1</span>:<span class='no'>p</span>){
+ <span class='kw'>for</span>(<span class='no'>j</span> <span class='kw'>in</span> <span class='fl'>1</span>:<span class='no'>p</span>){
+   <span class='no'>Cov2</span>[<span class='no'>i</span>,<span class='no'>j</span>]<span class='kw'>&lt;-</span><span class='fl'>0.5</span>^(<span class='fl'>1</span>+<span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>abs</a></span>(<span class='no'>i</span>-<span class='no'>j</span>))
+  }
+}
+<span class='no'>beta</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span>,<span class='no'>p</span>)
+<span class='no'>beta</span>[<span class='fl'>1</span>:<span class='fl'>10</span>] <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>:<span class='fl'>10</span>)/<span class='fl'>5</span>
+<span class='no'>X</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>MASS</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/MASS/man/mvrnorm.html'>mvrnorm</a></span>(<span class='no'>n</span>,<span class='no'>mu</span>,<span class='no'>Cov</span>)
+<span class='no'>y</span> <span class='kw'>=</span> <span class='no'>X</span><span class='kw'>%*%</span><span class='no'>beta</span> + <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='no'>n</span>)
+<span class='no'>loading</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>MASS</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/MASS/man/mvrnorm.html'>mvrnorm</a></span>(<span class='fl'>1</span>,<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span>,<span class='no'>p</span>),<span class='no'>Cov2</span>)
+<span class='fu'>LF</span>(<span class='kw'>X</span> <span class='kw'>=</span> <span class='no'>X</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>y</span>, <span class='kw'>loading</span> <span class='kw'>=</span> <span class='no'>loading</span>, <span class='kw'>intercept</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; [1] 3
 #&gt; [1] "step is 3"</div><div class='output co'>#&gt; $prop.est
-#&gt;          [,1]
-#&gt; [1,] 28.66721
+#&gt;        [,1]
+#&gt; [1,] 6.4332
 #&gt; 
 #&gt; $sigma
-#&gt; [1] 75324.4
+#&gt; [1] 0.9485296
 #&gt; 
 #&gt; $se
-#&gt; [1] 8174.09
+#&gt; [1] 1.50963
 #&gt; 
 #&gt; $proj
-#&gt;   [1]  1.257514e+00  8.572327e-01 -6.062040e-21 -4.397018e-20  2.253397e-20
-#&gt;   [6]  1.515383e-20  3.916893e-20  3.493509e-20 -6.439319e-20  1.271803e-20
-#&gt;  [11] -1.024120e-01 -3.272223e-20  4.144288e-03  2.005773e-21  3.774126e-20
-#&gt;  [16]  3.720129e-20  1.084970e-20 -6.140566e-20  5.787387e-20  3.360670e-20
-#&gt;  [21]  3.396410e-02 -2.624619e-02  6.125256e-20  2.705553e-02  5.670542e-20
-#&gt;  [26] -2.085271e-20  1.483731e-20  4.213273e-20  1.117504e-20  1.344371e-20
-#&gt;  [31] -2.215989e-02  4.784489e-20  7.286528e-20  8.013656e-20  7.226296e-21
-#&gt;  [36]  3.187829e-20 -6.301693e-20 -1.761147e-20  3.373469e-20 -1.182779e-02
-#&gt;  [41] -8.243996e-21  1.732332e-21 -6.065341e-20 -1.311560e-01 -1.832626e-22
-#&gt;  [46] -4.850193e-20  1.192091e-19 -1.947964e-21 -1.386226e-01 -1.714244e-20
-#&gt;  [51] -8.316294e-20  3.479177e-20  3.325343e-20  3.210858e-20 -4.342920e-20
-#&gt;  [56] -3.850690e-20  7.889542e-20  1.472494e-01  6.700434e-20 -2.696153e-20
-#&gt;  [61] -1.003295e-20 -7.557089e-20  2.753871e-20  6.523264e-20 -1.199700e-20
-#&gt;  [66] -6.331675e-21  8.065639e-20  5.333080e-20 -1.097940e-19 -2.105816e-20
-#&gt;  [71]  9.213319e-20  2.767505e-20  9.472143e-21  7.960875e-20 -6.066464e-20
-#&gt;  [76] -9.485528e-20 -8.890334e-21  3.357035e-21  5.239715e-20 -2.422013e-20
-#&gt;  [81]  8.320560e-20  3.944175e-20  1.706101e-02  6.885144e-20 -1.960882e-21
-#&gt;  [86] -2.226545e-20 -6.785976e-02  4.411855e-20  3.643847e-02 -7.601880e-21
-#&gt;  [91] -3.550360e-20 -2.854106e-20 -6.362096e-03  5.479566e-20 -1.938124e-20
-#&gt;  [96]  4.818643e-20 -8.663086e-21  1.203154e-19 -5.077516e-02 -9.699804e-21
-#&gt; [101] -4.612805e-20 -7.565840e-20  6.252380e-20 -1.777149e-22 -3.672754e-20
-#&gt; [106]  3.170859e-21 -8.774295e-02 -5.861032e-20  1.334222e-20  6.434803e-21
-#&gt; [111] -8.964238e-22 -5.725451e-21  7.273882e-03 -4.288110e-20  1.511329e-01
-#&gt; [116]  4.165123e-20  8.117184e-20  2.572044e-20 -7.064629e-20 -8.676282e-20
-#&gt; [121]  8.425579e-20 -2.112234e-20 -6.539306e-20 -1.929549e-20 -8.684114e-21
-#&gt; [126] -4.131067e-20 -1.246936e-20  3.844512e-20  3.410877e-20 -8.074944e-21
-#&gt; [131] -1.204269e-01 -3.977429e-02  6.700902e-20 -2.404493e-20 -6.839906e-20
-#&gt; [136]  7.065924e-21  3.644595e-20 -5.270242e-20  6.398977e-20 -1.490061e-20
-#&gt; [141]  4.322372e-20 -2.835122e-21  7.488654e-20  1.015908e-01  4.523859e-20
-#&gt; [146] -5.048052e-20 -2.424582e-20  4.895005e-21  1.664007e-20  6.443840e-20
-#&gt; [151] -8.751690e-20  1.703806e-01 -6.434661e-20  7.898485e-21 -7.093267e-20
-#&gt; [156] -2.467604e-20 -2.664932e-02 -2.597864e-20 -4.193754e-20 -4.931852e-02
-#&gt; [161]  3.595192e-20  2.272305e-20  3.611118e-02 -3.906762e-20  3.584521e-20
-#&gt; [166]  3.016982e-20 -1.132956e-20  2.684337e-02  1.489092e-04 -3.135654e-20
-#&gt; [171] -3.132764e-20  8.933126e-02 -4.771816e-20 -5.125727e-20  1.650834e-21
-#&gt; [176] -7.141752e-20  8.714346e-21  2.555913e-20 -3.466517e-20  4.199661e-20
-#&gt; [181] -1.155353e-20 -1.968831e-20 -2.465658e-20 -2.731303e-21 -2.821280e-20
-#&gt; [186] -3.197396e-02 -6.517509e-20 -5.241804e-20  4.353812e-20 -2.883751e-20
-#&gt; [191] -3.250256e-20  5.646724e-20  2.518503e-21  4.586433e-20 -2.673907e-20
-#&gt; [196]  5.742103e-02 -1.860149e-01  1.819932e-20 -1.304126e-20  4.571182e-20
-#&gt; [201] -2.561222e-20  1.764897e-20 -5.325604e-20  6.796045e-21  1.723706e-20
-#&gt; [206]  5.643811e-20 -9.935590e-02 -6.350202e-02 -4.388489e-02  1.018663e-19
-#&gt; [211]  2.924693e-20 -8.914481e-20  7.421654e-21 -1.259620e-19  2.315729e-20
-#&gt; [216] -4.703376e-20  2.190623e-21  5.736902e-21 -4.643924e-21  4.010273e-20
-#&gt; [221] -3.533190e-20 -8.695122e-21 -5.273572e-21  2.137014e-20  2.671415e-20
-#&gt; [226]  1.769766e-20  5.119627e-20  4.028671e-20 -7.635353e-21  3.067412e-22
-#&gt; [231] -1.574524e-20 -1.567844e-01  3.389991e-20 -2.190402e-20 -3.047688e-20
-#&gt; [236] -1.566163e-21 -4.685205e-02 -4.599473e-02  1.037670e-20  3.200604e-20
-#&gt; [241] -9.570720e-21 -7.235684e-20 -1.812611e-20 -1.689270e-20  7.632414e-02
-#&gt; [246]  6.137970e-20  1.780033e-20 -3.274704e-20 -2.581767e-20 -1.601701e-20
-#&gt; [251]  3.205113e-20  3.668089e-20  2.946003e-20  3.005552e-20 -2.073360e-01
-#&gt; [256] -6.555488e-02  4.223927e-20 -3.132402e-20 -6.854129e-21  4.079931e-20
-#&gt; [261] -2.760276e-20  1.586300e-20 -9.571867e-20 -7.320468e-02 -2.404418e-20
-#&gt; [266]  5.841202e-21 -2.084677e-20 -6.551879e-20  5.957364e-20  7.240324e-20
-#&gt; [271] -4.566765e-02 -5.979999e-02  2.016318e-20  3.473971e-02  3.867008e-20
-#&gt; [276]  1.591053e-20 -9.084430e-21 -7.489840e-20 -3.473257e-20  3.381374e-20
-#&gt; [281] -2.196354e-20 -6.282455e-21 -3.570850e-20 -5.939226e-03  1.052089e-21
-#&gt; [286]  3.180050e-20 -1.501485e-20 -1.542199e-20 -4.106321e-02 -1.511121e-20
-#&gt; [291] -1.081461e-20 -7.718559e-02 -8.185925e-20  3.154422e-20  5.222460e-20
-#&gt; [296]  4.756506e-20  5.341337e-20  4.332347e-20 -7.317070e-20  7.521798e-20
-#&gt; [301] -3.045831e-20  1.795563e-20 -4.762145e-20  8.053944e-21 -4.494019e-21
-#&gt; [306]  3.626217e-20 -1.918636e-02  3.254278e-21  1.904393e-20  6.585435e-02
-#&gt; [311] -1.707344e-20 -1.804804e-01 -5.287030e-20  8.458950e-20 -3.273827e-20
-#&gt; [316] -3.134034e-20 -4.738240e-20  1.644237e-01 -4.867880e-20 -2.764741e-20
-#&gt; [321] -6.014539e-21 -8.492960e-20 -1.129279e-01 -8.821141e-20  7.975917e-21
-#&gt; [326]  3.265983e-20  1.594889e-20  7.082548e-20 -4.272301e-21 -1.000845e-19
-#&gt; [331]  3.998027e-20  3.353114e-20  2.541499e-20 -1.973303e-20  2.977675e-20
-#&gt; [336]  1.922209e-20 -8.198586e-02  9.105209e-20 -3.494830e-20 -1.773002e-02
-#&gt; [341]  2.423550e-20  4.365715e-20  2.628392e-02 -2.641706e-20 -1.134876e-19
-#&gt; [346] -5.541370e-20 -5.139464e-20 -2.950516e-21  5.646237e-21 -7.387875e-20
-#&gt; [351] -2.588246e-02  1.207197e-19 -5.892585e-20 -2.562438e-20 -5.040859e-21
-#&gt; [356]  2.457290e-02  4.053930e-21 -5.219017e-20 -4.238400e-21  8.789450e-20
-#&gt; [361]  5.233576e-20  4.588396e-20 -2.051324e-20  9.630875e-20 -4.465754e-20
-#&gt; [366] -2.610809e-20  2.546674e-20  9.172254e-02 -5.067241e-20 -3.885545e-20
-#&gt; [371] -2.698282e-02  6.157517e-20 -3.693096e-20  1.857222e-20 -6.002559e-20
-#&gt; [376] -1.117626e-20  1.318620e-20 -4.962952e-20  1.061803e-20 -1.208747e-20
-#&gt; [381] -5.848367e-20  4.508708e-02 -3.218423e-20 -6.766345e-21  5.635350e-20
-#&gt; [386]  4.601161e-21  5.295889e-02 -7.012872e-21  7.637920e-02 -2.255582e-02
-#&gt; [391] -5.905588e-20 -9.546527e-03  2.138393e-20  6.210981e-20  7.076055e-20
-#&gt; [396] -1.638477e-20  1.078277e-20  7.062319e-02  3.590730e-20  1.374276e-20
-#&gt; [401]  5.084093e-20
+#&gt;   [1]  1.130502e-01 -2.188727e-02  5.229359e-02  5.270412e-02  2.749797e-02
+#&gt;   [6]  3.816469e-05  3.775536e-02 -2.403163e-01  4.895269e-02  8.913664e-02
+#&gt;  [11]  9.020497e-02  7.560907e-02  1.007740e-01  3.875075e-02 -5.390276e-02
+#&gt;  [16] -7.970684e-02 -2.440072e-02 -7.062679e-02  5.902480e-02  3.299823e-02
+#&gt;  [21]  3.521978e-02  3.062264e-02  9.721995e-02  1.082019e-01 -1.164647e-02
+#&gt;  [26]  9.341950e-02  4.821411e-02  3.754167e-02 -2.137850e-01 -1.246563e-01
+#&gt;  [31] -1.879916e-01 -1.089773e-01  4.490262e-02  8.169569e-02  1.176186e-01
+#&gt;  [36]  1.571845e-01  1.095737e-01  6.476010e-02  1.676349e-01  1.684602e-01
+#&gt;  [41]  1.095333e-01  1.350581e-03 -4.503489e-02 -8.742938e-02 -1.121192e-01
+#&gt;  [46] -9.243136e-02  4.890637e-02 -1.007881e-02 -6.619674e-02 -1.385545e-03
+#&gt;  [51]  6.615744e-02  4.662073e-02  6.250734e-02  9.218485e-03  4.743453e-02
+#&gt;  [56]  3.895235e-03  1.115149e-02 -1.616113e-02  2.322474e-02 -3.279609e-01
+#&gt;  [61]  8.127437e-02  5.468972e-02  4.314389e-02 -5.135382e-02 -8.568844e-02
+#&gt;  [66] -6.720111e-02 -8.638641e-02 -4.405803e-03  4.632493e-02  1.150047e-02
+#&gt;  [71]  1.129817e-02 -5.751364e-02 -1.564740e-01 -5.054604e-02 -4.761746e-02
+#&gt;  [76] -4.108234e-02 -1.348936e-02 -9.797986e-02 -4.485930e-02 -5.903388e-02
+#&gt;  [81] -2.626494e-02 -7.235988e-02  2.924883e-03 -2.346651e-02 -3.015013e-02
+#&gt;  [86] -8.646238e-02  4.149625e-02  7.245922e-02  1.469229e-01  9.547705e-02
+#&gt;  [91]  1.858358e-02 -3.878955e-01 -4.518137e-02 -2.207403e-02  8.497823e-02
+#&gt;  [96] -9.243506e-03  3.046039e-02  1.340304e-02  1.991222e-01  1.227866e-01
+#&gt; [101]  4.686110e-02 -1.738899e-02  2.331838e-02  1.961395e-02 -2.574325e-02
+#&gt; [106] -1.828194e-01 -1.566906e-02  1.362896e-02 -4.180583e-02 -1.365003e-02
+#&gt; [111]  9.265595e-02  6.972282e-02  1.650269e-02 -6.134959e-02 -5.232990e-02
+#&gt; [116] -1.293528e-01 -1.239441e-01 -1.795043e-01 -1.187249e-02 -1.257970e-01
+#&gt; [121] -3.045151e-03  5.466427e-02 -4.299975e-02 -3.691201e-02 -6.784849e-02
+#&gt; [126]  7.074773e-02  1.003652e-01  5.232467e-02 -1.023444e-02  5.104052e-02
+#&gt; [131] -9.665409e-02 -6.579667e-02 -4.007614e-02 -4.803132e-02 -4.630469e-02
+#&gt; [136] -4.544238e-02  2.043283e-02  8.206609e-03 -1.373085e-02  7.295018e-02
+#&gt; [141]  6.206388e-02 -5.303496e-02 -5.808796e-02  6.216423e-04 -5.040268e-02
+#&gt; [146]  3.346141e-02 -6.553261e-02  2.255983e-02 -3.243484e-02 -4.943406e-02
+#&gt; [151] -1.323365e-01 -2.057317e-02  3.420216e-02 -9.573373e-03 -2.348857e-02
+#&gt; [156]  4.949109e-02  5.618034e-03  1.052838e-02 -2.276923e-02 -1.176372e-02
+#&gt; [161]  2.155423e-02  5.035097e-02 -2.958981e-02  7.455506e-02  4.928766e-02
+#&gt; [166] -4.794917e-02  4.305455e-02 -6.267075e-02 -1.203605e-01 -1.198500e-01
+#&gt; [171] -5.074369e-02  4.439196e-02  9.939006e-02  5.138827e-02 -2.915189e-02
+#&gt; [176] -3.652907e-03 -9.839952e-02 -1.311371e-01 -8.720272e-02 -1.596819e-02
+#&gt; [181] -1.767465e-02 -2.356250e-02  1.423058e-01  9.876121e-02  2.023903e-02
+#&gt; [186]  1.296019e-01  1.276852e-01 -3.662324e-03 -6.042441e-02 -5.570008e-02
+#&gt; [191] -9.489476e-04 -1.180589e-01 -2.720429e-02 -4.379431e-02 -1.475769e-01
+#&gt; [196]  1.882983e-02 -1.048159e-01 -9.086699e-02 -1.340231e-01  5.903651e-02
+#&gt; [201]  9.535273e-02  3.664637e-02 -5.546842e-02 -4.946596e-02  1.104612e-02
+#&gt; [206] -5.971581e-02  1.468310e-01  1.268229e-01  7.271401e-02  1.057888e-01
+#&gt; [211]  6.440960e-02 -1.556125e-01 -9.664643e-02 -2.834159e-02  1.587973e-01
+#&gt; [216]  2.182405e-01  3.866117e-02 -5.058659e-03 -6.737094e-05 -8.382575e-02
+#&gt; [221] -6.715282e-02 -1.154548e-01 -4.866029e-02  3.453456e-02 -1.221533e-03
+#&gt; [226]  8.029684e-02  4.885684e-02  9.882568e-02  8.144807e-03  4.121638e-02
+#&gt; [231]  1.321617e-01  9.164720e-02  2.734275e-01  1.155656e-01  2.245564e-01
+#&gt; [236]  9.788975e-03  1.386244e-02  4.000412e-02  3.153705e-02 -1.342295e-01
+#&gt; [241] -3.734939e-02 -9.155645e-02 -8.502146e-02  2.538197e-02  1.297496e-02
+#&gt; [246]  7.746646e-02  2.668405e-02 -1.586606e-01 -2.455740e-01 -1.433727e-01
+#&gt; [251] -4.986431e-02 -4.773619e-02  6.700333e-02  6.020406e-03  4.594531e-02
+#&gt; [256]  8.321287e-02 -7.345803e-02 -1.772243e-01 -2.076814e-01 -1.140920e-01
+#&gt; [261] -4.233382e-02 -5.497605e-02  3.143334e-02  2.789148e-02  3.824176e-02
+#&gt; [266]  3.958670e-02  7.144549e-02 -3.388763e-02 -1.061599e-01 -1.192311e-01
+#&gt; [271] -6.336736e-02 -7.403462e-02  7.608271e-02  7.617826e-04  1.225105e-01
+#&gt; [276]  1.947855e-01 -6.882982e-03  1.296173e-02  2.649909e-02  7.854022e-02
+#&gt; [281]  1.097824e-01  3.435123e-01  1.278670e-01 -9.454828e-02 -3.549969e-02
+#&gt; [286] -1.191202e-01  2.704304e-01 -3.714909e-02 -5.965492e-02  1.115179e-02
+#&gt; [291]  3.920364e-02  5.369127e-02  3.992554e-02  3.295731e-02 -6.192887e-02
+#&gt; [296] -1.906290e-03  1.027402e-01  7.875947e-02  1.658419e-01 -2.518852e-02
+#&gt; [301]  1.801687e-01  6.367642e-02 -3.330569e-02 -8.289172e-02 -4.320864e-02
+#&gt; [306] -3.961617e-02 -1.280889e-01 -2.123027e-02 -1.144350e-01 -1.093114e-01
+#&gt; [311]  1.398180e-02  8.428887e-02  6.560807e-02 -1.192685e-01 -3.025728e-01
+#&gt; [316] -1.070811e-01 -1.195211e-01  7.494600e-02 -1.958308e-02  3.219249e-02
+#&gt; [321]  1.506674e-01  1.531688e-01  8.713382e-02  9.624283e-02 -2.776897e-02
+#&gt; [326]  2.208440e-02 -2.359146e-02  3.099839e-02 -1.450363e-02  4.013212e-02
+#&gt; [331]  7.652855e-02  1.969862e-01  2.306232e-01  3.624671e-02 -2.086142e-02
+#&gt; [336] -5.993315e-02  2.064305e-02 -1.058442e-01 -6.647455e-02 -1.227112e-01
+#&gt; [341] -7.600058e-02 -1.197372e-01 -1.154656e-01 -1.199773e-02  4.443043e-02
+#&gt; [346] -1.282035e-02 -7.401473e-02 -2.809404e-03  1.776912e-01  8.862438e-02
+#&gt; [351]  2.875638e-02  7.936341e-02  1.024469e-01  4.666990e-02  4.395139e-02
+#&gt; [356]  5.898913e-02  4.252838e-02  3.567832e-02  1.758626e-01  1.626727e-01
+#&gt; [361]  1.129815e-01 -8.315755e-02 -9.018081e-03 -8.721113e-02 -4.967281e-02
+#&gt; [366]  3.342401e-02  8.552305e-03  2.100803e-01  1.914683e-01  3.751005e-02
+#&gt; [371]  8.699636e-02 -2.207720e-02  6.078786e-02  3.835914e-02  1.195336e-01
+#&gt; [376] -2.261174e-02  9.933915e-02  1.731681e-01  1.114819e-01  4.897603e-02
+#&gt; [381]  5.218957e-02  4.265298e-02  1.281942e-01  9.344387e-02  1.629630e-02
+#&gt; [386]  8.123778e-02  9.782051e-02  2.510390e-01  1.434584e-01 -1.549435e-01
+#&gt; [391] -3.432072e-02 -9.536287e-03  3.704661e-02  2.244580e-02  1.074853e-02
+#&gt; [396] -6.206502e-02 -2.254728e-02  1.902413e-02  3.480277e-02 -1.324308e-02
+#&gt; [401]  4.689829e-02
 #&gt; 
 #&gt; $step
 #&gt; [1] 3
 #&gt; 
 #&gt; $plug.in
-#&gt; [1] 26.06835
+#&gt; [1] 3.248337
 #&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

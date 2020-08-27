@@ -8,9 +8,9 @@ LF(
   X,
   y,
   loading,
+  intercept = TRUE,
   init.Lasso = NULL,
   lambda = NULL,
-  intercept = TRUE,
   mu = NULL,
   step = NULL,
   resol = 1.5,
@@ -24,11 +24,11 @@ LF(
 
 \item{loading}{Loading, of length \eqn{p}}
 
+\item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
+
 \item{init.Lasso}{Initial LASSO estimator of the regression vector (default = \code{NULL})}
 
 \item{lambda}{The tuning parameter in construction of LASSO estimator of the regression vector (default = \code{NULL})}
-
-\item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
 
 \item{mu}{The tuning parameter in construction of projection direction (default = \code{NULL})}
 
@@ -36,18 +36,15 @@ LF(
 optimization problem for constructing the projection direction (default = \code{NULL})}
 
 \item{resol}{Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-that gives convergence of the optimization problem for constructing the projection direction (default = 1.5)}
+that gives convergence of the optimization problem of constructing the projection direction (default = 1.5)}
 
 \item{maxiter}{Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 that gives convergence of the optimization problem for constructing the projection direction (default = 10)}
 }
 \value{
 \item{prop.est}{The bias-corrected estimator for the linear functional}
-\item{sigma}{Estimate of the error variance in the linear regression model}
 \item{se}{Standard error of the bias-corrected estimator}
-\item{proj}{Optimal projection direction}
-\item{step}{Number of steps (< \code{maxiter}) to obtain the smallest \code{mu} that gives convergence of the
-optimization problem for constructing the projection direction}
+\item{proj}{The projection direction, of length \eqn{p}}
 \item{plug.in}{Plug-in LASSO estimator for the linear functional}
 }
 \description{
@@ -56,10 +53,31 @@ Computes the bias corrected estimator of linear functional \code{loading}\eqn{^{
 \examples{
 n = 100
 p = 400
-X = matrix(sample(-2:2,n*p,replace = TRUE),nrow = n,ncol = p)
-beta = (1:p)/25
-y = X\%*\%beta + rnorm(n,0,1)
-LF(X = X, y = y, loading = c(1,rep(0,(p-1))), intercept = TRUE)
+A1gen <- function(rho,p){
+A1=matrix(0,p,p)
+for(i in 1:p){
+ for(j in 1:p){
+   A1[i,j]<-rho^(abs(i-j))
+ }
+}
+A1
+}
+mu <- rep(0,p)
+mu[1:5] <- c(1:5)/5
+rho = 0.5
+Cov <- (A1gen(rho,p))/2
+Cov2<-matrix(NA,nrow=p,ncol=p)
+for(i in 1:p){
+ for(j in 1:p){
+   Cov2[i,j]<-0.5^(1+abs(i-j))
+  }
+}
+beta <- rep(0,p)
+beta[1:10] <- c(1:10)/5
+X <- MASS::mvrnorm(n,mu,Cov)
+y = X\%*\%beta + rnorm(n)
+loading <- MASS::mvrnorm(1,rep(0,p),Cov2)
+LF(X = X, y = y, loading = loading, intercept = TRUE)
 }
 \references{
 \insertRef{linlin}{FIHR}

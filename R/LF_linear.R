@@ -97,24 +97,7 @@ Initialization.step<-function(X,y,lambda=NULL,intercept=FALSE){
 #  }
 #}
 
-
-#' Constructs the projection direction with fixed tuning parameter in high dimensional linear regression model
-#'
-#' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
-#' @param loading Loading, of length \eqn{p}
-#' @param mu Tuning parameter in construction of projection direction
-#'
-#' @return
-#' \item{proj}{The projection direction}
-#' @export
-#'
-#' @examples
-#' n = 100
-#' p = 400
-#' X = matrix(sample(-2:2,n*p,replace = TRUE),nrow = n,ncol = p)
-#' Direction_fixedtuning(X,loading=c(1,rep(0,(p-1))),mu=2)
-#'
-Direction_fixedtuning<-function(X,loading,mu=NULL){
+Direction_fixedtuning_lin<-function(X,loading,mu=NULL){
   pp<-ncol(X)
   n<-nrow(X)
   if(is.null(mu)){
@@ -128,7 +111,7 @@ Direction_fixedtuning<-function(X,loading,mu=NULL){
   result<-solve(prob)
   print("fixed mu")
   print(mu)
-  print(result$value)
+  #print(result$value)
   opt.sol<-result$getValue(v)
   cvxr_status<-result$status
   direction<-(-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
@@ -136,27 +119,7 @@ Direction_fixedtuning<-function(X,loading,mu=NULL){
   return(returnList)
 }
 
-#' Searches for the best step size and computes the projection direction in high dimensional linear regression
-#'
-#' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
-#' @param loading Loading, of length \eqn{p}
-#' @param mu Tuning parameter in construction of projection direction
-#' @param resol Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-#' that gives convergence of the optimization problem for constructing the projection direction (default = 1.5)
-#' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-#' that gives convergence of the optimization problem for constructing the projection direction (default = 10)
-#'
-#' @return
-#' \item{proj}{The projection direction}
-#'
-#' @export
-#'
-#' @examples
-#' n = 100
-#' p = 400
-#' X = matrix(sample(-2:2,n*p,replace = TRUE),nrow = n,ncol = p)
-#' Direction_searchtuning(X,loading=c(1,rep(0,(p-1))))
-Direction_searchtuning<-function(X,loading,mu=NULL, resol = 1.5, maxiter = 10){
+Direction_searchtuning_lin<-function(X,loading,mu=NULL, resol = 1.5, maxiter = 10){
   pp<-ncol(X)
   n<-nrow(X)
   tryno = 1;
@@ -238,17 +201,14 @@ Direction_searchtuning<-function(X,loading,mu=NULL, resol = 1.5, maxiter = 10){
 #' @param step Number of steps (< \code{maxiter}) to obtain the smallest \code{mu} that gives convergence of the
 #' optimization problem for constructing the projection direction (default = \code{NULL})
 #' @param resol Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-#' that gives convergence of the optimization problem for constructing the projection direction (default = 1.5)
+#' that gives convergence of the optimization problem of constructing the projection direction (default = 1.5)
 #' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' that gives convergence of the optimization problem for constructing the projection direction (default = 10)
 #'
 #' @return
 #' \item{prop.est}{The bias-corrected estimator for the linear functional}
-#' \item{sigma}{Estimate of the error variance in the linear regression model}
 #' \item{se}{Standard error of the bias-corrected estimator}
-#' \item{proj}{Optimal projection direction}
-#' \item{step}{Number of steps (< \code{maxiter}) to obtain the smallest \code{mu} that gives convergence of the
-#' optimization problem for constructing the projection direction}
+#' \item{proj}{The projection direction, of length \eqn{p}}
 #' \item{plug.in}{Plug-in LASSO estimator for the linear functional}
 #' @export
 #'
@@ -263,11 +223,32 @@ Direction_searchtuning<-function(X,loading,mu=NULL, resol = 1.5, maxiter = 10){
 #' @examples
 #' n = 100
 #' p = 400
-#' X = matrix(sample(-2:2,n*p,replace = TRUE),nrow = n,ncol = p)
-#' beta = (1:p)/25
-#' y = X%*%beta + rnorm(n,0,1)
-#' LF(X = X, y = y, loading = c(1,rep(0,(p-1))), intercept = TRUE)
-LF<-function(X,y,loading,init.Lasso=NULL,lambda=NULL,intercept=TRUE,mu=NULL,step=NULL,resol = 1.5,maxiter=10){
+#' A1gen <- function(rho,p){
+#' A1=matrix(0,p,p)
+#' for(i in 1:p){
+#'  for(j in 1:p){
+#'    A1[i,j]<-rho^(abs(i-j))
+#'  }
+#' }
+#' A1
+#' }
+#' mu <- rep(0,p)
+#' mu[1:5] <- c(1:5)/5
+#' rho = 0.5
+#' Cov <- (A1gen(rho,p))/2
+#' Cov2<-matrix(NA,nrow=p,ncol=p)
+#' for(i in 1:p){
+#'  for(j in 1:p){
+#'    Cov2[i,j]<-0.5^(1+abs(i-j))
+#'   }
+#' }
+#' beta <- rep(0,p)
+#' beta[1:10] <- c(1:10)/5
+#' X <- MASS::mvrnorm(n,mu,Cov)
+#' y = X%*%beta + rnorm(n)
+#' loading <- MASS::mvrnorm(1,rep(0,p),Cov2)
+#' LF(X = X, y = y, loading = loading, intercept = TRUE)
+LF<-function(X,y,loading,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step=NULL,resol = 1.5,maxiter=10){
   ### Option 1: search tuning parameter with steps determined by the ill conditioned case (n=p/2)
   ### Option 2: search tuning parameter with maximum 10 steps.
   ####### Option 3: fixed tuning parameter and this is not recommended without exploring the tuning parameter selection
@@ -357,16 +338,16 @@ LF<-function(X,y,loading,init.Lasso=NULL,lambda=NULL,intercept=TRUE,mu=NULL,step
           step.vec<-rep(NA,3)
           for(t in 1:3){
             index.sel<-sample(1:n,size=ceiling(0.5*min(n,p)), replace=FALSE)
-            Direction.Est.temp<-Direction_searchtuning(Xc[index.sel,],loading,mu=NULL, resol, maxiter)
+            Direction.Est.temp<-Direction_searchtuning_lin(Xc[index.sel,],loading,mu=NULL, resol, maxiter)
             step.vec[t]<-Direction.Est.temp$step
           }
           step<-getmode(step.vec)
         }
         print(paste("step is", step))
-        Direction.Est<-Direction_fixedtuning(Xc,loading,mu=sqrt(2.01*log(pp)/n)*resol^{-(step-1)})
+        Direction.Est<-Direction_fixedtuning_lin(Xc,loading,mu=sqrt(2.01*log(pp)/n)*resol^{-(step-1)})
       }else{
         ### for option 2
-        Direction.Est<-Direction_searchtuning(Xc,loading,mu=NULL, resol, maxiter)
+        Direction.Est<-Direction_searchtuning_lin(Xc,loading,mu=NULL, resol, maxiter)
         step<-Direction.Est$step
         print(paste("step is", step))
       }
@@ -379,10 +360,8 @@ LF<-function(X,y,loading,init.Lasso=NULL,lambda=NULL,intercept=TRUE,mu=NULL,step
     #sd
     #c(linear.plugin+correct-1.96*sd,linear.plugin+correct+1.96*sd)
     returnList <- list("prop.est" = debias.est,
-                       "sigma"=sd.est,
                        "se" = se,
                        "proj"=direction,
-                       "step"=step,
                        "plug.in"=lasso.plugin
     )
     return(returnList)

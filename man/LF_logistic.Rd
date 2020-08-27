@@ -9,8 +9,8 @@ LF_logistic(
   y,
   loading,
   weight,
-  init.Lasso = NULL,
   intercept = TRUE,
+  init.Lasso = NULL,
   mu = NULL,
   step = NULL,
   resol = 1.5,
@@ -26,9 +26,9 @@ LF_logistic(
 
 \item{weight}{The weight vector, of length \eqn{n}, used in correcting the plug-in estimator}
 
-\item{init.Lasso}{Initial LASSO estimator of the regression vector (default = \code{NULL})}
-
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
+
+\item{init.Lasso}{Initial LASSO estimator of the regression vector (default = \code{NULL})}
 
 \item{mu}{The tuning parameter in construction of the projection direction (default = \code{NULL})}
 
@@ -36,7 +36,7 @@ LF_logistic(
 optimization problem for constructing the projection direction (default = \code{NULL})}
 
 \item{resol}{Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-that gives convergence of the optimization problem for constructing the projection direction (default = 1.5)}
+that gives convergence of the optimization problem of constructing the projection direction (default = 1.5)}
 
 \item{maxiter}{Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 that gives convergence of the optimization problem for constructing the projection direction (default = 10)}
@@ -44,22 +44,41 @@ that gives convergence of the optimization problem for constructing the projecti
 \value{
 \item{prop.est}{The bias corrected estimator of the linear functional}
 \item{se}{Standard error of the bias-corrected estimator}
-\item{proj}{Optimal projection direction}
-\item{step}{Number of steps (< \code{maxiter}) to obtain the smallest \code{mu} that gives convergence of the
-optimization problem for constructing the projection direction}
+\item{proj}{The projection direction, of length \eqn{p}}
 \item{plug.in}{Plug-in LASSO estimator of the linear functional}
-\item{support}{Estimated support for the regression vector (using LASSO estimate)}
 }
 \description{
 Computes the bias corrected estimator of the linear functional \code{loading}\eqn{^{\top}\beta} for the high dimensional logistic regression model \eqn{Y_i|X_i \sim } Bernoulli\eqn{(\frac{e^{X_i^{\top}\beta}}{1+e^{X_i^{\top}\beta}})} and the corresponding standard error.
 }
 \examples{
-n = 50
-p = 300
-X = matrix(sample(-2:2,n*p,replace = TRUE),nrow=n,ncol=p)
-y = rbinom(n,1,0.5)
-loading = c(1,rep(0,(p-1)))
-LF_logistic(X,y,loading,intercept = TRUE, weight = rep(1,50))
+A1gen <- function(rho,p){
+A1=matrix(0,p,p)
+for(i in 1:p){
+  for(j in 1:p){
+    A1[i,j]<-rho^(abs(i-j))
+  }
+}
+A1
+}
+n = 100
+p = 400
+mu <- rep(0,p)
+rho = 0.5
+Cov <- (A1gen(rho,p))/2
+Cov2<-matrix(NA,nrow=p,ncol=p)
+for(i in 1:p){
+  for(j in 1:p){
+    Cov2[i,j]<-0.5^(1+abs(i-j))
+  }
+}
+beta <- rep(0,p)
+beta[1:10] <- c(1:10)/5
+X <- MASS::mvrnorm(n,mu,Cov)
+exp_val <- X\%*\%beta
+prob <- exp(exp_val)/(1+exp(exp_val))
+y <- rbinom(n,1,prob)
+loading <- MASS::mvrnorm(1,mu,Cov2)
+LF_logistic(X = X, y = y, loading = loading, intercept = TRUE, weight = rep(1,n))
 }
 \references{
 \insertRef{linlog}{FIHR}
