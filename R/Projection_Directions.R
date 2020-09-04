@@ -2,7 +2,7 @@
 #'
 #' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
 #' @param loading Loading, of length \eqn{p}
-#' @param mu The tuning parameter used in the construction of the projection direction
+#' @param mu The dual tuning parameter used in the construction of the projection direction
 #' @param model The high dimensional regression model, either \code{linear} or \code{logistic}
 #' @param weight The weight vector of length \eqn{n}, used in correcting the plug-in estimator ; to be supplied if \code{model="logistic"} (default=NULL)
 #' @param deriv.vec The first derivative vector of the logit function at \eqn{X\widehat{\beta}} ; to be supplied if \code{model="logistic"}
@@ -52,7 +52,7 @@ Direction_fixedtuning<-function(X,loading,mu=NULL,model = "linear",weight=NULL,d
 #' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
 #' @param loading Loading, of length \eqn{p}
 #' @param model The high dimensional regression model, either \code{linear} or \code{logistic}
-#' @param mu The tuning parameter used in the construction of the projection direction
+#' @param mu The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})
 #' @param weight The weight vector of length \eqn{n}, used in correcting the plug-in estimator ; to be supplied if \code{model="logistic"} (default=NULL)
 #' @param deriv.vec The first derivative vector of the logit function at \eqn{X\widehat{\beta}} ; to be supplied if \code{model="logistic"}
 #' @param resol Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}

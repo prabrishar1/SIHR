@@ -197,7 +197,7 @@ Direction_searchtuning_lin<-function(X,loading,mu=NULL, resol = 1.5, maxiter = 1
 #' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
 #' @param init.Lasso Initial LASSO estimator of the regression vector (default = \code{NULL})
 #' @param lambda The tuning parameter in construction of LASSO estimator of the regression vector (default = \code{NULL})
-#' @param mu The tuning parameter in construction of projection direction (default = \code{NULL})
+#' @param mu The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})
 #' @param step Number of steps (< \code{maxiter}) to obtain the smallest \code{mu} that gives convergence of the
 #' optimization problem for constructing the projection direction (default = \code{NULL})
 #' @param resol Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}

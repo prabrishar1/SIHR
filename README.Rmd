@@ -156,3 +156,61 @@ Est = FIHR::QF(X = X, y = y, G=test.set, Cov.weight = FALSE,A = diag(1,400))
 Est$prop.est
 Est$se
 ```
+
+Finding Projection Direction in Linear Regression
+
+```{r proj linear}
+
+n = 100
+p = 400
+X = matrix(sample(-2:2,n*p,replace = TRUE),nrow = n,ncol = p)
+resol = 1.5
+step = 3
+
+## Finding Projection Direction using fixed tuning parameter
+
+Direction.est <- FIHR::Direction_fixedtuning(X,loading=c(1,rep(0,(p-1))),mu=sqrt(2.01*log(p)/n)*resol^{-(step-1)})
+Direction.est$proj
+
+## Finding Projection Direction using best step size
+
+Direction.est <- FIHR::Direction_searchtuning(X,loading=c(1,rep(0,(p-1))))
+Direction.est$proj
+
+```
+
+Finding Projection Direction in Logistic Regression
+
+```{r proj logistic}
+
+n = 50
+p = 400
+X = matrix(sample(-2:2,n*p,replace = TRUE),nrow=n,ncol=p)
+y = rbinom(n,1,0.5)
+col.norm <- 1/sqrt((1/n)*diag(t(X)%*%X)+0.0001);
+Xnor <- X %*% diag(col.norm);
+fit = glmnet::cv.glmnet(Xnor, y, alpha=1,family = "binomial")
+htheta <- as.vector(coef(fit, s = "lambda.min"))
+support<-(abs(htheta)>0.001)
+Xb <- cbind(rep(1,n),Xnor);
+Xc <- cbind(rep(1,n),X);
+col.norm <- c(1,col.norm);
+pp <- (p+1);
+xnew = c(1,rep(0,(p-1)))
+loading=rep(0,pp)
+loading[1]=1
+loading[-1]=xnew
+htheta <- htheta*col.norm;
+htheta <- as.vector(htheta)
+f_prime <- exp(Xc%*%htheta)/(1+exp(Xc%*%htheta))^2
+
+## Finding Projection Direction using fixed tuning parameter
+
+Direction.est <- FIHR::Direction_fixedtuning(X,loading=c(1,rep(0,(p-1))),mu=sqrt(2.01*log(p)/n)*resol^{-(step-1)},model = "logistic",weight = 1/f_prime, deriv.vec = f_prime)
+Direction.est$proj
+
+## Finding Projection Direction using best step size
+
+Direction.est <- FIHR::Direction_searchtuning(Xc,loading,model = "logistic",weight = 1/f_prime, deriv.vec = f_prime)
+Direction.est$proj
+```

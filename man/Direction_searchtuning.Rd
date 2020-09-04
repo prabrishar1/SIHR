@@ -22,7 +22,7 @@ Direction_searchtuning(
 
 \item{model}{The high dimensional regression model, either \code{linear} or \code{logistic}}
 
-\item{mu}{The tuning parameter used in the construction of the projection direction}
+\item{mu}{The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})}
 
 \item{weight}{The weight vector of length \eqn{n}, used in correcting the plug-in estimator ; to be supplied if \code{model="logistic"} (default=NULL)}
 

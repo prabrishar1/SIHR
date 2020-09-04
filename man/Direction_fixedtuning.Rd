@@ -18,7 +18,7 @@ Direction_fixedtuning(
 
 \item{loading}{Loading, of length \eqn{p}}
 
-\item{mu}{The tuning parameter used in the construction of the projection direction}
+\item{mu}{The dual tuning parameter used in the construction of the projection direction}
 
 \item{model}{The high dimensional regression model, either \code{linear} or \code{logistic}}
 

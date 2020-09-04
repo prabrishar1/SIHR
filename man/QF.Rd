@@ -39,7 +39,7 @@ QF(
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
 
-\item{mu}{The tuning parameter in construction of the projection direction (default = \code{NULL})}
+\item{mu}{The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})}
 
 \item{step}{Number of steps (< \code{maxiter}) to obtain the smallest \code{mu} that gives convergence of the
 optimization problem for constructing the projection direction (default = \code{NULL})}

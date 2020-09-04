@@ -30,7 +30,7 @@ LF(
 
 \item{lambda}{The tuning parameter in construction of LASSO estimator of the regression vector (default = \code{NULL})}
 
-\item{mu}{The tuning parameter in construction of projection direction (default = \code{NULL})}
+\item{mu}{The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})}
 
 \item{step}{Number of steps (< \code{maxiter}) to obtain the smallest \code{mu} that gives convergence of the
 optimization problem for constructing the projection direction (default = \code{NULL})}

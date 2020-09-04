@@ -228,7 +228,7 @@ Direction_searchtuning_robust <- function(Xc, loading, mu = NULL, resol = 1.5,
 #' @param init.Lasso Initial LASSO estimator for the regression vector (default = \code{NULL})
 #' @param tau.vec The vector of enlargement factors for asymptotic variance of the bias-corrected estimator to handle super-efficiency (default = \code{NULL})
 #' @param lambda The tuning parameter used in construction of initial LASSO estimator of the regression vector if \code{init.Lasso = NULL} (default = \code{NULL})
-#' @param mu The tuning parameter in construction of the projection direction (default = \code{NULL})
+#' @param mu The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})
 #' @param step Number of steps (< \code{maxiter}) to obtain the smallest \code{mu} that gives convergence of the
 #' optimization problem for constructing the projection direction (default = \code{NULL})
 #' @param resol Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
@@ -310,14 +310,13 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = NULL,init.Lasso = NULL, tau.vec =
 
     if(Cov.weight==FALSE)
     {
-      A_h <- A^0.5
       if(intercept==TRUE)
       {
-        Ac <- cbind(rep(1,p),A_h)
+        Ac <- rbind(c(1,rep(0,nrow(A))),cbind(rep(0,ncol(A)),A))
       }
       else
       {
-        Ac <- A_h
+        Ac <- A
       }
     }
 
@@ -336,7 +335,8 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = NULL,init.Lasso = NULL, tau.vec =
           print("Need to provide a known square matrix A of dimension p, results are faulty")
         }
         else{
-          lasso.plugin <- sum((Ac %*% htheta)^2)
+          lasso.plugin <- t(htheta)%*%Ac%*%htheta
+          #lasso.plugin <- sum((Ac %*% htheta)^2)
         }
       }
       direction <- htheta
@@ -363,7 +363,7 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = NULL,init.Lasso = NULL, tau.vec =
         }
         else{
           loading[G] <- (Ac %*% test.vec)[G]
-          lasso.plugin <- sum((Ac %*% htheta)^2)
+          lasso.plugin <- t(htheta)%*%Ac%*%htheta
         }
       }
       loading.norm <- sqrt(sum(loading^2))

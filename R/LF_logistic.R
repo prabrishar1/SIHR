@@ -133,7 +133,7 @@ Direction_searchtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec,res
 #' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
 #' @param weight The weight vector, of length \eqn{n}, used in correcting the plug-in estimator
 #' @param init.Lasso Initial LASSO estimator of the regression vector (default = \code{NULL})
-#' @param mu The tuning parameter in construction of the projection direction (default = \code{NULL})
+#' @param mu The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})
 #' @param step Number of steps (< \code{maxiter}) to obtain the smallest \code{mu} that gives convergence of the
 #' optimization problem for constructing the projection direction (default = \code{NULL})
 #' @param resol Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
