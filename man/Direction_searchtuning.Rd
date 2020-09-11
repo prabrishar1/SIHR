@@ -29,10 +29,10 @@ Direction_searchtuning(
 \item{deriv.vec}{The first derivative vector of the logit function at \eqn{X\widehat{\beta}} ; to be supplied if \code{model="logistic"}}
 
 \item{resol}{Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-that gives convergence of the optimization problem for constructing the projection direction (default = 1.5)}
+such that the dual optimization problem for constructing the projection direction converges (default = 1.5)}
 
-\item{maxiter}{maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-that gives convergence of the optimization problem for constructing the projection direction (default = 10)}
+\item{maxiter}{Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
+such that the dual optimization problem for constructing the projection direction converges (default = 10)}
 }
 \value{
 \item{proj}{The projection direction}

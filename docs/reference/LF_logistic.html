@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Inference for linear functional in the high dimensional logistic regression model — LF_logistic • FIHR</title>
+<title>Inference for linear functional in the high dimensional logistic regression — LF_logistic • FIHR</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Inference for linear functional in the high dimensional logistic regression model — LF_logistic" />
-<meta property="og:description" content="Computes the bias corrected estimator of the linear functional loading\(^{\top}\beta\) for the high dimensional logistic regression model \(Y_i|X_i \sim \) Bernoulli\((\frac{e^{X_i^{\top}\beta}}{1+e^{X_i^{\top}\beta}})\) and the corresponding standard error." />
+<meta property="og:title" content="Inference for linear functional in the high dimensional logistic regression — LF_logistic" />
+<meta property="og:description" content="Computes the bias corrected estimator of the linear functional loading\(^{\top}\beta\) for the high dimensional logistic regression \(Y_i|X_i \sim \) Bernoulli\((\frac{e^{X_i^{\top}\beta}}{1+e^{X_i^{\top}\beta}})\) and the corresponding standard error." />
 
 
 
@@ -103,13 +103,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Inference for linear functional in the high dimensional logistic regression model</h1>
+    <h1>Inference for linear functional in the high dimensional logistic regression</h1>
     
     <div class="hidden name"><code>LF_logistic.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Computes the bias corrected estimator of the linear functional <code>loading</code>\(^{\top}\beta\) for the high dimensional logistic regression model \(Y_i|X_i \sim \) Bernoulli\((\frac{e^{X_i^{\top}\beta}}{1+e^{X_i^{\top}\beta}})\) and the corresponding standard error.</p>
+    <p>Computes the bias corrected estimator of the linear functional <code>loading</code>\(^{\top}\beta\) for the high dimensional logistic regression \(Y_i|X_i \sim \) Bernoulli\((\frac{e^{X_i^{\top}\beta}}{1+e^{X_i^{\top}\beta}})\) and the corresponding standard error.</p>
     </div>
 
     <pre class="usage"><span class='fu'>LF_logistic</span>(
@@ -158,18 +158,18 @@
     </tr>
     <tr>
       <th>step</th>
-      <td><p>Number of steps (&lt; <code>maxiter</code>) to obtain the smallest <code>mu</code> that gives convergence of the
-optimization problem for constructing the projection direction (default = <code>NULL</code>)</p></td>
+      <td><p>Number of steps (&lt; <code>maxiter</code>) to obtain the smallest <code>mu</code>
+such that the dual optimization problem for constructing the projection direction converges (default = <code>NULL</code>)</p></td>
     </tr>
     <tr>
       <th>resol</th>
       <td><p>Resolution or the factor by which <code>mu</code> is increased/decreased to obtain the smallest <code>mu</code>
-that gives convergence of the optimization problem of constructing the projection direction (default = 1.5)</p></td>
+such that the dual optimization problem for constructing the projection direction converges (default = 1.5)</p></td>
     </tr>
     <tr>
       <th>maxiter</th>
       <td><p>Maximum number of steps along which <code>mu</code> is increased/decreased to obtain the smallest <code>mu</code>
-that gives convergence of the optimization problem for constructing the projection direction (default = 10)</p></td>
+such that the dual optimization problem for constructing the projection direction converges (default = 10)</p></td>
     </tr>
     </table>
 
@@ -178,9 +178,9 @@ that gives convergence of the optimization problem for constructing the projecti
     
 
 <dt>prop.est</dt><dd><p>The bias corrected estimator of the linear functional</p></dd>
-<dt>se</dt><dd><p>Standard error of the bias-corrected estimator</p></dd>
+<dt>se</dt><dd><p>The standard error of the bias-corrected estimator</p></dd>
 <dt>proj</dt><dd><p>The projection direction, of length \(p\)</p></dd>
-<dt>plug.in</dt><dd><p>Plug-in LASSO estimator of the linear functional</p></dd>
+<dt>plug.in</dt><dd><p>The plug-in LASSO estimator of the linear functional</p></dd>
 
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 

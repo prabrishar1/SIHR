@@ -56,9 +56,9 @@ Direction_fixedtuning<-function(X,loading,mu=NULL,model = "linear",weight=NULL,d
 #' @param weight The weight vector of length \eqn{n}, used in correcting the plug-in estimator ; to be supplied if \code{model="logistic"} (default=NULL)
 #' @param deriv.vec The first derivative vector of the logit function at \eqn{X\widehat{\beta}} ; to be supplied if \code{model="logistic"}
 #' @param resol Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-#' that gives convergence of the optimization problem for constructing the projection direction (default = 1.5)
-#' @param maxiter maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-#' that gives convergence of the optimization problem for constructing the projection direction (default = 10)
+#' such that the dual optimization problem for constructing the projection direction converges (default = 1.5)
+#' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
+#' such that the dual optimization problem for constructing the projection direction converges (default = 10)
 #'
 #' @return
 #' \item{proj}{The projection direction}

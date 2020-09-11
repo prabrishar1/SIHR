@@ -22,13 +22,7 @@ The goal of FIHR is to provide inference for linear and quadratic functionals in
 
 ## Installation
 
-You can install the released version of FIHR from [CRAN](https://CRAN.R-project.org) with:
-
-``` r
-install.packages("FIHR")
-```
-
-And the development version from [GitHub](https://github.com/) with:
+You can install the development version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")

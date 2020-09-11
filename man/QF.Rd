@@ -2,7 +2,7 @@
 % Please edit documentation in R/QF.R
 \name{QF}
 \alias{QF}
-\title{Inference for quadratic functional in high dimensional linear regression model}
+\title{Inference for quadratic functional in high dimensional linear regression}
 \usage{
 QF(
   X,
@@ -35,29 +35,29 @@ QF(
 
 \item{tau.vec}{The vector of enlargement factors for asymptotic variance of the bias-corrected estimator to handle super-efficiency (default = \code{NULL})}
 
-\item{lambda}{The tuning parameter used in construction of initial LASSO estimator of the regression vector if \code{init.Lasso = NULL} (default = \code{NULL})}
+\item{lambda}{The tuning parameter used in the construction of initial LASSO estimator of the regression vector if \code{init.Lasso = NULL} (default = \code{NULL})}
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
 
 \item{mu}{The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})}
 
-\item{step}{Number of steps (< \code{maxiter}) to obtain the smallest \code{mu} that gives convergence of the
-optimization problem for constructing the projection direction (default = \code{NULL})}
+\item{step}{Number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
+such that the dual optimization problem for constructing the projection direction converges (default = \code{NULL})}
 
 \item{resol}{Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-that gives convergence of the optimization problem for constructing the projection direction (default = 1.5)}
+such that the dual optimization problem for constructing the projection direction converges (default = 1.5)}
 
 \item{maxiter}{Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-that gives convergence of the optimization problem for constructing the projection direction (default = 10)}
+such that the dual optimization problem for constructing the projection direction converges (default = 10)}
 }
 \value{
 \item{prop.est}{The bias-corrected estimator of the quadratic functional restricted to \code{G}}
-\item{se}{Standard error of the bias-corrected estimator}
+\item{se}{The standard error of the bias-corrected estimator}
 \item{proj}{The projection direction, of length \eqn{p}}
-\item{plug.in}{Plug-in LASSO estimator for the quadratic functional restricted to \code{G}}
+\item{plug.in}{The plug-in LASSO estimator for the quadratic functional restricted to \code{G}}
 }
 \description{
-Computes the bias-corrected estimator of the quadratic functional \eqn{\beta_G^{\top}A\beta_G} for the high dimensional linear regression model \eqn{Y_i = X_i^{\top}\beta + \epsilon} and the corresponding standard error.
+Computes the bias-corrected estimator of the quadratic functional \eqn{\beta_G^{\top}A\beta_G} for the high dimensional linear regression \eqn{Y_i = X_i^{\top}\beta + \epsilon} and the corresponding standard error.
 }
 \examples{
 n = 100

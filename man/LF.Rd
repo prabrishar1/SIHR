@@ -2,7 +2,7 @@
 % Please edit documentation in R/LF_linear.R
 \name{LF}
 \alias{LF}
-\title{Inference for linear functional in the high dimensional linear regression model}
+\title{Inference for linear functional in the high dimensional linear regression}
 \usage{
 LF(
   X,
@@ -28,27 +28,27 @@ LF(
 
 \item{init.Lasso}{Initial LASSO estimator of the regression vector (default = \code{NULL})}
 
-\item{lambda}{The tuning parameter in construction of LASSO estimator of the regression vector (default = \code{NULL})}
+\item{lambda}{The tuning parameter in the construction of LASSO estimator of the regression vector (default = \code{NULL})}
 
 \item{mu}{The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})}
 
-\item{step}{Number of steps (< \code{maxiter}) to obtain the smallest \code{mu} that gives convergence of the
-optimization problem for constructing the projection direction (default = \code{NULL})}
+\item{step}{Number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
+such that the dual optimization problem for constructing the projection direction converges (default = \code{NULL})}
 
 \item{resol}{Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-that gives convergence of the optimization problem of constructing the projection direction (default = 1.5)}
+such that the dual optimization problem for constructing the projection direction converges (default = 1.5)}
 
 \item{maxiter}{Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-that gives convergence of the optimization problem for constructing the projection direction (default = 10)}
+such that the dual optimization problem for constructing the projection direction converges (default = 10)}
 }
 \value{
 \item{prop.est}{The bias-corrected estimator for the linear functional}
-\item{se}{Standard error of the bias-corrected estimator}
+\item{se}{The standard error of the bias-corrected estimator}
 \item{proj}{The projection direction, of length \eqn{p}}
-\item{plug.in}{Plug-in LASSO estimator for the linear functional}
+\item{plug.in}{The plug-in LASSO estimator for the linear functional}
 }
 \description{
-Computes the bias corrected estimator of linear functional \code{loading}\eqn{^{\top}\beta} for the high dimensional linear regression model \eqn{Y_i=X_i^{\top}\beta + \epsilon_i} and the corresponding standard error.
+Computes the bias corrected estimator of linear functional \code{loading}\eqn{^{\top}\beta} for the high dimensional linear regression \eqn{Y_i=X_i^{\top}\beta + \epsilon_i} and the corresponding standard error.
 }
 \examples{
 n = 100

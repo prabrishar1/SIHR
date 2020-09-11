@@ -111,10 +111,10 @@
 <span id="cb4-29"><a href="#cb4-29" aria-hidden="true"></a><span class="co">#&gt; [1] 4</span></span>
 <span id="cb4-30"><a href="#cb4-30" aria-hidden="true"></a><span class="co">#&gt; [1] "step is 4"</span></span>
 <span id="cb4-31"><a href="#cb4-31" aria-hidden="true"></a>Est<span class="op">$</span>prop.est</span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true"></a><span class="co">#&gt;         [,1]</span></span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true"></a><span class="co">#&gt; [1,] 4.32205</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true"></a><span class="co">#&gt;           [,1]</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true"></a><span class="co">#&gt; [1,] 0.5749414</span></span>
 <span id="cb4-34"><a href="#cb4-34" aria-hidden="true"></a>Est<span class="op">$</span>se</span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true"></a><span class="co">#&gt; [1] 0.9996471</span></span></code></pre></div>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true"></a><span class="co">#&gt; [1] 0.08086535</span></span></code></pre></div>
 <p>Inference for linear functional in high-dimensional logistic regression model</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a><span class="kw">library</span>(MASS)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a>A1gen &lt;-<span class="st"> </span><span class="cf">function</span>(rho,p){</span>
@@ -150,9 +150,9 @@
 <span id="cb5-32"><a href="#cb5-32" aria-hidden="true"></a><span class="co">#&gt; [1] 3</span></span>
 <span id="cb5-33"><a href="#cb5-33" aria-hidden="true"></a><span class="co">#&gt; [1] "step is 3"</span></span>
 <span id="cb5-34"><a href="#cb5-34" aria-hidden="true"></a>Est<span class="op">$</span>prop.est</span>
-<span id="cb5-35"><a href="#cb5-35" aria-hidden="true"></a><span class="co">#&gt; [1] 0.7904353</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true"></a><span class="co">#&gt; [1] -0.4361994</span></span>
 <span id="cb5-36"><a href="#cb5-36" aria-hidden="true"></a>Est<span class="op">$</span>se</span>
-<span id="cb5-37"><a href="#cb5-37" aria-hidden="true"></a><span class="co">#&gt; [1] 2.647433</span></span></code></pre></div>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true"></a><span class="co">#&gt; [1] 2.895964</span></span></code></pre></div>
 <p>Inference for quadratic functional in high-dimensional linear model</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="kw">library</span>(MASS)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a>A1gen &lt;-<span class="st"> </span><span class="cf">function</span>(rho,p){</span>
@@ -179,27 +179,27 @@
 <span id="cb6-23"><a href="#cb6-23" aria-hidden="true"></a>Est =<span class="st"> </span>FIHR<span class="op">::</span><span class="kw">QF</span>(<span class="dt">X =</span> X, <span class="dt">y =</span> y, <span class="dt">G=</span>test.set)</span>
 <span id="cb6-24"><a href="#cb6-24" aria-hidden="true"></a>Est<span class="op">$</span>prop.est</span>
 <span id="cb6-25"><a href="#cb6-25" aria-hidden="true"></a><span class="co">#&gt;           [,1]</span></span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true"></a><span class="co">#&gt; [1,] 0.2322782</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true"></a><span class="co">#&gt; [1,] 0.1643904</span></span>
 <span id="cb6-27"><a href="#cb6-27" aria-hidden="true"></a>Est<span class="op">$</span>se</span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true"></a><span class="co">#&gt; [1] 0.1037851</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true"></a><span class="co">#&gt; [1] 0.1022534</span></span>
 <span id="cb6-29"><a href="#cb6-29" aria-hidden="true"></a></span>
 <span id="cb6-30"><a href="#cb6-30" aria-hidden="true"></a><span class="co">## Inference for Quadratic Functional with known matrix A in middle</span></span>
 <span id="cb6-31"><a href="#cb6-31" aria-hidden="true"></a></span>
 <span id="cb6-32"><a href="#cb6-32" aria-hidden="true"></a>Est =<span class="st"> </span>FIHR<span class="op">::</span><span class="kw">QF</span>(<span class="dt">X =</span> X, <span class="dt">y =</span> y, <span class="dt">G=</span>test.set, <span class="dt">Cov.weight =</span> <span class="ot">FALSE</span>,<span class="dt">A =</span> <span class="kw">diag</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">400</span>,<span class="dv">400</span>))</span>
 <span id="cb6-33"><a href="#cb6-33" aria-hidden="true"></a>Est<span class="op">$</span>prop.est</span>
-<span id="cb6-34"><a href="#cb6-34" aria-hidden="true"></a><span class="co">#&gt;          [,1]</span></span>
-<span id="cb6-35"><a href="#cb6-35" aria-hidden="true"></a><span class="co">#&gt; [1,] 23.40872</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true"></a><span class="co">#&gt;         [,1]</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true"></a><span class="co">#&gt; [1,] 39.8805</span></span>
 <span id="cb6-36"><a href="#cb6-36" aria-hidden="true"></a>Est<span class="op">$</span>se</span>
-<span id="cb6-37"><a href="#cb6-37" aria-hidden="true"></a><span class="co">#&gt; [1] 0.2260458</span></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true"></a><span class="co">#&gt; [1] 0.2311193</span></span>
 <span id="cb6-38"><a href="#cb6-38" aria-hidden="true"></a></span>
 <span id="cb6-39"><a href="#cb6-39" aria-hidden="true"></a><span class="co">## Inference for square norm of regression vector</span></span>
 <span id="cb6-40"><a href="#cb6-40" aria-hidden="true"></a></span>
 <span id="cb6-41"><a href="#cb6-41" aria-hidden="true"></a>Est =<span class="st"> </span>FIHR<span class="op">::</span><span class="kw">QF</span>(<span class="dt">X =</span> X, <span class="dt">y =</span> y, <span class="dt">G=</span>test.set, <span class="dt">Cov.weight =</span> <span class="ot">FALSE</span>,<span class="dt">A =</span> <span class="kw">diag</span>(<span class="dv">1</span>,<span class="dv">400</span>))</span>
 <span id="cb6-42"><a href="#cb6-42" aria-hidden="true"></a>Est<span class="op">$</span>prop.est</span>
 <span id="cb6-43"><a href="#cb6-43" aria-hidden="true"></a><span class="co">#&gt;           [,1]</span></span>
-<span id="cb6-44"><a href="#cb6-44" aria-hidden="true"></a><span class="co">#&gt; [1,] 0.1869423</span></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true"></a><span class="co">#&gt; [1,] 0.2694152</span></span>
 <span id="cb6-45"><a href="#cb6-45" aria-hidden="true"></a>Est<span class="op">$</span>se</span>
-<span id="cb6-46"><a href="#cb6-46" aria-hidden="true"></a><span class="co">#&gt; [1] 0.1414907</span></span></code></pre></div>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true"></a><span class="co">#&gt; [1] 0.1414967</span></span></code></pre></div>
 <p>Finding Projection Direction in Linear Regression</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a>n =<span class="st"> </span><span class="dv">100</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true"></a>p =<span class="st"> </span><span class="dv">400</span></span>
@@ -213,172 +213,172 @@
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true"></a><span class="co">#&gt; [1] "fixed mu"</span></span>
 <span id="cb7-11"><a href="#cb7-11" aria-hidden="true"></a><span class="co">#&gt; [1] 0.1542347</span></span>
 <span id="cb7-12"><a href="#cb7-12" aria-hidden="true"></a>Direction.est<span class="op">$</span>proj</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true"></a><span class="co">#&gt;   [1]  1.113372e+00  2.056056e-20  2.148619e-20  2.674453e-20 -1.354354e-21</span></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true"></a><span class="co">#&gt;   [6] -1.018667e-20 -4.820512e-21  5.045439e-22  7.920164e-21  2.760664e-21</span></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true"></a><span class="co">#&gt;  [11] -3.360521e-21 -1.825301e-20 -6.034922e-21  1.659052e-20 -1.769878e-20</span></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true"></a><span class="co">#&gt;  [16]  1.901137e-01 -2.716790e-20  6.087829e-21  1.032695e-21 -6.776629e-21</span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true"></a><span class="co">#&gt;  [21]  9.100112e-03  2.235463e-20 -8.970963e-21 -7.458111e-21  7.374473e-21</span></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true"></a><span class="co">#&gt;  [26]  1.074270e-20  3.887354e-21 -8.080315e-21  7.787131e-21 -2.387684e-21</span></span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true"></a><span class="co">#&gt;  [31] -2.810659e-21  1.005316e-20 -2.030273e-21  7.892758e-21 -1.083499e-20</span></span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true"></a><span class="co">#&gt;  [36]  4.538516e-21  1.123789e-20  6.615003e-02 -6.732051e-21  1.442974e-20</span></span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true"></a><span class="co">#&gt;  [41] -1.606165e-20  9.444557e-21 -5.545782e-02 -2.523481e-21 -2.354936e-21</span></span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true"></a><span class="co">#&gt;  [46] -2.049768e-21 -2.364210e-21  3.327701e-21  4.281339e-21 -8.937821e-02</span></span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true"></a><span class="co">#&gt;  [51] -1.622268e-01 -5.991277e-02  3.966103e-21  1.146840e-20  8.855143e-02</span></span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true"></a><span class="co">#&gt;  [56]  1.698743e-01  8.740324e-21  2.018350e-21 -1.248766e-20 -1.068633e-20</span></span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true"></a><span class="co">#&gt;  [61]  2.024278e-21  5.300061e-21 -4.069681e-21  9.412747e-22  3.536107e-21</span></span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true"></a><span class="co">#&gt;  [66] -3.698278e-22  4.835535e-21  7.428360e-21 -5.100554e-21 -5.686044e-22</span></span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true"></a><span class="co">#&gt;  [71]  9.125721e-04 -6.279549e-02  9.048803e-21 -5.695090e-21 -5.441722e-21</span></span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true"></a><span class="co">#&gt;  [76] -1.189346e-02  1.518137e-20  1.763708e-20  1.426912e-20  2.065672e-20</span></span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true"></a><span class="co">#&gt;  [81]  1.470585e-20 -2.344146e-21 -2.002290e-20 -1.521204e-20 -1.044445e-20</span></span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true"></a><span class="co">#&gt;  [86]  9.664323e-22  1.035551e-20  3.073851e-02 -5.838039e-21 -2.704320e-20</span></span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true"></a><span class="co">#&gt;  [91] -1.038849e-23 -2.675624e-21  7.224021e-22 -1.180635e-02  1.347027e-22</span></span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true"></a><span class="co">#&gt;  [96]  1.455691e-20  1.614370e-20 -5.554192e-02 -7.672971e-21 -8.855157e-21</span></span>
-<span id="cb7-33"><a href="#cb7-33" aria-hidden="true"></a><span class="co">#&gt; [101]  2.638374e-21 -1.782055e-20 -3.207837e-21 -4.237949e-21 -9.536520e-21</span></span>
-<span id="cb7-34"><a href="#cb7-34" aria-hidden="true"></a><span class="co">#&gt; [106] -2.608879e-20 -1.203035e-20  1.331003e-20 -2.745951e-21 -7.642666e-22</span></span>
-<span id="cb7-35"><a href="#cb7-35" aria-hidden="true"></a><span class="co">#&gt; [111]  6.163195e-22  1.999682e-22  9.847841e-21 -1.845505e-20 -2.157201e-20</span></span>
-<span id="cb7-36"><a href="#cb7-36" aria-hidden="true"></a><span class="co">#&gt; [116] -6.797174e-21 -8.683288e-21  1.771782e-20  5.954066e-21  4.588171e-22</span></span>
-<span id="cb7-37"><a href="#cb7-37" aria-hidden="true"></a><span class="co">#&gt; [121] -9.432113e-21  5.207592e-21  6.106716e-02 -2.349116e-02  1.827083e-20</span></span>
-<span id="cb7-38"><a href="#cb7-38" aria-hidden="true"></a><span class="co">#&gt; [126]  5.371663e-21  7.498845e-21  1.147380e-02 -3.580792e-02  2.135487e-21</span></span>
-<span id="cb7-39"><a href="#cb7-39" aria-hidden="true"></a><span class="co">#&gt; [131] -2.141520e-21 -1.020336e-22  2.922027e-21 -1.018587e-20 -1.758456e-20</span></span>
-<span id="cb7-40"><a href="#cb7-40" aria-hidden="true"></a><span class="co">#&gt; [136]  4.487066e-21 -1.422135e-22  7.602409e-21  9.783750e-21  1.013345e-20</span></span>
-<span id="cb7-41"><a href="#cb7-41" aria-hidden="true"></a><span class="co">#&gt; [141] -6.115358e-21 -4.136083e-21 -1.713460e-21  1.066519e-01  1.496009e-20</span></span>
-<span id="cb7-42"><a href="#cb7-42" aria-hidden="true"></a><span class="co">#&gt; [146]  1.325554e-20 -6.703609e-21  1.476439e-21 -7.467767e-21 -3.162334e-03</span></span>
-<span id="cb7-43"><a href="#cb7-43" aria-hidden="true"></a><span class="co">#&gt; [151] -1.068753e-20  7.475995e-21  4.930458e-21 -1.312561e-20 -2.151316e-21</span></span>
-<span id="cb7-44"><a href="#cb7-44" aria-hidden="true"></a><span class="co">#&gt; [156] -5.161360e-21  8.284920e-02  8.717535e-21 -1.885588e-21  4.918849e-21</span></span>
-<span id="cb7-45"><a href="#cb7-45" aria-hidden="true"></a><span class="co">#&gt; [161] -1.954543e-21 -4.258612e-21  3.686533e-02  4.257304e-02  5.962652e-21</span></span>
-<span id="cb7-46"><a href="#cb7-46" aria-hidden="true"></a><span class="co">#&gt; [166]  5.715112e-22 -2.986031e-02  1.583577e-20  1.799718e-21  9.351183e-21</span></span>
-<span id="cb7-47"><a href="#cb7-47" aria-hidden="true"></a><span class="co">#&gt; [171] -1.478503e-20 -1.344408e-20 -1.086639e-20  4.230994e-21  1.512530e-20</span></span>
-<span id="cb7-48"><a href="#cb7-48" aria-hidden="true"></a><span class="co">#&gt; [176]  2.119308e-21 -9.791617e-21  5.393875e-21 -9.957119e-21  8.225159e-21</span></span>
-<span id="cb7-49"><a href="#cb7-49" aria-hidden="true"></a><span class="co">#&gt; [181] -6.958498e-22 -5.643896e-21  8.375503e-02  8.379589e-21  5.512847e-21</span></span>
-<span id="cb7-50"><a href="#cb7-50" aria-hidden="true"></a><span class="co">#&gt; [186]  5.999462e-21  2.981934e-22  1.864469e-21 -5.690127e-21  7.296228e-21</span></span>
-<span id="cb7-51"><a href="#cb7-51" aria-hidden="true"></a><span class="co">#&gt; [191] -2.824434e-22  7.406028e-02 -5.162205e-21 -3.812009e-22  7.997207e-03</span></span>
-<span id="cb7-52"><a href="#cb7-52" aria-hidden="true"></a><span class="co">#&gt; [196] -1.158098e-20  2.335959e-20 -3.912445e-02  5.653513e-02 -1.538228e-20</span></span>
-<span id="cb7-53"><a href="#cb7-53" aria-hidden="true"></a><span class="co">#&gt; [201]  9.689633e-21  4.359610e-21 -1.467824e-20 -1.668536e-21  3.291269e-21</span></span>
-<span id="cb7-54"><a href="#cb7-54" aria-hidden="true"></a><span class="co">#&gt; [206]  3.173560e-21  4.815300e-21  7.558867e-21 -9.619072e-21  1.129290e-20</span></span>
-<span id="cb7-55"><a href="#cb7-55" aria-hidden="true"></a><span class="co">#&gt; [211] -1.594594e-21 -9.237819e-21  5.377610e-21  2.228797e-21  1.475333e-20</span></span>
-<span id="cb7-56"><a href="#cb7-56" aria-hidden="true"></a><span class="co">#&gt; [216]  1.546099e-21  1.079958e-20  8.657201e-21 -1.073941e-20 -6.447959e-21</span></span>
-<span id="cb7-57"><a href="#cb7-57" aria-hidden="true"></a><span class="co">#&gt; [221]  1.086450e-20  3.773463e-21  6.763777e-21 -2.363920e-21 -9.333181e-02</span></span>
-<span id="cb7-58"><a href="#cb7-58" aria-hidden="true"></a><span class="co">#&gt; [226]  4.444063e-21 -5.200548e-21 -7.762622e-21  4.953591e-21 -6.953574e-21</span></span>
-<span id="cb7-59"><a href="#cb7-59" aria-hidden="true"></a><span class="co">#&gt; [231]  1.659136e-20 -6.087391e-21 -1.301111e-20 -1.488442e-20 -1.054889e-23</span></span>
-<span id="cb7-60"><a href="#cb7-60" aria-hidden="true"></a><span class="co">#&gt; [236] -3.335499e-21 -1.509808e-21  1.202609e-20  7.219660e-21 -1.955430e-20</span></span>
-<span id="cb7-61"><a href="#cb7-61" aria-hidden="true"></a><span class="co">#&gt; [241] -8.315030e-21 -1.124027e-21  1.350312e-20  3.784793e-21 -1.100075e-20</span></span>
-<span id="cb7-62"><a href="#cb7-62" aria-hidden="true"></a><span class="co">#&gt; [246]  1.614912e-20  2.663559e-22  4.263160e-21 -7.112734e-02  1.451892e-21</span></span>
-<span id="cb7-63"><a href="#cb7-63" aria-hidden="true"></a><span class="co">#&gt; [251] -1.006329e-20  7.525407e-21  1.126114e-21  1.271435e-21  1.899325e-20</span></span>
-<span id="cb7-64"><a href="#cb7-64" aria-hidden="true"></a><span class="co">#&gt; [256]  8.470620e-21 -1.003141e-20  1.558916e-02 -1.195162e-21  4.039225e-21</span></span>
-<span id="cb7-65"><a href="#cb7-65" aria-hidden="true"></a><span class="co">#&gt; [261]  5.001317e-21  2.158870e-23  1.181998e-21  6.516270e-22 -1.320559e-02</span></span>
-<span id="cb7-66"><a href="#cb7-66" aria-hidden="true"></a><span class="co">#&gt; [266] -7.196070e-03 -1.539572e-21 -8.725388e-21  3.212467e-21  2.125398e-20</span></span>
-<span id="cb7-67"><a href="#cb7-67" aria-hidden="true"></a><span class="co">#&gt; [271]  3.190045e-21  2.504799e-21  2.191231e-22  3.650469e-21  6.959419e-21</span></span>
-<span id="cb7-68"><a href="#cb7-68" aria-hidden="true"></a><span class="co">#&gt; [276]  1.350361e-20  2.211878e-21 -5.712953e-21  1.704665e-20  6.941634e-21</span></span>
-<span id="cb7-69"><a href="#cb7-69" aria-hidden="true"></a><span class="co">#&gt; [281] -9.935483e-21  5.874797e-21  1.295080e-20 -5.299286e-21 -6.329914e-21</span></span>
-<span id="cb7-70"><a href="#cb7-70" aria-hidden="true"></a><span class="co">#&gt; [286]  1.133817e-01  2.386643e-22  2.519207e-21  1.930467e-01 -9.125736e-03</span></span>
-<span id="cb7-71"><a href="#cb7-71" aria-hidden="true"></a><span class="co">#&gt; [291]  1.737659e-20 -2.583619e-20  3.184002e-22 -2.731010e-20 -3.525907e-02</span></span>
-<span id="cb7-72"><a href="#cb7-72" aria-hidden="true"></a><span class="co">#&gt; [296]  8.764929e-03 -1.196057e-20 -1.677869e-02 -4.604830e-21  1.133531e-21</span></span>
-<span id="cb7-73"><a href="#cb7-73" aria-hidden="true"></a><span class="co">#&gt; [301] -1.236692e-20 -1.724873e-02 -5.702365e-23  6.002156e-21 -8.520638e-22</span></span>
-<span id="cb7-74"><a href="#cb7-74" aria-hidden="true"></a><span class="co">#&gt; [306]  1.278792e-20 -9.471296e-02  1.298291e-21  1.631924e-22 -4.954542e-21</span></span>
-<span id="cb7-75"><a href="#cb7-75" aria-hidden="true"></a><span class="co">#&gt; [311]  4.336919e-22 -3.010705e-21 -2.586842e-03 -1.273251e-20  4.396558e-22</span></span>
-<span id="cb7-76"><a href="#cb7-76" aria-hidden="true"></a><span class="co">#&gt; [316]  2.241176e-21 -6.750970e-21  5.441984e-21  1.650596e-20  1.112447e-20</span></span>
-<span id="cb7-77"><a href="#cb7-77" aria-hidden="true"></a><span class="co">#&gt; [321]  1.100149e-20 -7.398405e-22 -2.166329e-20  3.464484e-21  4.927012e-21</span></span>
-<span id="cb7-78"><a href="#cb7-78" aria-hidden="true"></a><span class="co">#&gt; [326] -3.623710e-21 -5.291785e-21 -1.979994e-20  1.680461e-03  8.033592e-21</span></span>
-<span id="cb7-79"><a href="#cb7-79" aria-hidden="true"></a><span class="co">#&gt; [331]  2.486174e-22 -1.599657e-20 -1.501084e-20  1.689782e-20  2.206239e-20</span></span>
-<span id="cb7-80"><a href="#cb7-80" aria-hidden="true"></a><span class="co">#&gt; [336] -6.416991e-21  3.615201e-21 -3.485234e-21  7.001509e-21 -2.202794e-21</span></span>
-<span id="cb7-81"><a href="#cb7-81" aria-hidden="true"></a><span class="co">#&gt; [341]  8.585412e-21 -1.495203e-20  8.968486e-03  3.462364e-03  2.752779e-03</span></span>
-<span id="cb7-82"><a href="#cb7-82" aria-hidden="true"></a><span class="co">#&gt; [346] -1.121228e-20  6.165303e-21  8.496894e-21  1.382874e-20 -3.598337e-02</span></span>
-<span id="cb7-83"><a href="#cb7-83" aria-hidden="true"></a><span class="co">#&gt; [351]  1.340210e-20  5.353658e-21 -2.198272e-21 -9.673288e-21  2.931091e-21</span></span>
-<span id="cb7-84"><a href="#cb7-84" aria-hidden="true"></a><span class="co">#&gt; [356]  2.607095e-21 -1.926182e-20 -2.158978e-20 -3.113924e-02  1.337940e-20</span></span>
-<span id="cb7-85"><a href="#cb7-85" aria-hidden="true"></a><span class="co">#&gt; [361] -2.186181e-21  9.959003e-02  5.952687e-21 -1.489621e-21  8.679768e-21</span></span>
-<span id="cb7-86"><a href="#cb7-86" aria-hidden="true"></a><span class="co">#&gt; [366] -4.638752e-02 -4.991983e-21 -2.278943e-21  1.237203e-20 -5.948245e-21</span></span>
-<span id="cb7-87"><a href="#cb7-87" aria-hidden="true"></a><span class="co">#&gt; [371] -8.492347e-21 -1.751511e-20  7.459818e-21  3.565207e-21  1.283274e-20</span></span>
-<span id="cb7-88"><a href="#cb7-88" aria-hidden="true"></a><span class="co">#&gt; [376]  2.737787e-21 -9.597707e-21  2.243500e-21  1.820491e-02 -1.602048e-01</span></span>
-<span id="cb7-89"><a href="#cb7-89" aria-hidden="true"></a><span class="co">#&gt; [381]  1.573347e-20  2.676879e-21  3.834961e-20  1.913447e-21 -1.350649e-20</span></span>
-<span id="cb7-90"><a href="#cb7-90" aria-hidden="true"></a><span class="co">#&gt; [386] -9.069829e-21 -4.758838e-21  9.742838e-21 -1.457209e-21  4.866703e-21</span></span>
-<span id="cb7-91"><a href="#cb7-91" aria-hidden="true"></a><span class="co">#&gt; [391]  1.297010e-01  6.519237e-22  6.309997e-21  2.508698e-21  7.596531e-21</span></span>
-<span id="cb7-92"><a href="#cb7-92" aria-hidden="true"></a><span class="co">#&gt; [396]  5.023747e-21  1.391510e-20 -7.839129e-21 -5.469699e-21 -9.767869e-21</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true"></a><span class="co">#&gt;   [1]  8.424134e-01  3.362940e-21 -8.600023e-22 -6.103753e-21 -4.390352e-21</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true"></a><span class="co">#&gt;   [6]  6.991351e-21 -1.599624e-21  1.752694e-21 -2.201301e-21 -7.810649e-22</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true"></a><span class="co">#&gt;  [11]  1.058955e-21 -9.635634e-22  5.433790e-21  8.833568e-02  1.097110e-21</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true"></a><span class="co">#&gt;  [16]  6.128453e-21  3.961312e-22 -3.340350e-21 -3.071626e-21  2.875777e-21</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true"></a><span class="co">#&gt;  [21] -1.537539e-21  5.468540e-21 -3.661438e-21  2.984896e-21  5.521573e-02</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true"></a><span class="co">#&gt;  [26] -7.668615e-02 -1.772471e-21 -1.018296e-21  3.891617e-21 -1.099765e-21</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true"></a><span class="co">#&gt;  [31]  5.412578e-21 -3.066187e-21  4.891959e-02  5.902967e-23  2.830371e-22</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true"></a><span class="co">#&gt;  [36] -2.121761e-02 -1.424988e-21  1.569797e-21 -3.819446e-02 -8.213914e-21</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true"></a><span class="co">#&gt;  [41] -9.377874e-22 -1.667199e-21 -5.704705e-21 -2.661571e-02  2.642929e-02</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true"></a><span class="co">#&gt;  [46]  3.479383e-21 -1.046369e-22  1.145993e-21  1.903422e-21  2.145383e-21</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true"></a><span class="co">#&gt;  [51] -4.001872e-21 -6.295224e-21  3.227966e-21  3.453739e-21  8.011069e-21</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true"></a><span class="co">#&gt;  [56]  5.779489e-21 -1.766857e-21  2.803990e-21  3.992147e-21  3.598161e-21</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true"></a><span class="co">#&gt;  [61]  5.046260e-21  4.785957e-21  2.221808e-21 -1.695341e-21 -1.982533e-21</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true"></a><span class="co">#&gt;  [66] -4.578067e-21 -9.540925e-22 -6.517239e-21 -4.676575e-21  1.400877e-22</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true"></a><span class="co">#&gt;  [71]  1.357451e-21 -7.022085e-21 -3.586526e-21  3.413784e-22 -2.363191e-21</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true"></a><span class="co">#&gt;  [76] -1.442853e-21 -2.930096e-21 -2.098638e-21  2.227484e-21 -2.860103e-21</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true"></a><span class="co">#&gt;  [81] -1.738333e-02 -4.825616e-21  2.792615e-21  4.548553e-22 -4.627508e-22</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true"></a><span class="co">#&gt;  [86]  1.072174e-23 -2.130037e-21 -2.754558e-22  1.801403e-21 -3.150639e-21</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true"></a><span class="co">#&gt;  [91] -5.495544e-22 -4.673925e-21  1.678621e-21 -5.479726e-21  2.102162e-21</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true"></a><span class="co">#&gt;  [96]  6.890614e-22  2.559987e-21  4.550179e-21 -2.744928e-21  1.871253e-21</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true"></a><span class="co">#&gt; [101]  9.194741e-03 -5.811144e-22  4.544771e-21  2.613396e-21 -4.594911e-21</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true"></a><span class="co">#&gt; [106]  1.305882e-21 -6.434024e-21 -3.310586e-21 -6.433127e-23  2.291169e-21</span></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true"></a><span class="co">#&gt; [111]  6.417413e-22  5.291287e-21 -8.591810e-22 -6.822800e-21 -1.617914e-21</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true"></a><span class="co">#&gt; [116]  1.552280e-21 -3.730118e-21 -2.138278e-21  3.238954e-21  2.820756e-21</span></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true"></a><span class="co">#&gt; [121] -1.042136e-20 -3.079903e-21  1.779993e-21  9.459599e-21 -5.647087e-02</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true"></a><span class="co">#&gt; [126] -6.466854e-21  3.737262e-02 -3.537674e-21 -6.379887e-21  3.860969e-21</span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true"></a><span class="co">#&gt; [131]  3.848178e-21  6.867507e-21 -1.020207e-20 -3.544987e-22  1.377861e-20</span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true"></a><span class="co">#&gt; [136] -3.867818e-21  1.014947e-20 -3.590982e-21  1.706830e-21  8.816811e-22</span></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true"></a><span class="co">#&gt; [141]  3.387776e-21  3.941189e-02 -4.994467e-22 -2.531421e-21  4.285895e-21</span></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true"></a><span class="co">#&gt; [146] -4.796033e-21  5.798580e-21  1.951384e-21  2.551386e-21 -3.616925e-21</span></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true"></a><span class="co">#&gt; [151] -1.528664e-21  4.208407e-21 -2.353341e-21  2.146402e-21  2.351861e-21</span></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true"></a><span class="co">#&gt; [156]  2.839173e-02  1.146041e-21 -3.713901e-21 -1.399319e-22  2.507617e-22</span></span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true"></a><span class="co">#&gt; [161] -6.924986e-02 -6.473539e-02  9.216043e-22  1.945149e-21 -5.294342e-21</span></span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true"></a><span class="co">#&gt; [166] -3.597393e-22  1.007140e-23  7.512398e-21  1.942359e-21  2.625687e-21</span></span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true"></a><span class="co">#&gt; [171] -8.579463e-21 -6.209685e-21  2.972885e-21  3.452835e-21  5.502884e-21</span></span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true"></a><span class="co">#&gt; [176]  1.476211e-21  1.161195e-21  1.485711e-21  5.040004e-22  3.081611e-21</span></span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true"></a><span class="co">#&gt; [181] -3.373670e-21 -1.620442e-21 -2.089248e-21 -5.271727e-21 -1.264421e-21</span></span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true"></a><span class="co">#&gt; [186] -4.174629e-21  1.752003e-21  4.048728e-21 -6.342673e-22  6.834526e-22</span></span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true"></a><span class="co">#&gt; [191] -3.050724e-22  1.518843e-21 -2.518099e-21  6.921129e-22  3.789871e-03</span></span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true"></a><span class="co">#&gt; [196] -1.790792e-21 -3.262931e-21  2.858160e-21  1.246919e-21 -3.282335e-21</span></span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true"></a><span class="co">#&gt; [201]  8.127380e-21 -1.782728e-21  5.153422e-22  7.082867e-21  1.891322e-21</span></span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true"></a><span class="co">#&gt; [206]  3.220299e-21  2.213342e-21  1.741686e-21 -2.677166e-21 -1.208089e-21</span></span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true"></a><span class="co">#&gt; [211]  2.066479e-21  4.967161e-22  1.530519e-21  1.407333e-01  6.196064e-22</span></span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true"></a><span class="co">#&gt; [216] -8.437231e-02 -2.057201e-02 -5.074697e-21 -3.979815e-02 -1.055368e-21</span></span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true"></a><span class="co">#&gt; [221]  5.514113e-21 -3.730282e-21 -1.668516e-02 -6.609124e-03 -4.820731e-21</span></span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true"></a><span class="co">#&gt; [226]  5.078506e-21  2.258049e-21  6.873689e-21  9.506507e-22 -5.259626e-21</span></span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true"></a><span class="co">#&gt; [231]  2.788334e-21 -7.212735e-22 -4.015256e-02 -4.437758e-21 -4.237934e-21</span></span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true"></a><span class="co">#&gt; [236] -3.744049e-21  7.611150e-21  4.691231e-23 -5.122808e-21  1.448054e-21</span></span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true"></a><span class="co">#&gt; [241] -4.435534e-21  4.864928e-21 -1.570914e-21 -6.040638e-21  9.309332e-03</span></span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true"></a><span class="co">#&gt; [246] -6.474098e-22 -1.664928e-21  2.060653e-21  4.623353e-21  6.450936e-21</span></span>
+<span id="cb7-63"><a href="#cb7-63" aria-hidden="true"></a><span class="co">#&gt; [251] -1.782083e-21 -2.659956e-21 -1.902616e-21 -4.378754e-21 -4.538573e-21</span></span>
+<span id="cb7-64"><a href="#cb7-64" aria-hidden="true"></a><span class="co">#&gt; [256] -3.476666e-21  2.096516e-21 -5.966998e-21  1.911335e-21 -3.861775e-21</span></span>
+<span id="cb7-65"><a href="#cb7-65" aria-hidden="true"></a><span class="co">#&gt; [261] -4.456408e-22  3.444497e-21 -1.837303e-21 -1.891708e-02 -3.032286e-21</span></span>
+<span id="cb7-66"><a href="#cb7-66" aria-hidden="true"></a><span class="co">#&gt; [266] -1.115531e-02 -2.315477e-21  3.346780e-21 -1.170212e-21 -3.813501e-21</span></span>
+<span id="cb7-67"><a href="#cb7-67" aria-hidden="true"></a><span class="co">#&gt; [271] -2.373400e-02 -4.884327e-02  1.754981e-21 -3.553046e-21 -2.578330e-21</span></span>
+<span id="cb7-68"><a href="#cb7-68" aria-hidden="true"></a><span class="co">#&gt; [276] -3.057867e-21  2.646218e-02  1.080992e-21  2.196858e-21  5.619540e-02</span></span>
+<span id="cb7-69"><a href="#cb7-69" aria-hidden="true"></a><span class="co">#&gt; [281]  3.261160e-22  2.021887e-21  1.121835e-21  2.270904e-21  3.489127e-21</span></span>
+<span id="cb7-70"><a href="#cb7-70" aria-hidden="true"></a><span class="co">#&gt; [286] -2.530546e-21 -6.024648e-02  1.698695e-21  2.707644e-22  7.260080e-22</span></span>
+<span id="cb7-71"><a href="#cb7-71" aria-hidden="true"></a><span class="co">#&gt; [291] -2.802234e-21  5.731491e-21 -8.017808e-22  1.674697e-21 -7.848676e-02</span></span>
+<span id="cb7-72"><a href="#cb7-72" aria-hidden="true"></a><span class="co">#&gt; [296]  1.949938e-21 -9.562214e-22 -1.893228e-21 -1.150973e-21 -7.481089e-21</span></span>
+<span id="cb7-73"><a href="#cb7-73" aria-hidden="true"></a><span class="co">#&gt; [301] -1.316306e-21 -1.778324e-21 -2.614288e-21 -3.517820e-21 -6.547350e-21</span></span>
+<span id="cb7-74"><a href="#cb7-74" aria-hidden="true"></a><span class="co">#&gt; [306] -2.656480e-21 -2.435025e-21 -1.939551e-21 -6.861959e-21 -1.455544e-21</span></span>
+<span id="cb7-75"><a href="#cb7-75" aria-hidden="true"></a><span class="co">#&gt; [311] -2.229289e-21 -1.610092e-21  6.294540e-21  1.756322e-21 -9.456102e-02</span></span>
+<span id="cb7-76"><a href="#cb7-76" aria-hidden="true"></a><span class="co">#&gt; [316]  3.811792e-21 -3.456505e-02  3.447388e-21  8.033342e-22  7.365532e-22</span></span>
+<span id="cb7-77"><a href="#cb7-77" aria-hidden="true"></a><span class="co">#&gt; [321]  1.787324e-22 -2.113353e-21 -3.444636e-21  1.128752e-20 -3.914762e-23</span></span>
+<span id="cb7-78"><a href="#cb7-78" aria-hidden="true"></a><span class="co">#&gt; [326] -2.809768e-21 -1.971717e-21  1.621136e-21  6.949611e-03 -4.653175e-21</span></span>
+<span id="cb7-79"><a href="#cb7-79" aria-hidden="true"></a><span class="co">#&gt; [331] -3.096839e-21 -4.323339e-21 -6.349153e-21  8.236000e-02 -4.349765e-21</span></span>
+<span id="cb7-80"><a href="#cb7-80" aria-hidden="true"></a><span class="co">#&gt; [336] -2.840947e-21  2.458172e-21 -1.749183e-21  5.102845e-21  7.521520e-21</span></span>
+<span id="cb7-81"><a href="#cb7-81" aria-hidden="true"></a><span class="co">#&gt; [341]  1.187669e-21  4.595003e-22 -2.339529e-02 -3.153778e-22  2.143073e-21</span></span>
+<span id="cb7-82"><a href="#cb7-82" aria-hidden="true"></a><span class="co">#&gt; [346]  5.534538e-21 -4.181561e-21 -1.463951e-21 -8.426108e-03  2.532310e-21</span></span>
+<span id="cb7-83"><a href="#cb7-83" aria-hidden="true"></a><span class="co">#&gt; [351] -6.676120e-21  5.687495e-22  5.998803e-21 -7.081276e-22 -2.653973e-21</span></span>
+<span id="cb7-84"><a href="#cb7-84" aria-hidden="true"></a><span class="co">#&gt; [356]  2.780166e-21  2.290848e-21 -2.492749e-21 -2.377796e-21 -2.665822e-21</span></span>
+<span id="cb7-85"><a href="#cb7-85" aria-hidden="true"></a><span class="co">#&gt; [361]  1.914651e-21  2.777131e-02  5.552915e-22  1.058609e-21 -1.675290e-21</span></span>
+<span id="cb7-86"><a href="#cb7-86" aria-hidden="true"></a><span class="co">#&gt; [366]  4.431022e-21  3.906284e-21  1.727250e-22 -4.168030e-21  1.695981e-21</span></span>
+<span id="cb7-87"><a href="#cb7-87" aria-hidden="true"></a><span class="co">#&gt; [371] -1.657856e-21 -2.692190e-21 -7.054071e-21 -1.465142e-21 -1.018870e-22</span></span>
+<span id="cb7-88"><a href="#cb7-88" aria-hidden="true"></a><span class="co">#&gt; [376]  7.353567e-22  3.562253e-21  3.457192e-02 -1.550895e-21  1.723005e-21</span></span>
+<span id="cb7-89"><a href="#cb7-89" aria-hidden="true"></a><span class="co">#&gt; [381]  3.754774e-21 -5.117184e-23 -9.811934e-22 -2.529959e-21 -7.281780e-21</span></span>
+<span id="cb7-90"><a href="#cb7-90" aria-hidden="true"></a><span class="co">#&gt; [386]  1.337439e-21  3.275958e-21 -7.422190e-22  2.283900e-21  4.618982e-02</span></span>
+<span id="cb7-91"><a href="#cb7-91" aria-hidden="true"></a><span class="co">#&gt; [391] -7.330433e-22 -3.526465e-21  1.150332e-21  4.068759e-22  4.949642e-21</span></span>
+<span id="cb7-92"><a href="#cb7-92" aria-hidden="true"></a><span class="co">#&gt; [396] -5.598763e-21 -3.457417e-21  6.069502e-02 -3.590651e-21 -2.194409e-02</span></span>
 <span id="cb7-93"><a href="#cb7-93" aria-hidden="true"></a></span>
 <span id="cb7-94"><a href="#cb7-94" aria-hidden="true"></a><span class="co">## Finding Projection Direction using best step size</span></span>
 <span id="cb7-95"><a href="#cb7-95" aria-hidden="true"></a></span>
 <span id="cb7-96"><a href="#cb7-96" aria-hidden="true"></a>Direction.est &lt;-<span class="st"> </span>FIHR<span class="op">::</span><span class="kw">Direction_searchtuning</span>(X,<span class="dt">loading=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="kw">rep</span>(<span class="dv">0</span>,(p<span class="dv">-1</span>))))</span>
 <span id="cb7-97"><a href="#cb7-97" aria-hidden="true"></a><span class="co">#&gt; [1] 3</span></span>
 <span id="cb7-98"><a href="#cb7-98" aria-hidden="true"></a>Direction.est<span class="op">$</span>proj</span>
-<span id="cb7-99"><a href="#cb7-99" aria-hidden="true"></a><span class="co">#&gt;   [1]  1.113372e+00  2.061018e-20  2.154656e-20  2.679441e-20 -1.336175e-21</span></span>
-<span id="cb7-100"><a href="#cb7-100" aria-hidden="true"></a><span class="co">#&gt;   [6] -1.014050e-20 -4.759871e-21  6.681666e-22  7.969401e-21  2.750703e-21</span></span>
-<span id="cb7-101"><a href="#cb7-101" aria-hidden="true"></a><span class="co">#&gt;  [11] -3.473936e-21 -1.824741e-20 -6.113902e-21  1.668145e-20 -1.773073e-20</span></span>
-<span id="cb7-102"><a href="#cb7-102" aria-hidden="true"></a><span class="co">#&gt;  [16]  1.901137e-01 -2.711758e-20  6.129550e-21  9.841060e-22 -6.793722e-21</span></span>
-<span id="cb7-103"><a href="#cb7-103" aria-hidden="true"></a><span class="co">#&gt;  [21]  9.100112e-03  2.232551e-20 -8.987018e-21 -7.480207e-21  7.376119e-21</span></span>
-<span id="cb7-104"><a href="#cb7-104" aria-hidden="true"></a><span class="co">#&gt;  [26]  1.076939e-20  3.918360e-21 -8.144769e-21  7.796805e-21 -2.410169e-21</span></span>
-<span id="cb7-105"><a href="#cb7-105" aria-hidden="true"></a><span class="co">#&gt;  [31] -2.827392e-21  1.001530e-20 -2.055585e-21  7.932604e-21 -1.087935e-20</span></span>
-<span id="cb7-106"><a href="#cb7-106" aria-hidden="true"></a><span class="co">#&gt;  [36]  4.505627e-21  1.124546e-20  6.615003e-02 -6.753031e-21  1.442979e-20</span></span>
-<span id="cb7-107"><a href="#cb7-107" aria-hidden="true"></a><span class="co">#&gt;  [41] -1.598682e-20  9.530333e-21 -5.545782e-02 -2.541589e-21 -2.369662e-21</span></span>
-<span id="cb7-108"><a href="#cb7-108" aria-hidden="true"></a><span class="co">#&gt;  [46] -1.994573e-21 -2.283971e-21  3.375222e-21  4.229237e-21 -8.937821e-02</span></span>
-<span id="cb7-109"><a href="#cb7-109" aria-hidden="true"></a><span class="co">#&gt;  [51] -1.622268e-01 -5.991277e-02  4.029929e-21  1.143416e-20  8.855143e-02</span></span>
-<span id="cb7-110"><a href="#cb7-110" aria-hidden="true"></a><span class="co">#&gt;  [56]  1.698743e-01  8.736715e-21  1.920805e-21 -1.246008e-20 -1.071421e-20</span></span>
-<span id="cb7-111"><a href="#cb7-111" aria-hidden="true"></a><span class="co">#&gt;  [61]  2.021529e-21  5.312689e-21 -4.131323e-21  9.564691e-22  3.457150e-21</span></span>
-<span id="cb7-112"><a href="#cb7-112" aria-hidden="true"></a><span class="co">#&gt;  [66] -3.615103e-22  4.750701e-21  7.444868e-21 -5.143446e-21 -6.098270e-22</span></span>
-<span id="cb7-113"><a href="#cb7-113" aria-hidden="true"></a><span class="co">#&gt;  [71]  9.125721e-04 -6.279549e-02  9.101065e-21 -5.677366e-21 -5.463054e-21</span></span>
-<span id="cb7-114"><a href="#cb7-114" aria-hidden="true"></a><span class="co">#&gt;  [76] -1.189346e-02  1.527261e-20  1.766214e-20  1.423563e-20  2.066164e-20</span></span>
-<span id="cb7-115"><a href="#cb7-115" aria-hidden="true"></a><span class="co">#&gt;  [81]  1.478000e-20 -2.399849e-21 -2.006205e-20 -1.517268e-20 -1.047108e-20</span></span>
-<span id="cb7-116"><a href="#cb7-116" aria-hidden="true"></a><span class="co">#&gt;  [86]  9.168660e-22  1.031621e-20  3.073851e-02 -5.836415e-21 -2.700496e-20</span></span>
-<span id="cb7-117"><a href="#cb7-117" aria-hidden="true"></a><span class="co">#&gt;  [91]  4.001468e-24 -2.745884e-21  7.829602e-22 -1.180635e-02  1.581776e-22</span></span>
-<span id="cb7-118"><a href="#cb7-118" aria-hidden="true"></a><span class="co">#&gt;  [96]  1.458853e-20  1.619546e-20 -5.554192e-02 -7.675132e-21 -8.829885e-21</span></span>
-<span id="cb7-119"><a href="#cb7-119" aria-hidden="true"></a><span class="co">#&gt; [101]  2.667569e-21 -1.788574e-20 -3.189914e-21 -4.235287e-21 -9.573000e-21</span></span>
-<span id="cb7-120"><a href="#cb7-120" aria-hidden="true"></a><span class="co">#&gt; [106] -2.614824e-20 -1.200262e-20  1.335425e-20 -2.808010e-21 -6.862622e-22</span></span>
-<span id="cb7-121"><a href="#cb7-121" aria-hidden="true"></a><span class="co">#&gt; [111]  6.448071e-22  2.095545e-22  9.826961e-21 -1.843929e-20 -2.151673e-20</span></span>
-<span id="cb7-122"><a href="#cb7-122" aria-hidden="true"></a><span class="co">#&gt; [116] -6.896594e-21 -8.664330e-21  1.769660e-20  5.994363e-21  4.570275e-22</span></span>
-<span id="cb7-123"><a href="#cb7-123" aria-hidden="true"></a><span class="co">#&gt; [121] -9.465966e-21  5.202073e-21  6.106716e-02 -2.349116e-02  1.830432e-20</span></span>
-<span id="cb7-124"><a href="#cb7-124" aria-hidden="true"></a><span class="co">#&gt; [126]  5.363624e-21  7.476854e-21  1.147380e-02 -3.580792e-02  2.093974e-21</span></span>
-<span id="cb7-125"><a href="#cb7-125" aria-hidden="true"></a><span class="co">#&gt; [131] -2.054997e-21 -7.191744e-23  2.900939e-21 -1.026130e-20 -1.753622e-20</span></span>
-<span id="cb7-126"><a href="#cb7-126" aria-hidden="true"></a><span class="co">#&gt; [136]  4.446785e-21 -9.944595e-23  7.596244e-21  9.744711e-21  1.006821e-20</span></span>
-<span id="cb7-127"><a href="#cb7-127" aria-hidden="true"></a><span class="co">#&gt; [141] -6.181877e-21 -4.176805e-21 -1.805054e-21  1.066519e-01  1.491218e-20</span></span>
-<span id="cb7-128"><a href="#cb7-128" aria-hidden="true"></a><span class="co">#&gt; [146]  1.326420e-20 -6.618489e-21  1.593206e-21 -7.404432e-21 -3.162334e-03</span></span>
-<span id="cb7-129"><a href="#cb7-129" aria-hidden="true"></a><span class="co">#&gt; [151] -1.069099e-20  7.430360e-21  4.886946e-21 -1.307555e-20 -2.263661e-21</span></span>
-<span id="cb7-130"><a href="#cb7-130" aria-hidden="true"></a><span class="co">#&gt; [156] -5.255496e-21  8.284920e-02  8.683281e-21 -1.838701e-21  4.968904e-21</span></span>
-<span id="cb7-131"><a href="#cb7-131" aria-hidden="true"></a><span class="co">#&gt; [161] -1.892966e-21 -4.187769e-21  3.686533e-02  4.257304e-02  6.097366e-21</span></span>
-<span id="cb7-132"><a href="#cb7-132" aria-hidden="true"></a><span class="co">#&gt; [166]  5.965240e-22 -2.986031e-02  1.581154e-20  1.797536e-21  9.306654e-21</span></span>
-<span id="cb7-133"><a href="#cb7-133" aria-hidden="true"></a><span class="co">#&gt; [171] -1.473440e-20 -1.346313e-20 -1.094726e-20  4.237476e-21  1.524782e-20</span></span>
-<span id="cb7-134"><a href="#cb7-134" aria-hidden="true"></a><span class="co">#&gt; [176]  2.110707e-21 -9.809960e-21  5.355893e-21 -9.908759e-21  8.214885e-21</span></span>
-<span id="cb7-135"><a href="#cb7-135" aria-hidden="true"></a><span class="co">#&gt; [181] -7.279822e-22 -5.711940e-21  8.375503e-02  8.424023e-21  5.552069e-21</span></span>
-<span id="cb7-136"><a href="#cb7-136" aria-hidden="true"></a><span class="co">#&gt; [186]  5.995298e-21  3.350684e-22  1.847338e-21 -5.657011e-21  7.382666e-21</span></span>
-<span id="cb7-137"><a href="#cb7-137" aria-hidden="true"></a><span class="co">#&gt; [191] -2.763049e-22  7.406028e-02 -5.215186e-21 -3.857290e-22  7.997207e-03</span></span>
-<span id="cb7-138"><a href="#cb7-138" aria-hidden="true"></a><span class="co">#&gt; [196] -1.150747e-20  2.333982e-20 -3.912445e-02  5.653513e-02 -1.538760e-20</span></span>
-<span id="cb7-139"><a href="#cb7-139" aria-hidden="true"></a><span class="co">#&gt; [201]  9.622617e-21  4.411564e-21 -1.468173e-20 -1.664125e-21  3.274121e-21</span></span>
-<span id="cb7-140"><a href="#cb7-140" aria-hidden="true"></a><span class="co">#&gt; [206]  3.242863e-21  4.803839e-21  7.581947e-21 -9.561860e-21  1.131717e-20</span></span>
-<span id="cb7-141"><a href="#cb7-141" aria-hidden="true"></a><span class="co">#&gt; [211] -1.573819e-21 -9.255548e-21  5.353195e-21  2.252153e-21  1.476910e-20</span></span>
-<span id="cb7-142"><a href="#cb7-142" aria-hidden="true"></a><span class="co">#&gt; [216]  1.540102e-21  1.075885e-20  8.641181e-21 -1.081260e-20 -6.407381e-21</span></span>
-<span id="cb7-143"><a href="#cb7-143" aria-hidden="true"></a><span class="co">#&gt; [221]  1.091943e-20  3.679412e-21  6.762372e-21 -2.409860e-21 -9.333181e-02</span></span>
-<span id="cb7-144"><a href="#cb7-144" aria-hidden="true"></a><span class="co">#&gt; [226]  4.400708e-21 -5.146969e-21 -7.830731e-21  4.968649e-21 -7.020609e-21</span></span>
-<span id="cb7-145"><a href="#cb7-145" aria-hidden="true"></a><span class="co">#&gt; [231]  1.656773e-20 -6.107680e-21 -1.302564e-20 -1.487557e-20 -1.412632e-23</span></span>
-<span id="cb7-146"><a href="#cb7-146" aria-hidden="true"></a><span class="co">#&gt; [236] -3.321239e-21 -1.540305e-21  1.203032e-20  7.260395e-21 -1.958795e-20</span></span>
-<span id="cb7-147"><a href="#cb7-147" aria-hidden="true"></a><span class="co">#&gt; [241] -8.364030e-21 -1.077525e-21  1.351128e-20  3.877860e-21 -1.101556e-20</span></span>
-<span id="cb7-148"><a href="#cb7-148" aria-hidden="true"></a><span class="co">#&gt; [246]  1.608838e-20  1.413508e-22  4.246325e-21 -7.112734e-02  1.446083e-21</span></span>
-<span id="cb7-149"><a href="#cb7-149" aria-hidden="true"></a><span class="co">#&gt; [251] -1.012066e-20  7.539626e-21  1.173948e-21  1.287262e-21  1.894846e-20</span></span>
-<span id="cb7-150"><a href="#cb7-150" aria-hidden="true"></a><span class="co">#&gt; [256]  8.454286e-21 -1.010442e-20  1.558916e-02 -1.131479e-21  3.984388e-21</span></span>
-<span id="cb7-151"><a href="#cb7-151" aria-hidden="true"></a><span class="co">#&gt; [261]  5.102573e-21  6.686605e-23  1.106644e-21  6.640225e-22 -1.320559e-02</span></span>
-<span id="cb7-152"><a href="#cb7-152" aria-hidden="true"></a><span class="co">#&gt; [266] -7.196070e-03 -1.540026e-21 -8.781174e-21  3.228245e-21  2.130302e-20</span></span>
-<span id="cb7-153"><a href="#cb7-153" aria-hidden="true"></a><span class="co">#&gt; [271]  3.175398e-21  2.489339e-21  1.987436e-22  3.652830e-21  6.977910e-21</span></span>
-<span id="cb7-154"><a href="#cb7-154" aria-hidden="true"></a><span class="co">#&gt; [276]  1.358830e-20  2.214317e-21 -5.689739e-21  1.712534e-20  6.931318e-21</span></span>
-<span id="cb7-155"><a href="#cb7-155" aria-hidden="true"></a><span class="co">#&gt; [281] -9.948181e-21  5.893441e-21  1.298421e-20 -5.359787e-21 -6.379533e-21</span></span>
-<span id="cb7-156"><a href="#cb7-156" aria-hidden="true"></a><span class="co">#&gt; [286]  1.133817e-01  2.259478e-22  2.482510e-21  1.930467e-01 -9.125736e-03</span></span>
-<span id="cb7-157"><a href="#cb7-157" aria-hidden="true"></a><span class="co">#&gt; [291]  1.740169e-20 -2.579240e-20  2.300052e-22 -2.739672e-20 -3.525907e-02</span></span>
-<span id="cb7-158"><a href="#cb7-158" aria-hidden="true"></a><span class="co">#&gt; [296]  8.764929e-03 -1.195865e-20 -1.677869e-02 -4.659122e-21  1.125604e-21</span></span>
-<span id="cb7-159"><a href="#cb7-159" aria-hidden="true"></a><span class="co">#&gt; [301] -1.240115e-20 -1.724873e-02 -3.686096e-23  6.002422e-21 -8.368692e-22</span></span>
-<span id="cb7-160"><a href="#cb7-160" aria-hidden="true"></a><span class="co">#&gt; [306]  1.272814e-20 -9.471296e-02  1.249551e-21  2.180420e-22 -4.986577e-21</span></span>
-<span id="cb7-161"><a href="#cb7-161" aria-hidden="true"></a><span class="co">#&gt; [311]  5.048831e-22 -3.074802e-21 -2.586842e-03 -1.274605e-20  4.189486e-22</span></span>
-<span id="cb7-162"><a href="#cb7-162" aria-hidden="true"></a><span class="co">#&gt; [316]  2.175288e-21 -6.767663e-21  5.469250e-21  1.641321e-20  1.105386e-20</span></span>
-<span id="cb7-163"><a href="#cb7-163" aria-hidden="true"></a><span class="co">#&gt; [321]  1.094623e-20 -7.351366e-22 -2.167902e-20  3.366909e-21  5.044131e-21</span></span>
-<span id="cb7-164"><a href="#cb7-164" aria-hidden="true"></a><span class="co">#&gt; [326] -3.616894e-21 -5.328970e-21 -1.980095e-20  1.680461e-03  8.002204e-21</span></span>
-<span id="cb7-165"><a href="#cb7-165" aria-hidden="true"></a><span class="co">#&gt; [331]  1.805193e-22 -1.610871e-20 -1.503251e-20  1.690916e-20  2.206518e-20</span></span>
-<span id="cb7-166"><a href="#cb7-166" aria-hidden="true"></a><span class="co">#&gt; [336] -6.415465e-21  3.628164e-21 -3.431884e-21  6.970051e-21 -2.215953e-21</span></span>
-<span id="cb7-167"><a href="#cb7-167" aria-hidden="true"></a><span class="co">#&gt; [341]  8.608402e-21 -1.487985e-20  8.968486e-03  3.462364e-03  2.752779e-03</span></span>
-<span id="cb7-168"><a href="#cb7-168" aria-hidden="true"></a><span class="co">#&gt; [346] -1.126831e-20  6.075326e-21  8.519650e-21  1.387413e-20 -3.598337e-02</span></span>
-<span id="cb7-169"><a href="#cb7-169" aria-hidden="true"></a><span class="co">#&gt; [351]  1.338765e-20  5.269191e-21 -2.168049e-21 -9.593805e-21  2.936778e-21</span></span>
-<span id="cb7-170"><a href="#cb7-170" aria-hidden="true"></a><span class="co">#&gt; [356]  2.632800e-21 -1.930158e-20 -2.158920e-20 -3.113924e-02  1.344700e-20</span></span>
-<span id="cb7-171"><a href="#cb7-171" aria-hidden="true"></a><span class="co">#&gt; [361] -2.135970e-21  9.959003e-02  5.995390e-21 -1.509639e-21  8.644031e-21</span></span>
-<span id="cb7-172"><a href="#cb7-172" aria-hidden="true"></a><span class="co">#&gt; [366] -4.638752e-02 -5.033650e-21 -2.320592e-21  1.239711e-20 -5.938003e-21</span></span>
-<span id="cb7-173"><a href="#cb7-173" aria-hidden="true"></a><span class="co">#&gt; [371] -8.513652e-21 -1.752578e-20  7.387297e-21  3.501661e-21  1.280238e-20</span></span>
-<span id="cb7-174"><a href="#cb7-174" aria-hidden="true"></a><span class="co">#&gt; [376]  2.721440e-21 -9.600826e-21  2.180504e-21  1.820491e-02 -1.602048e-01</span></span>
-<span id="cb7-175"><a href="#cb7-175" aria-hidden="true"></a><span class="co">#&gt; [381]  1.573861e-20  2.582009e-21  3.844594e-20  1.925464e-21 -1.356312e-20</span></span>
-<span id="cb7-176"><a href="#cb7-176" aria-hidden="true"></a><span class="co">#&gt; [386] -9.085038e-21 -4.721974e-21  9.730432e-21 -1.451852e-21  4.880698e-21</span></span>
-<span id="cb7-177"><a href="#cb7-177" aria-hidden="true"></a><span class="co">#&gt; [391]  1.297010e-01  6.613007e-22  6.268896e-21  2.527809e-21  7.595600e-21</span></span>
-<span id="cb7-178"><a href="#cb7-178" aria-hidden="true"></a><span class="co">#&gt; [396]  5.087285e-21  1.398310e-20 -7.921571e-21 -5.495835e-21 -9.779783e-21</span></span></code></pre></div>
+<span id="cb7-99"><a href="#cb7-99" aria-hidden="true"></a><span class="co">#&gt;   [1]  8.424134e-01  3.445511e-21 -8.727709e-22 -6.090141e-21 -4.477814e-21</span></span>
+<span id="cb7-100"><a href="#cb7-100" aria-hidden="true"></a><span class="co">#&gt;   [6]  7.006183e-21 -1.561857e-21  1.747465e-21 -2.230980e-21 -7.528702e-22</span></span>
+<span id="cb7-101"><a href="#cb7-101" aria-hidden="true"></a><span class="co">#&gt;  [11]  1.088292e-21 -9.074954e-22  5.492230e-21  8.833568e-02  1.114414e-21</span></span>
+<span id="cb7-102"><a href="#cb7-102" aria-hidden="true"></a><span class="co">#&gt;  [16]  6.175729e-21  4.311638e-22 -3.354796e-21 -3.190465e-21  2.873457e-21</span></span>
+<span id="cb7-103"><a href="#cb7-103" aria-hidden="true"></a><span class="co">#&gt;  [21] -1.524880e-21  5.551148e-21 -3.668877e-21  2.929892e-21  5.521573e-02</span></span>
+<span id="cb7-104"><a href="#cb7-104" aria-hidden="true"></a><span class="co">#&gt;  [26] -7.668615e-02 -1.767479e-21 -1.090735e-21  3.922403e-21 -1.076570e-21</span></span>
+<span id="cb7-105"><a href="#cb7-105" aria-hidden="true"></a><span class="co">#&gt;  [31]  5.385394e-21 -3.087410e-21  4.891959e-02  9.218336e-23  2.915574e-22</span></span>
+<span id="cb7-106"><a href="#cb7-106" aria-hidden="true"></a><span class="co">#&gt;  [36] -2.121761e-02 -1.397386e-21  1.601761e-21 -3.819446e-02 -8.293037e-21</span></span>
+<span id="cb7-107"><a href="#cb7-107" aria-hidden="true"></a><span class="co">#&gt;  [41] -9.016588e-22 -1.704139e-21 -5.737795e-21 -2.661571e-02  2.642929e-02</span></span>
+<span id="cb7-108"><a href="#cb7-108" aria-hidden="true"></a><span class="co">#&gt;  [46]  3.529131e-21 -1.254091e-22  1.157559e-21  2.003275e-21  2.134327e-21</span></span>
+<span id="cb7-109"><a href="#cb7-109" aria-hidden="true"></a><span class="co">#&gt;  [51] -4.029024e-21 -6.331505e-21  3.249898e-21  3.490133e-21  7.923735e-21</span></span>
+<span id="cb7-110"><a href="#cb7-110" aria-hidden="true"></a><span class="co">#&gt;  [56]  5.762783e-21 -1.804776e-21  2.843163e-21  4.030012e-21  3.609368e-21</span></span>
+<span id="cb7-111"><a href="#cb7-111" aria-hidden="true"></a><span class="co">#&gt;  [61]  5.120369e-21  4.796174e-21  2.160768e-21 -1.707964e-21 -1.959700e-21</span></span>
+<span id="cb7-112"><a href="#cb7-112" aria-hidden="true"></a><span class="co">#&gt;  [66] -4.642195e-21 -9.797033e-22 -6.570537e-21 -4.725753e-21  1.620281e-22</span></span>
+<span id="cb7-113"><a href="#cb7-113" aria-hidden="true"></a><span class="co">#&gt;  [71]  1.361111e-21 -7.024633e-21 -3.618988e-21  3.645059e-22 -2.370948e-21</span></span>
+<span id="cb7-114"><a href="#cb7-114" aria-hidden="true"></a><span class="co">#&gt;  [76] -1.432301e-21 -2.989387e-21 -2.119623e-21  2.234209e-21 -2.899280e-21</span></span>
+<span id="cb7-115"><a href="#cb7-115" aria-hidden="true"></a><span class="co">#&gt;  [81] -1.738333e-02 -4.850253e-21  2.764343e-21  4.303096e-22 -4.740434e-22</span></span>
+<span id="cb7-116"><a href="#cb7-116" aria-hidden="true"></a><span class="co">#&gt;  [86]  1.517116e-23 -2.182707e-21 -3.019190e-22  1.821277e-21 -3.164356e-21</span></span>
+<span id="cb7-117"><a href="#cb7-117" aria-hidden="true"></a><span class="co">#&gt;  [91] -5.701747e-22 -4.690733e-21  1.700010e-21 -5.535480e-21  2.100443e-21</span></span>
+<span id="cb7-118"><a href="#cb7-118" aria-hidden="true"></a><span class="co">#&gt;  [96]  7.026071e-22  2.575573e-21  4.550999e-21 -2.745114e-21  1.912021e-21</span></span>
+<span id="cb7-119"><a href="#cb7-119" aria-hidden="true"></a><span class="co">#&gt; [101]  9.194741e-03 -5.843858e-22  4.612818e-21  2.625581e-21 -4.668830e-21</span></span>
+<span id="cb7-120"><a href="#cb7-120" aria-hidden="true"></a><span class="co">#&gt; [106]  1.313275e-21 -6.456084e-21 -3.312597e-21 -8.768554e-23  2.309508e-21</span></span>
+<span id="cb7-121"><a href="#cb7-121" aria-hidden="true"></a><span class="co">#&gt; [111]  6.815829e-22  5.310025e-21 -8.730005e-22 -6.909889e-21 -1.639129e-21</span></span>
+<span id="cb7-122"><a href="#cb7-122" aria-hidden="true"></a><span class="co">#&gt; [116]  1.612410e-21 -3.768785e-21 -2.141935e-21  3.290368e-21  2.888554e-21</span></span>
+<span id="cb7-123"><a href="#cb7-123" aria-hidden="true"></a><span class="co">#&gt; [121] -1.045845e-20 -3.104820e-21  1.769521e-21  9.496671e-21 -5.647087e-02</span></span>
+<span id="cb7-124"><a href="#cb7-124" aria-hidden="true"></a><span class="co">#&gt; [126] -6.519583e-21  3.737262e-02 -3.602696e-21 -6.375672e-21  3.874141e-21</span></span>
+<span id="cb7-125"><a href="#cb7-125" aria-hidden="true"></a><span class="co">#&gt; [131]  3.759127e-21  6.966527e-21 -1.024706e-20 -3.408492e-22  1.381828e-20</span></span>
+<span id="cb7-126"><a href="#cb7-126" aria-hidden="true"></a><span class="co">#&gt; [136] -3.880467e-21  1.019153e-20 -3.636175e-21  1.691394e-21  8.957616e-22</span></span>
+<span id="cb7-127"><a href="#cb7-127" aria-hidden="true"></a><span class="co">#&gt; [141]  3.407087e-21  3.941189e-02 -5.378375e-22 -2.520800e-21  4.291614e-21</span></span>
+<span id="cb7-128"><a href="#cb7-128" aria-hidden="true"></a><span class="co">#&gt; [146] -4.807989e-21  5.798340e-21  1.970687e-21  2.487665e-21 -3.642871e-21</span></span>
+<span id="cb7-129"><a href="#cb7-129" aria-hidden="true"></a><span class="co">#&gt; [151] -1.551702e-21  4.217745e-21 -2.422961e-21  2.198355e-21  2.410119e-21</span></span>
+<span id="cb7-130"><a href="#cb7-130" aria-hidden="true"></a><span class="co">#&gt; [156]  2.839173e-02  1.074704e-21 -3.718262e-21 -1.987585e-22  3.154260e-22</span></span>
+<span id="cb7-131"><a href="#cb7-131" aria-hidden="true"></a><span class="co">#&gt; [161] -6.924986e-02 -6.473539e-02  9.077693e-22  1.922353e-21 -5.308040e-21</span></span>
+<span id="cb7-132"><a href="#cb7-132" aria-hidden="true"></a><span class="co">#&gt; [166] -3.419249e-22 -6.116130e-24  7.568446e-21  1.973959e-21  2.617796e-21</span></span>
+<span id="cb7-133"><a href="#cb7-133" aria-hidden="true"></a><span class="co">#&gt; [171] -8.622662e-21 -6.296188e-21  3.050529e-21  3.409861e-21  5.511962e-21</span></span>
+<span id="cb7-134"><a href="#cb7-134" aria-hidden="true"></a><span class="co">#&gt; [176]  1.461725e-21  1.091070e-21  1.500948e-21  5.001723e-22  3.026720e-21</span></span>
+<span id="cb7-135"><a href="#cb7-135" aria-hidden="true"></a><span class="co">#&gt; [181] -3.395367e-21 -1.653619e-21 -2.090705e-21 -5.287765e-21 -1.296186e-21</span></span>
+<span id="cb7-136"><a href="#cb7-136" aria-hidden="true"></a><span class="co">#&gt; [186] -4.177538e-21  1.763816e-21  4.025146e-21 -6.450735e-22  7.045077e-22</span></span>
+<span id="cb7-137"><a href="#cb7-137" aria-hidden="true"></a><span class="co">#&gt; [191] -2.730195e-22  1.532626e-21 -2.517184e-21  6.131040e-22  3.789871e-03</span></span>
+<span id="cb7-138"><a href="#cb7-138" aria-hidden="true"></a><span class="co">#&gt; [196] -1.807459e-21 -3.315810e-21  2.884687e-21  1.226710e-21 -3.300894e-21</span></span>
+<span id="cb7-139"><a href="#cb7-139" aria-hidden="true"></a><span class="co">#&gt; [201]  8.215280e-21 -1.803473e-21  5.453131e-22  7.148323e-21  1.937724e-21</span></span>
+<span id="cb7-140"><a href="#cb7-140" aria-hidden="true"></a><span class="co">#&gt; [206]  3.305133e-21  2.243766e-21  1.767506e-21 -2.699859e-21 -1.252493e-21</span></span>
+<span id="cb7-141"><a href="#cb7-141" aria-hidden="true"></a><span class="co">#&gt; [211]  2.100610e-21  4.997658e-22  1.614330e-21  1.407333e-01  6.051841e-22</span></span>
+<span id="cb7-142"><a href="#cb7-142" aria-hidden="true"></a><span class="co">#&gt; [216] -8.437231e-02 -2.057201e-02 -5.166018e-21 -3.979815e-02 -1.042530e-21</span></span>
+<span id="cb7-143"><a href="#cb7-143" aria-hidden="true"></a><span class="co">#&gt; [221]  5.549797e-21 -3.771316e-21 -1.668516e-02 -6.609124e-03 -4.845489e-21</span></span>
+<span id="cb7-144"><a href="#cb7-144" aria-hidden="true"></a><span class="co">#&gt; [226]  5.053741e-21  2.283385e-21  6.847275e-21  9.952664e-22 -5.301735e-21</span></span>
+<span id="cb7-145"><a href="#cb7-145" aria-hidden="true"></a><span class="co">#&gt; [231]  2.772697e-21 -7.029990e-22 -4.015256e-02 -4.500517e-21 -4.316298e-21</span></span>
+<span id="cb7-146"><a href="#cb7-146" aria-hidden="true"></a><span class="co">#&gt; [236] -3.768824e-21  7.604910e-21  5.033589e-23 -5.108022e-21  1.412094e-21</span></span>
+<span id="cb7-147"><a href="#cb7-147" aria-hidden="true"></a><span class="co">#&gt; [241] -4.397941e-21  4.925213e-21 -1.592603e-21 -6.065299e-21  9.309332e-03</span></span>
+<span id="cb7-148"><a href="#cb7-148" aria-hidden="true"></a><span class="co">#&gt; [246] -6.336550e-22 -1.643727e-21  2.101788e-21  4.658238e-21  6.419822e-21</span></span>
+<span id="cb7-149"><a href="#cb7-149" aria-hidden="true"></a><span class="co">#&gt; [251] -1.782056e-21 -2.684383e-21 -1.916560e-21 -4.450000e-21 -4.530894e-21</span></span>
+<span id="cb7-150"><a href="#cb7-150" aria-hidden="true"></a><span class="co">#&gt; [256] -3.461518e-21  2.093059e-21 -6.004095e-21  1.915105e-21 -3.877067e-21</span></span>
+<span id="cb7-151"><a href="#cb7-151" aria-hidden="true"></a><span class="co">#&gt; [261] -3.312009e-22  3.413786e-21 -1.854915e-21 -1.891708e-02 -3.037492e-21</span></span>
+<span id="cb7-152"><a href="#cb7-152" aria-hidden="true"></a><span class="co">#&gt; [266] -1.115531e-02 -2.298719e-21  3.384948e-21 -1.143371e-21 -3.780604e-21</span></span>
+<span id="cb7-153"><a href="#cb7-153" aria-hidden="true"></a><span class="co">#&gt; [271] -2.373400e-02 -4.884327e-02  1.785913e-21 -3.593802e-21 -2.534750e-21</span></span>
+<span id="cb7-154"><a href="#cb7-154" aria-hidden="true"></a><span class="co">#&gt; [276] -3.029589e-21  2.646218e-02  1.019215e-21  2.182134e-21  5.619540e-02</span></span>
+<span id="cb7-155"><a href="#cb7-155" aria-hidden="true"></a><span class="co">#&gt; [281]  3.069453e-22  2.086186e-21  1.123574e-21  2.274674e-21  3.471448e-21</span></span>
+<span id="cb7-156"><a href="#cb7-156" aria-hidden="true"></a><span class="co">#&gt; [286] -2.578780e-21 -6.024648e-02  1.689396e-21  3.058087e-22  7.332477e-22</span></span>
+<span id="cb7-157"><a href="#cb7-157" aria-hidden="true"></a><span class="co">#&gt; [291] -2.814638e-21  5.779705e-21 -7.654637e-22  1.667623e-21 -7.848676e-02</span></span>
+<span id="cb7-158"><a href="#cb7-158" aria-hidden="true"></a><span class="co">#&gt; [296]  1.925524e-21 -9.874831e-22 -1.902560e-21 -1.215946e-21 -7.521757e-21</span></span>
+<span id="cb7-159"><a href="#cb7-159" aria-hidden="true"></a><span class="co">#&gt; [301] -1.330639e-21 -1.789768e-21 -2.634124e-21 -3.549973e-21 -6.611499e-21</span></span>
+<span id="cb7-160"><a href="#cb7-160" aria-hidden="true"></a><span class="co">#&gt; [306] -2.628142e-21 -2.453176e-21 -1.919113e-21 -6.915733e-21 -1.410870e-21</span></span>
+<span id="cb7-161"><a href="#cb7-161" aria-hidden="true"></a><span class="co">#&gt; [311] -2.265799e-21 -1.629295e-21  6.345261e-21  1.786773e-21 -9.456102e-02</span></span>
+<span id="cb7-162"><a href="#cb7-162" aria-hidden="true"></a><span class="co">#&gt; [316]  3.787926e-21 -3.456505e-02  3.511068e-21  8.137571e-22  7.539476e-22</span></span>
+<span id="cb7-163"><a href="#cb7-163" aria-hidden="true"></a><span class="co">#&gt; [321]  2.001404e-22 -2.140354e-21 -3.450765e-21  1.137220e-20 -1.138083e-22</span></span>
+<span id="cb7-164"><a href="#cb7-164" aria-hidden="true"></a><span class="co">#&gt; [326] -2.800157e-21 -1.984807e-21  1.545345e-21  6.949611e-03 -4.645241e-21</span></span>
+<span id="cb7-165"><a href="#cb7-165" aria-hidden="true"></a><span class="co">#&gt; [331] -3.088159e-21 -4.407396e-21 -6.433409e-21  8.236000e-02 -4.410587e-21</span></span>
+<span id="cb7-166"><a href="#cb7-166" aria-hidden="true"></a><span class="co">#&gt; [336] -2.846519e-21  2.455564e-21 -1.788214e-21  5.057386e-21  7.509128e-21</span></span>
+<span id="cb7-167"><a href="#cb7-167" aria-hidden="true"></a><span class="co">#&gt; [341]  1.217021e-21  4.162458e-22 -2.339529e-02 -3.189068e-22  2.113414e-21</span></span>
+<span id="cb7-168"><a href="#cb7-168" aria-hidden="true"></a><span class="co">#&gt; [346]  5.559020e-21 -4.190241e-21 -1.430589e-21 -8.426108e-03  2.515173e-21</span></span>
+<span id="cb7-169"><a href="#cb7-169" aria-hidden="true"></a><span class="co">#&gt; [351] -6.742931e-21  5.385341e-22  6.060766e-21 -6.743186e-22 -2.654083e-21</span></span>
+<span id="cb7-170"><a href="#cb7-170" aria-hidden="true"></a><span class="co">#&gt; [356]  2.758793e-21  2.270383e-21 -2.540823e-21 -2.408563e-21 -2.697891e-21</span></span>
+<span id="cb7-171"><a href="#cb7-171" aria-hidden="true"></a><span class="co">#&gt; [361]  1.941017e-21  2.777131e-02  5.661604e-22  1.066612e-21 -1.626664e-21</span></span>
+<span id="cb7-172"><a href="#cb7-172" aria-hidden="true"></a><span class="co">#&gt; [366]  4.422994e-21  3.911265e-21  2.327993e-22 -4.214913e-21  1.716940e-21</span></span>
+<span id="cb7-173"><a href="#cb7-173" aria-hidden="true"></a><span class="co">#&gt; [371] -1.689623e-21 -2.712723e-21 -7.086705e-21 -1.443555e-21 -1.106295e-22</span></span>
+<span id="cb7-174"><a href="#cb7-174" aria-hidden="true"></a><span class="co">#&gt; [376]  7.167713e-22  3.644641e-21  3.457192e-02 -1.546014e-21  1.708455e-21</span></span>
+<span id="cb7-175"><a href="#cb7-175" aria-hidden="true"></a><span class="co">#&gt; [381]  3.700571e-21 -4.180787e-23 -9.895395e-22 -2.531281e-21 -7.273415e-21</span></span>
+<span id="cb7-176"><a href="#cb7-176" aria-hidden="true"></a><span class="co">#&gt; [386]  1.372318e-21  3.338900e-21 -8.038284e-22  2.316400e-21  4.618982e-02</span></span>
+<span id="cb7-177"><a href="#cb7-177" aria-hidden="true"></a><span class="co">#&gt; [391] -7.666493e-22 -3.550198e-21  1.220630e-21  3.881539e-22  4.979158e-21</span></span>
+<span id="cb7-178"><a href="#cb7-178" aria-hidden="true"></a><span class="co">#&gt; [396] -5.538646e-21 -3.485310e-21  6.069502e-02 -3.605678e-21 -2.194409e-02</span></span></code></pre></div>
 <p>Finding Projection Direction in Logistic Regression</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a>n =<span class="st"> </span><span class="dv">50</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a>p =<span class="st"> </span><span class="dv">400</span></span>
@@ -407,173 +407,173 @@
 <span id="cb8-25"><a href="#cb8-25" aria-hidden="true"></a><span class="co">#&gt; [1] "fixed mu"</span></span>
 <span id="cb8-26"><a href="#cb8-26" aria-hidden="true"></a><span class="co">#&gt; [1] 0.2181208</span></span>
 <span id="cb8-27"><a href="#cb8-27" aria-hidden="true"></a>Direction.est<span class="op">$</span>proj</span>
-<span id="cb8-28"><a href="#cb8-28" aria-hidden="true"></a><span class="co">#&gt;   [1]  1.040740e+00  3.450451e-20 -1.423664e-20  4.559388e-20 -3.590287e-20</span></span>
-<span id="cb8-29"><a href="#cb8-29" aria-hidden="true"></a><span class="co">#&gt;   [6] -1.770519e-21  3.310476e-20 -1.459886e-02 -3.405693e-21 -2.919847e-21</span></span>
-<span id="cb8-30"><a href="#cb8-30" aria-hidden="true"></a><span class="co">#&gt;  [11]  1.217210e-20 -9.559892e-21  2.146083e-20 -1.068766e-20 -6.676148e-21</span></span>
-<span id="cb8-31"><a href="#cb8-31" aria-hidden="true"></a><span class="co">#&gt;  [16]  4.199481e-21 -2.670229e-21  1.639541e-20 -1.544080e-20  1.525076e-21</span></span>
-<span id="cb8-32"><a href="#cb8-32" aria-hidden="true"></a><span class="co">#&gt;  [21] -1.955478e-21  4.468407e-20 -2.690237e-20  4.186857e-20 -1.366352e-20</span></span>
-<span id="cb8-33"><a href="#cb8-33" aria-hidden="true"></a><span class="co">#&gt;  [26]  2.692643e-02 -1.371315e-20  1.772852e-20 -1.111735e-20  1.596192e-20</span></span>
-<span id="cb8-34"><a href="#cb8-34" aria-hidden="true"></a><span class="co">#&gt;  [31]  2.104534e-20  3.278536e-20 -1.036193e-20 -2.710648e-20  3.801839e-20</span></span>
-<span id="cb8-35"><a href="#cb8-35" aria-hidden="true"></a><span class="co">#&gt;  [36]  2.743807e-20 -2.600394e-20 -1.416890e-01  1.885795e-20  4.105218e-21</span></span>
-<span id="cb8-36"><a href="#cb8-36" aria-hidden="true"></a><span class="co">#&gt;  [41] -1.866627e-20 -6.564731e-21 -2.526548e-22  1.781440e-21  1.826272e-20</span></span>
-<span id="cb8-37"><a href="#cb8-37" aria-hidden="true"></a><span class="co">#&gt;  [46] -1.315238e-21  1.434049e-20  2.248729e-20 -2.822801e-22  1.087569e-20</span></span>
-<span id="cb8-38"><a href="#cb8-38" aria-hidden="true"></a><span class="co">#&gt;  [51] -1.438486e-01 -2.753762e-20  1.825313e-20  3.561949e-20 -3.621722e-20</span></span>
-<span id="cb8-39"><a href="#cb8-39" aria-hidden="true"></a><span class="co">#&gt;  [56]  2.339590e-20 -1.496622e-20  3.001294e-02  1.059327e-01 -3.417968e-20</span></span>
-<span id="cb8-40"><a href="#cb8-40" aria-hidden="true"></a><span class="co">#&gt;  [61] -3.355457e-21 -8.116396e-21  1.001716e-20 -1.187675e-20  2.316976e-20</span></span>
-<span id="cb8-41"><a href="#cb8-41" aria-hidden="true"></a><span class="co">#&gt;  [66]  4.673113e-21 -1.590762e-20  5.446452e-21  3.443927e-20 -5.250753e-21</span></span>
-<span id="cb8-42"><a href="#cb8-42" aria-hidden="true"></a><span class="co">#&gt;  [71] -1.482860e-20 -6.868893e-03  1.686754e-20  8.737069e-21  3.430096e-20</span></span>
-<span id="cb8-43"><a href="#cb8-43" aria-hidden="true"></a><span class="co">#&gt;  [76]  7.130215e-20  5.633258e-21  2.171409e-02  2.228326e-02  7.202028e-03</span></span>
-<span id="cb8-44"><a href="#cb8-44" aria-hidden="true"></a><span class="co">#&gt;  [81]  8.717266e-21  2.435037e-20 -3.985233e-21 -2.648349e-20  1.791269e-20</span></span>
-<span id="cb8-45"><a href="#cb8-45" aria-hidden="true"></a><span class="co">#&gt;  [86]  4.380865e-20 -6.857940e-21  2.781982e-21  8.585493e-02  1.011798e-01</span></span>
-<span id="cb8-46"><a href="#cb8-46" aria-hidden="true"></a><span class="co">#&gt;  [91]  1.082645e-20 -1.787703e-20  2.143094e-21  2.410239e-20 -1.345277e-20</span></span>
-<span id="cb8-47"><a href="#cb8-47" aria-hidden="true"></a><span class="co">#&gt;  [96] -3.111102e-20  5.210629e-20 -8.078556e-21 -7.496214e-22  1.172298e-21</span></span>
-<span id="cb8-48"><a href="#cb8-48" aria-hidden="true"></a><span class="co">#&gt; [101]  1.307225e-20 -2.364060e-20 -1.974810e-20  1.860086e-20  2.069184e-20</span></span>
-<span id="cb8-49"><a href="#cb8-49" aria-hidden="true"></a><span class="co">#&gt; [106]  3.981421e-20  1.563766e-20  5.297920e-21  2.014394e-20  9.060305e-21</span></span>
-<span id="cb8-50"><a href="#cb8-50" aria-hidden="true"></a><span class="co">#&gt; [111]  5.744470e-20 -3.332759e-20  2.035428e-20 -1.175937e-20 -1.559324e-20</span></span>
-<span id="cb8-51"><a href="#cb8-51" aria-hidden="true"></a><span class="co">#&gt; [116] -1.976899e-20  3.921463e-20 -2.071140e-20  2.044863e-20 -1.158466e-20</span></span>
-<span id="cb8-52"><a href="#cb8-52" aria-hidden="true"></a><span class="co">#&gt; [121] -1.662018e-20 -3.815414e-20  4.479041e-20  1.050504e-01  3.021034e-20</span></span>
-<span id="cb8-53"><a href="#cb8-53" aria-hidden="true"></a><span class="co">#&gt; [126]  1.302202e-20 -9.058940e-22  1.080091e-20  6.140186e-21 -4.850000e-21</span></span>
-<span id="cb8-54"><a href="#cb8-54" aria-hidden="true"></a><span class="co">#&gt; [131] -3.425188e-20  1.177064e-20 -7.456699e-21 -4.285319e-22  2.938325e-20</span></span>
-<span id="cb8-55"><a href="#cb8-55" aria-hidden="true"></a><span class="co">#&gt; [136]  5.203313e-23 -1.823752e-20  2.278232e-20 -2.994107e-20  2.438680e-20</span></span>
-<span id="cb8-56"><a href="#cb8-56" aria-hidden="true"></a><span class="co">#&gt; [141] -1.840436e-20  2.976696e-21  1.111305e-20  3.083732e-20  3.799137e-20</span></span>
-<span id="cb8-57"><a href="#cb8-57" aria-hidden="true"></a><span class="co">#&gt; [146] -2.657400e-20 -3.952554e-20  6.688152e-21 -2.281098e-20 -7.889252e-21</span></span>
-<span id="cb8-58"><a href="#cb8-58" aria-hidden="true"></a><span class="co">#&gt; [151]  1.093391e-20  2.337667e-20 -1.040878e-21 -7.221123e-21 -1.635035e-20</span></span>
-<span id="cb8-59"><a href="#cb8-59" aria-hidden="true"></a><span class="co">#&gt; [156] -3.030193e-23  1.204048e-20  1.738269e-20 -9.204063e-21 -4.665808e-20</span></span>
-<span id="cb8-60"><a href="#cb8-60" aria-hidden="true"></a><span class="co">#&gt; [161] -1.077351e-20 -2.058160e-20 -2.163395e-20  7.722660e-21 -7.361326e-21</span></span>
-<span id="cb8-61"><a href="#cb8-61" aria-hidden="true"></a><span class="co">#&gt; [166]  3.847200e-20  2.241045e-20  1.208950e-20  2.940753e-20  2.185774e-20</span></span>
-<span id="cb8-62"><a href="#cb8-62" aria-hidden="true"></a><span class="co">#&gt; [171]  3.097105e-21  6.270934e-21  3.683465e-20 -4.081807e-20 -2.667454e-20</span></span>
-<span id="cb8-63"><a href="#cb8-63" aria-hidden="true"></a><span class="co">#&gt; [176] -3.178807e-21 -1.233394e-20 -4.046553e-20  4.750868e-20 -3.079384e-20</span></span>
-<span id="cb8-64"><a href="#cb8-64" aria-hidden="true"></a><span class="co">#&gt; [181]  1.245619e-21 -7.349826e-21  2.650582e-20  2.315337e-20 -2.681864e-20</span></span>
-<span id="cb8-65"><a href="#cb8-65" aria-hidden="true"></a><span class="co">#&gt; [186] -7.848200e-21  5.696245e-22 -1.348707e-20 -1.361473e-20  1.094434e-20</span></span>
-<span id="cb8-66"><a href="#cb8-66" aria-hidden="true"></a><span class="co">#&gt; [191] -1.382604e-20  2.908171e-20 -7.564163e-21 -1.142251e-01  4.194057e-21</span></span>
-<span id="cb8-67"><a href="#cb8-67" aria-hidden="true"></a><span class="co">#&gt; [196]  2.806828e-02  4.974615e-20  2.099095e-20 -3.429688e-21 -7.835803e-22</span></span>
-<span id="cb8-68"><a href="#cb8-68" aria-hidden="true"></a><span class="co">#&gt; [201] -2.599509e-20 -2.941078e-21  2.317809e-20 -8.071793e-21  3.625545e-20</span></span>
-<span id="cb8-69"><a href="#cb8-69" aria-hidden="true"></a><span class="co">#&gt; [206]  1.449383e-02 -1.064008e-20 -1.649375e-21  1.825243e-20 -3.625142e-20</span></span>
-<span id="cb8-70"><a href="#cb8-70" aria-hidden="true"></a><span class="co">#&gt; [211]  1.813109e-20  7.394587e-21 -9.890821e-21  5.020040e-21  7.869460e-21</span></span>
-<span id="cb8-71"><a href="#cb8-71" aria-hidden="true"></a><span class="co">#&gt; [216]  7.333247e-02  2.220246e-20  2.520721e-20 -3.007417e-20 -1.526453e-02</span></span>
-<span id="cb8-72"><a href="#cb8-72" aria-hidden="true"></a><span class="co">#&gt; [221] -2.815908e-20 -5.053282e-21  7.634600e-21  2.784260e-20 -1.394932e-21</span></span>
-<span id="cb8-73"><a href="#cb8-73" aria-hidden="true"></a><span class="co">#&gt; [226] -1.856224e-02  5.671126e-20  7.422782e-22  8.497549e-21 -8.507434e-02</span></span>
-<span id="cb8-74"><a href="#cb8-74" aria-hidden="true"></a><span class="co">#&gt; [231] -6.357053e-22 -2.383019e-20  1.424871e-02  1.949358e-21 -7.778860e-21</span></span>
-<span id="cb8-75"><a href="#cb8-75" aria-hidden="true"></a><span class="co">#&gt; [236]  7.325793e-21  1.235354e-20 -3.779654e-20  1.543446e-20  1.293160e-20</span></span>
-<span id="cb8-76"><a href="#cb8-76" aria-hidden="true"></a><span class="co">#&gt; [241]  1.808833e-20 -1.138640e-20  4.855724e-21 -1.365175e-20 -4.585331e-21</span></span>
-<span id="cb8-77"><a href="#cb8-77" aria-hidden="true"></a><span class="co">#&gt; [246]  5.762749e-02  1.114946e-20 -3.306254e-20  3.789537e-20  2.742626e-20</span></span>
-<span id="cb8-78"><a href="#cb8-78" aria-hidden="true"></a><span class="co">#&gt; [251]  1.353428e-20  2.336000e-20  5.719520e-22  2.868774e-21  1.463193e-20</span></span>
-<span id="cb8-79"><a href="#cb8-79" aria-hidden="true"></a><span class="co">#&gt; [256] -3.204761e-20  3.882321e-20 -9.369107e-21  2.130625e-20  6.210659e-20</span></span>
-<span id="cb8-80"><a href="#cb8-80" aria-hidden="true"></a><span class="co">#&gt; [261]  1.240038e-21  8.078293e-21  1.203678e-20 -1.329691e-20 -1.241080e-20</span></span>
-<span id="cb8-81"><a href="#cb8-81" aria-hidden="true"></a><span class="co">#&gt; [266]  1.729415e-20 -1.686775e-20  3.262103e-20 -5.350670e-21  1.713724e-21</span></span>
-<span id="cb8-82"><a href="#cb8-82" aria-hidden="true"></a><span class="co">#&gt; [271]  1.509112e-22 -1.949598e-20  3.709175e-20 -1.111425e-21 -1.929733e-20</span></span>
-<span id="cb8-83"><a href="#cb8-83" aria-hidden="true"></a><span class="co">#&gt; [276]  1.906026e-20  3.882020e-22 -6.758431e-02 -3.145329e-20  1.912047e-02</span></span>
-<span id="cb8-84"><a href="#cb8-84" aria-hidden="true"></a><span class="co">#&gt; [281] -2.181624e-20 -8.002563e-21  3.559705e-20 -1.920856e-20  4.083048e-21</span></span>
-<span id="cb8-85"><a href="#cb8-85" aria-hidden="true"></a><span class="co">#&gt; [286] -5.459814e-21 -3.118343e-20  6.143214e-21  1.669064e-20  4.228174e-21</span></span>
-<span id="cb8-86"><a href="#cb8-86" aria-hidden="true"></a><span class="co">#&gt; [291]  1.881488e-20  1.517871e-20 -1.224512e-21 -3.950107e-21  2.637039e-20</span></span>
-<span id="cb8-87"><a href="#cb8-87" aria-hidden="true"></a><span class="co">#&gt; [296] -2.340536e-21  2.037304e-22  4.653876e-20 -2.360962e-20 -3.393172e-20</span></span>
-<span id="cb8-88"><a href="#cb8-88" aria-hidden="true"></a><span class="co">#&gt; [301] -1.930858e-20  1.800401e-20 -5.165349e-21  1.146181e-02 -2.027900e-02</span></span>
-<span id="cb8-89"><a href="#cb8-89" aria-hidden="true"></a><span class="co">#&gt; [306]  4.117350e-20 -1.867877e-20  1.424975e-20  2.105957e-20  5.570455e-02</span></span>
-<span id="cb8-90"><a href="#cb8-90" aria-hidden="true"></a><span class="co">#&gt; [311]  1.734739e-20  4.923109e-21 -2.829968e-21 -2.005785e-20 -1.243291e-20</span></span>
-<span id="cb8-91"><a href="#cb8-91" aria-hidden="true"></a><span class="co">#&gt; [316] -3.022983e-20 -1.031537e-21  4.293768e-21 -2.898449e-20 -3.373924e-20</span></span>
-<span id="cb8-92"><a href="#cb8-92" aria-hidden="true"></a><span class="co">#&gt; [321] -3.362443e-20  1.409221e-20 -4.634748e-02 -3.325581e-21  1.810053e-20</span></span>
-<span id="cb8-93"><a href="#cb8-93" aria-hidden="true"></a><span class="co">#&gt; [326] -2.727117e-21 -4.326383e-03  2.168602e-20  4.680557e-21  2.046547e-20</span></span>
-<span id="cb8-94"><a href="#cb8-94" aria-hidden="true"></a><span class="co">#&gt; [331]  2.029744e-20 -1.277744e-20  2.064464e-20  2.968260e-20 -1.807167e-20</span></span>
-<span id="cb8-95"><a href="#cb8-95" aria-hidden="true"></a><span class="co">#&gt; [336]  2.387033e-20  1.137589e-21 -1.129455e-20  2.173873e-21 -9.554901e-21</span></span>
-<span id="cb8-96"><a href="#cb8-96" aria-hidden="true"></a><span class="co">#&gt; [341]  3.539075e-20 -3.715987e-02  2.412151e-20  3.482463e-20  2.062826e-20</span></span>
-<span id="cb8-97"><a href="#cb8-97" aria-hidden="true"></a><span class="co">#&gt; [346] -2.186877e-20  2.509377e-20 -1.655205e-20 -1.968280e-20 -2.385066e-21</span></span>
-<span id="cb8-98"><a href="#cb8-98" aria-hidden="true"></a><span class="co">#&gt; [351] -1.932956e-20  2.349428e-20 -1.268130e-20  2.343306e-20 -2.268929e-20</span></span>
-<span id="cb8-99"><a href="#cb8-99" aria-hidden="true"></a><span class="co">#&gt; [356]  1.271255e-20  4.695444e-20 -1.326606e-20  1.053945e-20 -2.953703e-20</span></span>
-<span id="cb8-100"><a href="#cb8-100" aria-hidden="true"></a><span class="co">#&gt; [361]  2.295880e-20  6.206502e-21 -2.082670e-20  5.279218e-20  3.345921e-03</span></span>
-<span id="cb8-101"><a href="#cb8-101" aria-hidden="true"></a><span class="co">#&gt; [366] -1.629065e-20  1.218887e-01  3.699368e-20 -2.008816e-20  1.122737e-20</span></span>
-<span id="cb8-102"><a href="#cb8-102" aria-hidden="true"></a><span class="co">#&gt; [371]  1.438024e-20 -2.211842e-20  1.794773e-01 -8.527252e-21  7.583954e-21</span></span>
-<span id="cb8-103"><a href="#cb8-103" aria-hidden="true"></a><span class="co">#&gt; [376]  1.241242e-20 -2.812447e-20  1.006246e-20  7.064632e-21  5.523767e-21</span></span>
-<span id="cb8-104"><a href="#cb8-104" aria-hidden="true"></a><span class="co">#&gt; [381] -1.980081e-20  5.249544e-21  3.651371e-20 -7.538534e-21  1.528730e-20</span></span>
-<span id="cb8-105"><a href="#cb8-105" aria-hidden="true"></a><span class="co">#&gt; [386] -1.889379e-20 -5.363613e-21  3.333297e-20 -1.859159e-20  1.158937e-22</span></span>
-<span id="cb8-106"><a href="#cb8-106" aria-hidden="true"></a><span class="co">#&gt; [391] -7.265413e-21  8.677004e-21  5.600588e-20 -2.435096e-21 -1.070040e-21</span></span>
-<span id="cb8-107"><a href="#cb8-107" aria-hidden="true"></a><span class="co">#&gt; [396]  5.059916e-20  3.398024e-02 -5.143546e-21 -2.890332e-20 -1.707560e-20</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true"></a><span class="co">#&gt;   [1]  9.608819e-01 -1.422533e-21  4.901853e-21  2.861166e-21  4.243416e-21</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true"></a><span class="co">#&gt;   [6]  2.944630e-21 -1.181476e-21  1.523987e-21  2.837943e-21 -3.300661e-21</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true"></a><span class="co">#&gt;  [11]  2.300464e-21 -1.108945e-01 -1.567753e-21  4.257938e-21  4.544022e-21</span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true"></a><span class="co">#&gt;  [16]  4.909229e-22 -1.581879e-22 -4.294741e-21 -4.392558e-21  4.582729e-21</span></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true"></a><span class="co">#&gt;  [21] -5.222349e-21 -2.655264e-21  5.747517e-21  3.522362e-21  2.453897e-21</span></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true"></a><span class="co">#&gt;  [26] -1.614207e-21  4.857225e-21 -2.659529e-21 -6.949225e-21  9.569465e-21</span></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true"></a><span class="co">#&gt;  [31]  2.455204e-21 -4.557819e-21  1.093425e-02  1.709052e-02  1.540788e-21</span></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true"></a><span class="co">#&gt;  [36] -3.958478e-21 -2.141997e-21 -5.468355e-21 -7.775897e-21  3.568013e-02</span></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true"></a><span class="co">#&gt;  [41] -6.737189e-21 -5.471011e-21 -1.190030e-21  2.651308e-22 -1.463708e-21</span></span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true"></a><span class="co">#&gt;  [46] -1.607970e-22  1.084546e-21  1.118892e-20 -6.124525e-21  1.113209e-01</span></span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true"></a><span class="co">#&gt;  [51] -5.426167e-21  3.314047e-21  6.814277e-21 -6.425828e-22  5.316690e-22</span></span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true"></a><span class="co">#&gt;  [56] -8.846514e-22 -1.849956e-21  1.777560e-21  3.511841e-21  1.961098e-21</span></span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true"></a><span class="co">#&gt;  [61]  4.286892e-21  5.387207e-21 -2.142245e-21  4.713182e-23  1.649276e-21</span></span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true"></a><span class="co">#&gt;  [66] -2.185639e-02  6.198613e-21  6.278318e-21  5.254067e-22 -1.703195e-22</span></span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true"></a><span class="co">#&gt;  [71] -6.539441e-21 -2.865295e-21  6.979452e-21 -4.198719e-21 -1.601543e-21</span></span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true"></a><span class="co">#&gt;  [76]  4.366371e-21 -4.916446e-21  3.879388e-21 -4.728532e-21 -1.079917e-21</span></span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true"></a><span class="co">#&gt;  [81]  2.170721e-01 -6.002838e-21  1.098524e-21 -1.692584e-02 -1.008547e-22</span></span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true"></a><span class="co">#&gt;  [86]  2.485762e-22 -1.529826e-21 -8.052997e-21  2.367077e-21 -1.494255e-21</span></span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true"></a><span class="co">#&gt;  [91]  5.879294e-22 -3.417410e-21 -7.030842e-22  6.280819e-21 -5.518118e-23</span></span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true"></a><span class="co">#&gt;  [96]  2.968053e-21  5.341099e-23 -5.661139e-21 -1.871411e-01  3.060741e-21</span></span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true"></a><span class="co">#&gt; [101]  1.053203e-20  6.534352e-21 -3.760418e-21  3.517779e-21  2.214738e-21</span></span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true"></a><span class="co">#&gt; [106] -5.581198e-21  6.668446e-21  6.565779e-21  1.366813e-21  7.854011e-21</span></span>
+<span id="cb8-50"><a href="#cb8-50" aria-hidden="true"></a><span class="co">#&gt; [111]  5.189181e-21  9.720889e-21  4.712232e-21 -9.607799e-21 -4.159401e-21</span></span>
+<span id="cb8-51"><a href="#cb8-51" aria-hidden="true"></a><span class="co">#&gt; [116] -4.297855e-21 -4.460916e-21  4.849756e-21 -1.087741e-21  1.899874e-21</span></span>
+<span id="cb8-52"><a href="#cb8-52" aria-hidden="true"></a><span class="co">#&gt; [121] -2.358351e-21  3.904853e-21  5.134396e-21 -1.157594e-20 -2.294573e-21</span></span>
+<span id="cb8-53"><a href="#cb8-53" aria-hidden="true"></a><span class="co">#&gt; [126]  9.125601e-21  8.034626e-23 -2.922797e-22 -2.255609e-21 -1.793248e-21</span></span>
+<span id="cb8-54"><a href="#cb8-54" aria-hidden="true"></a><span class="co">#&gt; [131]  1.121468e-21 -6.049334e-21  5.311182e-21 -9.915720e-22 -7.679334e-21</span></span>
+<span id="cb8-55"><a href="#cb8-55" aria-hidden="true"></a><span class="co">#&gt; [136] -8.824940e-22 -8.962211e-21  1.077803e-22 -5.880306e-22 -4.347408e-21</span></span>
+<span id="cb8-56"><a href="#cb8-56" aria-hidden="true"></a><span class="co">#&gt; [141]  4.446167e-21 -4.842125e-21 -5.677978e-22  7.217647e-22 -4.046883e-22</span></span>
+<span id="cb8-57"><a href="#cb8-57" aria-hidden="true"></a><span class="co">#&gt; [146] -3.257782e-22 -7.106782e-21  9.627264e-21 -2.698785e-21  1.908705e-21</span></span>
+<span id="cb8-58"><a href="#cb8-58" aria-hidden="true"></a><span class="co">#&gt; [151]  4.329318e-21  5.427306e-21 -1.551666e-21 -3.758049e-02 -1.404785e-21</span></span>
+<span id="cb8-59"><a href="#cb8-59" aria-hidden="true"></a><span class="co">#&gt; [156]  6.654900e-21 -6.392553e-21  1.101483e-21  3.653201e-22 -3.785764e-21</span></span>
+<span id="cb8-60"><a href="#cb8-60" aria-hidden="true"></a><span class="co">#&gt; [161] -1.758561e-21  1.894300e-21 -7.193293e-21 -6.636941e-21  2.323909e-21</span></span>
+<span id="cb8-61"><a href="#cb8-61" aria-hidden="true"></a><span class="co">#&gt; [166]  6.479266e-21 -1.511584e-21  8.438734e-21 -7.282856e-21 -2.164078e-21</span></span>
+<span id="cb8-62"><a href="#cb8-62" aria-hidden="true"></a><span class="co">#&gt; [171] -2.528448e-21  8.879243e-22 -2.160278e-21  1.732802e-21 -8.708165e-21</span></span>
+<span id="cb8-63"><a href="#cb8-63" aria-hidden="true"></a><span class="co">#&gt; [176]  4.760597e-21  7.201680e-21 -4.345240e-21  6.151109e-21 -3.044121e-21</span></span>
+<span id="cb8-64"><a href="#cb8-64" aria-hidden="true"></a><span class="co">#&gt; [181]  1.758087e-21 -3.521980e-21 -7.075228e-21  5.736067e-21 -4.261268e-21</span></span>
+<span id="cb8-65"><a href="#cb8-65" aria-hidden="true"></a><span class="co">#&gt; [186] -2.387603e-21  7.052118e-22 -2.814412e-21  1.202359e-01 -1.776976e-21</span></span>
+<span id="cb8-66"><a href="#cb8-66" aria-hidden="true"></a><span class="co">#&gt; [191]  3.515930e-21 -9.242545e-21  1.166613e-02 -4.646931e-21  6.044301e-21</span></span>
+<span id="cb8-67"><a href="#cb8-67" aria-hidden="true"></a><span class="co">#&gt; [196] -1.146769e-21  7.385579e-21  5.409428e-21  1.719850e-21  3.569717e-21</span></span>
+<span id="cb8-68"><a href="#cb8-68" aria-hidden="true"></a><span class="co">#&gt; [201] -1.519848e-21 -7.892943e-21  8.545982e-21  6.821272e-21  2.582434e-21</span></span>
+<span id="cb8-69"><a href="#cb8-69" aria-hidden="true"></a><span class="co">#&gt; [206]  4.866907e-02 -6.613724e-02  6.153066e-21 -4.770408e-21 -6.772984e-21</span></span>
+<span id="cb8-70"><a href="#cb8-70" aria-hidden="true"></a><span class="co">#&gt; [211] -6.554683e-21  7.659010e-02  8.349949e-22  4.004050e-22 -3.111158e-21</span></span>
+<span id="cb8-71"><a href="#cb8-71" aria-hidden="true"></a><span class="co">#&gt; [216] -2.744694e-22  4.114888e-21  1.139409e-21 -2.059382e-21 -4.513259e-22</span></span>
+<span id="cb8-72"><a href="#cb8-72" aria-hidden="true"></a><span class="co">#&gt; [221] -2.868791e-21  1.753057e-21  3.814560e-21  4.447702e-21 -5.347491e-21</span></span>
+<span id="cb8-73"><a href="#cb8-73" aria-hidden="true"></a><span class="co">#&gt; [226]  5.137068e-02  5.576667e-21 -4.529355e-22  1.849398e-21 -2.701105e-21</span></span>
+<span id="cb8-74"><a href="#cb8-74" aria-hidden="true"></a><span class="co">#&gt; [231]  4.937219e-21 -3.715730e-21  5.302514e-21 -6.883410e-21 -1.121574e-01</span></span>
+<span id="cb8-75"><a href="#cb8-75" aria-hidden="true"></a><span class="co">#&gt; [236]  9.778432e-23  1.519260e-21  3.511430e-21 -4.003458e-21  2.357649e-02</span></span>
+<span id="cb8-76"><a href="#cb8-76" aria-hidden="true"></a><span class="co">#&gt; [241] -4.587975e-22 -1.813651e-21 -8.712137e-21 -2.876080e-21 -6.362128e-21</span></span>
+<span id="cb8-77"><a href="#cb8-77" aria-hidden="true"></a><span class="co">#&gt; [246] -1.232002e-21  7.770751e-21 -5.481592e-21 -1.570168e-21  4.508921e-21</span></span>
+<span id="cb8-78"><a href="#cb8-78" aria-hidden="true"></a><span class="co">#&gt; [251] -4.859361e-21  4.034716e-22 -1.117444e-21 -1.959472e-21 -1.250040e-02</span></span>
+<span id="cb8-79"><a href="#cb8-79" aria-hidden="true"></a><span class="co">#&gt; [256]  5.898733e-21 -3.269196e-21  1.013177e-21  3.981088e-21 -4.598054e-21</span></span>
+<span id="cb8-80"><a href="#cb8-80" aria-hidden="true"></a><span class="co">#&gt; [261] -1.382276e-21 -5.301573e-02  5.092883e-21 -1.225256e-22 -4.025261e-21</span></span>
+<span id="cb8-81"><a href="#cb8-81" aria-hidden="true"></a><span class="co">#&gt; [266] -3.515491e-21  1.139124e-21 -3.180994e-21  2.487626e-21  6.335412e-21</span></span>
+<span id="cb8-82"><a href="#cb8-82" aria-hidden="true"></a><span class="co">#&gt; [271]  2.432673e-21 -5.153634e-21  4.002991e-21  3.463305e-21  2.917270e-21</span></span>
+<span id="cb8-83"><a href="#cb8-83" aria-hidden="true"></a><span class="co">#&gt; [276] -4.717797e-21  2.602633e-21  4.541120e-22  2.412555e-21 -1.347344e-21</span></span>
+<span id="cb8-84"><a href="#cb8-84" aria-hidden="true"></a><span class="co">#&gt; [281]  4.373231e-21 -4.113414e-21  4.450273e-21 -6.264564e-21 -1.214376e-21</span></span>
+<span id="cb8-85"><a href="#cb8-85" aria-hidden="true"></a><span class="co">#&gt; [286]  2.759256e-21  8.946541e-22  2.303429e-21 -2.199581e-21 -6.894660e-21</span></span>
+<span id="cb8-86"><a href="#cb8-86" aria-hidden="true"></a><span class="co">#&gt; [291]  8.713239e-02  6.714066e-21 -4.053589e-21 -1.304645e-21 -1.697951e-21</span></span>
+<span id="cb8-87"><a href="#cb8-87" aria-hidden="true"></a><span class="co">#&gt; [296] -1.779985e-21  1.065243e-21  7.227243e-22 -6.430581e-21  6.298756e-22</span></span>
+<span id="cb8-88"><a href="#cb8-88" aria-hidden="true"></a><span class="co">#&gt; [301]  3.790275e-21 -4.603594e-22  2.436686e-21 -1.623656e-21 -3.682419e-21</span></span>
+<span id="cb8-89"><a href="#cb8-89" aria-hidden="true"></a><span class="co">#&gt; [306] -1.949927e-22 -3.196697e-21  1.064489e-21  3.041938e-21  1.200168e-21</span></span>
+<span id="cb8-90"><a href="#cb8-90" aria-hidden="true"></a><span class="co">#&gt; [311] -3.749851e-21 -4.232574e-21  6.472698e-22  2.796674e-21 -9.881587e-21</span></span>
+<span id="cb8-91"><a href="#cb8-91" aria-hidden="true"></a><span class="co">#&gt; [316]  7.390687e-22 -8.623141e-22 -3.448702e-21  1.016764e-21 -1.617108e-21</span></span>
+<span id="cb8-92"><a href="#cb8-92" aria-hidden="true"></a><span class="co">#&gt; [321]  7.560323e-21 -4.425422e-21 -2.671111e-21 -2.230796e-21 -8.973791e-21</span></span>
+<span id="cb8-93"><a href="#cb8-93" aria-hidden="true"></a><span class="co">#&gt; [326] -5.009360e-03 -2.517263e-21  2.238731e-21  2.509840e-21 -1.695437e-02</span></span>
+<span id="cb8-94"><a href="#cb8-94" aria-hidden="true"></a><span class="co">#&gt; [331]  7.140659e-21  3.878223e-02 -2.836047e-21 -5.333516e-21 -5.514170e-21</span></span>
+<span id="cb8-95"><a href="#cb8-95" aria-hidden="true"></a><span class="co">#&gt; [336] -5.152772e-21  6.233428e-21 -4.114300e-21  5.016605e-21 -5.019910e-21</span></span>
+<span id="cb8-96"><a href="#cb8-96" aria-hidden="true"></a><span class="co">#&gt; [341] -4.845353e-23  1.434904e-21  3.997469e-21  4.059243e-21 -1.075754e-02</span></span>
+<span id="cb8-97"><a href="#cb8-97" aria-hidden="true"></a><span class="co">#&gt; [346]  1.523884e-21  2.100102e-21 -9.289908e-22 -2.068997e-21  8.112503e-21</span></span>
+<span id="cb8-98"><a href="#cb8-98" aria-hidden="true"></a><span class="co">#&gt; [351] -8.076320e-21  6.664063e-21 -5.323851e-02 -7.083578e-02  7.615098e-21</span></span>
+<span id="cb8-99"><a href="#cb8-99" aria-hidden="true"></a><span class="co">#&gt; [356]  3.730145e-21 -1.081800e-21 -1.401373e-21 -1.065144e-20  2.955002e-21</span></span>
+<span id="cb8-100"><a href="#cb8-100" aria-hidden="true"></a><span class="co">#&gt; [361]  4.664989e-22  9.666668e-22 -1.150444e-21 -2.359578e-21 -6.042268e-22</span></span>
+<span id="cb8-101"><a href="#cb8-101" aria-hidden="true"></a><span class="co">#&gt; [366] -5.830751e-21  7.573453e-21  4.615995e-22 -4.918701e-22 -6.324951e-02</span></span>
+<span id="cb8-102"><a href="#cb8-102" aria-hidden="true"></a><span class="co">#&gt; [371] -8.840428e-21 -5.119066e-21  2.427601e-22 -1.907311e-21 -1.870039e-21</span></span>
+<span id="cb8-103"><a href="#cb8-103" aria-hidden="true"></a><span class="co">#&gt; [376]  9.321854e-22 -6.513177e-21 -1.954336e-23  6.696223e-21  3.280595e-21</span></span>
+<span id="cb8-104"><a href="#cb8-104" aria-hidden="true"></a><span class="co">#&gt; [381] -2.962279e-21 -2.190076e-02  6.156030e-21  5.607974e-21 -2.114543e-21</span></span>
+<span id="cb8-105"><a href="#cb8-105" aria-hidden="true"></a><span class="co">#&gt; [386] -5.055388e-21 -5.851630e-21 -7.669688e-22 -4.206025e-21  5.432609e-21</span></span>
+<span id="cb8-106"><a href="#cb8-106" aria-hidden="true"></a><span class="co">#&gt; [391]  1.183801e-21  3.754385e-22 -5.536573e-22  6.996549e-22  2.814792e-21</span></span>
+<span id="cb8-107"><a href="#cb8-107" aria-hidden="true"></a><span class="co">#&gt; [396]  3.956413e-22 -9.524018e-21 -1.796506e-22 -1.087254e-21 -3.635704e-21</span></span>
 <span id="cb8-108"><a href="#cb8-108" aria-hidden="true"></a></span>
 <span id="cb8-109"><a href="#cb8-109" aria-hidden="true"></a><span class="co">## Finding Projection Direction using best step size</span></span>
 <span id="cb8-110"><a href="#cb8-110" aria-hidden="true"></a></span>
 <span id="cb8-111"><a href="#cb8-111" aria-hidden="true"></a>Direction.est &lt;-<span class="st"> </span>FIHR<span class="op">::</span><span class="kw">Direction_searchtuning</span>(Xc,loading,<span class="dt">model =</span> <span class="st">"logistic"</span>,<span class="dt">weight =</span> <span class="dv">1</span><span class="op">/</span>f_prime, <span class="dt">deriv.vec =</span> f_prime)</span>
 <span id="cb8-112"><a href="#cb8-112" aria-hidden="true"></a><span class="co">#&gt; [1] 2</span></span>
 <span id="cb8-113"><a href="#cb8-113" aria-hidden="true"></a>Direction.est<span class="op">$</span>proj</span>
-<span id="cb8-114"><a href="#cb8-114" aria-hidden="true"></a><span class="co">#&gt;   [1]  3.743431e-01  3.204067e-01 -1.339902e-22  2.644339e-22  5.371361e-22</span></span>
-<span id="cb8-115"><a href="#cb8-115" aria-hidden="true"></a><span class="co">#&gt;   [6]  3.656145e-23 -4.086966e-22  2.304788e-22 -6.340928e-22 -2.135581e-23</span></span>
-<span id="cb8-116"><a href="#cb8-116" aria-hidden="true"></a><span class="co">#&gt;  [11] -4.280541e-22  4.055469e-22  1.241459e-22  3.810561e-22 -1.049619e-22</span></span>
-<span id="cb8-117"><a href="#cb8-117" aria-hidden="true"></a><span class="co">#&gt;  [16] -2.788514e-23 -2.682238e-23 -3.465065e-22 -3.526919e-22  2.975497e-22</span></span>
-<span id="cb8-118"><a href="#cb8-118" aria-hidden="true"></a><span class="co">#&gt;  [21] -1.944647e-23  1.266705e-22  4.166135e-22 -3.364852e-22 -1.224375e-22</span></span>
-<span id="cb8-119"><a href="#cb8-119" aria-hidden="true"></a><span class="co">#&gt;  [26] -2.555693e-23  3.528325e-22 -1.902443e-22 -7.287881e-22  1.921762e-22</span></span>
-<span id="cb8-120"><a href="#cb8-120" aria-hidden="true"></a><span class="co">#&gt;  [31]  4.819059e-22 -1.459608e-22 -1.966111e-22 -2.812352e-22 -1.802057e-22</span></span>
-<span id="cb8-121"><a href="#cb8-121" aria-hidden="true"></a><span class="co">#&gt;  [36] -7.167076e-23 -1.733556e-22 -1.407109e-22 -7.112414e-22 -6.638594e-22</span></span>
-<span id="cb8-122"><a href="#cb8-122" aria-hidden="true"></a><span class="co">#&gt;  [41] -1.920581e-22 -1.810623e-22 -1.994021e-22 -6.854431e-22  1.822797e-22</span></span>
-<span id="cb8-123"><a href="#cb8-123" aria-hidden="true"></a><span class="co">#&gt;  [46] -4.473917e-22 -7.966348e-23  1.142050e-22 -1.196716e-22 -1.491189e-22</span></span>
-<span id="cb8-124"><a href="#cb8-124" aria-hidden="true"></a><span class="co">#&gt;  [51]  1.408444e-22 -8.575041e-22 -4.148937e-22 -3.081090e-22 -6.351602e-22</span></span>
-<span id="cb8-125"><a href="#cb8-125" aria-hidden="true"></a><span class="co">#&gt;  [56] -1.217896e-22 -1.768308e-22  2.479631e-22  6.665276e-22  2.949588e-02</span></span>
-<span id="cb8-126"><a href="#cb8-126" aria-hidden="true"></a><span class="co">#&gt;  [61] -3.272992e-22  2.862339e-23  4.544246e-22 -2.678650e-22  6.380625e-23</span></span>
-<span id="cb8-127"><a href="#cb8-127" aria-hidden="true"></a><span class="co">#&gt;  [66]  8.807577e-23  1.639722e-22  7.776438e-23 -4.163114e-22 -5.345824e-22</span></span>
-<span id="cb8-128"><a href="#cb8-128" aria-hidden="true"></a><span class="co">#&gt;  [71] -4.995816e-22 -9.899096e-23 -1.885266e-22  3.722800e-22 -1.381627e-23</span></span>
-<span id="cb8-129"><a href="#cb8-129" aria-hidden="true"></a><span class="co">#&gt;  [76]  2.154341e-22  3.792803e-22 -2.233778e-22  6.714134e-22  4.254798e-22</span></span>
-<span id="cb8-130"><a href="#cb8-130" aria-hidden="true"></a><span class="co">#&gt;  [81]  3.019391e-22 -5.247044e-22  3.522912e-22 -9.106744e-23 -2.405595e-22</span></span>
-<span id="cb8-131"><a href="#cb8-131" aria-hidden="true"></a><span class="co">#&gt;  [86] -1.691613e-22 -2.362306e-22 -2.107408e-22  2.140549e-23  4.945649e-22</span></span>
-<span id="cb8-132"><a href="#cb8-132" aria-hidden="true"></a><span class="co">#&gt;  [91]  7.044739e-22  4.115286e-22 -5.282698e-22  1.920413e-22  1.598486e-22</span></span>
-<span id="cb8-133"><a href="#cb8-133" aria-hidden="true"></a><span class="co">#&gt;  [96]  5.518924e-22 -1.327664e-22 -7.659686e-23  7.099428e-23  4.988064e-22</span></span>
-<span id="cb8-134"><a href="#cb8-134" aria-hidden="true"></a><span class="co">#&gt; [101]  2.247880e-23 -8.064610e-23 -1.157729e-22  2.857136e-22 -6.398567e-23</span></span>
-<span id="cb8-135"><a href="#cb8-135" aria-hidden="true"></a><span class="co">#&gt; [106] -1.293792e-22 -2.946569e-22 -2.182845e-22 -2.895177e-22 -2.606350e-22</span></span>
-<span id="cb8-136"><a href="#cb8-136" aria-hidden="true"></a><span class="co">#&gt; [111]  4.917374e-22  9.500934e-23  1.140597e-22  9.573430e-23  4.905344e-23</span></span>
-<span id="cb8-137"><a href="#cb8-137" aria-hidden="true"></a><span class="co">#&gt; [116]  1.027078e-22 -4.049573e-22 -3.048389e-22  3.809935e-22  3.769258e-22</span></span>
-<span id="cb8-138"><a href="#cb8-138" aria-hidden="true"></a><span class="co">#&gt; [121] -3.279641e-22  3.381216e-22  9.476804e-23 -3.512133e-22  8.617844e-22</span></span>
-<span id="cb8-139"><a href="#cb8-139" aria-hidden="true"></a><span class="co">#&gt; [126] -1.671960e-22 -1.060062e-22  1.646027e-22 -3.093382e-22  2.672916e-22</span></span>
-<span id="cb8-140"><a href="#cb8-140" aria-hidden="true"></a><span class="co">#&gt; [131] -3.049733e-22  5.130538e-22  4.222602e-22 -4.524843e-22  1.400746e-22</span></span>
-<span id="cb8-141"><a href="#cb8-141" aria-hidden="true"></a><span class="co">#&gt; [136] -2.044064e-24 -1.198802e-22 -2.621184e-22 -3.259951e-22 -2.862179e-23</span></span>
-<span id="cb8-142"><a href="#cb8-142" aria-hidden="true"></a><span class="co">#&gt; [141] -6.307406e-23 -2.757243e-22 -7.113177e-23  8.335308e-22 -3.125142e-22</span></span>
-<span id="cb8-143"><a href="#cb8-143" aria-hidden="true"></a><span class="co">#&gt; [146]  4.423315e-23  3.997595e-22  3.061359e-23 -5.391866e-22  2.967708e-22</span></span>
-<span id="cb8-144"><a href="#cb8-144" aria-hidden="true"></a><span class="co">#&gt; [151] -3.431172e-22  7.925935e-22 -5.953877e-22  7.816816e-23  1.529420e-22</span></span>
-<span id="cb8-145"><a href="#cb8-145" aria-hidden="true"></a><span class="co">#&gt; [156]  2.040687e-23  6.467978e-22 -3.633390e-23 -5.252658e-22 -5.648493e-22</span></span>
-<span id="cb8-146"><a href="#cb8-146" aria-hidden="true"></a><span class="co">#&gt; [161] -1.894846e-22 -6.713092e-23 -1.589618e-22  2.992074e-23 -6.174228e-22</span></span>
-<span id="cb8-147"><a href="#cb8-147" aria-hidden="true"></a><span class="co">#&gt; [166]  1.108953e-22  1.507840e-22  3.287851e-23 -1.714482e-22 -2.971547e-22</span></span>
-<span id="cb8-148"><a href="#cb8-148" aria-hidden="true"></a><span class="co">#&gt; [171]  1.186551e-22  2.812766e-22  1.198147e-22 -3.466834e-22  1.740699e-22</span></span>
-<span id="cb8-149"><a href="#cb8-149" aria-hidden="true"></a><span class="co">#&gt; [176]  4.926641e-22 -7.913805e-24  1.051532e-22 -7.902345e-22  5.420442e-22</span></span>
-<span id="cb8-150"><a href="#cb8-150" aria-hidden="true"></a><span class="co">#&gt; [181]  3.368013e-22  4.046155e-22  1.902523e-22  3.826938e-23  6.748006e-23</span></span>
-<span id="cb8-151"><a href="#cb8-151" aria-hidden="true"></a><span class="co">#&gt; [186]  1.159706e-22 -6.663067e-22  4.137185e-22  4.342289e-22 -2.655711e-22</span></span>
-<span id="cb8-152"><a href="#cb8-152" aria-hidden="true"></a><span class="co">#&gt; [191] -8.743497e-23  2.502785e-22  1.550468e-22 -2.514423e-23 -7.551640e-22</span></span>
-<span id="cb8-153"><a href="#cb8-153" aria-hidden="true"></a><span class="co">#&gt; [196]  6.107834e-22  3.082910e-22  2.064672e-22 -6.717778e-22  4.417245e-22</span></span>
-<span id="cb8-154"><a href="#cb8-154" aria-hidden="true"></a><span class="co">#&gt; [201] -2.298471e-22 -1.577148e-22 -2.389573e-22  2.910832e-22  7.549024e-23</span></span>
-<span id="cb8-155"><a href="#cb8-155" aria-hidden="true"></a><span class="co">#&gt; [206]  1.158229e-22  4.412974e-22 -1.410405e-22  1.347228e-22  3.010284e-23</span></span>
-<span id="cb8-156"><a href="#cb8-156" aria-hidden="true"></a><span class="co">#&gt; [211] -4.663519e-23  5.699067e-22  3.615836e-22  6.730861e-23  4.874426e-22</span></span>
-<span id="cb8-157"><a href="#cb8-157" aria-hidden="true"></a><span class="co">#&gt; [216]  3.136724e-22  4.654469e-22 -2.273358e-23  8.200507e-23 -2.697610e-22</span></span>
-<span id="cb8-158"><a href="#cb8-158" aria-hidden="true"></a><span class="co">#&gt; [221] -4.641730e-22  5.699922e-23 -1.606403e-22 -1.240955e-22 -2.406583e-23</span></span>
-<span id="cb8-159"><a href="#cb8-159" aria-hidden="true"></a><span class="co">#&gt; [226] -5.000019e-22 -3.574398e-22  2.753466e-22 -3.948305e-22  6.635156e-24</span></span>
-<span id="cb8-160"><a href="#cb8-160" aria-hidden="true"></a><span class="co">#&gt; [231] -5.383628e-22  1.609296e-22  7.385475e-23  3.934813e-22 -1.583575e-22</span></span>
-<span id="cb8-161"><a href="#cb8-161" aria-hidden="true"></a><span class="co">#&gt; [236] -3.456725e-22 -2.491245e-23 -1.260991e-22 -4.356617e-23  4.404908e-23</span></span>
-<span id="cb8-162"><a href="#cb8-162" aria-hidden="true"></a><span class="co">#&gt; [241] -2.948573e-22 -1.871252e-22  3.113755e-22  2.537561e-22 -1.251400e-22</span></span>
-<span id="cb8-163"><a href="#cb8-163" aria-hidden="true"></a><span class="co">#&gt; [246]  1.844034e-22  7.761824e-22 -6.563804e-23  1.085343e-22 -1.215356e-22</span></span>
-<span id="cb8-164"><a href="#cb8-164" aria-hidden="true"></a><span class="co">#&gt; [251]  4.846377e-22  1.787732e-22 -2.154413e-22 -4.189789e-22  3.386006e-23</span></span>
-<span id="cb8-165"><a href="#cb8-165" aria-hidden="true"></a><span class="co">#&gt; [256] -5.061754e-22  5.177297e-22  8.912433e-23 -4.578227e-22  2.564549e-22</span></span>
-<span id="cb8-166"><a href="#cb8-166" aria-hidden="true"></a><span class="co">#&gt; [261] -4.470801e-22  3.779912e-22  1.770372e-22  1.814660e-22 -2.989091e-22</span></span>
-<span id="cb8-167"><a href="#cb8-167" aria-hidden="true"></a><span class="co">#&gt; [266] -4.627605e-22 -3.102074e-22 -3.707665e-22  1.070531e-23  4.984091e-23</span></span>
-<span id="cb8-168"><a href="#cb8-168" aria-hidden="true"></a><span class="co">#&gt; [271] -7.163867e-23 -3.518199e-22 -2.086310e-22  4.110366e-22  7.305403e-23</span></span>
-<span id="cb8-169"><a href="#cb8-169" aria-hidden="true"></a><span class="co">#&gt; [276] -5.003226e-22  3.796438e-22  5.236942e-22 -6.267474e-22 -4.547416e-22</span></span>
-<span id="cb8-170"><a href="#cb8-170" aria-hidden="true"></a><span class="co">#&gt; [281]  6.345788e-22  2.533844e-22  7.453387e-23 -2.290737e-22 -1.227398e-22</span></span>
-<span id="cb8-171"><a href="#cb8-171" aria-hidden="true"></a><span class="co">#&gt; [286] -7.587086e-22  1.943122e-22 -6.301284e-22  1.941278e-22 -1.113694e-23</span></span>
-<span id="cb8-172"><a href="#cb8-172" aria-hidden="true"></a><span class="co">#&gt; [291]  4.790807e-22 -5.819865e-22  3.017196e-23  5.387889e-23  2.702401e-22</span></span>
-<span id="cb8-173"><a href="#cb8-173" aria-hidden="true"></a><span class="co">#&gt; [296] -2.240257e-22 -2.943534e-22  3.359481e-23 -1.681200e-22  1.800099e-22</span></span>
-<span id="cb8-174"><a href="#cb8-174" aria-hidden="true"></a><span class="co">#&gt; [301] -2.711752e-22  2.985154e-22 -1.718403e-22  2.579844e-22  5.252361e-22</span></span>
-<span id="cb8-175"><a href="#cb8-175" aria-hidden="true"></a><span class="co">#&gt; [306] -5.664190e-22  3.833052e-22  3.098889e-22  5.280215e-22  8.054703e-23</span></span>
-<span id="cb8-176"><a href="#cb8-176" aria-hidden="true"></a><span class="co">#&gt; [311]  7.667426e-22  1.453244e-22 -1.262534e-22  4.980606e-22 -1.331340e-22</span></span>
-<span id="cb8-177"><a href="#cb8-177" aria-hidden="true"></a><span class="co">#&gt; [316] -6.057211e-22  2.699121e-22 -4.019155e-22  2.317501e-22  4.495249e-22</span></span>
-<span id="cb8-178"><a href="#cb8-178" aria-hidden="true"></a><span class="co">#&gt; [321]  1.771769e-22  1.155647e-22  1.575602e-22 -5.466657e-22  3.026867e-24</span></span>
-<span id="cb8-179"><a href="#cb8-179" aria-hidden="true"></a><span class="co">#&gt; [326]  2.424052e-22  4.086993e-22 -1.970440e-22 -1.727266e-22  3.043475e-23</span></span>
-<span id="cb8-180"><a href="#cb8-180" aria-hidden="true"></a><span class="co">#&gt; [331] -3.243530e-24  2.131617e-22 -3.122221e-22  1.476440e-24 -1.927555e-23</span></span>
-<span id="cb8-181"><a href="#cb8-181" aria-hidden="true"></a><span class="co">#&gt; [336] -2.675090e-22 -2.859585e-22  2.907204e-22  5.790177e-23 -2.615247e-22</span></span>
-<span id="cb8-182"><a href="#cb8-182" aria-hidden="true"></a><span class="co">#&gt; [341] -1.178147e-22 -9.170294e-23 -4.232200e-22 -2.595033e-22  2.137679e-22</span></span>
-<span id="cb8-183"><a href="#cb8-183" aria-hidden="true"></a><span class="co">#&gt; [346] -4.503826e-22 -4.418514e-23 -3.278642e-22 -6.458973e-25 -2.894706e-22</span></span>
-<span id="cb8-184"><a href="#cb8-184" aria-hidden="true"></a><span class="co">#&gt; [351]  1.358874e-22  9.849757e-24  1.892628e-22 -3.740490e-22  1.803750e-22</span></span>
-<span id="cb8-185"><a href="#cb8-185" aria-hidden="true"></a><span class="co">#&gt; [356]  1.136295e-22 -3.630306e-22 -8.643690e-23  3.147455e-22  3.391316e-23</span></span>
-<span id="cb8-186"><a href="#cb8-186" aria-hidden="true"></a><span class="co">#&gt; [361]  9.673096e-23  1.837974e-22  2.471137e-22 -2.579543e-22 -6.659223e-23</span></span>
-<span id="cb8-187"><a href="#cb8-187" aria-hidden="true"></a><span class="co">#&gt; [366]  4.584539e-22 -1.600162e-22  7.129732e-22 -3.699370e-23  2.736571e-22</span></span>
-<span id="cb8-188"><a href="#cb8-188" aria-hidden="true"></a><span class="co">#&gt; [371] -2.352199e-22  5.995888e-24  3.297979e-22  7.094586e-04  1.518523e-22</span></span>
-<span id="cb8-189"><a href="#cb8-189" aria-hidden="true"></a><span class="co">#&gt; [376]  6.453893e-22  2.129649e-22 -5.009006e-22 -3.036290e-22 -1.967330e-22</span></span>
-<span id="cb8-190"><a href="#cb8-190" aria-hidden="true"></a><span class="co">#&gt; [381] -4.626624e-23 -6.373895e-23 -4.269545e-22 -7.422913e-23 -5.674654e-22</span></span>
-<span id="cb8-191"><a href="#cb8-191" aria-hidden="true"></a><span class="co">#&gt; [386] -2.499954e-23 -2.595115e-22  2.006039e-22 -1.061427e-22 -3.372200e-22</span></span>
-<span id="cb8-192"><a href="#cb8-192" aria-hidden="true"></a><span class="co">#&gt; [391]  4.359485e-22 -2.435108e-22  2.393944e-22 -2.763573e-22  3.058515e-22</span></span>
-<span id="cb8-193"><a href="#cb8-193" aria-hidden="true"></a><span class="co">#&gt; [396]  3.166923e-22 -3.665661e-22  3.861768e-22  4.437590e-22 -1.582170e-22</span></span>
-<span id="cb8-194"><a href="#cb8-194" aria-hidden="true"></a><span class="co">#&gt; [401]  4.644225e-23</span></span></code></pre></div>
+<span id="cb8-114"><a href="#cb8-114" aria-hidden="true"></a><span class="co">#&gt;   [1]  4.209382e-01  3.295984e-01  9.995600e-23  7.471056e-23  1.892610e-22</span></span>
+<span id="cb8-115"><a href="#cb8-115" aria-hidden="true"></a><span class="co">#&gt;   [6] -6.056424e-23 -1.968802e-22 -1.905524e-22 -3.551363e-22 -2.110463e-23</span></span>
+<span id="cb8-116"><a href="#cb8-116" aria-hidden="true"></a><span class="co">#&gt;  [11] -1.193014e-22  1.294637e-22 -3.683379e-22 -1.607095e-22 -1.291096e-22</span></span>
+<span id="cb8-117"><a href="#cb8-117" aria-hidden="true"></a><span class="co">#&gt;  [16]  1.934238e-22 -3.115712e-22  1.488685e-22 -1.081541e-22 -1.230146e-22</span></span>
+<span id="cb8-118"><a href="#cb8-118" aria-hidden="true"></a><span class="co">#&gt;  [21]  3.112961e-22 -1.078129e-23 -3.491114e-23 -8.428296e-23  2.551999e-22</span></span>
+<span id="cb8-119"><a href="#cb8-119" aria-hidden="true"></a><span class="co">#&gt;  [26] -2.281364e-22  8.000890e-24 -9.711977e-23 -7.222490e-23 -2.092224e-22</span></span>
+<span id="cb8-120"><a href="#cb8-120" aria-hidden="true"></a><span class="co">#&gt;  [31] -6.168072e-23 -1.458728e-22 -2.733164e-22  4.092745e-22  1.363687e-22</span></span>
+<span id="cb8-121"><a href="#cb8-121" aria-hidden="true"></a><span class="co">#&gt;  [36] -1.408005e-22 -4.665505e-23  2.138587e-22 -8.093366e-23 -2.978775e-22</span></span>
+<span id="cb8-122"><a href="#cb8-122" aria-hidden="true"></a><span class="co">#&gt;  [41]  3.172457e-22  2.022536e-23 -2.815899e-22  4.575822e-23 -2.313466e-24</span></span>
+<span id="cb8-123"><a href="#cb8-123" aria-hidden="true"></a><span class="co">#&gt;  [46]  1.052313e-22  4.257221e-23  3.904471e-24 -1.600387e-22  2.117824e-22</span></span>
+<span id="cb8-124"><a href="#cb8-124" aria-hidden="true"></a><span class="co">#&gt;  [51]  4.654335e-22 -3.179734e-23 -1.862467e-22  1.304014e-22 -8.200407e-23</span></span>
+<span id="cb8-125"><a href="#cb8-125" aria-hidden="true"></a><span class="co">#&gt;  [56] -1.231748e-23 -4.254378e-22 -3.903979e-23 -2.465254e-25 -1.825642e-22</span></span>
+<span id="cb8-126"><a href="#cb8-126" aria-hidden="true"></a><span class="co">#&gt;  [61]  6.778734e-23  2.212362e-22 -2.118223e-22  7.287200e-23 -1.874319e-22</span></span>
+<span id="cb8-127"><a href="#cb8-127" aria-hidden="true"></a><span class="co">#&gt;  [66] -2.713211e-22 -6.862315e-22 -3.206138e-22  3.340922e-22 -1.125305e-22</span></span>
+<span id="cb8-128"><a href="#cb8-128" aria-hidden="true"></a><span class="co">#&gt;  [71]  9.219567e-23  1.081555e-23 -1.268770e-22  2.610649e-23  6.535649e-23</span></span>
+<span id="cb8-129"><a href="#cb8-129" aria-hidden="true"></a><span class="co">#&gt;  [76] -8.912802e-23  3.685526e-22 -4.809263e-22 -1.230137e-23  3.202570e-24</span></span>
+<span id="cb8-130"><a href="#cb8-130" aria-hidden="true"></a><span class="co">#&gt;  [81]  2.876025e-24  4.009720e-22 -3.620463e-22  2.406944e-22 -2.030221e-02</span></span>
+<span id="cb8-131"><a href="#cb8-131" aria-hidden="true"></a><span class="co">#&gt;  [86] -6.578864e-24  2.382570e-22 -4.775485e-22 -6.755977e-23 -1.650582e-23</span></span>
+<span id="cb8-132"><a href="#cb8-132" aria-hidden="true"></a><span class="co">#&gt;  [91]  2.450492e-22 -1.824975e-22  1.596321e-22  1.686248e-22 -2.242910e-22</span></span>
+<span id="cb8-133"><a href="#cb8-133" aria-hidden="true"></a><span class="co">#&gt;  [96]  6.352500e-23  8.562277e-23 -1.899225e-22  4.409158e-22 -4.391982e-22</span></span>
+<span id="cb8-134"><a href="#cb8-134" aria-hidden="true"></a><span class="co">#&gt; [101]  2.329962e-23  3.031962e-22 -7.771914e-23  1.451632e-22 -8.195130e-23</span></span>
+<span id="cb8-135"><a href="#cb8-135" aria-hidden="true"></a><span class="co">#&gt; [106]  1.499916e-22  9.471020e-23  4.898433e-24 -2.954779e-22  6.362109e-25</span></span>
+<span id="cb8-136"><a href="#cb8-136" aria-hidden="true"></a><span class="co">#&gt; [111] -4.088291e-23  1.139692e-22  9.101065e-23  9.808864e-23  2.492865e-24</span></span>
+<span id="cb8-137"><a href="#cb8-137" aria-hidden="true"></a><span class="co">#&gt; [116]  1.457063e-23  5.569234e-23  9.837924e-23 -1.241693e-22  1.344003e-22</span></span>
+<span id="cb8-138"><a href="#cb8-138" aria-hidden="true"></a><span class="co">#&gt; [121]  3.995483e-22  2.047951e-22  2.218643e-23  1.468607e-22  6.482258e-23</span></span>
+<span id="cb8-139"><a href="#cb8-139" aria-hidden="true"></a><span class="co">#&gt; [126] -1.775030e-22  3.380388e-23  5.944005e-23  2.732957e-22 -3.276449e-22</span></span>
+<span id="cb8-140"><a href="#cb8-140" aria-hidden="true"></a><span class="co">#&gt; [131]  3.351343e-23  1.885394e-22  6.830481e-23 -1.262332e-23 -8.336507e-23</span></span>
+<span id="cb8-141"><a href="#cb8-141" aria-hidden="true"></a><span class="co">#&gt; [136]  9.483931e-24 -2.715066e-22  9.428745e-23 -1.395530e-22 -1.044296e-22</span></span>
+<span id="cb8-142"><a href="#cb8-142" aria-hidden="true"></a><span class="co">#&gt; [141]  3.485559e-22 -2.729063e-22  2.171789e-22 -8.240308e-23 -4.381530e-23</span></span>
+<span id="cb8-143"><a href="#cb8-143" aria-hidden="true"></a><span class="co">#&gt; [146]  2.085558e-22  2.265686e-22 -8.155772e-23  1.507657e-22 -1.856671e-22</span></span>
+<span id="cb8-144"><a href="#cb8-144" aria-hidden="true"></a><span class="co">#&gt; [151] -1.287718e-22 -1.149563e-22 -1.109367e-22 -1.268368e-22 -4.475165e-22</span></span>
+<span id="cb8-145"><a href="#cb8-145" aria-hidden="true"></a><span class="co">#&gt; [156]  4.018684e-23  5.852372e-23  2.934345e-22  2.415958e-22 -2.401705e-22</span></span>
+<span id="cb8-146"><a href="#cb8-146" aria-hidden="true"></a><span class="co">#&gt; [161] -2.199633e-22 -1.420064e-22 -1.753956e-24 -3.193116e-24  8.161537e-23</span></span>
+<span id="cb8-147"><a href="#cb8-147" aria-hidden="true"></a><span class="co">#&gt; [166]  1.920502e-22  1.234106e-22  1.829030e-22  2.315975e-22 -1.545248e-22</span></span>
+<span id="cb8-148"><a href="#cb8-148" aria-hidden="true"></a><span class="co">#&gt; [171]  3.109974e-22 -8.766298e-23 -2.714885e-22  1.123225e-22 -1.203310e-23</span></span>
+<span id="cb8-149"><a href="#cb8-149" aria-hidden="true"></a><span class="co">#&gt; [176]  1.828305e-23 -1.094534e-22 -1.450053e-23 -1.572817e-22  6.760540e-23</span></span>
+<span id="cb8-150"><a href="#cb8-150" aria-hidden="true"></a><span class="co">#&gt; [181]  1.098255e-22  2.107532e-22 -3.386998e-23  1.232491e-22  2.687602e-23</span></span>
+<span id="cb8-151"><a href="#cb8-151" aria-hidden="true"></a><span class="co">#&gt; [186]  3.554563e-23 -2.650969e-22 -1.403563e-22  3.628452e-22  4.303319e-22</span></span>
+<span id="cb8-152"><a href="#cb8-152" aria-hidden="true"></a><span class="co">#&gt; [191]  1.098164e-23 -8.766953e-23  1.819397e-22  2.541674e-22  2.586091e-22</span></span>
+<span id="cb8-153"><a href="#cb8-153" aria-hidden="true"></a><span class="co">#&gt; [196]  2.656978e-22 -4.185983e-22 -5.222702e-23 -6.192359e-23  1.310093e-23</span></span>
+<span id="cb8-154"><a href="#cb8-154" aria-hidden="true"></a><span class="co">#&gt; [201] -5.251035e-23 -1.741615e-22 -7.494764e-23 -3.109995e-22 -4.081135e-23</span></span>
+<span id="cb8-155"><a href="#cb8-155" aria-hidden="true"></a><span class="co">#&gt; [206] -1.536339e-22  3.734969e-22 -3.302519e-22  1.743485e-22 -8.366313e-23</span></span>
+<span id="cb8-156"><a href="#cb8-156" aria-hidden="true"></a><span class="co">#&gt; [211] -6.794242e-23 -5.258190e-23  3.792605e-22 -1.519343e-22  4.557884e-23</span></span>
+<span id="cb8-157"><a href="#cb8-157" aria-hidden="true"></a><span class="co">#&gt; [216]  1.488040e-22 -2.937454e-22 -7.829371e-23  6.238587e-23  3.111755e-22</span></span>
+<span id="cb8-158"><a href="#cb8-158" aria-hidden="true"></a><span class="co">#&gt; [221] -1.852102e-22  2.011708e-22  5.300383e-23  2.344509e-22 -1.514552e-22</span></span>
+<span id="cb8-159"><a href="#cb8-159" aria-hidden="true"></a><span class="co">#&gt; [226]  2.966482e-22  2.256044e-22  3.737564e-22 -3.898623e-22 -3.726625e-22</span></span>
+<span id="cb8-160"><a href="#cb8-160" aria-hidden="true"></a><span class="co">#&gt; [231] -3.854428e-22  4.444888e-23 -1.917311e-22 -2.890709e-22 -8.736712e-23</span></span>
+<span id="cb8-161"><a href="#cb8-161" aria-hidden="true"></a><span class="co">#&gt; [236] -4.574131e-22 -2.012791e-22  7.744803e-23  1.513080e-22  1.634874e-22</span></span>
+<span id="cb8-162"><a href="#cb8-162" aria-hidden="true"></a><span class="co">#&gt; [241]  4.054409e-22  1.835844e-22 -3.324053e-23 -1.053741e-22 -2.418044e-22</span></span>
+<span id="cb8-163"><a href="#cb8-163" aria-hidden="true"></a><span class="co">#&gt; [246] -1.488235e-22  1.489056e-22  1.096594e-22 -3.523109e-23 -3.258419e-22</span></span>
+<span id="cb8-164"><a href="#cb8-164" aria-hidden="true"></a><span class="co">#&gt; [251]  1.544413e-22  1.712843e-22  6.906691e-23 -1.844782e-22 -2.946997e-22</span></span>
+<span id="cb8-165"><a href="#cb8-165" aria-hidden="true"></a><span class="co">#&gt; [256] -1.907140e-22  5.488865e-23 -1.981662e-22  2.842877e-22 -9.017320e-23</span></span>
+<span id="cb8-166"><a href="#cb8-166" aria-hidden="true"></a><span class="co">#&gt; [261]  1.685855e-22  2.804506e-22 -2.693197e-22  2.104422e-22  1.175854e-22</span></span>
+<span id="cb8-167"><a href="#cb8-167" aria-hidden="true"></a><span class="co">#&gt; [266] -2.086739e-22 -1.153345e-22  1.698454e-22  8.724504e-23  8.820301e-23</span></span>
+<span id="cb8-168"><a href="#cb8-168" aria-hidden="true"></a><span class="co">#&gt; [271]  1.585511e-22  1.349892e-22  1.387128e-22  9.589421e-23 -1.388063e-22</span></span>
+<span id="cb8-169"><a href="#cb8-169" aria-hidden="true"></a><span class="co">#&gt; [276]  1.858260e-22 -2.222573e-22  6.056812e-23  5.043019e-23 -3.638285e-22</span></span>
+<span id="cb8-170"><a href="#cb8-170" aria-hidden="true"></a><span class="co">#&gt; [281]  5.089006e-23 -1.497683e-22 -1.066772e-23  1.360331e-22 -1.662668e-23</span></span>
+<span id="cb8-171"><a href="#cb8-171" aria-hidden="true"></a><span class="co">#&gt; [286] -2.333826e-22  2.410439e-22 -3.417482e-23  2.994790e-22  1.701658e-22</span></span>
+<span id="cb8-172"><a href="#cb8-172" aria-hidden="true"></a><span class="co">#&gt; [291]  2.646731e-22  4.233700e-22  1.115534e-22  1.166482e-23 -3.384272e-22</span></span>
+<span id="cb8-173"><a href="#cb8-173" aria-hidden="true"></a><span class="co">#&gt; [296]  1.304639e-22 -5.550736e-23  3.137434e-22 -4.036976e-22 -1.478840e-22</span></span>
+<span id="cb8-174"><a href="#cb8-174" aria-hidden="true"></a><span class="co">#&gt; [301]  2.065594e-22 -3.621817e-22  2.324794e-22  9.755733e-23 -3.207456e-22</span></span>
+<span id="cb8-175"><a href="#cb8-175" aria-hidden="true"></a><span class="co">#&gt; [306] -7.809556e-24  2.100862e-23  1.574146e-23 -5.273771e-23 -1.681610e-22</span></span>
+<span id="cb8-176"><a href="#cb8-176" aria-hidden="true"></a><span class="co">#&gt; [311]  1.819940e-22 -2.043112e-22  3.650078e-23 -5.654301e-23  9.730012e-23</span></span>
+<span id="cb8-177"><a href="#cb8-177" aria-hidden="true"></a><span class="co">#&gt; [316]  1.172029e-23  5.838417e-23  1.982708e-22  2.059994e-22  3.165199e-22</span></span>
+<span id="cb8-178"><a href="#cb8-178" aria-hidden="true"></a><span class="co">#&gt; [321]  9.622501e-23  5.190508e-23  3.193771e-23 -1.906938e-22 -1.784186e-22</span></span>
+<span id="cb8-179"><a href="#cb8-179" aria-hidden="true"></a><span class="co">#&gt; [326]  2.771931e-22 -2.918592e-22 -1.826451e-22  1.118320e-22 -3.663333e-22</span></span>
+<span id="cb8-180"><a href="#cb8-180" aria-hidden="true"></a><span class="co">#&gt; [331] -3.766172e-22  9.875770e-23  4.425844e-22  1.333445e-22 -1.005839e-22</span></span>
+<span id="cb8-181"><a href="#cb8-181" aria-hidden="true"></a><span class="co">#&gt; [336]  3.109136e-23 -4.111507e-22 -8.605494e-23  3.122489e-23 -3.796920e-22</span></span>
+<span id="cb8-182"><a href="#cb8-182" aria-hidden="true"></a><span class="co">#&gt; [341]  3.072198e-22  5.208703e-23  2.677504e-22  1.056408e-22  3.373242e-23</span></span>
+<span id="cb8-183"><a href="#cb8-183" aria-hidden="true"></a><span class="co">#&gt; [346] -3.826916e-22  2.811700e-22 -1.420208e-22  1.541042e-22  1.111948e-23</span></span>
+<span id="cb8-184"><a href="#cb8-184" aria-hidden="true"></a><span class="co">#&gt; [351] -2.352356e-22 -4.347135e-23  2.893773e-22 -3.434833e-22 -3.000634e-22</span></span>
+<span id="cb8-185"><a href="#cb8-185" aria-hidden="true"></a><span class="co">#&gt; [356] -1.307878e-23 -6.081852e-23  9.421728e-23 -1.405569e-22  7.231024e-23</span></span>
+<span id="cb8-186"><a href="#cb8-186" aria-hidden="true"></a><span class="co">#&gt; [361]  9.968840e-23  7.421613e-23  2.305673e-22  3.592295e-22 -2.704438e-22</span></span>
+<span id="cb8-187"><a href="#cb8-187" aria-hidden="true"></a><span class="co">#&gt; [366] -1.299470e-22 -6.589289e-24 -1.551442e-22 -5.646124e-23 -4.179974e-23</span></span>
+<span id="cb8-188"><a href="#cb8-188" aria-hidden="true"></a><span class="co">#&gt; [371] -3.695822e-22 -2.006142e-22 -1.430311e-23 -2.350937e-22  1.540475e-22</span></span>
+<span id="cb8-189"><a href="#cb8-189" aria-hidden="true"></a><span class="co">#&gt; [376]  1.102648e-22 -9.421359e-23 -1.138526e-22  1.332328e-22 -1.530007e-22</span></span>
+<span id="cb8-190"><a href="#cb8-190" aria-hidden="true"></a><span class="co">#&gt; [381] -3.390977e-23  1.404755e-22 -3.792019e-22 -1.463147e-22 -6.560813e-24</span></span>
+<span id="cb8-191"><a href="#cb8-191" aria-hidden="true"></a><span class="co">#&gt; [386]  1.945769e-22  7.366441e-23 -6.318543e-23  1.266845e-22 -1.361108e-22</span></span>
+<span id="cb8-192"><a href="#cb8-192" aria-hidden="true"></a><span class="co">#&gt; [391]  4.708204e-22 -3.037414e-23 -8.803931e-23  5.470829e-23 -8.707529e-23</span></span>
+<span id="cb8-193"><a href="#cb8-193" aria-hidden="true"></a><span class="co">#&gt; [396]  2.199175e-22 -3.587796e-23  5.259205e-23  1.718903e-23  3.470511e-22</span></span>
+<span id="cb8-194"><a href="#cb8-194" aria-hidden="true"></a><span class="co">#&gt; [401] -1.881429e-22</span></span></code></pre></div>
 </div>
 </div>
   </div>

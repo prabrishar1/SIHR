@@ -122,10 +122,10 @@ Direction_searchtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec,res
   return(returnList)
 }
 
-#' Inference for linear functional in the high dimensional logistic regression model
+#' Inference for linear functional in the high dimensional logistic regression
 #'
 #' @description
-#' Computes the bias corrected estimator of the linear functional \code{loading}\eqn{^{\top}\beta} for the high dimensional logistic regression model \eqn{Y_i|X_i \sim } Bernoulli\eqn{(\frac{e^{X_i^{\top}\beta}}{1+e^{X_i^{\top}\beta}})} and the corresponding standard error.
+#' Computes the bias corrected estimator of the linear functional \code{loading}\eqn{^{\top}\beta} for the high dimensional logistic regression \eqn{Y_i|X_i \sim } Bernoulli\eqn{(\frac{e^{X_i^{\top}\beta}}{1+e^{X_i^{\top}\beta}})} and the corresponding standard error.
 #'
 #' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
 #' @param y Outcome vector, of length \eqn{n}
@@ -134,18 +134,18 @@ Direction_searchtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec,res
 #' @param weight The weight vector, of length \eqn{n}, used in correcting the plug-in estimator
 #' @param init.Lasso Initial LASSO estimator of the regression vector (default = \code{NULL})
 #' @param mu The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})
-#' @param step Number of steps (< \code{maxiter}) to obtain the smallest \code{mu} that gives convergence of the
-#' optimization problem for constructing the projection direction (default = \code{NULL})
+#' @param step Number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
+#' such that the dual optimization problem for constructing the projection direction converges (default = \code{NULL})
 #' @param resol Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-#' that gives convergence of the optimization problem of constructing the projection direction (default = 1.5)
+#' such that the dual optimization problem for constructing the projection direction converges (default = 1.5)
 #' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-#' that gives convergence of the optimization problem for constructing the projection direction (default = 10)
+#' such that the dual optimization problem for constructing the projection direction converges (default = 10)
 #'
 #' @return
 #' \item{prop.est}{The bias corrected estimator of the linear functional}
-#' \item{se}{Standard error of the bias-corrected estimator}
+#' \item{se}{The standard error of the bias-corrected estimator}
 #' \item{proj}{The projection direction, of length \eqn{p}}
-#' \item{plug.in}{Plug-in LASSO estimator of the linear functional}
+#' \item{plug.in}{The plug-in LASSO estimator of the linear functional}
 #'
 #' @export
 #'

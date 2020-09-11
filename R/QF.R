@@ -215,9 +215,9 @@ Direction_searchtuning_robust <- function(Xc, loading, mu = NULL, resol = 1.5,
 # If the G is the vector 1:p, then the solution of global test
 # can be calculated explicitly.
 
-#' Inference for quadratic functional in high dimensional linear regression model
+#' Inference for quadratic functional in high dimensional linear regression
 #'
-#' @description Computes the bias-corrected estimator of the quadratic functional \eqn{\beta_G^{\top}A\beta_G} for the high dimensional linear regression model \eqn{Y_i = X_i^{\top}\beta + \epsilon} and the corresponding standard error.
+#' @description Computes the bias-corrected estimator of the quadratic functional \eqn{\beta_G^{\top}A\beta_G} for the high dimensional linear regression \eqn{Y_i = X_i^{\top}\beta + \epsilon} and the corresponding standard error.
 #'
 #' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
 #' @param y Outcome vector, of length \eqn{n}
@@ -227,20 +227,20 @@ Direction_searchtuning_robust <- function(Xc, loading, mu = NULL, resol = 1.5,
 #' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
 #' @param init.Lasso Initial LASSO estimator for the regression vector (default = \code{NULL})
 #' @param tau.vec The vector of enlargement factors for asymptotic variance of the bias-corrected estimator to handle super-efficiency (default = \code{NULL})
-#' @param lambda The tuning parameter used in construction of initial LASSO estimator of the regression vector if \code{init.Lasso = NULL} (default = \code{NULL})
+#' @param lambda The tuning parameter used in the construction of initial LASSO estimator of the regression vector if \code{init.Lasso = NULL} (default = \code{NULL})
 #' @param mu The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})
-#' @param step Number of steps (< \code{maxiter}) to obtain the smallest \code{mu} that gives convergence of the
-#' optimization problem for constructing the projection direction (default = \code{NULL})
+#' @param step Number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
+#' such that the dual optimization problem for constructing the projection direction converges (default = \code{NULL})
 #' @param resol Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-#' that gives convergence of the optimization problem for constructing the projection direction (default = 1.5)
+#' such that the dual optimization problem for constructing the projection direction converges (default = 1.5)
 #' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-#' that gives convergence of the optimization problem for constructing the projection direction (default = 10)
+#' such that the dual optimization problem for constructing the projection direction converges (default = 10)
 #'
 #' @return
 #' \item{prop.est}{The bias-corrected estimator of the quadratic functional restricted to \code{G}}
-#' \item{se}{Standard error of the bias-corrected estimator}
+#' \item{se}{The standard error of the bias-corrected estimator}
 #' \item{proj}{The projection direction, of length \eqn{p}}
-#' \item{plug.in}{Plug-in LASSO estimator for the quadratic functional restricted to \code{G}}
+#' \item{plug.in}{The plug-in LASSO estimator for the quadratic functional restricted to \code{G}}
 #' @export
 #'
 #' @importFrom Rdpack reprompt
