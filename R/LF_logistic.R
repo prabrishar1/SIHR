@@ -9,15 +9,69 @@ getmode <- function(v) {
 #  return(g)
 #}
 
-Initialization.step <- function(X,y,intercept)
+Initialization.step <- function(X, y, lambda = NULL, intercept = FALSE) {
+  n <- nrow(X)
+  # col.norm <- 1 / sqrt((1 / n) * diag(t(X) %*% X))
+  col.norm <- 1 / sqrt((1 / n) * diagXtX(X, MARGIN = 2))
+  Xnor <- X %*% diag(col.norm)
+
+  ### Call Lasso
+  htheta <- Lasso(Xnor, y, lambda = lambda, intercept = intercept)
+
+  ### Calculate return quantities
+  if (intercept == TRUE) {
+    Xb <- cbind(rep(1, n), Xnor)
+    col.norm <- c(1, col.norm)
+  } else {
+    Xb <- Xnor
+  }
+  #sparsity <- sum(abs(htheta) > 0.001)
+  #sd.est <- sqrt(sum((y - Xb %*% htheta)^2) / n)
+  htheta <- htheta * col.norm
+  returnList <- list("lasso.est" = htheta)
+  #                   "sigma" = sd.est,
+  #                   "sparsity" = sparsity)
+  return(returnList)
+}
+
+Lasso <- function(X, y, lambda = NULL, intercept = TRUE) {
+  p <- ncol(X)
+  n <- nrow(X)
+
+  htheta <- if (is.null(lambda)) {
+    outLas <- cv.glmnet(X, y, family = "binomial", alpha = 1,
+                        intercept = intercept)
+    # Objective : 1/2 * RSS/n + lambda * penalty
+    as.vector(coef(outLas, s = outLas$lambda.min))
+  } else if (lambda == "CV") {
+    outLas <- cv.glmnet(X, y, family = "binomial", alpha = 1,
+                        intercept = intercept)
+    # Objective : 1/2 * RSS/n + lambda * penalty
+    as.vector(coef(outLas, s = outLas$lambda.1se))
+  } else {
+    outLas <- glmnet(X, y, family = "binomial", alpha = 1,
+                     intercept = intercept)
+    # Objective : 1/2 * RSS/n + lambda * penalty
+    as.vector(coef(outLas, s = lambda))
+  }
+
+  if (intercept == TRUE) {
+    return(htheta)
+  } else {
+    return(htheta[2:(p+1)])
+  }
+}
+
+Initialization.step <- function(X,y,intercept=TRUE)
 {
   X<-as.matrix(X)
   p <- ncol(X);
   n <- nrow(X);
   col.norm <- 1/sqrt((1/n)*diag(t(X)%*%X)+0.0001);
   Xnor <- X %*% diag(col.norm)
-  fit = cv.glmnet(Xnor, y, alpha=1,family = "binomial")
-  coef <- as.vector(coef(fit, s = "lambda.min"))
+    fit = glmnet::cv.glmnet(Xnor, y, alpha=1,family = "binomial")
+    coef <- as.vector(coef(fit, s = "lambda.min"))
+
   if(intercept==TRUE)
   {
     htheta <- coef[1:(p+1)]
@@ -77,13 +131,16 @@ Direction_searchtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec,res
     prob<-Problem(Minimize(obj))
     result<-solve(prob)
     #print(result$value)
-    opt.sol<-result$getValue(v)
+    #opt.sol<-result$getValue(v)
     cvxr_status<-result$status
     #print(cvxr_status)
     if(tryno==1){
       if(cvxr_status=="optimal"){
         incr = 0;
         mu=mu/resol;
+
+        opt.sol<-result$getValue(v)
+
         temp.vec<-(-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
         initial.sd<-sqrt(sum(((X%*% temp.vec)^2)*weight*deriv.vec)/(n)^2)*loading.norm   ############modified
         temp.sd<-initial.sd
@@ -133,6 +190,7 @@ Direction_searchtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec,res
 #' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
 #' @param weight The weight vector, of length \eqn{n}, used in correcting the plug-in estimator
 #' @param init.Lasso Initial LASSO estimator of the regression vector (default = \code{NULL})
+#' @param lambda The tuning parameter used in the construction of LASSO estimator of the regression vector (default = \code{NULL})
 #' @param mu The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})
 #' @param step Number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = \code{NULL})
@@ -186,7 +244,7 @@ Direction_searchtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec,res
 #' loading <- MASS::mvrnorm(1,mu,Cov2)
 #' LF_logistic(X = X, y = y, loading = loading, intercept = TRUE, weight = rep(1,n))
 
-LF_logistic<-function(X,y,loading,weight,intercept=TRUE,init.Lasso=NULL,mu=NULL,step=NULL,resol = 1.5,maxiter=10){
+LF_logistic<-function(X,y,loading,weight,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step=NULL,resol = 1.5,maxiter=10){
 
   ### included weight, deriv.vec to be constructed
 
@@ -214,14 +272,19 @@ LF_logistic<-function(X,y,loading,weight,intercept=TRUE,init.Lasso=NULL,mu=NULL,
     y <- as.vector(data[,1])
     p <- ncol(X);
     n <- nrow(X);
-    col.norm <- 1/sqrt((1/n)*diag(t(X)%*%X)+0.0001);
+    col.norm <- 1 / sqrt((1 / n) * diagXtX(X, MARGIN = 2));
     Xnor <- X %*% diag(col.norm);
     if(is.null(init.Lasso))
     {
-      init.Lasso <- Initialization.step(X,y,intercept)
+      init.Lasso <- Initialization.step(X,y,lambda,intercept)
+      htheta <- init.Lasso$lasso.est
     }
-    htheta <- init.Lasso$lasso.est
-    support <- init.Lasso$support
+    else
+    {
+      htheta <- init.Lasso
+    }
+
+
     if (intercept==TRUE){
       Xb <- cbind(rep(1,n),Xnor);
       Xc <- cbind(rep(1,n),X);
@@ -232,10 +295,14 @@ LF_logistic<-function(X,y,loading,weight,intercept=TRUE,init.Lasso=NULL,mu=NULL,
       Xc <- X;
       pp <- p
     }
+
+    sparsity <- sum(abs(htheta) > 0.001)
+    sd.est <- sqrt(sum((y - Xb %*% htheta)^2) / max(0.9*n, n - sparsity))
+
     #sparsity<-sum(abs(htheta)>0.001)
     #sd.est<-sum((y-Xb%*%htheta)^2)/(n-sparsity)
-    htheta <- htheta*col.norm;
-    htheta <- as.vector(htheta)
+    #htheta <- htheta*col.norm;
+    #htheta <- as.vector(htheta)
     ### compute the initial estimator
     if(intercept==TRUE){
       loading=rep(0,pp)
@@ -277,6 +344,17 @@ LF_logistic<-function(X,y,loading,weight,intercept=TRUE,init.Lasso=NULL,mu=NULL,
         }
         print(paste("step is", step))
         Direction.Est<-Direction_fixedtuning_logistic(Xc,loading,mu=sqrt(2.01*log(pp)/n)*resol^{-(step-1)},weight = weight,deriv.vec = deriv.vec)
+
+        while(is.na(Direction.Est)&&(step>0)){
+          #print(paste("step is", step))
+          step<-step-1
+          Direction.Est<-Direction_fixedtuning_logistic(Xc,loading,mu=sqrt(2.01*log(pp)/n)*resol^{-(step-1)},weight = weight,deriv.vec = deriv.vec)
+        }
+        #while(is.na(Direction.Est)&&(step>0)){
+          #print(paste("step is", step))
+        #  step<-step-1
+        #  Direction.Est <- Direction_fixedtuning(Xc, test.vec, mu = sqrt(2.01 * log(pp) / n) * resol^{-(step - 1)})
+        #}
       }else{
         ### for option 2
         Direction.Est<-Direction_searchtuning_logistic(Xc,loading,mu=NULL,weight = weight,deriv.vec = deriv.vec,resol, maxiter)

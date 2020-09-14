@@ -31,7 +31,6 @@ var.Sigma <- function(Z, gamma) {
 }
 
 Lasso <- function(X, y, lambda = NULL, intercept = TRUE) {
-
   p <- ncol(X)
   n <- nrow(X)
 
@@ -40,19 +39,62 @@ Lasso <- function(X, y, lambda = NULL, intercept = TRUE) {
                         intercept = intercept)
     # Objective : 1/2 * RSS/n + lambda * penalty
     as.vector(coef(outLas, s = outLas$lambda.min))
-  }
-  else {
+  } else if (lambda == "CV") {
+    outLas <- cv.glmnet(X, y, family = "gaussian", alpha = 1,
+                        intercept = intercept)
+    # Objective : 1/2 * RSS/n + lambda * penalty
+    as.vector(coef(outLas, s = outLas$lambda.1se))
+  } else if (lambda == "scalreg") {
+    Xc <- if (intercept) {
+      cbind(rep(1, n), X)
+    } else {
+      X
+    }
+    outLas <- scalreg(Xc, y)
+    # return object
+    if (intercept) {
+      outLas$coefficients
+    } else {
+      # add a coefficient for the (not estimated) intercept b/c of implementation
+      c(0, outLas$coefficients)
+    }
+  } else {
     outLas <- glmnet(X, y, family = "gaussian", alpha = 1,
                      intercept = intercept)
     # Objective : 1/2 * RSS/n + lambda * penalty
     as.vector(coef(outLas, s = lambda))
   }
+
   if (intercept == TRUE) {
     return(htheta)
   } else {
     return(htheta[2:(p+1)])
   }
 }
+
+#Lasso <- function(X, y, lambda = NULL, intercept = TRUE) {
+
+#  p <- ncol(X)
+#  n <- nrow(X)
+
+#  htheta <- if (is.null(lambda)) {
+#    outLas <- cv.glmnet(X, y, family = "gaussian", alpha = 1,
+#                        intercept = intercept)
+    # Objective : 1/2 * RSS/n + lambda * penalty
+#    as.vector(coef(outLas, s = outLas$lambda.min))
+#  }
+#  else {
+#    outLas <- glmnet(X, y, family = "gaussian", alpha = 1,
+#                     intercept = intercept)
+    # Objective : 1/2 * RSS/n + lambda * penalty
+#    as.vector(coef(outLas, s = lambda))
+#  }
+#  if (intercept == TRUE) {
+#    return(htheta)
+#  } else {
+#    return(htheta[2:(p+1)])
+#  }
+#}
 
 ###### The following function computes the lasso estimator
 # Compute the Lasso estimator:
@@ -84,6 +126,7 @@ Lasso <- function(X, y, lambda = NULL, intercept = TRUE) {
 
 ###### The following function computes the inital Lasso estimator and
 ###### quantities based thereon
+
 Initialization.step <- function(X, y, lambda = NULL, intercept = FALSE) {
   n <- nrow(X)
   # col.norm <- 1 / sqrt((1 / n) * diag(t(X) %*% X))
@@ -100,14 +143,39 @@ Initialization.step <- function(X, y, lambda = NULL, intercept = FALSE) {
   } else {
     Xb <- Xnor
   }
-  sparsity <- sum(abs(htheta) > 0.001)
-  sd.est <- sum((y - Xb %*% htheta)^2) / n
+  #sparsity <- sum(abs(htheta) > 0.001)
+  #sd.est <- sqrt(sum((y - Xb %*% htheta)^2) / n)
   htheta <- htheta * col.norm
-  returnList <- list("lasso.est" = htheta,
-                     "sigma" = sd.est,
-                     "sparsity" = sparsity)
+  returnList <- list("lasso.est" = htheta)
+  #                   "sigma" = sd.est,
+  #                   "sparsity" = sparsity)
   return(returnList)
 }
+
+#Initialization.step <- function(X, y, lambda = NULL, intercept = FALSE) {
+#  n <- nrow(X)
+  # col.norm <- 1 / sqrt((1 / n) * diag(t(X) %*% X))
+#  col.norm <- 1 / sqrt((1 / n) * diagXtX(X, MARGIN = 2))
+#  Xnor <- X %*% diag(col.norm)
+
+  ### Call Lasso
+#  htheta <- Lasso(Xnor, y, lambda = lambda, intercept = intercept)
+
+  ### Calculate return quantities
+#  if (intercept == TRUE) {
+#    Xb <- cbind(rep(1, n), Xnor)
+#    col.norm <- c(1, col.norm)
+#  } else {
+#    Xb <- Xnor
+#  }
+#  sparsity <- sum(abs(htheta) > 0.001)
+#  sd.est <- sum((y - Xb %*% htheta)^2) / n
+#  htheta <- htheta * col.norm
+#  returnList <- list("lasso.est" = htheta,
+#                     "sigma" = sd.est,
+#                     "sparsity" = sparsity)
+#  return(returnList)
+#}
 ###### Direction_fixedtuning_robust is searching for the projection direction
 ###### for a general class of loadings including dense loadings
 Direction_fixedtuning_robust <- function(Xc, loading, mu = NULL) {
@@ -163,14 +231,17 @@ Direction_searchtuning_robust <- function(Xc, loading, mu = NULL, resol = 1.5,
     obj <- 1 / 4 * sum((Xc %*% H %*% v)^2) / n +
       sum((loading / loading.norm) * (H %*% v)) + mu * sum(abs(v))
     prob <- Problem(Minimize(obj))
-    result <- solve(prob, solver = "SCS")
-    opt.sol <- result$getValue(v)
+    result <- solve(prob)
+    #opt.sol <- result$getValue(v)
     cvxr_status <- result$status
 
     if (tryno == 1) {
       if (cvxr_status == "optimal") {
         incr <- 0
         mu <- mu / resol
+
+        opt.sol<-result$getValue(v)
+
         temp.vec <- (-1) / 2 * (opt.sol[-1] + opt.sol[1] * loading / loading.norm)
         initial.sd <- sqrt(sum((Xc %*% temp.vec)^2) / (n)^2) * loading.norm
         temp.sd <- initial.sd
@@ -245,6 +316,7 @@ Direction_searchtuning_robust <- function(Xc, loading, mu = NULL, resol = 1.5,
 #'
 #' @importFrom Rdpack reprompt
 #' @importFrom stats coef qnorm median na.omit
+#' @importFrom scalreg scalreg
 #' @import CVXR Matrix glmnet
 #'
 #' @examples
@@ -291,22 +363,32 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = NULL,init.Lasso = NULL, tau.vec =
     y <- as.vector(data[,1])
     p <- ncol(X);
     n <- nrow(X);
-    if (is.null(init.Lasso)) {
-      ### Inital Lasso estimate of beta and sigma
-      init.Lasso <- Initialization.step(X, y, lambda, intercept)
+    col.norm <- 1 / sqrt((1 / n) * diagXtX(X, MARGIN = 2));
+    Xnor <- X %*% diag(col.norm);
+    if(is.null(init.Lasso)){
+      ####### implement a lasso algorithm to get beta and sigma
+      init.Lasso<-Initialization.step(X,y,lambda,intercept)
+      htheta<-init.Lasso$lasso.est
     }
-    htheta <- init.Lasso$lasso.est # beta
-    sd.est <- init.Lasso$sigma # sigma
-    spar.est <- init.Lasso$sparsity
+    else
+    {
+      htheta<- init.Lasso
+    }
 
     if (intercept == TRUE) {
+      Xb <- cbind(rep(1,n),Xnor);
       Xc <- cbind(rep(1, n), X)
       pp <- (p + 1)
       G <- G + 1
     } else {
+      Xb <- Xnor;
       Xc <- X
       pp <- p
     }
+
+    #htheta<-init.Lasso$lasso.est
+    spar.est <- sum(abs(htheta) > 0.001)
+    sd.est <- sqrt(sum((y - Xb %*% htheta)^2) / max(0.9*n, n - spar.est))  ##Should Xc or Xb be used?
 
     if(Cov.weight==FALSE)
     {
@@ -397,6 +479,12 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = NULL,init.Lasso = NULL, tau.vec =
               step <- getmode(step.vec)
             }
             Direction.Est <- Direction_fixedtuning_robust(Xc, loading, mu = sqrt(2.01 * log(pp) / n) * resol^{-(step - 1)})
+            while(is.na(Direction.Est)&&(step>0)){
+              #print(paste("step is", step))
+              step<-step-1
+              Direction.Est <- Direction_fixedtuning_robust(Xc, loading, mu = sqrt(2.01 * log(pp) / n) * resol^{-(step - 1)})
+            #  Direction.Est <- Direction_fixedtuning(Xc, test.vec, mu = sqrt(2.01 * log(pp) / n) * resol^{-(step - 1)})
+            }
           } else {
             # for option 2
             Direction.Est <- Direction_searchtuning_robust(Xc, loading, mu = NULL, resol, maxiter)

@@ -11,7 +11,8 @@ Imports:
     CVXR,
     Matrix,
     glmnet,
-    Rdpack
+    Rdpack,
+    scalreg
 RdMacros: 
     Rdpack
 Suggests:

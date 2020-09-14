@@ -11,6 +11,7 @@ LF_logistic(
   weight,
   intercept = TRUE,
   init.Lasso = NULL,
+  lambda = NULL,
   mu = NULL,
   step = NULL,
   resol = 1.5,
@@ -29,6 +30,8 @@ LF_logistic(
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
 
 \item{init.Lasso}{Initial LASSO estimator of the regression vector (default = \code{NULL})}
+
+\item{lambda}{The tuning parameter used in the construction of LASSO estimator of the regression vector (default = \code{NULL})}
 
 \item{mu}{The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})}
 
