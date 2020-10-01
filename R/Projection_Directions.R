@@ -25,7 +25,14 @@ Direction_fixedtuning<-function(X,loading,mu=NULL,model = "linear",weight=NULL,d
     mu<-sqrt(2.01*log(pp)/n)
   }
   loading.norm<-sqrt(sum(loading^2))
-  H<-cbind(loading/loading.norm,diag(1,pp))
+
+  if (loading.norm==0){
+    H <- cbind(loading, diag(1, pp))
+  }else{
+    H <- cbind(loading / loading.norm, diag(1, pp))
+  }
+
+  #H<-cbind(loading/loading.norm,diag(1,pp))
   v<-Variable(pp+1)
   if(model=="linear")
   {
@@ -73,7 +80,7 @@ Direction_searchtuning<-function(X,loading,model="linear",mu=NULL,weight=NULL,de
   pp<-ncol(X)
   n<-nrow(X)
   tryno = 1;
-  opt.sol = rep(0,pp);
+  opt.sol = rep(0,pp+1);
   lamstop = 0;
   cvxr_status = "optimal";
 
@@ -85,7 +92,14 @@ Direction_searchtuning<-function(X,loading,model="linear",mu=NULL,weight=NULL,de
     lastv = opt.sol;
     lastresp = cvxr_status;
     loading.norm<-sqrt(sum(loading^2))
-    H<-cbind(loading/loading.norm,diag(1,pp))
+
+    if (loading.norm==0){
+      H <- cbind(loading, diag(1, pp))
+    }else{
+      H <- cbind(loading / loading.norm, diag(1, pp))
+    }
+
+    #H<-cbind(loading/loading.norm,diag(1,pp))
     v<-Variable(pp+1)
     if(model=="linear")
     {
@@ -98,13 +112,16 @@ Direction_searchtuning<-function(X,loading,model="linear",mu=NULL,weight=NULL,de
     prob<-Problem(Minimize(obj))
     result<-solve(prob)
     #print(result$value)
-    opt.sol<-result$getValue(v)
+    #opt.sol<-result$getValue(v)
     cvxr_status<-result$status
     #print(cvxr_status)
     if(tryno==1){
       if(cvxr_status=="optimal"){
         incr = 0;
         mu=mu/resol;
+
+        opt.sol<-result$getValue(v)
+
         temp.vec<-(-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
         if(model=="linear")
         {
@@ -122,6 +139,9 @@ Direction_searchtuning<-function(X,loading,model="linear",mu=NULL,weight=NULL,de
     }else{
       if(incr == 1){ ### if the tuning parameter is increased in the last step
         if(cvxr_status=="optimal"){
+
+          opt.sol<-result$getValue(v)
+
           lamstop = 1;
         }else{
           mu=mu*resol;
@@ -129,6 +149,7 @@ Direction_searchtuning<-function(X,loading,model="linear",mu=NULL,weight=NULL,de
       }else{
         if(cvxr_status=="optimal"&&temp.sd<3*initial.sd){
           mu = mu/resol;
+          opt.sol <- result$getValue(v)
           temp.vec<-(-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
           if(model=="linear")
           {

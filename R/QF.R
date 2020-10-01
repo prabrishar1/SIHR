@@ -13,9 +13,10 @@ getmode <- function(v) {
 }
 
 # A vectorized version to calculate the variance of each row or column.
+
 diagXtX <- function(x, MARGIN = 1, ...) {
   if(MARGIN == 1) {
-    # 1 indicates rows
+  # 1 indicates rows
     rowSums(x^2, ...)
   } else {
     # 2 indicates columns
@@ -129,7 +130,6 @@ Lasso <- function(X, y, lambda = NULL, intercept = TRUE) {
 
 Initialization.step <- function(X, y, lambda = NULL, intercept = FALSE) {
   n <- nrow(X)
-  # col.norm <- 1 / sqrt((1 / n) * diag(t(X) %*% X))
   col.norm <- 1 / sqrt((1 / n) * diagXtX(X, MARGIN = 2))
   Xnor <- X %*% diag(col.norm)
 
@@ -185,6 +185,13 @@ Direction_fixedtuning_robust <- function(Xc, loading, mu = NULL) {
     mu <- sqrt(2.01 * log(pp) / n)
   }
   loading.norm <- sqrt(sum(loading^2))
+
+  if (loading.norm==0){
+    H <- cbind(loading, diag(1, pp))
+  }else{
+    H <- cbind(loading / loading.norm, diag(1, pp))
+  }
+
   H <- cbind(loading / loading.norm, diag(1, pp))
 
   # Optimization
@@ -213,7 +220,7 @@ Direction_searchtuning_robust <- function(Xc, loading, mu = NULL, resol = 1.5,
   pp <- ncol(Xc)
   n <- nrow(Xc)
   tryno <- 1
-  opt.sol <- rep(0, pp)
+  opt.sol <- rep(0, pp+1)
   lamstop <- 0
   cvxr_status <- "optimal"
   mu <- sqrt(2.01 * log(pp) / n)
@@ -224,7 +231,14 @@ Direction_searchtuning_robust <- function(Xc, loading, mu = NULL, resol = 1.5,
     lastv <- opt.sol
     lastresp <- cvxr_status
     loading.norm <- sqrt(sum(loading^2))
-    H <- cbind(loading / loading.norm, diag(1, pp))
+
+    if (loading.norm==0){
+      H <- cbind(loading, diag(1, pp))
+    }else{
+      H <- cbind(loading / loading.norm, diag(1, pp))
+    }
+
+#    H <- cbind(loading / loading.norm, diag(1, pp))
 
     # Optimization
     v <- Variable(pp + 1)
@@ -253,12 +267,18 @@ Direction_searchtuning_robust <- function(Xc, loading, mu = NULL, resol = 1.5,
       if (incr == 1) { # if the tuning parameter is increased in the last step
         if (cvxr_status == "optimal") {
           lamstop <- 1
+
+          opt.sol <- result$getValue(v)
+
         } else {
           mu <- mu * resol
         }
       } else {
         if (cvxr_status == "optimal" && temp.sd < 3 * initial.sd) {
           mu <- mu / resol
+
+          opt.sol <- result$getValue(v)
+
           temp.vec <- (-1) / 2 * (opt.sol[-1] + opt.sol[1] * loading / loading.norm)
           temp.sd <- sqrt(sum((Xc %*% temp.vec)^2) / (n)^2) * loading.norm
         } else {
@@ -437,7 +457,7 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = NULL,init.Lasso = NULL, tau.vec =
         loading[G] <- (sigma.hat %*% test.vec)[G]
         lasso.plugin <- mean((Xc %*% test.vec)^2)
       }
-      else
+      else     #Can reduce one loop
       {
         if(is.null(A))
         {
@@ -463,9 +483,9 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = NULL,init.Lasso = NULL, tau.vec =
         ## Search for projection direction u
         if ((n >= 6 * p) && (tmp >= 1e-4)) {
           # sigma.hat matrix is well conditioned
-          direction <- solve(sigma.hat) %*% loading
+          direction <- solve(sigma.hat) %*% loading    ######loading reduces to test.vec if Ac = I
         } else {
-          if (n > 0.5 * p) {
+#          if (n > 0.5 * p) {
             # for option 1
             if (is.null(step)) {
               step.vec <- rep(NA, 3)
@@ -483,13 +503,18 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = NULL,init.Lasso = NULL, tau.vec =
               #print(paste("step is", step))
               step<-step-1
               Direction.Est <- Direction_fixedtuning_robust(Xc, loading, mu = sqrt(2.01 * log(pp) / n) * resol^{-(step - 1)})
-            #  Direction.Est <- Direction_fixedtuning(Xc, test.vec, mu = sqrt(2.01 * log(pp) / n) * resol^{-(step - 1)})
             }
-          } else {
-            # for option 2
-            Direction.Est <- Direction_searchtuning_robust(Xc, loading, mu = NULL, resol, maxiter)
-            step <- Direction.Est$step
-          }
+#          } else {
+#            # for option 2
+#            Direction.Est <- Direction_searchtuning_robust(Xc, loading, mu = NULL, resol, maxiter)
+#            step <- Direction.Est$step
+#            proj <- Direction.Est$proj
+#            while (sum(proj^2) < 10^(-3)) {
+#              step <- step - 1
+#              Direction.Est <- Direction_fixedtuning_robust(Xc, loading, mu = sqrt(2.01 * log(pp) / n) * resol^{-(step - 1)})
+#              proj <- Direction.Est$proj
+#            }
+#          }
           # print(paste("step is", step))
           direction <- Direction.Est$proj
         }

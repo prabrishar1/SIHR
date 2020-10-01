@@ -11,8 +11,8 @@ getmode <- function(v) {
 
 Initialization.step <- function(X, y, lambda = NULL, intercept = FALSE) {
   n <- nrow(X)
-  # col.norm <- 1 / sqrt((1 / n) * diag(t(X) %*% X))
-  col.norm <- 1 / sqrt((1 / n) * diagXtX(X, MARGIN = 2))
+   col.norm <- 1 / sqrt((1 / n) * diag(t(X) %*% X))
+  #col.norm <- 1 / sqrt((1 / n) * diagXtX(X, MARGIN = 2))
   Xnor <- X %*% diag(col.norm)
 
   ### Call Lasso
@@ -94,7 +94,14 @@ Direction_fixedtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec){   
     mu<-sqrt(2.01*log(pp)/n)
   }
   loading.norm<-sqrt(sum(loading^2))
-  H<-cbind(loading/loading.norm,diag(1,pp))
+
+  if (loading.norm==0){
+    H <- cbind(loading, diag(1, pp))
+  }else{
+    H <- cbind(loading / loading.norm, diag(1, pp))
+  }
+
+  #H<-cbind(loading/loading.norm,diag(1,pp))
   v<-Variable(pp+1)
   obj<-1/4*sum(((X%*%H%*%v)^2)*weight*deriv.vec)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))   #######modified
   prob<-Problem(Minimize(obj))
@@ -113,7 +120,7 @@ Direction_searchtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec,res
   pp<-ncol(X)
   n<-nrow(X)
   tryno = 1;
-  opt.sol = rep(0,pp);
+  opt.sol = rep(0,pp+1);
   lamstop = 0;
   cvxr_status = "optimal";
 
@@ -125,8 +132,16 @@ Direction_searchtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec,res
     lastv = opt.sol;
     lastresp = cvxr_status;
     loading.norm<-sqrt(sum(loading^2))
-    H<-cbind(loading/loading.norm,diag(1,pp))
+
+    if (loading.norm==0){
+      H <- cbind(loading, diag(1, pp))
+    }else{
+      H <- cbind(loading / loading.norm, diag(1, pp))
+    }
+
+    #H<-cbind(loading/loading.norm,diag(1,pp))
     v<-Variable(pp+1)
+    obj<-1/4*sum((X%*%H%*%v)^2)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
     obj<-1/4*sum(((X%*%H%*%v)^2)*weight*deriv.vec)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))    #######modified
     prob<-Problem(Minimize(obj))
     result<-solve(prob)
@@ -152,12 +167,17 @@ Direction_searchtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec,res
       if(incr == 1){ ### if the tuning parameter is increased in the last step
         if(cvxr_status=="optimal"){
           lamstop = 1;
+          opt.sol <- result$getValue(v)
+
         }else{
           mu=mu*resol;
         }
       }else{
         if(cvxr_status=="optimal"&&temp.sd<3*initial.sd){
           mu = mu/resol;
+
+          opt.sol <- result$getValue(v)
+
           temp.vec<-(-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
           temp.sd<-sqrt(sum(((X%*% temp.vec)^2)*weight*deriv.vec)/(n)^2)*loading.norm     ############modified
           #print(temp.sd)
@@ -272,7 +292,8 @@ LF_logistic<-function(X,y,loading,weight,intercept=TRUE,init.Lasso=NULL,lambda=N
     y <- as.vector(data[,1])
     p <- ncol(X);
     n <- nrow(X);
-    col.norm <- 1 / sqrt((1 / n) * diagXtX(X, MARGIN = 2));
+    col.norm <- 1 / sqrt((1 / n) * diag(t(X) %*% X))
+    #col.norm <- 1 / sqrt((1 / n) * diagXtX(X, MARGIN = 2));
     Xnor <- X %*% diag(col.norm);
     if(is.null(init.Lasso))
     {
@@ -331,13 +352,13 @@ LF_logistic<-function(X,y,loading,weight,intercept=TRUE,init.Lasso=NULL,lambda=N
     if ((n>=6*p)&&(tmp>=1e-4)){
       direction <- solve(gamma.hat)%*%loading         ##### computed direction as gamma.hat inverse loading
     }else{
-      if(n>0.5*p){
+#      if(n>0.5*p){
         ### for option 1
         if(is.null(step)){
           step.vec<-rep(NA,3)
           for(t in 1:3){
             index.sel<-sample(1:n,size=ceiling(0.5*min(n,p)), replace=FALSE)
-            Direction.Est.temp<-Direction_searchtuning_logistic(Xc[index.sel,],loading,mu=NULL,weight = weight,deriv.vec = deriv.vec,resol,maxiter)
+            Direction.Est.temp<-Direction_searchtuning_logistic(Xc[index.sel,],loading,mu=NULL,weight = weight[index.sel],deriv.vec = deriv.vec[index.sel],resol,maxiter)
             step.vec[t]<-Direction.Est.temp$step
           }
           step<-getmode(step.vec)
@@ -355,12 +376,18 @@ LF_logistic<-function(X,y,loading,weight,intercept=TRUE,init.Lasso=NULL,lambda=N
         #  step<-step-1
         #  Direction.Est <- Direction_fixedtuning(Xc, test.vec, mu = sqrt(2.01 * log(pp) / n) * resol^{-(step - 1)})
         #}
-      }else{
-        ### for option 2
-        Direction.Est<-Direction_searchtuning_logistic(Xc,loading,mu=NULL,weight = weight,deriv.vec = deriv.vec,resol, maxiter)
-        step<-Direction.Est$step
-        print(paste("step is", step))
-      }
+#      }else{
+       ### for option 2
+#        Direction.Est<-Direction_searchtuning_logistic(Xc,loading,mu=NULL,weight = weight,deriv.vec = deriv.vec,resol, maxiter)
+#        step<-Direction.Est$step
+#        proj <- Direction.Est$proj
+#        while (sum(proj^2) < 10^(-3)) {
+#          step <- step - 1
+#          Direction.Est <- Direction_fixedtuning_logistic(Xc, loading, mu = sqrt(2.01 * log(pp) / n) * resol^{-(step - 1)})
+#          proj <- Direction.Est$proj
+#        }
+#        print(paste("step is", step))
+#      }
       direction<-Direction.Est$proj
     }
     exp_pred=Xc%*%(htheta)
