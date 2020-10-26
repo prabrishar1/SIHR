@@ -178,13 +178,13 @@ Initialization.step <- function(X, y, lambda = NULL, intercept = FALSE) {
 #}
 ###### Direction_fixedtuning_robust is searching for the projection direction
 ###### for a general class of loadings including dense loadings
-Direction_fixedtuning_robust <- function(Xc, loading, mu = NULL) {
-  pp <- ncol(Xc)
-  n <- nrow(Xc)
-  if (is.null(mu)) {
-    mu <- sqrt(2.01 * log(pp) / n)
+Direction_fixedtuning_robust<-function(X,loading,mu=NULL){
+  pp<-ncol(X)
+  n<-nrow(X)
+  if(is.null(mu)){
+    mu<-sqrt(2.01*log(pp)/n)
   }
-  loading.norm <- sqrt(sum(loading^2))
+  loading.norm<-sqrt(sum(loading^2))
 
   if (loading.norm==0){
     H <- cbind(loading, diag(1, pp))
@@ -192,45 +192,37 @@ Direction_fixedtuning_robust <- function(Xc, loading, mu = NULL) {
     H <- cbind(loading / loading.norm, diag(1, pp))
   }
 
-  H <- cbind(loading / loading.norm, diag(1, pp))
-
-  # Optimization
-  v <- Variable(pp + 1)
-  obj <- 1/4 * sum((Xc %*% H %*% v)^2) / n +
-    sum((loading / loading.norm) * (H %*% v)) + mu * sum(abs(v))
-  prob <- Problem(Minimize(obj))
-  result <- solve(prob, solver = "SCS")
-
-  # print("fixed mu")
-  # print(mu)
-  # print(result$value)
-  opt.sol <- result$getValue(v)
-  # cvxr_status <- result$status
-
-  # Return the projection direction
-  direction <- (-1) / 2 * (opt.sol[-1] + opt.sol[1] * loading / loading.norm)
-  returnList <- list("proj" = direction)
+  #H<-cbind(loading/loading.norm,diag(1,pp))
+  v<-Variable(pp+1)
+  obj<-1/4*sum((X%*%H%*%v)^2)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
+  prob<-Problem(Minimize(obj))
+  result<-solve(prob)
+  print("fixed mu")
+  print(mu)
+  #print(result$value)
+  opt.sol<-result$getValue(v)
+  cvxr_status<-result$status
+  direction<-(-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
+  returnList <- list("proj"=direction)
   return(returnList)
 }
 
-###### Direction_searchtuning_robust is combining Direction_fixedtuning_robust
-###### with parameter searching
-Direction_searchtuning_robust <- function(Xc, loading, mu = NULL, resol = 1.5,
-                                          maxiter = 10) {
-  pp <- ncol(Xc)
-  n <- nrow(Xc)
-  tryno <- 1
-  opt.sol <- rep(0, pp+1)
-  lamstop <- 0
-  cvxr_status <- "optimal"
-  mu <- sqrt(2.01 * log(pp) / n)
+Direction_searchtuning_robust<-function(X,loading,mu=NULL, resol = 1.5, maxiter = 10){
+  pp<-ncol(X)
+  n<-nrow(X)
+  tryno = 1;
+  opt.sol = rep(0,pp+1);
+  lamstop = 0;
+  cvxr_status = "optimal";
 
-  ### This iteration finds a good tuning parameter
-  while (lamstop == 0 && tryno < maxiter) {
-    # print(mu)
-    lastv <- opt.sol
-    lastresp <- cvxr_status
-    loading.norm <- sqrt(sum(loading^2))
+  mu = sqrt(2.01*log(pp)/n);
+  #mu.initial= mu;
+  while (lamstop == 0 && tryno < maxiter){
+    ###### This iteration is to find a good tuning parameter
+    #print(mu);
+    lastv = opt.sol;
+    lastresp = cvxr_status;
+    loading.norm<-sqrt(sum(loading^2))
 
     if (loading.norm==0){
       H <- cbind(loading, diag(1, pp))
@@ -238,66 +230,63 @@ Direction_searchtuning_robust <- function(Xc, loading, mu = NULL, resol = 1.5,
       H <- cbind(loading / loading.norm, diag(1, pp))
     }
 
-#    H <- cbind(loading / loading.norm, diag(1, pp))
-
-    # Optimization
-    v <- Variable(pp + 1)
-    obj <- 1 / 4 * sum((Xc %*% H %*% v)^2) / n +
-      sum((loading / loading.norm) * (H %*% v)) + mu * sum(abs(v))
-    prob <- Problem(Minimize(obj))
-    result <- solve(prob)
-    #opt.sol <- result$getValue(v)
-    cvxr_status <- result$status
-
-    if (tryno == 1) {
-      if (cvxr_status == "optimal") {
-        incr <- 0
-        mu <- mu / resol
+    #H<-cbind(loading/loading.norm,diag(1,pp))
+    v<-Variable(pp+1)
+    obj<-1/4*sum((X%*%H%*%v)^2)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
+    prob<-Problem(Minimize(obj))
+    result<-solve(prob)
+    #print(result$value)
+    #opt.sol<-result$getValue(v)
+    cvxr_status<-result$status
+    #print(cvxr_status)
+    if(tryno==1){
+      if(cvxr_status=="optimal"){
+        incr = 0;
+        mu=mu/resol;
 
         opt.sol<-result$getValue(v)
 
-        temp.vec <- (-1) / 2 * (opt.sol[-1] + opt.sol[1] * loading / loading.norm)
-        initial.sd <- sqrt(sum((Xc %*% temp.vec)^2) / (n)^2) * loading.norm
-        temp.sd <- initial.sd
-      } else {
-        incr <- 1
-        mu <- mu * resol
+        temp.vec<-(-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
+        initial.sd<-sqrt(sum((X%*% temp.vec)^2)/(n)^2)*loading.norm
+        temp.sd<-initial.sd
+      }else{
+        incr = 1;
+        mu=mu*resol;
       }
-    } else {
-      if (incr == 1) { # if the tuning parameter is increased in the last step
-        if (cvxr_status == "optimal") {
-          lamstop <- 1
+    }else{
+      if(incr == 1){ ### if the tuning parameter is increased in the last step
+        if(cvxr_status=="optimal"){
 
-          opt.sol <- result$getValue(v)
+          opt.sol<-result$getValue(v)
 
-        } else {
-          mu <- mu * resol
+          lamstop = 1;
+        }else{
+          mu=mu*resol;
         }
-      } else {
-        if (cvxr_status == "optimal" && temp.sd < 3 * initial.sd) {
-          mu <- mu / resol
+      }else{
+        if(cvxr_status=="optimal"&&temp.sd<3*initial.sd){
+          mu = mu/resol;
 
           opt.sol <- result$getValue(v)
 
-          temp.vec <- (-1) / 2 * (opt.sol[-1] + opt.sol[1] * loading / loading.norm)
-          temp.sd <- sqrt(sum((Xc %*% temp.vec)^2) / (n)^2) * loading.norm
-        } else {
-          mu <- mu * resol
-          opt.sol <- lastv
-          lamstop <- 1
-          tryno <- tryno - 1
+          temp.vec<-(-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
+          temp.sd<-sqrt(sum((X%*% temp.vec)^2)/(n)^2)*loading.norm
+          #print(temp.sd)
+        }else{
+          mu=mu*resol;
+          opt.sol=lastv;
+          lamstop=1;
+          tryno=tryno-1
         }
       }
     }
-    tryno  <- tryno + 1
+    tryno = tryno + 1;
   }
-
-  # Return the projection direction
-  direction <- (-1) / 2 * (opt.sol[-1] + opt.sol[1] * loading / loading.norm)
-  step <- tryno - 1
-  # print(step)
-  returnList <- list("proj" = direction,
-                     "step" = step)
+  direction<-(-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
+  step<-tryno-1
+  print(step)
+  returnList <- list("proj"=direction,
+                     "step"=step)
   return(returnList)
 }
 
@@ -367,7 +356,7 @@ Direction_searchtuning_robust <- function(Xc, loading, mu = NULL, resol = 1.5,
 #' \insertRef{grouplin}{FIHR}
 QF <- function(X, y, G, Cov.weight = TRUE, A = NULL,init.Lasso = NULL, tau.vec = NULL,
                lambda = NULL, intercept = TRUE, mu = NULL,
-               step = NULL, resol = 1.5, maxiter = 10) {
+               step = NULL, resol = 1.25, maxiter = 10) {
   p <- ncol(X)
   n <- nrow(X)
   n_y <- length(y)
@@ -414,7 +403,7 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = NULL,init.Lasso = NULL, tau.vec =
     {
       if(intercept==TRUE)
       {
-        Ac <- rbind(c(1,rep(0,nrow(A))),cbind(rep(0,ncol(A)),A))
+        Ac <- rbind(c(1,rep(0,ncol(A))),cbind(rep(0,nrow(A)),A))
       }
       else
       {
@@ -438,7 +427,6 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = NULL,init.Lasso = NULL, tau.vec =
         }
         else{
           lasso.plugin <- t(htheta)%*%Ac%*%htheta
-          #lasso.plugin <- sum((Ac %*% htheta)^2)
         }
       }
       direction <- htheta
@@ -465,7 +453,7 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = NULL,init.Lasso = NULL, tau.vec =
         }
         else{
           loading[G] <- (Ac %*% test.vec)[G]
-          lasso.plugin <- t(htheta)%*%Ac%*%htheta
+          lasso.plugin <- t(test.vec)%*%Ac%*%test.vec        ##### fixed one error
         }
       }
       loading.norm <- sqrt(sum(loading^2))
@@ -493,30 +481,21 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = NULL,init.Lasso = NULL, tau.vec =
                 index.sel <- sample(1:n, size = ceiling(0.5 * min(n, p)), replace = FALSE)
                 Direction.Est.temp <- Direction_searchtuning_robust(Xc[index.sel, ],
                                                                     loading, mu = NULL,
-                                                                    resol = 1.5,maxiter = 6)
+                                                                    resol = 1.25,maxiter = 6)
                 step.vec[t] <- Direction.Est.temp$step
               }
               step <- getmode(step.vec)
+              step
             }
             Direction.Est <- Direction_fixedtuning_robust(Xc, loading, mu = sqrt(2.01 * log(pp) / n) * resol^{-(step - 1)})
-            while(is.na(Direction.Est)&&(step>0)){
+            while(is.na(Direction.Est) || length(Direction.Est$proj)==0){
               #print(paste("step is", step))
               step<-step-1
               Direction.Est <- Direction_fixedtuning_robust(Xc, loading, mu = sqrt(2.01 * log(pp) / n) * resol^{-(step - 1)})
             }
-#          } else {
-#            # for option 2
-#            Direction.Est <- Direction_searchtuning_robust(Xc, loading, mu = NULL, resol, maxiter)
-#            step <- Direction.Est$step
-#            proj <- Direction.Est$proj
-#            while (sum(proj^2) < 10^(-3)) {
-#              step <- step - 1
-#              Direction.Est <- Direction_fixedtuning_robust(Xc, loading, mu = sqrt(2.01 * log(pp) / n) * resol^{-(step - 1)})
-#              proj <- Direction.Est$proj
-#            }
-#          }
-          # print(paste("step is", step))
+          print(paste("step is", step))
           direction <- Direction.Est$proj
+          sqrt(sum(direction^2))
         }
       }
 
@@ -524,7 +503,11 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = NULL,init.Lasso = NULL, tau.vec =
 
     ### Correct the initial estimator by the constructed projection direction
     correction <- 2 * loading.norm * t(Xc %*% direction) %*% (y - Xc %*% htheta) / n
+
+    ## This 2 is not there in the correction term of LF
+
     debias.est <- lasso.plugin + correction
+    debias.est
     if(Cov.weight==TRUE)
     {
       se1 <- 2 * sd.est * sqrt(sum((Xc %*% direction)^2) / (n)^2) * loading.norm
@@ -556,11 +539,12 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = NULL,init.Lasso = NULL, tau.vec =
         se<-2*sd.est*sqrt(sum((Xc%*%direction)^2)/(n)^2)*loading.norm
         #tau=0
         if(is.null(tau.vec)){
-          tau.vec=c(2)
+          tau.vec=c(0.5)
         }
         se.vec<-rep(NA,length(tau.vec))
         for (i in 1: length(tau.vec)){
-          tau=min(tau.vec[i],spar.est*log(p)/sqrt(n))
+          #tau=min(tau.vec[i],spar.est*log(p)/sqrt(n))
+          tau = tau.vec[i]
           se<-sqrt(se^2+tau/n)
           se.vec[i]<-se
           }

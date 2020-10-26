@@ -8,7 +8,7 @@ LF_logistic(
   X,
   y,
   loading,
-  weight,
+  weight = NULL,
   intercept = TRUE,
   init.Lasso = NULL,
   lambda = NULL,
@@ -25,7 +25,7 @@ LF_logistic(
 
 \item{loading}{Loading, of length \eqn{p}}
 
-\item{weight}{The weight vector, of length \eqn{n}, used in correcting the plug-in estimator}
+\item{weight}{The weight vector, of length \eqn{n}, used in correcting the plug-in estimator, uses the inverse Hessian weight if set to \code{NULL} (default = \code{NULL})}
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
 

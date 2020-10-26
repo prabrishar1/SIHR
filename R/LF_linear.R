@@ -361,7 +361,7 @@ Direction_searchtuning_lin<-function(X,loading,mu=NULL, resol = 1.5, maxiter = 1
 #' X <- MASS::mvrnorm(n,mu,Cov)
 #' y = X%*%beta + rnorm(n)
 #' loading <- MASS::mvrnorm(1,rep(0,p),Cov2)
-#' LF(X = X, y = y, loading = loading, intercept = TRUE)
+#' Est <- LF(X = X, y = y, loading = loading, intercept = TRUE)
 LF<-function(X,y,loading,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step=NULL,resol = 1.5,maxiter=10){
   ### Option 1: search tuning parameter with steps determined by the ill conditioned case (n=p/2)
   ### Option 2: search tuning parameter with maximum 10 steps.

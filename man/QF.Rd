@@ -16,7 +16,7 @@ QF(
   intercept = TRUE,
   mu = NULL,
   step = NULL,
-  resol = 1.5,
+  resol = 1.25,
   maxiter = 10
 )
 }

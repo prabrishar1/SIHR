@@ -62,31 +62,6 @@ Lasso <- function(X, y, lambda = NULL, intercept = TRUE) {
   }
 }
 
-Initialization.step <- function(X,y,intercept=TRUE)
-{
-  X<-as.matrix(X)
-  p <- ncol(X);
-  n <- nrow(X);
-  col.norm <- 1/sqrt((1/n)*diag(t(X)%*%X)+0.0001);
-  Xnor <- X %*% diag(col.norm)
-    fit = glmnet::cv.glmnet(Xnor, y, alpha=1,family = "binomial")
-    coef <- as.vector(coef(fit, s = "lambda.min"))
-
-  if(intercept==TRUE)
-  {
-    htheta <- coef[1:(p+1)]
-  }
-  else
-  {
-    htheta <- coef[2:(p+1)]
-  }
-  htheta <- as.vector(htheta)
-  support<-(abs(htheta)>0.001)
-  returnList <- list("lasso.est" = htheta,
-                     "support"=support)
-  return(returnList)
-}
-
 Direction_fixedtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec){      ####### included functions weight and deriv.vec
   pp<-ncol(X)
   n<-nrow(X)
@@ -103,6 +78,11 @@ Direction_fixedtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec){   
 
   #H<-cbind(loading/loading.norm,diag(1,pp))
   v<-Variable(pp+1)
+
+
+
+  #obj<-t(v)%*%Gamma%*%v +sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))   #######modified
+
   obj<-1/4*sum(((X%*%H%*%v)^2)*weight*deriv.vec)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))   #######modified
   prob<-Problem(Minimize(obj))
   result<-solve(prob)
@@ -208,7 +188,7 @@ Direction_searchtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec,res
 #' @param y Outcome vector, of length \eqn{n}
 #' @param loading Loading, of length \eqn{p}
 #' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
-#' @param weight The weight vector, of length \eqn{n}, used in correcting the plug-in estimator
+#' @param weight The weight vector, of length \eqn{n}, used in correcting the plug-in estimator, uses the inverse Hessian weight if set to \code{NULL} (default = \code{NULL})
 #' @param init.Lasso Initial LASSO estimator of the regression vector (default = \code{NULL})
 #' @param lambda The tuning parameter used in the construction of LASSO estimator of the regression vector (default = \code{NULL})
 #' @param mu The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})
@@ -262,9 +242,9 @@ Direction_searchtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec,res
 #' prob <- exp(exp_val)/(1+exp(exp_val))
 #' y <- rbinom(n,1,prob)
 #' loading <- MASS::mvrnorm(1,mu,Cov2)
-#' LF_logistic(X = X, y = y, loading = loading, intercept = TRUE, weight = rep(1,n))
+#' Est <- LF_logistic(X = X, y = y, loading = loading, intercept = TRUE, weight = NULL)
 
-LF_logistic<-function(X,y,loading,weight,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step=NULL,resol = 1.5,maxiter=10){
+LF_logistic<-function(X,y,loading,weight=NULL,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step=NULL,resol = 1.5,maxiter=10){
 
   ### included weight, deriv.vec to be constructed
 
@@ -336,13 +316,17 @@ LF_logistic<-function(X,y,loading,weight,intercept=TRUE,init.Lasso=NULL,lambda=N
     lasso.plugin<-sum(loading*htheta)
     deriv.vec <- exp(Xc%*%htheta)/(1+exp(Xc%*%htheta))^2    ###### computed deriv.vec
 
+    if(is.null(weight)){
+      weight <- 1/deriv.vec
+    }
+
     #####################################################################################################
     ################## Correction step
 
 
     if ((n>=6*p)){
       #sigma.hat <- (1/n)*(t(Xc)%*%Xc);
-      gamma.hat <- (1/n)*sum((Xc^2)*weight*deriv.vec)   ##### computed gamma.hat instead of sigma.hat
+      gamma.hat <- (1/n)*sum((Xc^2)*weight*deriv.vec)   ##### computed gamma.hat instead of sigma.hat WRONG
       tmp <- eigen(gamma.hat)                         ##### computed eigen values of gamma.hat instead of sigma.hat
       tmp <- min(tmp$values)/max(tmp$values)
     }else{
