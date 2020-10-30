@@ -38,9 +38,14 @@ Direction_fixedtuning<-function(X,loading,mu=NULL,model = "linear",weight=NULL,d
   {
     obj<-1/4*sum((X%*%H%*%v)^2)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
   }
-  else
+  else if(model == "logistic")
   {
     obj<-1/4*sum(((X%*%H%*%v)^2)*weight*deriv.vec)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
+  }
+  else
+  {
+    print("Method not yet developed")
+    stop()
   }
   prob<-Problem(Minimize(obj))
   result<-solve(prob)
@@ -54,7 +59,7 @@ Direction_fixedtuning<-function(X,loading,mu=NULL,model = "linear",weight=NULL,d
   return(returnList)
 }
 
-#' Searches for the best step size and computes the projection direction in high dimensional linear regression
+#' Searches for the best step size and computes the projection direction in high dimensional regression
 #'
 #' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
 #' @param loading Loading, of length \eqn{p}
@@ -105,9 +110,14 @@ Direction_searchtuning<-function(X,loading,model="linear",mu=NULL,weight=NULL,de
     {
       obj<-1/4*sum((X%*%H%*%v)^2)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
     }
-    else
+    else if(model=="logistic")
     {
       obj<-1/4*sum(((X%*%H%*%v)^2)*weight*deriv.vec)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
+    }
+    else
+    {
+      print("Method not yet developed")
+      stop()
     }
     prob<-Problem(Minimize(obj))
     result<-solve(prob)

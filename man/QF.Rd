@@ -80,7 +80,7 @@ beta[1:10] <- c(1:10)/5
 X <- MASS::mvrnorm(n,mu,Cov)
 y = X\%*\%beta + rnorm(n)
 test.set =c(30:50)
-QF(X = X, y = y, G = test.set)
+Est <-FIHR::QF(X = X, y = y, G = test.set)
 
 }
 \references{

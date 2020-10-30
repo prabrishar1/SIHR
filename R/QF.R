@@ -349,7 +349,7 @@ Direction_searchtuning_robust<-function(X,loading,mu=NULL, resol = 1.5, maxiter 
 #' X <- MASS::mvrnorm(n,mu,Cov)
 #' y = X%*%beta + rnorm(n)
 #' test.set =c(30:50)
-#' QF(X = X, y = y, G = test.set)
+#' Est <-FIHR::QF(X = X, y = y, G = test.set)
 #'
 #' @references
 #'

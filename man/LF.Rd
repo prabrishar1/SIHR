@@ -77,7 +77,7 @@ beta[1:10] <- c(1:10)/5
 X <- MASS::mvrnorm(n,mu,Cov)
 y = X\%*\%beta + rnorm(n)
 loading <- MASS::mvrnorm(1,rep(0,p),Cov2)
-LF(X = X, y = y, loading = loading, intercept = TRUE)
+Est <- LF(X = X, y = y, loading = loading, intercept = TRUE)
 }
 \references{
 \insertRef{linlin}{FIHR}

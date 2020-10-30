@@ -81,7 +81,7 @@ exp_val <- X\%*\%beta
 prob <- exp(exp_val)/(1+exp(exp_val))
 y <- rbinom(n,1,prob)
 loading <- MASS::mvrnorm(1,mu,Cov2)
-LF_logistic(X = X, y = y, loading = loading, intercept = TRUE, weight = rep(1,n))
+Est <- LF_logistic(X = X, y = y, loading = loading, intercept = TRUE, weight = NULL)
 }
 \references{
 \insertRef{linlog}{FIHR}

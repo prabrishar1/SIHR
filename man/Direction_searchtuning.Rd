@@ -2,7 +2,7 @@
 % Please edit documentation in R/Projection_Directions.R
 \name{Direction_searchtuning}
 \alias{Direction_searchtuning}
-\title{Searches for the best step size and computes the projection direction in high dimensional linear regression}
+\title{Searches for the best step size and computes the projection direction in high dimensional regression}
 \usage{
 Direction_searchtuning(
   X,
@@ -38,7 +38,7 @@ such that the dual optimization problem for constructing the projection directio
 \item{proj}{The projection direction}
 }
 \description{
-Searches for the best step size and computes the projection direction in high dimensional linear regression
+Searches for the best step size and computes the projection direction in high dimensional regression
 }
 \examples{
 n = 100
