@@ -205,6 +205,7 @@ Direction.est$proj
 
 ## Finding Projection Direction using best step size
 
+
 Direction.est <- FIHR::Direction_searchtuning(Xc,loading,model = "logistic",weight = 1/f_prime, deriv.vec = f_prime)
 Direction.est$proj
 ```

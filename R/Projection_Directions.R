@@ -64,7 +64,6 @@ Direction_fixedtuning<-function(X,loading,mu=NULL,model = "linear",weight=NULL,d
 #' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
 #' @param loading Loading, of length \eqn{p}
 #' @param model The high dimensional regression model, either \code{linear} or \code{logistic}
-#' @param mu The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})
 #' @param weight The weight vector of length \eqn{n}, used in correcting the plug-in estimator ; to be supplied if \code{model="logistic"} (default=NULL)
 #' @param deriv.vec The first derivative vector of the logit function at \eqn{X\widehat{\beta}} ; to be supplied if \code{model="logistic"}
 #' @param resol Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
@@ -81,7 +80,7 @@ Direction_fixedtuning<-function(X,loading,mu=NULL,model = "linear",weight=NULL,d
 #' p = 400
 #' X = matrix(sample(-2:2,n*p,replace = TRUE),nrow = n,ncol = p)
 #' Direction_searchtuning(X,loading=c(1,rep(0,(p-1))))
-Direction_searchtuning<-function(X,loading,model="linear",mu=NULL,weight=NULL,deriv.vec=NULL,resol=1.5, maxiter=10){     #included weight and f_prime
+Direction_searchtuning<-function(X,loading,model="linear",weight=NULL,deriv.vec=NULL,resol=1.5, maxiter=10){     #included weight and f_prime
   pp<-ncol(X)
   n<-nrow(X)
   tryno = 1;
