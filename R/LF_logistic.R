@@ -3,12 +3,6 @@ getmode <- function(v) {
   uniqv[which.max(tabulate(match(v, uniqv)))]
 }
 
-#f_prime <- function(x)
-#{
-#  g = exp(x)/(1+exp(x))^2
-#  return(g)
-#}
-
 Initialization.step <- function(X, y, lambda = NULL, intercept = FALSE) {
   n <- nrow(X)
    col.norm <- 1 / sqrt((1 / n) * diag(t(X) %*% X))
@@ -25,12 +19,8 @@ Initialization.step <- function(X, y, lambda = NULL, intercept = FALSE) {
   } else {
     Xb <- Xnor
   }
-  #sparsity <- sum(abs(htheta) > 0.001)
-  #sd.est <- sqrt(sum((y - Xb %*% htheta)^2) / n)
   htheta <- htheta * col.norm
   returnList <- list("lasso.est" = htheta)
-  #                   "sigma" = sd.est,
-  #                   "sparsity" = sparsity)
   return(returnList)
 }
 
@@ -62,7 +52,7 @@ Lasso <- function(X, y, lambda = NULL, intercept = TRUE) {
   }
 }
 
-Direction_fixedtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec){      ####### included functions weight and deriv.vec
+Direction_fixedtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec){
   pp<-ncol(X)
   n<-nrow(X)
   if(is.null(mu)){
@@ -76,19 +66,13 @@ Direction_fixedtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec){   
     H <- cbind(loading / loading.norm, diag(1, pp))
   }
 
-  #H<-cbind(loading/loading.norm,diag(1,pp))
   v<-Variable(pp+1)
 
-
-
-  #obj<-t(v)%*%Gamma%*%v +sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))   #######modified
-
-  obj<-1/4*sum(((X%*%H%*%v)^2)*weight*deriv.vec)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))   #######modified
+  obj<-1/4*sum(((X%*%H%*%v)^2)*weight*deriv.vec)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
   prob<-Problem(Minimize(obj))
   result<-solve(prob)
   print("fixed mu")
   print(mu)
-  #print(result$value)
   opt.sol<-result$getValue(v)
   cvxr_status<-result$status
   direction<-(-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
@@ -105,10 +89,8 @@ Direction_searchtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec,res
   cvxr_status = "optimal";
 
   mu = sqrt(2.01*log(pp)/n);
-  #mu.initial= mu;
   while (lamstop == 0 && tryno < maxiter){
     ###### This iteration is to find a good tuning parameter
-    #print(mu);
     lastv = opt.sol;
     lastresp = cvxr_status;
     loading.norm<-sqrt(sum(loading^2))
@@ -119,16 +101,12 @@ Direction_searchtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec,res
       H <- cbind(loading / loading.norm, diag(1, pp))
     }
 
-    #H<-cbind(loading/loading.norm,diag(1,pp))
     v<-Variable(pp+1)
     obj<-1/4*sum((X%*%H%*%v)^2)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
     obj<-1/4*sum(((X%*%H%*%v)^2)*weight*deriv.vec)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))    #######modified
     prob<-Problem(Minimize(obj))
     result<-solve(prob)
-    #print(result$value)
-    #opt.sol<-result$getValue(v)
     cvxr_status<-result$status
-    #print(cvxr_status)
     if(tryno==1){
       if(cvxr_status=="optimal"){
         incr = 0;
@@ -137,7 +115,7 @@ Direction_searchtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec,res
         opt.sol<-result$getValue(v)
 
         temp.vec<-(-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
-        initial.sd<-sqrt(sum(((X%*% temp.vec)^2)*weight*deriv.vec)/(n)^2)*loading.norm   ############modified
+        initial.sd<-sqrt(sum(((X%*% temp.vec)^2)*weight*deriv.vec)/(n)^2)*loading.norm
         temp.sd<-initial.sd
       }else{
         incr = 1;
@@ -159,8 +137,7 @@ Direction_searchtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec,res
           opt.sol <- result$getValue(v)
 
           temp.vec<-(-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
-          temp.sd<-sqrt(sum(((X%*% temp.vec)^2)*weight*deriv.vec)/(n)^2)*loading.norm     ############modified
-          #print(temp.sd)
+          temp.sd<-sqrt(sum(((X%*% temp.vec)^2)*weight*deriv.vec)/(n)^2)*loading.norm
         }else{
           mu=mu*resol;
           opt.sol=lastv;
@@ -246,19 +223,10 @@ Direction_searchtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec,res
 
 LF_logistic<-function(X,y,loading,weight=NULL,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step=NULL,resol = 1.5,maxiter=10){
 
-  ### included weight, deriv.vec to be constructed
-
-  ### Option 1: search tuning parameter with steps determined by the ill conditioned case (n=p/2)
-  ### Option 2: search tuning parameter with maximum 10 steps.
-  ### Option 3: fixed tuning parameter and this is not recommended without exploring the tuning parameter selection
   xnew <- loading
   X<-as.matrix(X)
   p <- ncol(X);
   n <- nrow(X);
-  ### implement Lasso
-  #fit = cv.glmnet(Xnor, y, alpha=1,family = "binomial")
-  #htheta <- as.vector(coef(fit, s = "lambda.min"))
-  #support<-(abs(htheta)>0.001)
   n_y <- length(y)
 
   if(n_y!=n)
@@ -273,7 +241,6 @@ LF_logistic<-function(X,y,loading,weight=NULL,intercept=TRUE,init.Lasso=NULL,lam
     p <- ncol(X);
     n <- nrow(X);
     col.norm <- 1 / sqrt((1 / n) * diag(t(X) %*% X))
-    #col.norm <- 1 / sqrt((1 / n) * diagXtX(X, MARGIN = 2));
     Xnor <- X %*% diag(col.norm);
     if(is.null(init.Lasso))
     {
@@ -300,11 +267,6 @@ LF_logistic<-function(X,y,loading,weight=NULL,intercept=TRUE,init.Lasso=NULL,lam
     sparsity <- sum(abs(htheta) > 0.001)
     sd.est <- sqrt(sum((y - Xb %*% htheta)^2) / max(0.9*n, n - sparsity))
 
-    #sparsity<-sum(abs(htheta)>0.001)
-    #sd.est<-sum((y-Xb%*%htheta)^2)/(n-sparsity)
-    #htheta <- htheta*col.norm;
-    #htheta <- as.vector(htheta)
-    ### compute the initial estimator
     if(intercept==TRUE){
       loading=rep(0,pp)
       loading[1]=1
@@ -314,30 +276,37 @@ LF_logistic<-function(X,y,loading,weight=NULL,intercept=TRUE,init.Lasso=NULL,lam
     }
     loading.norm<-sqrt(sum(loading^2))
     lasso.plugin<-sum(loading*htheta)
-    deriv.vec <- exp(Xc%*%htheta)/(1+exp(Xc%*%htheta))^2    ###### computed deriv.vec
+    deriv.vec <- exp(Xc%*%htheta)/(1+exp(Xc%*%htheta))^2
 
     if(is.null(weight)){
       weight <- 1/deriv.vec
     }
 
-    #####################################################################################################
-    ################## Correction step
-
-
-    if ((n>=6*p)){
-      #sigma.hat <- (1/n)*(t(Xc)%*%Xc);
-      gamma.hat <- (1/n)*sum((Xc^2)*weight*deriv.vec)   ##### computed gamma.hat instead of sigma.hat WRONG
-      tmp <- eigen(gamma.hat)                         ##### computed eigen values of gamma.hat instead of sigma.hat
-      tmp <- min(tmp$values)/max(tmp$values)
-    }else{
-      tmp <- 0
+    count=0
+    for(i in 1:ncol(X)){
+      if(length(unique(X[,i]))==1){
+        count=count+1
+      }
     }
-
-    if ((n>=6*p)&&(tmp>=1e-4)){
-      direction <- solve(gamma.hat)%*%loading         ##### computed direction as gamma.hat inverse loading
+    if(count!=0 && intercept==TRUE)
+    {
+      print("Data is singular")
     }else{
-#      if(n>0.5*p){
-        ### for option 1
+      #####################################################################################################
+      ################## Correction step
+
+
+      if ((n>=6*p)){
+        gamma.hat <- (1/n)*sum((Xc^2)*weight*deriv.vec)   ##### computed gamma.hat instead of sigma.hat WRONG
+        tmp <- eigen(gamma.hat)
+        tmp <- min(tmp$values)/max(tmp$values)
+      }else{
+        tmp <- 0
+      }
+
+      if ((n>=6*p)&&(tmp>=1e-4)){
+        direction <- solve(gamma.hat)%*%loading
+      }else{
         if(is.null(step)){
           step.vec<-rep(NA,3)
           for(t in 1:3){
@@ -351,55 +320,126 @@ LF_logistic<-function(X,y,loading,weight=NULL,intercept=TRUE,init.Lasso=NULL,lam
         Direction.Est<-Direction_fixedtuning_logistic(Xc,loading,mu=sqrt(2.01*log(pp)/n)*resol^{-(step-1)},weight = weight,deriv.vec = deriv.vec)
 
         while(is.na(Direction.Est)&&(step>0)){
-          #print(paste("step is", step))
           step<-step-1
           Direction.Est<-Direction_fixedtuning_logistic(Xc,loading,mu=sqrt(2.01*log(pp)/n)*resol^{-(step-1)},weight = weight,deriv.vec = deriv.vec)
         }
-        #while(is.na(Direction.Est)&&(step>0)){
-          #print(paste("step is", step))
-        #  step<-step-1
-        #  Direction.Est <- Direction_fixedtuning(Xc, test.vec, mu = sqrt(2.01 * log(pp) / n) * resol^{-(step - 1)})
-        #}
-#      }else{
-       ### for option 2
-#        Direction.Est<-Direction_searchtuning_logistic(Xc,loading,mu=NULL,weight = weight,deriv.vec = deriv.vec,resol, maxiter)
-#        step<-Direction.Est$step
-#        proj <- Direction.Est$proj
-#        while (sum(proj^2) < 10^(-3)) {
-#          step <- step - 1
-#          Direction.Est <- Direction_fixedtuning_logistic(Xc, loading, mu = sqrt(2.01 * log(pp) / n) * resol^{-(step - 1)})
-#          proj <- Direction.Est$proj
-#        }
-#        print(paste("step is", step))
-#      }
-      direction<-Direction.Est$proj
+        direction<-Direction.Est$proj
+      }
+      exp_pred=Xc%*%(htheta)
+
+      weighed.residual=(y - exp(exp_pred)/(1+ exp(exp_pred)))*weight   ##### modified weight
+
+      correction = sum((Xc%*%direction)*weighed.residual)/n;
+      debias.est=lasso.plugin+correction*loading.norm
+
+      se<-sqrt(mean((Xc%*%direction)^2*weight^2*deriv.vec))*loading.norm/sqrt(n) ##### modified
+      returnList <- list("prop.est" = debias.est,
+                         "se" = se,
+                         "proj"=direction,
+                         "plug.in"=lasso.plugin
+      )
+      return(returnList)
     }
-    exp_pred=Xc%*%(htheta)
-    #weighed.residual=(y - exp(exp_pred)/(1+ exp(exp_pred)))*(1+exp(exp_pred))^2/exp(exp_pred)
 
-    weighed.residual=(y - exp(exp_pred)/(1+ exp(exp_pred)))*weight   ##### modified weight
-    #exp_val=a0+X%*%beta
-    #weighed.residual.ora=(y - exp(exp_val)/(1+ exp(exp_val)))*(1+exp(exp_val))^2/exp(exp_val)
-
-    correction = sum((Xc%*%direction)*weighed.residual)/n;
-    debias.est=lasso.plugin+correction*loading.norm
-    #cbind(true,linear.plugin,linear.plugin+correct,correct)
-    #se<-sqrt(sum((Xc%*%direction*(1+exp(exp_pred))/exp(exp_pred/2))^2)/(n)^2)*loading.norm*sum((y - exp(exp_pred)/(1+ exp(exp_pred)))^2)/n
-    #se<-sqrt(mean((Xc%*%direction)^2*weighed.residual^2))*loading.norm/sqrt(n)
-    #se.ora<-sqrt(mean((Xc%*%direction)^2*weighed.residual.ora^2))*loading.norm/sqrt(n)
-    #se.another<-sqrt(mean((Xc%*%direction)^2*(1+exp(exp_pred))^2/exp(exp_pred)))*loading.norm/sqrt(n)
-
-    se<-sqrt(mean((Xc%*%direction)^2*weight^2*deriv.vec))*loading.norm/sqrt(n) ##### modified
-    #sd
-    #mean((y - exp(exp_pred)/(1+ exp(exp_pred)))^2)
-    #mean((y - exp(exp_val)/(1+ exp(exp_val)))^2)
-    #mean(exp(exp_pred)/(1+ exp(exp_pred))^2)
-    #c(linear.plugin+correct-1.96*sd,linear.plugin+correct+1.96*sd)
-    returnList <- list("prop.est" = debias.est,
-                       "se" = se,
-                       "proj"=direction,
-                       "plug.in"=lasso.plugin
-    )
-    return(returnList)
   }
+}
+
+#' Inference for diference of case probabilities in the high dimensional logistic regression
+#'
+#' @description
+#' Computes the bias corrected estimator of \eqn{(\frac{e^{\code{loading}^{\top}\beta_1}}{1+e^{\code{loading}^{\top}\beta_1}})-\frac{e^{\code{loading}^{\top}\beta_2}}{1+e^{\code{loading}^{\top}\beta_2}})} for the high dimensional logistic regression \eqn{Y_k|X_k \sim } Bernoulli\eqn{(\frac{e^{X_k\beta_k}}{1+e^{X_k\beta_k}}),  k=1,2} and the corresponding standard error.
+#'
+#' @param X1 First design matrix, of dimension \eqn{n_1} x \eqn{p}
+#' @param y1 First outcome vector, of length \eqn{n_1}
+#' @param X2 Second design matrix, of dimension \eqn{n_2} x \eqn{p}
+#' @param y2 Second outcome vector, of length \eqn{n_2}
+#' @param loading Loading, of length \eqn{p}
+#' @param weight The weight vector, of length \eqn{n}, used in correcting the plug-in estimators, uses the inverse Hessian weight if set to \code{NULL} (default = \code{NULL})
+#' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
+#' @param init.Lasso1 Initial LASSO estimator of the regression vector \eqn{\beta_1} (default = \code{NULL})
+#' @param init.Lasso2 Initial LASSO estimator of the regression vector \eqn{\beta_2} (default = \code{NULL})
+#' @param lambda1 The tuning parameter in the construction of LASSO estimator of the regression vector \eqn{\beta_1} (default = \code{NULL})
+#' @param lambda2 The tuning parameter in the construction of LASSO estimator of the regression vector \eqn{\beta_2} (default = \code{NULL})
+#' @param mu1 The dual tuning parameter used in the construction of the first \eqn{(k=1)} projection direction (default = \code{NULL})
+#' @param mu2 The dual tuning parameter used in the construction of the second \eqn{(k=2)} projection direction (default = \code{NULL})
+#' @param step1 Number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
+#' such that the dual optimization problem for constructing the first \eqn{(k=1)} projection direction converges (default = \code{NULL})
+#' @param step2 Number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
+#' such that the dual optimization problem for constructing the second \eqn{(k=2)} projection direction converges (default = \code{NULL})
+#' @param resol Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
+#' such that the dual optimization problem for constructing the projection direction converges (default = 1.5)
+#' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
+#' such that the dual optimization problem for constructing the projection direction converges (default = 10)
+#'
+#' @return
+#' \item{prop.est}{The bias-corrected estimator for the difference of case probabilities}
+#' \item{se}{The standard error of the bias-corrected estimator}
+#' \item{proj1}{The first \eqn{(k=1)} projection direction, of length \eqn{p}}
+#' \item{proj2}{The second \eqn{(k=2)} projection direction, of length \eqn{p}}
+#' \item{plug.in1}{The plug-in LASSO estimator for the first \eqn{(k=1)} linear functional}
+#' \item{plug.in2}{The plug-in LASSO estimator for the second \eqn{(k=2)} linear functional}
+#' @export
+#'
+#' @importFrom Rdpack reprompt
+#' @importFrom stats coef na.omit
+#' @import CVXR Matrix glmnet
+#' @examples
+#' A1gen <- function(rho,p){
+#' A1=matrix(0,p,p)
+#' for(i in 1:p){
+#'   for(j in 1:p){
+#'     A1[i,j]<-rho^(abs(i-j))
+#'   }
+#' }
+#' A1
+#' }
+#' n1 = 100
+#' n2 = 200
+#' p = 400
+#' mu <- rep(0,p)
+#' rho = 0.5
+#' Cov <- (A1gen(rho,p))/2
+#' Cov2<-matrix(NA,nrow=p,ncol=p)
+#' for(i in 1:p){
+#'   for(j in 1:p){
+#'     Cov2[i,j]<-0.5^(1+abs(i-j))
+#'   }
+#' }
+#' beta1 <- rep(0,p)
+#' beta1[1:10] <- c(1:10)/5
+#' beta2 <- rep(0,p)
+#' beta2[1:5] <- c(1:5)/10
+#' X1 <- MASS::mvrnorm(n1,mu,Cov)
+#' X2 <- MASS::mvrnorm(n2,mu,Cov)
+#' exp_val1 <- X1%*%beta1
+#' exp_val2 <- X2%*%beta2
+#' prob1 <- exp(exp_val1)/(1+exp(exp_val1))
+#' prob2 <- exp(exp_val2)/(1+exp(exp_val2))
+#' y1 <- rbinom(n1,1,prob1)
+#' y2 <- rbinom(n2,1,prob2)
+#' loading <- MASS::mvrnorm(1,mu,Cov2)
+#' Est <- ITS_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
+ITS_Logistic<-function(X1,y1,X2,y2,loading,weight=NULL,intercept=TRUE,init.Lasso1=NULL,init.Lasso2=NULL,lambda1=NULL,lambda2=NULL,mu1=NULL,mu2=NULL,step1=NULL,step2=NULL,resol = 1.5,maxiter=10){
+  Est1<-FIHR::LF_logistic(X=X1,y=y1,loading,weight=weight,intercept=intercept,init.Lasso=init.Lasso1,lambda=lambda1,mu=mu1,step=step1,resol=resol,maxiter=maxiter)
+  Est2<-FIHR::LF_logistic(X=X2,y=y2,loading,weight=weight,intercept=intercept,init.Lasso=init.Lasso2,lambda=lambda2,mu=mu2,step=step2,resol=resol,maxiter=maxiter)
+  expo <- function(z){
+    g = exp(z)/(1+exp(z))
+    return(g)
+  }
+  debias.est<-expo(Est1$prop.est) - expo(Est2$prop.est)
+  rho_1=expo(Est1$prop.est)*(1-expo(Est1$prop.est))
+  rho_2=expo(Est2$prop.est)*(1-expo(Est2$prop.est))
+  se = sqrt((rho_1*(Est1$se))^2 + (rho_2*(Est2$se))^2)
+  direction1 <- Est1$proj
+  direction2 <- Est2$proj
+  lasso.plugin1 <- Est1$plug.in
+  lasso.plugin2 <- Est2$plug.in
+  returnList <- list("prop.est" = debias.est,
+                     "se" = se,
+                     "proj1"=direction1,
+                     "proj2"=direction2,
+                     "plug.in1"=lasso.plugin1,
+                     "plug.in2"=lasso.plugin2
+  )
+  return(returnList)
 }

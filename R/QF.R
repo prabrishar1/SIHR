@@ -12,8 +12,6 @@ getmode <- function(v) {
 
 }
 
-# A vectorized version to calculate the variance of each row or column.
-
 diagXtX <- function(x, MARGIN = 1, ...) {
   if(MARGIN == 1) {
   # 1 indicates rows
@@ -25,9 +23,8 @@ diagXtX <- function(x, MARGIN = 1, ...) {
 }
 
 var.Sigma <- function(Z, gamma) {
-  nsample <- dim(Z)[1] - 1 # TODO why -1? B/c of intercept == TRUE or are two cases needed?
+  nsample <- dim(Z)[1] - 1
   v <- Z %*% gamma
-  # return(sum((diag(v %*% t(v)) - sum(v^2) / nsample)^2) / nsample)
   return(sum((diagXtX(v, MARGIN = 1) - sum(v^2) / nsample)^2) / nsample)
 }
 
@@ -73,61 +70,6 @@ Lasso <- function(X, y, lambda = NULL, intercept = TRUE) {
   }
 }
 
-#Lasso <- function(X, y, lambda = NULL, intercept = TRUE) {
-
-#  p <- ncol(X)
-#  n <- nrow(X)
-
-#  htheta <- if (is.null(lambda)) {
-#    outLas <- cv.glmnet(X, y, family = "gaussian", alpha = 1,
-#                        intercept = intercept)
-    # Objective : 1/2 * RSS/n + lambda * penalty
-#    as.vector(coef(outLas, s = outLas$lambda.min))
-#  }
-#  else {
-#    outLas <- glmnet(X, y, family = "gaussian", alpha = 1,
-#                     intercept = intercept)
-    # Objective : 1/2 * RSS/n + lambda * penalty
-#    as.vector(coef(outLas, s = lambda))
-#  }
-#  if (intercept == TRUE) {
-#    return(htheta)
-#  } else {
-#    return(htheta[2:(p+1)])
-#  }
-#}
-
-###### The following function computes the lasso estimator
-# Compute the Lasso estimator:
-# - If lambda is given, use glmnet and standard Lasso
-# - If lambda is not given, use square root Lasso
-#Lasso <- function(X, y, lambda = NULL, intercept = TRUE) {
-#  p <- ncol(X)
-#  n <- nrow(X)
-
-#  htheta <- if (is.null(lambda)) {
-#   lambda <- sqrt(qnorm(1 - (0.1 / p)) / n)
-#    outLas <- slim(X, y, lambda = lambda, method = "lq", q = 2,
-#                   verbose = FALSE)
-# Objective : sqrt(RSS/n) + lambda * penalty
-#    c(as.vector(outLas$intercept), as.vector(outLas$beta))
-#  } else {
-#    outLas <- glmnet(X, y, family = "gaussian", alpha = 1,
-#                     intercept = intercept)
-# Objective : 1/2 * RSS/n + lambda * penalty
-#    as.vector(coef(outLas, s = lambda))
-#  }
-
-#  if (intercept == TRUE) {
-#    return(htheta)
-#  } else {
-#    return(htheta[2:(p+1)])
-#  }
-#}
-
-###### The following function computes the inital Lasso estimator and
-###### quantities based thereon
-
 Initialization.step <- function(X, y, lambda = NULL, intercept = FALSE) {
   n <- nrow(X)
   col.norm <- 1 / sqrt((1 / n) * diagXtX(X, MARGIN = 2))
@@ -143,41 +85,11 @@ Initialization.step <- function(X, y, lambda = NULL, intercept = FALSE) {
   } else {
     Xb <- Xnor
   }
-  #sparsity <- sum(abs(htheta) > 0.001)
-  #sd.est <- sqrt(sum((y - Xb %*% htheta)^2) / n)
   htheta <- htheta * col.norm
   returnList <- list("lasso.est" = htheta)
-  #                   "sigma" = sd.est,
-  #                   "sparsity" = sparsity)
   return(returnList)
 }
 
-#Initialization.step <- function(X, y, lambda = NULL, intercept = FALSE) {
-#  n <- nrow(X)
-  # col.norm <- 1 / sqrt((1 / n) * diag(t(X) %*% X))
-#  col.norm <- 1 / sqrt((1 / n) * diagXtX(X, MARGIN = 2))
-#  Xnor <- X %*% diag(col.norm)
-
-  ### Call Lasso
-#  htheta <- Lasso(Xnor, y, lambda = lambda, intercept = intercept)
-
-  ### Calculate return quantities
-#  if (intercept == TRUE) {
-#    Xb <- cbind(rep(1, n), Xnor)
-#    col.norm <- c(1, col.norm)
-#  } else {
-#    Xb <- Xnor
-#  }
-#  sparsity <- sum(abs(htheta) > 0.001)
-#  sd.est <- sum((y - Xb %*% htheta)^2) / n
-#  htheta <- htheta * col.norm
-#  returnList <- list("lasso.est" = htheta,
-#                     "sigma" = sd.est,
-#                     "sparsity" = sparsity)
-#  return(returnList)
-#}
-###### Direction_fixedtuning_robust is searching for the projection direction
-###### for a general class of loadings including dense loadings
 Direction_fixedtuning_robust<-function(X,loading,mu=NULL){
   pp<-ncol(X)
   n<-nrow(X)
@@ -192,14 +104,12 @@ Direction_fixedtuning_robust<-function(X,loading,mu=NULL){
     H <- cbind(loading / loading.norm, diag(1, pp))
   }
 
-  #H<-cbind(loading/loading.norm,diag(1,pp))
   v<-Variable(pp+1)
   obj<-1/4*sum((X%*%H%*%v)^2)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
   prob<-Problem(Minimize(obj))
   result<-solve(prob)
   print("fixed mu")
   print(mu)
-  #print(result$value)
   opt.sol<-result$getValue(v)
   cvxr_status<-result$status
   direction<-(-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
@@ -216,10 +126,8 @@ Direction_searchtuning_robust<-function(X,loading,mu=NULL, resol = 1.5, maxiter 
   cvxr_status = "optimal";
 
   mu = sqrt(2.01*log(pp)/n);
-  #mu.initial= mu;
   while (lamstop == 0 && tryno < maxiter){
     ###### This iteration is to find a good tuning parameter
-    #print(mu);
     lastv = opt.sol;
     lastresp = cvxr_status;
     loading.norm<-sqrt(sum(loading^2))
@@ -230,15 +138,11 @@ Direction_searchtuning_robust<-function(X,loading,mu=NULL, resol = 1.5, maxiter 
       H <- cbind(loading / loading.norm, diag(1, pp))
     }
 
-    #H<-cbind(loading/loading.norm,diag(1,pp))
     v<-Variable(pp+1)
     obj<-1/4*sum((X%*%H%*%v)^2)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
     prob<-Problem(Minimize(obj))
     result<-solve(prob)
-    #print(result$value)
-    #opt.sol<-result$getValue(v)
     cvxr_status<-result$status
-    #print(cvxr_status)
     if(tryno==1){
       if(cvxr_status=="optimal"){
         incr = 0;
@@ -271,7 +175,6 @@ Direction_searchtuning_robust<-function(X,loading,mu=NULL, resol = 1.5, maxiter 
 
           temp.vec<-(-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
           temp.sd<-sqrt(sum((X%*% temp.vec)^2)/(n)^2)*loading.norm
-          #print(temp.sd)
         }else{
           mu=mu*resol;
           opt.sol=lastv;
@@ -289,11 +192,6 @@ Direction_searchtuning_robust<-function(X,loading,mu=NULL, resol = 1.5, maxiter 
                      "step"=step)
   return(returnList)
 }
-
-###### The following function calculates the debiased point estimate for the
-###### group of interest
-# If the G is the vector 1:p, then the solution of global test
-# can be calculated explicitly.
 
 #' Inference for quadratic functional in high dimensional linear regression
 #'
@@ -397,84 +295,92 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = NULL,init.Lasso = NULL, tau.vec =
 
     #htheta<-init.Lasso$lasso.est
     spar.est <- sum(abs(htheta) > 0.001)
-    sd.est <- sqrt(sum((y - Xb %*% htheta)^2) / max(0.9*n, n - spar.est))  ##Should Xc or Xb be used?
+    sd.est <- sqrt(sum((y - Xb %*% htheta)^2) / max(0.9*n, n - spar.est))
 
-    if(Cov.weight==FALSE)
-    {
-      if(intercept==TRUE)
-      {
-        Ac <- rbind(c(1,rep(0,ncol(A))),cbind(rep(0,nrow(A)),A))
-      }
-      else
-      {
-        Ac <- A
+    count=0
+    for(i in 1:ncol(X)){
+      if(length(unique(X[,i]))==1){
+        count=count+1
       }
     }
-
-    ## search for projection direction
-    if (p == length(G)) {
-      ## Global Test
-      ## We do not need not search for a direction, i.e. hat{u} = hat{theta}.
-      if(Cov.weight==TRUE)
+    if(count!=0 && intercept==TRUE)
+    {
+      print("Data is singular")
+    }else{
+      if(Cov.weight==FALSE)
       {
-        lasso.plugin <- mean((Xc %*% htheta)^2)
-      }
-      else
-      {
-        if(is.null(A))
+        if(intercept==TRUE)
         {
-          print("Need to provide a known square matrix A of dimension p, results are faulty")
+          Ac <- rbind(c(1,rep(0,ncol(A))),cbind(rep(0,nrow(A)),A))
         }
-        else{
-          lasso.plugin <- t(htheta)%*%Ac%*%htheta
-        }
-      }
-      direction <- htheta
-      loading.norm <- 1
-      test.vec <- htheta
-    } else {
-
-      ## Prepare all quantities
-      sigma.hat <- (1 / (n-1)) * (t(Xc) %*% Xc)
-      test.vec <- matrix(0, ncol = 1, nrow = pp)
-      loading <- matrix(0, ncol = 1, nrow = pp)
-      test.vec[G] <- htheta[G]
-
-      if(Cov.weight==TRUE)
-      {
-        loading[G] <- (sigma.hat %*% test.vec)[G]
-        lasso.plugin <- mean((Xc %*% test.vec)^2)
-      }
-      else     #Can reduce one loop
-      {
-        if(is.null(A))
+        else
         {
-          print("Need to provide a known square matrix A of dimension p, results are faulty")
-        }
-        else{
-          loading[G] <- (Ac %*% test.vec)[G]
-          lasso.plugin <- t(test.vec)%*%Ac%*%test.vec        ##### fixed one error
+          Ac <- A
         }
       }
-      loading.norm <- sqrt(sum(loading^2))
 
-      if (loading.norm == 0) {
-        direction <- rep(0, pp)
+      ## search for projection direction
+      if (p == length(G)) {
+        ## Global Test
+        ## We do not need not search for a direction, i.e. hat{u} = hat{theta}.
+        if(Cov.weight==TRUE)
+        {
+          lasso.plugin <- mean((Xc %*% htheta)^2)
+        }
+        else
+        {
+          if(is.null(A))
+          {
+            print("Need to provide a known square matrix A of dimension p, results are faulty")
+          }
+          else{
+            lasso.plugin <- t(htheta)%*%Ac%*%htheta
+          }
+        }
+        direction <- htheta
+        loading.norm <- 1
+        test.vec <- htheta
       } else {
-        if (n >= 6 * p) {
-          tmp <- eigen(sigma.hat)
-          tmp <- min(tmp$values) / max(tmp$values)
-        } else {
-          tmp <- 0
-        }
 
-        ## Search for projection direction u
-        if ((n >= 6 * p) && (tmp >= 1e-4)) {
-          # sigma.hat matrix is well conditioned
-          direction <- solve(sigma.hat) %*% loading    ######loading reduces to test.vec if Ac = I
+        ## Prepare all quantities
+        sigma.hat <- (1 / (n-1)) * (t(Xc) %*% Xc)
+        test.vec <- matrix(0, ncol = 1, nrow = pp)
+        loading <- matrix(0, ncol = 1, nrow = pp)
+        test.vec[G] <- htheta[G]
+
+        if(Cov.weight==TRUE)
+        {
+          loading[G] <- (sigma.hat %*% test.vec)[G]
+          lasso.plugin <- mean((Xc %*% test.vec)^2)
+        }
+        else
+        {
+          if(is.null(A))
+          {
+            print("Need to provide a known square matrix A of dimension p, results are faulty")
+          }
+          else{
+            loading[G] <- (Ac %*% test.vec)[G]
+            lasso.plugin <- t(test.vec)%*%Ac%*%test.vec
+          }
+        }
+        loading.norm <- sqrt(sum(loading^2))
+
+        if (loading.norm == 0) {
+          direction <- rep(0, pp)
         } else {
-#          if (n > 0.5 * p) {
-            # for option 1
+          if (n >= 6 * p) {
+            tmp <- eigen(sigma.hat)
+            tmp <- min(tmp$values) / max(tmp$values)
+          } else {
+            tmp <- 0
+          }
+
+          ## Search for projection direction u
+          if ((n >= 6 * p) && (tmp >= 1e-4)) {
+            # sigma.hat matrix is well conditioned
+            direction <- solve(sigma.hat) %*% loading
+          } else {
             if (is.null(step)) {
               step.vec <- rep(NA, 3)
               for (t in 1:3) {
@@ -489,71 +395,66 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = NULL,init.Lasso = NULL, tau.vec =
             }
             Direction.Est <- Direction_fixedtuning_robust(Xc, loading, mu = sqrt(2.01 * log(pp) / n) * resol^{-(step - 1)})
             while(is.na(Direction.Est) || length(Direction.Est$proj)==0){
-              #print(paste("step is", step))
               step<-step-1
               Direction.Est <- Direction_fixedtuning_robust(Xc, loading, mu = sqrt(2.01 * log(pp) / n) * resol^{-(step - 1)})
             }
-          print(paste("step is", step))
-          direction <- Direction.Est$proj
-          sqrt(sum(direction^2))
-        }
-      }
-
-    }
-
-    ### Correct the initial estimator by the constructed projection direction
-    correction <- 2 * loading.norm * t(Xc %*% direction) %*% (y - Xc %*% htheta) / n
-
-    ## This 2 is not there in the correction term of LF
-
-    debias.est <- lasso.plugin + correction
-    debias.est
-    if(Cov.weight==TRUE)
-    {
-      se1 <- 2 * sd.est * sqrt(sum((Xc %*% direction)^2) / (n)^2) * loading.norm
-      se2 <- sqrt(var.Sigma(Xc, test.vec) / n)
-
-      if (is.null(tau.vec)) { # TODO maybe just set as default argument in function call.
-        tau.vec <- 1
-      }
-
-      if (abs(correction) > abs(lasso.plugin)) {
-        warning(paste("The model is most likely misspecified because the correction term is larger than the lasso estimate in absolute value.",
-                      "See cluster or group: ", paste(colnames(Xc)[G], collapse = ", "),
-                      ". The value of the lasso.plugin and correction are", round(lasso.plugin, 5),
-                      " respectively ", round(correction, 5), "."))
-      }
-
-      # TODO Is tau.vec a vector in the future? Or change pmin to min.
-      ### Correct standard error value by tau.
-      tau <- pmin(tau.vec, spar.est * log(p) / sqrt(n))
-      se.vec <- sqrt(se1^2 + se2^2 + (tau / n))
-    }
-    else
-    {
-      if(is.null(A))
-      {
-        print("Need to provide a known square matrix A of dimension p, results are faulty")
-      }
-      else{
-        se<-2*sd.est*sqrt(sum((Xc%*%direction)^2)/(n)^2)*loading.norm
-        #tau=0
-        if(is.null(tau.vec)){
-          tau.vec=c(0.5)
-        }
-        se.vec<-rep(NA,length(tau.vec))
-        for (i in 1: length(tau.vec)){
-          #tau=min(tau.vec[i],spar.est*log(p)/sqrt(n))
-          tau = tau.vec[i]
-          se<-sqrt(se^2+tau/n)
-          se.vec[i]<-se
+            print(paste("step is", step))
+            direction <- Direction.Est$proj
+            sqrt(sum(direction^2))
           }
+        }
+
       }
+
+      ### Correct the initial estimator by the constructed projection direction
+      correction <- 2 * loading.norm * t(Xc %*% direction) %*% (y - Xc %*% htheta) / n
+
+      debias.est <- lasso.plugin + correction
+      debias.est
+      if(Cov.weight==TRUE)
+      {
+        se1 <- 2 * sd.est * sqrt(sum((Xc %*% direction)^2) / (n)^2) * loading.norm
+        se2 <- sqrt(var.Sigma(Xc, test.vec) / n)
+
+        if (is.null(tau.vec)) {
+          tau.vec <- 1
+        }
+
+        if (abs(correction) > abs(lasso.plugin)) {
+          warning(paste("The model is most likely misspecified because the correction term is larger than the lasso estimate in absolute value.",
+                        "See cluster or group: ", paste(colnames(Xc)[G], collapse = ", "),
+                        ". The value of the lasso.plugin and correction are", round(lasso.plugin, 5),
+                        " respectively ", round(correction, 5), "."))
+        }
+
+        ### Correct standard error value by tau.
+        tau <- pmin(tau.vec, spar.est * log(p) / sqrt(n))
+        se.vec <- sqrt(se1^2 + se2^2 + (tau / n))
+      }
+      else
+      {
+        if(is.null(A))
+        {
+          print("Need to provide a known square matrix A of dimension p, results are faulty")
+        }
+        else{
+          se<-2*sd.est*sqrt(sum((Xc%*%direction)^2)/(n)^2)*loading.norm
+          if(is.null(tau.vec)){
+            tau.vec=c(0.5)
+          }
+          se.vec<-rep(NA,length(tau.vec))
+          for (i in 1: length(tau.vec)){
+            tau = tau.vec[i]
+            se<-sqrt(se^2+tau/n)
+            se.vec[i]<-se
+          }
+        }
+      }
+      returnList <- list("prop.est" = debias.est,
+                         "se" = se.vec,
+                         "proj"=direction,
+                         "plug.in" = lasso.plugin)
+      return(returnList)
     }
-    returnList <- list("prop.est" = debias.est,
-                       "se" = se.vec,
-                       "proj"=direction,
-                       "plug.in" = lasso.plugin)
-    return(returnList)
   }
 }

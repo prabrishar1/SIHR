@@ -151,7 +151,7 @@ Est$prop.est
 Est$se
 ```
 
-Finding Projection Direction in Linear Regression
+Finding projection direction in high dimensional linear regression
 
 ```{r proj linear}
 
@@ -173,7 +173,7 @@ Direction.est$proj
 
 ```
 
-Finding Projection Direction in Logistic Regression
+Finding projection direction in high dimensional logistic regression
 
 ```{r proj logistic}
 
@@ -208,4 +208,87 @@ Direction.est$proj
 
 Direction.est <- FIHR::Direction_searchtuning(Xc,loading,model = "logistic",weight = 1/f_prime, deriv.vec = f_prime)
 Direction.est$proj
+```
+
+Inference for difference of linear functionals in high dimensional linear regression
+
+```{r lindiff linear}
+
+n1 = 100
+p = 400
+n2 = 150
+A1gen <- function(rho,p){
+A1=matrix(0,p,p)
+for(i in 1:p){
+for(j in 1:p){
+  A1[i,j]<-rho^(abs(i-j))
+}
+}
+A1
+}
+mu <- rep(0,p)
+mu[1:5] <- c(1:5)/5
+rho = 0.5
+Cov <- (A1gen(rho,p))/2
+Cov2<-matrix(NA,nrow=p,ncol=p)
+for(i in 1:p){
+for(j in 1:p){
+  Cov2[i,j]<-0.5^(1+abs(i-j))
+}
+}
+beta1 <- rep(0,p)
+beta1[1:10] <- c(1:10)/5
+beta2 <- rep(0,p)
+beta2[1:5] <- c(1:5)/10
+X1 <- MASS::mvrnorm(n1,mu,Cov)
+X2 <- MASS::mvrnorm(n2,mu,Cov)
+y1 = X1%*%beta1 + rnorm(n1)
+y2 = X2%*%beta2 + rnorm(n2)
+loading <- MASS::mvrnorm(1,rep(0,p),Cov2)
+Est <- FIHR::ITS(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
+Est$prop.est
+Est$se
+```
+
+Inference for difference of case probabilities in high dimensional logistic regression
+
+```{r lindiff log}
+A1gen <- function(rho,p){
+A1=matrix(0,p,p)
+for(i in 1:p){
+ for(j in 1:p){
+   A1[i,j]<-rho^(abs(i-j))
+ }
+}
+A1
+}
+n1 = 100
+n2 = 200
+p = 400
+mu <- rep(0,p)
+rho = 0.5
+Cov <- (A1gen(rho,p))/2
+Cov2<-matrix(NA,nrow=p,ncol=p)
+for(i in 1:p){
+ for(j in 1:p){
+   Cov2[i,j]<-0.5^(1+abs(i-j))
+ }
+}
+
+beta1 <- rep(0,p)
+beta1[1:10] <- c(1:10)/5
+beta2 <- rep(0,p)
+beta2[1:5] <- c(1:5)/10
+X1 <- MASS::mvrnorm(n1,mu,Cov)
+X2 <- MASS::mvrnorm(n2,mu,Cov)
+exp_val1 <- X1%*%beta1
+exp_val2 <- X2%*%beta2
+prob1 <- exp(exp_val1)/(1+exp(exp_val1))
+prob2 <- exp(exp_val2)/(1+exp(exp_val2))
+y1 <- rbinom(n1,1,prob1)
+y2 <- rbinom(n2,1,prob2)
+loading <- MASS::mvrnorm(1,mu,Cov2)
+Est <- FIHR::ITS_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
+Est$prop.est
+Est$se
 ```

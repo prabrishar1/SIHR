@@ -32,7 +32,6 @@ Direction_fixedtuning<-function(X,loading,mu=NULL,model = "linear",weight=NULL,d
     H <- cbind(loading / loading.norm, diag(1, pp))
   }
 
-  #H<-cbind(loading/loading.norm,diag(1,pp))
   v<-Variable(pp+1)
   if(model=="linear")
   {
@@ -51,7 +50,6 @@ Direction_fixedtuning<-function(X,loading,mu=NULL,model = "linear",weight=NULL,d
   result<-solve(prob)
   print("fixed mu")
   print(mu)
-  #print(result$value)
   opt.sol<-result$getValue(v)
   cvxr_status<-result$status
   direction<-(-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
@@ -89,10 +87,8 @@ Direction_searchtuning<-function(X,loading,model="linear",weight=NULL,deriv.vec=
   cvxr_status = "optimal";
 
   mu = sqrt(2.01*log(pp)/n);
-  #mu.initial= mu;
   while (lamstop == 0 && tryno < maxiter){
     ###### This iteration is to find a good tuning parameter
-    #print(mu);
     lastv = opt.sol;
     lastresp = cvxr_status;
     loading.norm<-sqrt(sum(loading^2))
@@ -103,7 +99,6 @@ Direction_searchtuning<-function(X,loading,model="linear",weight=NULL,deriv.vec=
       H <- cbind(loading / loading.norm, diag(1, pp))
     }
 
-    #H<-cbind(loading/loading.norm,diag(1,pp))
     v<-Variable(pp+1)
     if(model=="linear")
     {
@@ -120,10 +115,7 @@ Direction_searchtuning<-function(X,loading,model="linear",weight=NULL,deriv.vec=
     }
     prob<-Problem(Minimize(obj))
     result<-solve(prob)
-    #print(result$value)
-    #opt.sol<-result$getValue(v)
     cvxr_status<-result$status
-    #print(cvxr_status)
     if(tryno==1){
       if(cvxr_status=="optimal"){
         incr = 0;
@@ -168,7 +160,6 @@ Direction_searchtuning<-function(X,loading,model="linear",weight=NULL,deriv.vec=
           {
             temp.sd<-sqrt(sum(((X%*% temp.vec)^2)*weight*deriv.vec)/(n)^2)*loading.norm
           }
-          #print(temp.sd)
         }else{
           mu=mu*resol;
           opt.sol=lastv;

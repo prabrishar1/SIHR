@@ -2,6 +2,8 @@
 
 export(Direction_fixedtuning)
 export(Direction_searchtuning)
+export(ITS)
+export(ITS_Logistic)
 export(LF)
 export(LF_logistic)
 export(QF)
