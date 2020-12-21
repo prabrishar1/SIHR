@@ -438,8 +438,8 @@ LF<-function(X,y,loading,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step
 #' y1 = X1%*%beta1 + rnorm(n1)
 #' y2 = X2%*%beta2 + rnorm(n2)
 #' loading <- MASS::mvrnorm(1,rep(0,p),Cov2)
-#' Est <- ITS(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
-ITS<-function(X1,y1,X2,y2,loading,intercept=TRUE,init.Lasso1=NULL,init.Lasso2=NULL,lambda1=NULL,lambda2=NULL,mu1=NULL,mu2=NULL,step1=NULL,step2=NULL,resol = 1.5,maxiter=10){
+#' Est <- ITE(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
+ITE<-function(X1,y1,X2,y2,loading,intercept=TRUE,init.Lasso1=NULL,init.Lasso2=NULL,lambda1=NULL,lambda2=NULL,mu1=NULL,mu2=NULL,step1=NULL,step2=NULL,resol = 1.5,maxiter=10){
   Est1<-FIHR::LF(X1,y1,loading,intercept=intercept,init.Lasso=init.Lasso1,lambda=lambda1,mu=mu1,step=step1,resol = 1.5,maxiter=10)
   Est2<-FIHR::LF(X2,y2,loading,intercept=intercept,init.Lasso=init.Lasso2,lambda=lambda2,mu=mu2,step=step2,resol = 1.5,maxiter=10)
   debias.est<-Est1$prop.est - Est2$prop.est

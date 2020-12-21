@@ -3,6 +3,11 @@ getmode <- function(v) {
   uniqv[which.max(tabulate(match(v, uniqv)))]
 }
 
+expo <- function(z){
+  g = exp(z)/(1+exp(z))
+  return(g)
+}
+
 Initialization.step <- function(X, y, lambda = NULL, intercept = FALSE) {
   n <- nrow(X)
    col.norm <- 1 / sqrt((1 / n) * diag(t(X) %*% X))
@@ -175,6 +180,7 @@ Direction_searchtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec,res
 #' such that the dual optimization problem for constructing the projection direction converges (default = 1.5)
 #' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = 10)
+#' @param alpha Level of significance to conduct the test (default = \code{NULL})
 #'
 #' @return
 #' \item{prop.est}{The bias corrected estimator of the linear functional}
@@ -193,13 +199,13 @@ Direction_searchtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec,res
 #' \insertRef{linlog}{FIHR}
 #' @examples
 #' A1gen <- function(rho,p){
-#' A1=matrix(0,p,p)
-#' for(i in 1:p){
-#'   for(j in 1:p){
-#'     A1[i,j]<-rho^(abs(i-j))
-#'   }
-#' }
-#' A1
+#'  A1=matrix(0,p,p)
+#'  for(i in 1:p){
+#'    for(j in 1:p){
+#'      A1[i,j]<-rho^(abs(i-j))
+#'    }
+#'  }
+#'  A1
 #' }
 #' n = 100
 #' p = 400
@@ -213,15 +219,17 @@ Direction_searchtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec,res
 #'   }
 #' }
 #' beta <- rep(0,p)
-#' beta[1:10] <- c(1:10)/5
+#' beta[1:10] <- 0.5*c(1:10)/10
+#' a0 = 0
+#' set.seed(12)
+#' loading <- MASS::mvrnorm(1,mu,Cov2)
+#' true <- FIHR:::expo(t(loading)%*%beta+a0)
 #' X <- MASS::mvrnorm(n,mu,Cov)
-#' exp_val <- X%*%beta
+#' exp_val <- X%*%beta+a0
 #' prob <- exp(exp_val)/(1+exp(exp_val))
 #' y <- rbinom(n,1,prob)
-#' loading <- MASS::mvrnorm(1,mu,Cov2)
 #' Est <- LF_logistic(X = X, y = y, loading = loading, intercept = TRUE, weight = NULL)
-
-LF_logistic<-function(X,y,loading,weight=NULL,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step=NULL,resol = 1.5,maxiter=10){
+LF_logistic<-function(X,y,loading,weight=NULL,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step=NULL,resol = 1.5,maxiter=10, alpha = 0.05){
 
   xnew <- loading
   X<-as.matrix(X)
@@ -327,14 +335,20 @@ LF_logistic<-function(X,y,loading,weight=NULL,intercept=TRUE,init.Lasso=NULL,lam
       }
       exp_pred=Xc%*%(htheta)
 
-      weighed.residual=(y - exp(exp_pred)/(1+ exp(exp_pred)))*weight   ##### modified weight
+      weighed.residual=(y - exp(exp_pred)/(1+ exp(exp_pred)))*weight
 
       correction = sum((Xc%*%direction)*weighed.residual)/n;
       debias.est=lasso.plugin+correction*loading.norm
+      se<-sqrt(mean((Xc%*%direction)^2*weight^2*deriv.vec))*loading.norm/sqrt(n)
+      CI <- c(debias.est - 2*qnorm(1-alpha/2)*se, debias.est + 2*qnorm(1-alpha/2)*se)
+      if(debias.est - qnorm(1-alpha)*se > 0){
+        print("The null hypothesis claiming the case probability = 0.5, is rejected")
+      }else{
+        print("The null hypothesis claiming the case probability = 0.5, is accepted")
+      }
 
-      se<-sqrt(mean((Xc%*%direction)^2*weight^2*deriv.vec))*loading.norm/sqrt(n) ##### modified
-      returnList <- list("prop.est" = debias.est,
-                         "se" = se,
+      returnList <- list("prop.est" = expo(debias.est),
+                         "CI" = c(expo(CI[1]),expo(CI[2])),
                          "proj"=direction,
                          "plug.in"=lasso.plugin
       )
@@ -418,18 +432,12 @@ LF_logistic<-function(X,y,loading,weight=NULL,intercept=TRUE,init.Lasso=NULL,lam
 #' y1 <- rbinom(n1,1,prob1)
 #' y2 <- rbinom(n2,1,prob2)
 #' loading <- MASS::mvrnorm(1,mu,Cov2)
-#' Est <- ITS_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
-ITS_Logistic<-function(X1,y1,X2,y2,loading,weight=NULL,intercept=TRUE,init.Lasso1=NULL,init.Lasso2=NULL,lambda1=NULL,lambda2=NULL,mu1=NULL,mu2=NULL,step1=NULL,step2=NULL,resol = 1.5,maxiter=10){
+#' Est <- ITE_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
+ITE_Logistic<-function(X1,y1,X2,y2,loading,weight=NULL,intercept=TRUE,init.Lasso1=NULL,init.Lasso2=NULL,lambda1=NULL,lambda2=NULL,mu1=NULL,mu2=NULL,step1=NULL,step2=NULL,resol = 1.5,maxiter=10){
   Est1<-FIHR::LF_logistic(X=X1,y=y1,loading,weight=weight,intercept=intercept,init.Lasso=init.Lasso1,lambda=lambda1,mu=mu1,step=step1,resol=resol,maxiter=maxiter)
   Est2<-FIHR::LF_logistic(X=X2,y=y2,loading,weight=weight,intercept=intercept,init.Lasso=init.Lasso2,lambda=lambda2,mu=mu2,step=step2,resol=resol,maxiter=maxiter)
-  expo <- function(z){
-    g = exp(z)/(1+exp(z))
-    return(g)
-  }
-  debias.est<-expo(Est1$prop.est) - expo(Est2$prop.est)
-  rho_1=expo(Est1$prop.est)*(1-expo(Est1$prop.est))
-  rho_2=expo(Est2$prop.est)*(1-expo(Est2$prop.est))
-  se = sqrt((rho_1*(Est1$se))^2 + (rho_2*(Est2$se))^2)
+  debias.est<- Est1$prop.est - Est2$prop.est
+  se<-sqrt((Est1$se)^2 + (Est2$se)^2)
   direction1 <- Est1$proj
   direction2 <- Est2$proj
   lasso.plugin1 <- Est1$plug.in

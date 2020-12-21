@@ -15,7 +15,8 @@ LF_logistic(
   mu = NULL,
   step = NULL,
   resol = 1.5,
-  maxiter = 10
+  maxiter = 10,
+  alpha = 0.05
 )
 }
 \arguments{
@@ -43,6 +44,8 @@ such that the dual optimization problem for constructing the projection directio
 
 \item{maxiter}{Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 such that the dual optimization problem for constructing the projection direction converges (default = 10)}
+
+\item{alpha}{Level of significance to conduct the test (default = \code{NULL})}
 }
 \value{
 \item{prop.est}{The bias corrected estimator of the linear functional}
@@ -55,13 +58,13 @@ Computes the bias corrected estimator of the linear functional \code{loading}\eq
 }
 \examples{
 A1gen <- function(rho,p){
-A1=matrix(0,p,p)
-for(i in 1:p){
-  for(j in 1:p){
-    A1[i,j]<-rho^(abs(i-j))
-  }
-}
-A1
+ A1=matrix(0,p,p)
+ for(i in 1:p){
+   for(j in 1:p){
+     A1[i,j]<-rho^(abs(i-j))
+   }
+ }
+ A1
 }
 n = 100
 p = 400
@@ -75,12 +78,15 @@ for(i in 1:p){
   }
 }
 beta <- rep(0,p)
-beta[1:10] <- c(1:10)/5
+beta[1:10] <- 0.5*c(1:10)/10
+a0 = 0
+set.seed(12)
+loading <- MASS::mvrnorm(1,mu,Cov2)
+true <- FIHR:::expo(t(loading)\%*\%beta+a0)
 X <- MASS::mvrnorm(n,mu,Cov)
-exp_val <- X\%*\%beta
+exp_val <- X\%*\%beta+a0
 prob <- exp(exp_val)/(1+exp(exp_val))
 y <- rbinom(n,1,prob)
-loading <- MASS::mvrnorm(1,mu,Cov2)
 Est <- LF_logistic(X = X, y = y, loading = loading, intercept = TRUE, weight = NULL)
 }
 \references{
