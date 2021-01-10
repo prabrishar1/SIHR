@@ -2,7 +2,7 @@
 % Please edit documentation in R/Projection_Directions.R
 \name{Direction_searchtuning}
 \alias{Direction_searchtuning}
-\title{Searches for the best step size and computes the projection direction in high dimensional regression}
+\title{Searches for the best step size and computes the projection direction with the searched best step size}
 \usage{
 Direction_searchtuning(
   X,
@@ -19,23 +19,24 @@ Direction_searchtuning(
 
 \item{loading}{Loading, of length \eqn{p}}
 
-\item{model}{The high dimensional regression model, either \code{linear} or \code{logistic}}
+\item{model}{The high dimensional regression model, either \code{linear} or \code{logistic} (default = \code{linear})}
 
-\item{weight}{The weight vector of length \eqn{n}, used in correcting the plug-in estimator ; to be supplied if \code{model="logistic"} (default=NULL)}
+\item{weight}{The weight vector of length \eqn{n}; to be supplied if \code{model="logistic"} (default=NULL)}
 
-\item{deriv.vec}{The first derivative vector of the logit function at \eqn{X\widehat{\beta}} ; to be supplied if \code{model="logistic"}}
+\item{deriv.vec}{The first derivative vector of the logit function at \eqn{X\widehat{\beta}}, of length \eqn{n} ; to be supplied if \code{model="logistic"} (default = \code{NULL})}
 
-\item{resol}{Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
+\item{resol}{The factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 such that the dual optimization problem for constructing the projection direction converges (default = 1.5)}
 
 \item{maxiter}{Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 such that the dual optimization problem for constructing the projection direction converges (default = 10)}
 }
 \value{
-\item{proj}{The projection direction}
+\item{proj}{The projection direction, of length \eqn{p}}
+\item{step}{The best step size}
 }
 \description{
-Searches for the best step size and computes the projection direction in high dimensional regression
+Searches for the best step size and computes the projection direction with the searched best step size
 }
 \examples{
 n = 100

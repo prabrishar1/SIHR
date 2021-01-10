@@ -190,10 +190,10 @@ Direction_searchtuning_lin<-function(X,loading,mu=NULL, resol = 1.5, maxiter = 1
   return(returnList)
 }
 
-#' Inference for linear functional in the high dimensional linear regression
+#' Inference for the linear functional in high dimensional linear regression
 #'
 #' @description
-#' Computes the bias corrected estimator of linear functional \code{loading}\eqn{^{\top}\beta} for the high dimensional linear regression \eqn{Y_i=X_i^{\top}\beta + \epsilon_i} and the corresponding standard error.
+#' Computes the bias corrected estimator of linear functional \code{xnew}\eqn{^{\top}\beta} for the high dimensional linear regression \eqn{y=X^{\top}\beta + \epsilon} and the corresponding standard error along with the confidence interval.
 #'
 #' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
 #' @param y Outcome vector, of length \eqn{n}
@@ -204,16 +204,20 @@ Direction_searchtuning_lin<-function(X,loading,mu=NULL, resol = 1.5, maxiter = 1
 #' @param mu The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})
 #' @param step Number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = \code{NULL})
-#' @param resol Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
+#' @param resol The factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = 1.5)
 #' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = 10)
+#' @param alpha Level of significance to conduct the test \eqn{H_0: \code{loading}^{\top}\beta \leq 0} vs \eqn{H_1: \code{loading}^{\top}\beta > 0} (default = 0.05)
 #'
 #' @return
 #' \item{prop.est}{The bias-corrected estimator for the linear functional}
 #' \item{se}{The standard error of the bias-corrected estimator}
+#' \item{CI}{The confidence interval for the linear functional}
+#' \item{decision}{The decision of whether the null hypothesis claiming the linear functional is less than equal to 0 is rejected (\code{decision}\eqn{=1}) or not (\code{decision}\eqn{=0})}
 #' \item{proj}{The projection direction, of length \eqn{p}}
 #' \item{plug.in}{The plug-in LASSO estimator for the linear functional}
+#'
 #' @export
 #'
 #' @importFrom Rdpack reprompt
@@ -241,19 +245,13 @@ Direction_searchtuning_lin<-function(X,loading,mu=NULL, resol = 1.5, maxiter = 1
 #' mu[1:5] <- c(1:5)/5
 #' rho = 0.5
 #' Cov <- (A1gen(rho,p))/2
-#' Cov2<-matrix(NA,nrow=p,ncol=p)
-#' for(i in 1:p){
-#'  for(j in 1:p){
-#'    Cov2[i,j]<-0.5^(1+abs(i-j))
-#'   }
-#' }
 #' beta <- rep(0,p)
 #' beta[1:10] <- c(1:10)/5
 #' X <- MASS::mvrnorm(n,mu,Cov)
 #' y = X%*%beta + rnorm(n)
-#' loading <- MASS::mvrnorm(1,rep(0,p),Cov2)
+#' loading <- MASS::mvrnorm(1,rep(0,p),Cov)
 #' Est <- LF(X = X, y = y, loading = loading, intercept = TRUE)
-LF<-function(X,y,loading,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step=NULL,resol = 1.5,maxiter=10){
+LF<-function(X,y,loading,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step=NULL,resol = 1.5,maxiter=10,alpha=0.05){
   xnew<-loading
   p <- ncol(X);
   n <- nrow(X);
@@ -352,8 +350,18 @@ LF<-function(X,y,loading,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step
       correction = t(Xc%*%direction)%*%(y - Xc%*%htheta)/n;
       debias.est=lasso.plugin+correction*loading.norm
       se<-sd.est*sqrt(sum((Xc%*%direction)^2)/(n)^2)*loading.norm
+      CI <- c(debias.est - qnorm(1-alpha/2)*se, debias.est + qnorm(1-alpha/2)*se)
+      if(debias.est - qnorm(1-alpha)*se > 0){
+        dec <- 1
+        #print("The null hypothesis claiming the linear functional is less than equal to 0, is rejected")
+      }else{
+        dec <- 0
+        #print("The null hypothesis claiming the linear functional is less than equal to 0, cannot be rejected")
+      }
       returnList <- list("prop.est" = debias.est,
                          "se" = se,
+                         "CI"=CI,
+                         "decision"=dec,
                          "proj"=direction,
                          "plug.in"=lasso.plugin
       )
@@ -365,12 +373,12 @@ LF<-function(X,y,loading,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step
 #' Individualised treatment selection in the high dimensional linear regression
 #'
 #' @description
-#' Computes the bias corrected estimator of \code{loading}\eqn{^{\top}(\beta_1-\beta_2)} for the high dimensional linear regression \eqn{Y_k=X_k^{\top}\beta_k + \epsilon_k,  k=1,2} and the corresponding standard error.
+#' Computes the bias corrected estimator of \eqn{<}\code{loading}\eqn{,\beta_1-\beta_2>} for the high dimensional linear regression \code{yk}\eqn{=}\code{Xk}\eqn{^{\top}\beta_k + \epsilon_k,  k=1,2} and the corresponding standard error along with the confidence interval.
 #'
-#' @param X1 First design matrix, of dimension \eqn{n_1} x \eqn{p}
-#' @param y1 First outcome vector, of length \eqn{n_1}
-#' @param X2 Second design matrix, of dimension \eqn{n_2} x \eqn{p}
-#' @param y2 Second outcome vector, of length \eqn{n_2}
+#' @param X1 Design matrix for the first sample, of dimension \eqn{n_1} x \eqn{p}
+#' @param y1 Outcome vector for the first sample, of length \eqn{n_1}
+#' @param X2 Design matrix for the second sample, of dimension \eqn{n_2} x \eqn{p}
+#' @param y2 Outcome vector for the second sample, of length \eqn{n_2}
 #' @param loading Loading, of length \eqn{p}
 #' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
 #' @param init.Lasso1 Initial LASSO estimator of the regression vector \eqn{\beta_1} (default = \code{NULL})
@@ -383,18 +391,17 @@ LF<-function(X,y,loading,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step
 #' such that the dual optimization problem for constructing the first \eqn{(k=1)} projection direction converges (default = \code{NULL})
 #' @param step2 Number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the second \eqn{(k=2)} projection direction converges (default = \code{NULL})
-#' @param resol Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
+#' @param resol The factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = 1.5)
 #' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = 10)
+#' @param alpha Level of significance to conduct the test \eqn{H_0:} \code{loading}\eqn{^{\top}(\beta_1-\beta_2)\leq 0} vs \eqn{H_1:} \code{loading}\eqn{^{\top}(\beta_1-\beta_2)> 0} (default = 0.05)
 #'
 #' @return
-#' \item{prop.est}{The bias-corrected estimator for the difference of linear functionals}
+#' \item{prop.est}{The bias-corrected estimator for the difference of the linear functionals}
 #' \item{se}{The standard error of the bias-corrected estimator}
-#' \item{proj1}{The first \eqn{(k=1)} projection direction, of length \eqn{p}}
-#' \item{proj2}{The second \eqn{(k=2)} projection direction, of length \eqn{p}}
-#' \item{plug.in1}{The plug-in LASSO estimator for the first \eqn{(k=1)} linear functional}
-#' \item{plug.in2}{The plug-in LASSO estimator for the second \eqn{(k=2)} linear functional}
+#' \item{CI}{The confidence interval for the difference of the linear functionals}
+#' \item{decision}{The decision of whether the null hypothesis claiming the difference of the linear functionals is less than equal to 0 is rejected (\code{decision}\eqn{=1}) or not (\code{decision}\eqn{=0})}
 #' @export
 #'
 #' @importFrom Rdpack reprompt
@@ -423,12 +430,6 @@ LF<-function(X,y,loading,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step
 #' mu[1:5] <- c(1:5)/5
 #' rho = 0.5
 #' Cov <- (A1gen(rho,p))/2
-#' Cov2<-matrix(NA,nrow=p,ncol=p)
-#' for(i in 1:p){
-#'  for(j in 1:p){
-#'    Cov2[i,j]<-0.5^(1+abs(i-j))
-#'   }
-#' }
 #' beta1 <- rep(0,p)
 #' beta1[1:10] <- c(1:10)/5
 #' beta2 <- rep(0,p)
@@ -437,23 +438,25 @@ LF<-function(X,y,loading,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step
 #' X2 <- MASS::mvrnorm(n2,mu,Cov)
 #' y1 = X1%*%beta1 + rnorm(n1)
 #' y2 = X2%*%beta2 + rnorm(n2)
-#' loading <- MASS::mvrnorm(1,rep(0,p),Cov2)
+#' loading <- MASS::mvrnorm(1,rep(0,p),Cov)
 #' Est <- ITE(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
-ITE<-function(X1,y1,X2,y2,loading,intercept=TRUE,init.Lasso1=NULL,init.Lasso2=NULL,lambda1=NULL,lambda2=NULL,mu1=NULL,mu2=NULL,step1=NULL,step2=NULL,resol = 1.5,maxiter=10){
-  Est1<-FIHR::LF(X1,y1,loading,intercept=intercept,init.Lasso=init.Lasso1,lambda=lambda1,mu=mu1,step=step1,resol = 1.5,maxiter=10)
-  Est2<-FIHR::LF(X2,y2,loading,intercept=intercept,init.Lasso=init.Lasso2,lambda=lambda2,mu=mu2,step=step2,resol = 1.5,maxiter=10)
+ITE<-function(X1,y1,X2,y2,loading,intercept=TRUE,init.Lasso1=NULL,init.Lasso2=NULL,lambda1=NULL,lambda2=NULL,mu1=NULL,mu2=NULL,step1=NULL,step2=NULL,resol = 1.5,maxiter=10,alpha=0.05){
+  Est1<-FIHR::LF(X1,y1,loading,intercept=intercept,init.Lasso=init.Lasso1,lambda=lambda1,mu=mu1,step=step1,resol = 1.5,maxiter=10,alpha=alpha)
+  Est2<-FIHR::LF(X2,y2,loading,intercept=intercept,init.Lasso=init.Lasso2,lambda=lambda2,mu=mu2,step=step2,resol = 1.5,maxiter=10,alpha=alpha)
   debias.est<-Est1$prop.est - Est2$prop.est
   se<-sqrt((Est1$se)^2 + (Est2$se)^2)
-  direction1<- Est1$proj
-  direction2<- Est2$proj
-  lasso.plugin1<- Est1$plug.in
-  lasso.plugin2<- Est2$plug.in
+  CI <- c(debias.est - qnorm(1-alpha/2)*se, debias.est + qnorm(1-alpha/2)*se)
+  if(debias.est - qnorm(1-alpha)*se > 0){
+    dec <- 1
+    #print("The null hypothesis claiming the difference of the linear functionals is less than equal to 0, is rejected")
+  }else{
+    dec <- 0
+    #print("The null hypothesis claiming the difference of the linear functionals is less than equal to 0, cannot be rejected")
+  }
   returnList <- list("prop.est" = debias.est,
                      "se" = se,
-                     "proj1"=direction1,
-                     "proj2"=direction2,
-                     "plug.in1"=lasso.plugin1,
-                     "plug.in2"=lasso.plugin2
+                     "CI"=CI,
+                     "decision" = dec
   )
   return(returnList)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/LF_linear.R
 \name{LF}
 \alias{LF}
-\title{Inference for linear functional in the high dimensional linear regression}
+\title{Inference for the linear functional in high dimensional linear regression}
 \usage{
 LF(
   X,
@@ -14,7 +14,8 @@ LF(
   mu = NULL,
   step = NULL,
   resol = 1.5,
-  maxiter = 10
+  maxiter = 10,
+  alpha = 0.05
 )
 }
 \arguments{
@@ -35,20 +36,24 @@ LF(
 \item{step}{Number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
 such that the dual optimization problem for constructing the projection direction converges (default = \code{NULL})}
 
-\item{resol}{Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
+\item{resol}{The factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 such that the dual optimization problem for constructing the projection direction converges (default = 1.5)}
 
 \item{maxiter}{Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 such that the dual optimization problem for constructing the projection direction converges (default = 10)}
+
+\item{alpha}{Level of significance to conduct the test \eqn{H_0: \code{loading}^{\top}\beta \leq 0} vs \eqn{H_1: \code{loading}^{\top}\beta > 0} (default = 0.05)}
 }
 \value{
 \item{prop.est}{The bias-corrected estimator for the linear functional}
 \item{se}{The standard error of the bias-corrected estimator}
+\item{CI}{The confidence interval for the linear functional}
+\item{decision}{The decision of whether the null hypothesis claiming the linear functional is less than equal to 0 is rejected (\code{decision}\eqn{=1}) or not (\code{decision}\eqn{=0})}
 \item{proj}{The projection direction, of length \eqn{p}}
 \item{plug.in}{The plug-in LASSO estimator for the linear functional}
 }
 \description{
-Computes the bias corrected estimator of linear functional \code{loading}\eqn{^{\top}\beta} for the high dimensional linear regression \eqn{Y_i=X_i^{\top}\beta + \epsilon_i} and the corresponding standard error.
+Computes the bias corrected estimator of linear functional \code{xnew}\eqn{^{\top}\beta} for the high dimensional linear regression \eqn{y=X^{\top}\beta + \epsilon} and the corresponding standard error along with the confidence interval.
 }
 \examples{
 n = 100
@@ -66,17 +71,11 @@ mu <- rep(0,p)
 mu[1:5] <- c(1:5)/5
 rho = 0.5
 Cov <- (A1gen(rho,p))/2
-Cov2<-matrix(NA,nrow=p,ncol=p)
-for(i in 1:p){
- for(j in 1:p){
-   Cov2[i,j]<-0.5^(1+abs(i-j))
-  }
-}
 beta <- rep(0,p)
 beta[1:10] <- c(1:10)/5
 X <- MASS::mvrnorm(n,mu,Cov)
 y = X\%*\%beta + rnorm(n)
-loading <- MASS::mvrnorm(1,rep(0,p),Cov2)
+loading <- MASS::mvrnorm(1,rep(0,p),Cov)
 Est <- LF(X = X, y = y, loading = loading, intercept = TRUE)
 }
 \references{

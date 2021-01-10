@@ -195,7 +195,7 @@ Direction_searchtuning_robust<-function(X,loading,mu=NULL, resol = 1.5, maxiter 
 
 #' Inference for quadratic functional in high dimensional linear regression
 #'
-#' @description Computes the bias-corrected estimator of the quadratic functional \eqn{\beta_G^{\top}A\beta_G} for the high dimensional linear regression \eqn{Y_i = X_i^{\top}\beta + \epsilon} and the corresponding standard error.
+#' @description Computes the bias-corrected estimator of the quadratic functional \eqn{\beta_G^{\top}A\beta_G} for the high dimensional linear regression \eqn{y = X^{\top}\beta + \epsilon} and the corresponding standard error along with the confidence interval.
 #'
 #' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
 #' @param y Outcome vector, of length \eqn{n}
@@ -213,10 +213,13 @@ Direction_searchtuning_robust<-function(X,loading,mu=NULL, resol = 1.5, maxiter 
 #' such that the dual optimization problem for constructing the projection direction converges (default = 1.5)
 #' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = 10)
+#' @param alpha Level of significance to test if the quadratic functional is equal to 0 (default = 0.05)
 #'
 #' @return
 #' \item{prop.est}{The bias-corrected estimator of the quadratic functional restricted to \code{G}}
 #' \item{se}{The standard error of the bias-corrected estimator}
+#' \item{CI}{The matrix of confidence interval for the quadratic functional; row corresponds to \code{tau.vec}}
+#' \item{decision}{The decision whether the null hypothesis claiming the quadratic form is equal to 0, is rejected (\code{decision}\eqn{=1}) or not (\code{decision}\eqn{=0}); row corresponds to \code{tau.vec}}
 #' \item{proj}{The projection direction, of length \eqn{p}}
 #' \item{plug.in}{The plug-in LASSO estimator for the quadratic functional restricted to \code{G}}
 #' @export
@@ -252,9 +255,9 @@ Direction_searchtuning_robust<-function(X,loading,mu=NULL, resol = 1.5, maxiter 
 #' @references
 #'
 #' \insertRef{grouplin}{FIHR}
-QF <- function(X, y, G, Cov.weight = TRUE, A = NULL,init.Lasso = NULL, tau.vec = NULL,
+QF <- function(X, y, G, Cov.weight = TRUE, A = diag(ncol(X)),init.Lasso = NULL, tau.vec = NULL,
                lambda = NULL, intercept = TRUE, mu = NULL,
-               step = NULL, resol = 1.25, maxiter = 10) {
+               step = NULL, resol = 1.25, maxiter = 10, alpha = 0.05) {
   p <- ncol(X)
   n <- nrow(X)
   n_y <- length(y)
@@ -329,13 +332,8 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = NULL,init.Lasso = NULL, tau.vec =
         }
         else
         {
-          if(is.null(A))
-          {
-            print("Need to provide a known square matrix A of dimension p, results are faulty")
-          }
-          else{
-            lasso.plugin <- t(htheta)%*%Ac%*%htheta
-          }
+           print("Warning : Matrix A in the quadratic functional is taken as the identity matrix")
+           lasso.plugin <- t(htheta)%*%Ac%*%htheta
         }
         direction <- htheta
         loading.norm <- 1
@@ -355,14 +353,10 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = NULL,init.Lasso = NULL, tau.vec =
         }
         else
         {
-          if(is.null(A))
-          {
-            print("Need to provide a known square matrix A of dimension p, results are faulty")
-          }
-          else{
-            loading[G] <- (Ac %*% test.vec)[G]
-            lasso.plugin <- t(test.vec)%*%Ac%*%test.vec
-          }
+          print("Warning : Matrix A in the quadratic functional is taken as the identity matrix")
+          loading[G] <- (Ac %*% test.vec)[G]
+          lasso.plugin <- t(test.vec)%*%Ac%*%test.vec
+
         }
         loading.norm <- sqrt(sum(loading^2))
 
@@ -450,8 +444,22 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = NULL,init.Lasso = NULL, tau.vec =
           }
         }
       }
+      CI <- matrix(NA,nrow=length(tau.vec),ncol=2)
+      dec <- array(dim=1)
+      for(i in 1:length(tau.vec)){
+        CI[i,] <- c(debias.est - qnorm(1-alpha/2)*se.vec[i], debias.est + qnorm(1-alpha/2)*se.vec[i])
+        if(debias.est - qnorm(1-alpha)*se.vec[i] > 0){
+          dec[i]<-1
+          #print("The null hypothesis claiming the quadratic form is equal to 0, is rejected")
+        }else{
+          dec[i]<-0
+          #print("The null hypothesis claiming the quadratic form is equal to 0, cannot be rejected")
+        }
+      }
       returnList <- list("prop.est" = debias.est,
                          "se" = se.vec,
+                         "CI" = CI,
+                         "decision" = dec,
                          "proj"=direction,
                          "plug.in" = lasso.plugin)
       return(returnList)

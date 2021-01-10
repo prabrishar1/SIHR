@@ -161,32 +161,34 @@ Direction_searchtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec,res
   return(returnList)
 }
 
-#' Inference for linear functional in the high dimensional logistic regression
+#' Inference for the case probability in high dimensional logistic regression
 #'
 #' @description
-#' Computes the bias corrected estimator of the linear functional \code{loading}\eqn{^{\top}\beta} for the high dimensional logistic regression \eqn{Y_i|X_i \sim } Bernoulli\eqn{(\frac{e^{X_i^{\top}\beta}}{1+e^{X_i^{\top}\beta}})} and the corresponding standard error.
+#' Computes the bias corrected estimator of the case probability h(\code{xnew}\eqn{^{\top}\beta}) for the high dimensional logistic regression \eqn{y|X \sim } Bernoulli(h(\eqn{X^{\top}\beta})) and the corresponding confidence interval. Here \eqn{h(z)=\frac{e^{z}}{1+e^{z}}}.
 #'
 #' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
 #' @param y Outcome vector, of length \eqn{n}
-#' @param loading Loading, of length \eqn{p}
+#' @param xnew Loading, of length \eqn{p}
 #' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
-#' @param weight The weight vector, of length \eqn{n}, used in correcting the plug-in estimator, uses the inverse Hessian weight if set to \code{NULL} (default = \code{NULL})
+#' @param weight The weight vector, of length \eqn{n}; if set to \code{NULL}, \eqn{w_i = h(X_i^{\top}\hat{\beta})(1-h(X_i^{\top}\hat{\beta}))} for \eqn{i=1,\ldots,n} (default = \code{NULL})
 #' @param init.Lasso Initial LASSO estimator of the regression vector (default = \code{NULL})
 #' @param lambda The tuning parameter used in the construction of LASSO estimator of the regression vector (default = \code{NULL})
 #' @param mu The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})
 #' @param step Number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = \code{NULL})
-#' @param resol Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
+#' @param resol The factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = 1.5)
 #' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = 10)
-#' @param alpha Level of significance to conduct the test (default = \code{NULL})
+#' @param alpha Level of significance to test if the case probability is less than or qual to 0 (default = 0.05)
 #'
 #' @return
-#' \item{prop.est}{The bias corrected estimator of the linear functional}
-#' \item{se}{The standard error of the bias-corrected estimator}
+#' \item{prop.est}{The bias corrected estimator of the case probability}
+#' \item{se_linear}{The standard error of the bias-corrected estimator of the linear functional}
+#' \item{CI}{The confidence interval for the case probability}
+#' \item{decision}{The decision of whether the null hypothesis claiming the case probability = 0.5, is rejected (\code{decision}\eqn{=1}) or not (\code{decision}\eqn{=0})}
 #' \item{proj}{The projection direction, of length \eqn{p}}
-#' \item{plug.in}{The plug-in LASSO estimator of the linear functional}
+#' \item{plug.in}{The plug-in LASSO estimator of the case probability}
 #'
 #' @export
 #'
@@ -212,26 +214,19 @@ Direction_searchtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec,res
 #' mu <- rep(0,p)
 #' rho = 0.5
 #' Cov <- (A1gen(rho,p))/2
-#' Cov2<-matrix(NA,nrow=p,ncol=p)
-#' for(i in 1:p){
-#'   for(j in 1:p){
-#'     Cov2[i,j]<-0.5^(1+abs(i-j))
-#'   }
-#' }
 #' beta <- rep(0,p)
 #' beta[1:10] <- 0.5*c(1:10)/10
 #' a0 = 0
 #' set.seed(12)
-#' loading <- MASS::mvrnorm(1,mu,Cov2)
+#' loading <- MASS::mvrnorm(1,mu,Cov)
 #' true <- FIHR:::expo(t(loading)%*%beta+a0)
 #' X <- MASS::mvrnorm(n,mu,Cov)
 #' exp_val <- X%*%beta+a0
 #' prob <- exp(exp_val)/(1+exp(exp_val))
 #' y <- rbinom(n,1,prob)
-#' Est <- LF_logistic(X = X, y = y, loading = loading, intercept = TRUE, weight = NULL)
-LF_logistic<-function(X,y,loading,weight=NULL,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step=NULL,resol = 1.5,maxiter=10, alpha = 0.05){
+#' Est <- LF_logistic(X = X, y = y, xnew = loading)
+LF_logistic<-function(X,y,xnew,weight=NULL,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step=NULL,resol = 1.5,maxiter=10, alpha = 0.05){
 
-  xnew <- loading
   X<-as.matrix(X)
   p <- ncol(X);
   n <- nrow(X);
@@ -342,15 +337,19 @@ LF_logistic<-function(X,y,loading,weight=NULL,intercept=TRUE,init.Lasso=NULL,lam
       se<-sqrt(mean((Xc%*%direction)^2*weight^2*deriv.vec))*loading.norm/sqrt(n)
       CI <- c(debias.est - 2*qnorm(1-alpha/2)*se, debias.est + 2*qnorm(1-alpha/2)*se)
       if(debias.est - qnorm(1-alpha)*se > 0){
-        print("The null hypothesis claiming the case probability = 0.5, is rejected")
+        dec <- 1
+        #print("The null hypothesis claiming the case probability = 0.5, is rejected")
       }else{
-        print("The null hypothesis claiming the case probability = 0.5, is accepted")
+        dec <- 0
+        #print("The null hypothesis claiming the case probability = 0.5, cannot be rejected")
       }
 
       returnList <- list("prop.est" = expo(debias.est),
+                         "se_linear" = se,
                          "CI" = c(expo(CI[1]),expo(CI[2])),
+                         "decision" = dec,
                          "proj"=direction,
-                         "plug.in"=lasso.plugin
+                         "plug.in"=expo(lasso.plugin)
       )
       return(returnList)
     }
@@ -358,17 +357,17 @@ LF_logistic<-function(X,y,loading,weight=NULL,intercept=TRUE,init.Lasso=NULL,lam
   }
 }
 
-#' Inference for diference of case probabilities in the high dimensional logistic regression
+#' Inference for diference of the case probability in the high dimensional logistic regression
 #'
 #' @description
-#' Computes the bias corrected estimator of \eqn{(\frac{e^{\code{loading}^{\top}\beta_1}}{1+e^{\code{loading}^{\top}\beta_1}})-\frac{e^{\code{loading}^{\top}\beta_2}}{1+e^{\code{loading}^{\top}\beta_2}})} for the high dimensional logistic regression \eqn{Y_k|X_k \sim } Bernoulli\eqn{(\frac{e^{X_k\beta_k}}{1+e^{X_k\beta_k}}),  k=1,2} and the corresponding standard error.
+#' Computes the bias corrected estimator of h(\code{xnew}\eqn{^{\top}\beta_1})-h(\code{xnew}\eqn{^{\top}\beta_2}) for the high dimensional logistic regression \eqn{yk|Xk \sim } Bernoulli\eqn{(\frac{e^{Xk\beta_k}}{1+e^{Xk\beta_k}}),  k=1,2} and the corresponding standard error.
 #'
-#' @param X1 First design matrix, of dimension \eqn{n_1} x \eqn{p}
-#' @param y1 First outcome vector, of length \eqn{n_1}
-#' @param X2 Second design matrix, of dimension \eqn{n_2} x \eqn{p}
-#' @param y2 Second outcome vector, of length \eqn{n_2}
-#' @param loading Loading, of length \eqn{p}
-#' @param weight The weight vector, of length \eqn{n}, used in correcting the plug-in estimators, uses the inverse Hessian weight if set to \code{NULL} (default = \code{NULL})
+#' @param X1 Design matrix for the first sample, of dimension \eqn{n_1} x \eqn{p}
+#' @param y1 Outcome vector for the first sample, of length \eqn{n_1}
+#' @param X2 Design matrix for the second sample, of dimension \eqn{n_2} x \eqn{p}
+#' @param y2 Outcome vector for the second sample, of length \eqn{n_2}
+#' @param xnew Loading, of length \eqn{p}
+#' @param weight The weight vector, of length \eqn{n}; if set to \code{NULL}, \eqn{w_i = h(X_i^{\top}\hat{\beta})(1-h(X_i^{\top}\hat{\beta}))} for \eqn{i=1,\ldots,n} (default = \code{NULL})
 #' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
 #' @param init.Lasso1 Initial LASSO estimator of the regression vector \eqn{\beta_1} (default = \code{NULL})
 #' @param init.Lasso2 Initial LASSO estimator of the regression vector \eqn{\beta_2} (default = \code{NULL})
@@ -380,18 +379,16 @@ LF_logistic<-function(X,y,loading,weight=NULL,intercept=TRUE,init.Lasso=NULL,lam
 #' such that the dual optimization problem for constructing the first \eqn{(k=1)} projection direction converges (default = \code{NULL})
 #' @param step2 Number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the second \eqn{(k=2)} projection direction converges (default = \code{NULL})
-#' @param resol Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
+#' @param resol The factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = 1.5)
 #' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = 10)
+#' @param alpha Level ofsignificance to test if the difference in case probabilities is less than equal to 0
 #'
 #' @return
 #' \item{prop.est}{The bias-corrected estimator for the difference of case probabilities}
-#' \item{se}{The standard error of the bias-corrected estimator}
-#' \item{proj1}{The first \eqn{(k=1)} projection direction, of length \eqn{p}}
-#' \item{proj2}{The second \eqn{(k=2)} projection direction, of length \eqn{p}}
-#' \item{plug.in1}{The plug-in LASSO estimator for the first \eqn{(k=1)} linear functional}
-#' \item{plug.in2}{The plug-in LASSO estimator for the second \eqn{(k=2)} linear functional}
+#' \item{se_linear}{The standard error of the bias-corrected estimator of \code{xnew}\eqn{^{\top}(\beta_1-\beta_2)}}
+#' \item{decision}{The decision of whether the null hypothesis claiming the difference between case probabilities is less than equal to 0 is rejected (\code{decision}\eqn{=1}) or not (\code{decision}\eqn{=0})}
 #' @export
 #'
 #' @importFrom Rdpack reprompt
@@ -413,12 +410,6 @@ LF_logistic<-function(X,y,loading,weight=NULL,intercept=TRUE,init.Lasso=NULL,lam
 #' mu <- rep(0,p)
 #' rho = 0.5
 #' Cov <- (A1gen(rho,p))/2
-#' Cov2<-matrix(NA,nrow=p,ncol=p)
-#' for(i in 1:p){
-#'   for(j in 1:p){
-#'     Cov2[i,j]<-0.5^(1+abs(i-j))
-#'   }
-#' }
 #' beta1 <- rep(0,p)
 #' beta1[1:10] <- c(1:10)/5
 #' beta2 <- rep(0,p)
@@ -431,23 +422,31 @@ LF_logistic<-function(X,y,loading,weight=NULL,intercept=TRUE,init.Lasso=NULL,lam
 #' prob2 <- exp(exp_val2)/(1+exp(exp_val2))
 #' y1 <- rbinom(n1,1,prob1)
 #' y2 <- rbinom(n2,1,prob2)
-#' loading <- MASS::mvrnorm(1,mu,Cov2)
-#' Est <- ITE_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
-ITE_Logistic<-function(X1,y1,X2,y2,loading,weight=NULL,intercept=TRUE,init.Lasso1=NULL,init.Lasso2=NULL,lambda1=NULL,lambda2=NULL,mu1=NULL,mu2=NULL,step1=NULL,step2=NULL,resol = 1.5,maxiter=10){
-  Est1<-FIHR::LF_logistic(X=X1,y=y1,loading,weight=weight,intercept=intercept,init.Lasso=init.Lasso1,lambda=lambda1,mu=mu1,step=step1,resol=resol,maxiter=maxiter)
-  Est2<-FIHR::LF_logistic(X=X2,y=y2,loading,weight=weight,intercept=intercept,init.Lasso=init.Lasso2,lambda=lambda2,mu=mu2,step=step2,resol=resol,maxiter=maxiter)
-  debias.est<- Est1$prop.est - Est2$prop.est
+#' loading <- MASS::mvrnorm(1,mu,Cov)
+#' Est <- ITE_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,xnew = loading, intercept = TRUE)
+ITE_Logistic<-function(X1,y1,X2,y2,xnew,weight=NULL,intercept=TRUE,init.Lasso1=NULL,init.Lasso2=NULL,lambda1=NULL,lambda2=NULL,mu1=NULL,mu2=NULL,step1=NULL,step2=NULL,resol = 1.5,maxiter=10,alpha=0.05){
+  Est1<-LF_logistic(X=X1,y=y1,xnew = xnew,weight=weight,intercept=intercept,init.Lasso=init.Lasso1,lambda=lambda1,mu=mu1,step=step1,resol=resol,maxiter=maxiter,alpha=alpha)
+  Est2<-LF_logistic(X=X2,y=y2,xnew = xnew,weight=weight,intercept=intercept,init.Lasso=init.Lasso2,lambda=lambda2,mu=mu2,step=step2,resol=resol,maxiter=maxiter,alpha=alpha)
+  logit<-function(z)
+  {
+    a = log(z/(1-z))
+    return(a)
+  }
+  debias.est<- logit(Est1$prop.est) - logit(Est2$prop.est)
+  prop.est <- Est1$prop.est - Est2$prop.est
   se<-sqrt((Est1$se)^2 + (Est2$se)^2)
-  direction1 <- Est1$proj
-  direction2 <- Est2$proj
-  lasso.plugin1 <- Est1$plug.in
-  lasso.plugin2 <- Est2$plug.in
-  returnList <- list("prop.est" = debias.est,
-                     "se" = se,
-                     "proj1"=direction1,
-                     "proj2"=direction2,
-                     "plug.in1"=lasso.plugin1,
-                     "plug.in2"=lasso.plugin2
+  #CI <- c(debias.est - 2*qnorm(1-alpha/2)*se, debias.est + 2*qnorm(1-alpha/2)*se) ## remove if not delta
+  if(debias.est - qnorm(1-alpha)*se > 0){
+    dec <- 1
+    #print("The null hypothesis claiming the difference between case probabilities is less than equal to 0, is rejected")
+  }else{
+    dec <- 0
+    #print("The null hypothesis claiming the difference between case probabilities is less than equal to 0, cannot be rejected")
+  }
+  returnList <- list("prop.est" = prop.est,
+                     "se_linear" = se,
+                     #"CI"=expo(CI),
+                     "decision" = dec
   )
   return(returnList)
 }

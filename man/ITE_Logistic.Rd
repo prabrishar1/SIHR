@@ -2,14 +2,14 @@
 % Please edit documentation in R/LF_logistic.R
 \name{ITE_Logistic}
 \alias{ITE_Logistic}
-\title{Inference for diference of case probabilities in the high dimensional logistic regression}
+\title{Inference for diference of the case probability in the high dimensional logistic regression}
 \usage{
 ITE_Logistic(
   X1,
   y1,
   X2,
   y2,
-  loading,
+  xnew,
   weight = NULL,
   intercept = TRUE,
   init.Lasso1 = NULL,
@@ -21,21 +21,22 @@ ITE_Logistic(
   step1 = NULL,
   step2 = NULL,
   resol = 1.5,
-  maxiter = 10
+  maxiter = 10,
+  alpha = 0.05
 )
 }
 \arguments{
-\item{X1}{First design matrix, of dimension \eqn{n_1} x \eqn{p}}
+\item{X1}{Design matrix for the first sample, of dimension \eqn{n_1} x \eqn{p}}
 
-\item{y1}{First outcome vector, of length \eqn{n_1}}
+\item{y1}{Outcome vector for the first sample, of length \eqn{n_1}}
 
-\item{X2}{Second design matrix, of dimension \eqn{n_2} x \eqn{p}}
+\item{X2}{Design matrix for the second sample, of dimension \eqn{n_2} x \eqn{p}}
 
-\item{y2}{Second outcome vector, of length \eqn{n_2}}
+\item{y2}{Outcome vector for the second sample, of length \eqn{n_2}}
 
-\item{loading}{Loading, of length \eqn{p}}
+\item{xnew}{Loading, of length \eqn{p}}
 
-\item{weight}{The weight vector, of length \eqn{n}, used in correcting the plug-in estimators, uses the inverse Hessian weight if set to \code{NULL} (default = \code{NULL})}
+\item{weight}{The weight vector, of length \eqn{n}; if set to \code{NULL}, \eqn{w_i = h(X_i^{\top}\hat{\beta})(1-h(X_i^{\top}\hat{\beta}))} for \eqn{i=1,\ldots,n} (default = \code{NULL})}
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
 
@@ -57,22 +58,21 @@ such that the dual optimization problem for constructing the first \eqn{(k=1)} p
 \item{step2}{Number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
 such that the dual optimization problem for constructing the second \eqn{(k=2)} projection direction converges (default = \code{NULL})}
 
-\item{resol}{Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
+\item{resol}{The factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 such that the dual optimization problem for constructing the projection direction converges (default = 1.5)}
 
 \item{maxiter}{Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 such that the dual optimization problem for constructing the projection direction converges (default = 10)}
+
+\item{alpha}{Level ofsignificance to test if the difference in case probabilities is less than equal to 0}
 }
 \value{
 \item{prop.est}{The bias-corrected estimator for the difference of case probabilities}
-\item{se}{The standard error of the bias-corrected estimator}
-\item{proj1}{The first \eqn{(k=1)} projection direction, of length \eqn{p}}
-\item{proj2}{The second \eqn{(k=2)} projection direction, of length \eqn{p}}
-\item{plug.in1}{The plug-in LASSO estimator for the first \eqn{(k=1)} linear functional}
-\item{plug.in2}{The plug-in LASSO estimator for the second \eqn{(k=2)} linear functional}
+\item{se_linear}{The standard error of the bias-corrected estimator of \code{xnew}\eqn{^{\top}(\beta_1-\beta_2)}}
+\item{decision}{The decision of whether the null hypothesis claiming the difference between case probabilities is less than equal to 0 is rejected (\code{decision}\eqn{=1}) or not (\code{decision}\eqn{=0})}
 }
 \description{
-Computes the bias corrected estimator of \eqn{(\frac{e^{\code{loading}^{\top}\beta_1}}{1+e^{\code{loading}^{\top}\beta_1}})-\frac{e^{\code{loading}^{\top}\beta_2}}{1+e^{\code{loading}^{\top}\beta_2}})} for the high dimensional logistic regression \eqn{Y_k|X_k \sim } Bernoulli\eqn{(\frac{e^{X_k\beta_k}}{1+e^{X_k\beta_k}}),  k=1,2} and the corresponding standard error.
+Computes the bias corrected estimator of h(\code{xnew}\eqn{^{\top}\beta_1})-h(\code{xnew}\eqn{^{\top}\beta_2}) for the high dimensional logistic regression \eqn{yk|Xk \sim } Bernoulli\eqn{(\frac{e^{Xk\beta_k}}{1+e^{Xk\beta_k}}),  k=1,2} and the corresponding standard error.
 }
 \examples{
 A1gen <- function(rho,p){
@@ -90,12 +90,6 @@ p = 400
 mu <- rep(0,p)
 rho = 0.5
 Cov <- (A1gen(rho,p))/2
-Cov2<-matrix(NA,nrow=p,ncol=p)
-for(i in 1:p){
-  for(j in 1:p){
-    Cov2[i,j]<-0.5^(1+abs(i-j))
-  }
-}
 beta1 <- rep(0,p)
 beta1[1:10] <- c(1:10)/5
 beta2 <- rep(0,p)
@@ -108,6 +102,6 @@ prob1 <- exp(exp_val1)/(1+exp(exp_val1))
 prob2 <- exp(exp_val2)/(1+exp(exp_val2))
 y1 <- rbinom(n1,1,prob1)
 y2 <- rbinom(n2,1,prob2)
-loading <- MASS::mvrnorm(1,mu,Cov2)
-Est <- ITE_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
+loading <- MASS::mvrnorm(1,mu,Cov)
+Est <- ITE_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,xnew = loading, intercept = TRUE)
 }

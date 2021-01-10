@@ -2,7 +2,7 @@
 % Please edit documentation in R/Projection_Directions.R
 \name{Direction_fixedtuning}
 \alias{Direction_fixedtuning}
-\title{Constructs the projection direction with fixed tuning parameter in high dimensional regression}
+\title{Constructs the projection direction with a fixed tuning parameter}
 \usage{
 Direction_fixedtuning(
   X,
@@ -20,17 +20,17 @@ Direction_fixedtuning(
 
 \item{mu}{The dual tuning parameter used in the construction of the projection direction}
 
-\item{model}{The high dimensional regression model, either \code{linear} or \code{logistic}}
+\item{model}{The high dimensional regression model, either \code{linear} or \code{logistic} (default = \code{linear})}
 
-\item{weight}{The weight vector of length \eqn{n}, used in correcting the plug-in estimator ; to be supplied if \code{model="logistic"} (default=NULL)}
+\item{weight}{The weight vector of length \eqn{n}; to be supplied if \code{model="logistic"} (default=NULL)}
 
-\item{deriv.vec}{The first derivative vector of the logit function at \eqn{X\widehat{\beta}} ; to be supplied if \code{model="logistic"}}
+\item{deriv.vec}{The first derivative vector of the logit function at \eqn{X\widehat{\beta}}, of length \eqn{n} ; to be supplied if \code{model="logistic"} (default = \code{NULL})}
 }
 \value{
-\item{proj}{The projection direction}
+\item{proj}{The projection direction, of length \eqn{p}}
 }
 \description{
-Constructs the projection direction with fixed tuning parameter in high dimensional regression
+Constructs the projection direction, used for bias-correction, with a fixed tuning parameter
 }
 \examples{
 n = 100

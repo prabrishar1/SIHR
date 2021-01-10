@@ -9,7 +9,7 @@ QF(
   y,
   G,
   Cov.weight = TRUE,
-  A = NULL,
+  A = diag(ncol(X)),
   init.Lasso = NULL,
   tau.vec = NULL,
   lambda = NULL,
@@ -17,7 +17,8 @@ QF(
   mu = NULL,
   step = NULL,
   resol = 1.25,
-  maxiter = 10
+  maxiter = 10,
+  alpha = 0.05
 )
 }
 \arguments{
@@ -49,15 +50,19 @@ such that the dual optimization problem for constructing the projection directio
 
 \item{maxiter}{Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 such that the dual optimization problem for constructing the projection direction converges (default = 10)}
+
+\item{alpha}{Level of significance to test if the quadratic functional is equal to 0 (default = 0.05)}
 }
 \value{
 \item{prop.est}{The bias-corrected estimator of the quadratic functional restricted to \code{G}}
 \item{se}{The standard error of the bias-corrected estimator}
+\item{CI}{The matrix of confidence interval for the quadratic functional; row corresponds to \code{tau.vec}}
+\item{decision}{The decision whether the null hypothesis claiming the quadratic form is equal to 0, is rejected (\code{decision}\eqn{=1}) or not (\code{decision}\eqn{=0}); row corresponds to \code{tau.vec}}
 \item{proj}{The projection direction, of length \eqn{p}}
 \item{plug.in}{The plug-in LASSO estimator for the quadratic functional restricted to \code{G}}
 }
 \description{
-Computes the bias-corrected estimator of the quadratic functional \eqn{\beta_G^{\top}A\beta_G} for the high dimensional linear regression \eqn{Y_i = X_i^{\top}\beta + \epsilon} and the corresponding standard error.
+Computes the bias-corrected estimator of the quadratic functional \eqn{\beta_G^{\top}A\beta_G} for the high dimensional linear regression \eqn{y = X^{\top}\beta + \epsilon} and the corresponding standard error along with the confidence interval.
 }
 \examples{
 n = 100

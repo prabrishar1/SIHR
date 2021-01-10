@@ -2,12 +2,12 @@
 % Please edit documentation in R/LF_logistic.R
 \name{LF_logistic}
 \alias{LF_logistic}
-\title{Inference for linear functional in the high dimensional logistic regression}
+\title{Inference for the case probability in high dimensional logistic regression}
 \usage{
 LF_logistic(
   X,
   y,
-  loading,
+  xnew,
   weight = NULL,
   intercept = TRUE,
   init.Lasso = NULL,
@@ -24,9 +24,9 @@ LF_logistic(
 
 \item{y}{Outcome vector, of length \eqn{n}}
 
-\item{loading}{Loading, of length \eqn{p}}
+\item{xnew}{Loading, of length \eqn{p}}
 
-\item{weight}{The weight vector, of length \eqn{n}, used in correcting the plug-in estimator, uses the inverse Hessian weight if set to \code{NULL} (default = \code{NULL})}
+\item{weight}{The weight vector, of length \eqn{n}; if set to \code{NULL}, \eqn{w_i = h(X_i^{\top}\hat{\beta})(1-h(X_i^{\top}\hat{\beta}))} for \eqn{i=1,\ldots,n} (default = \code{NULL})}
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
 
@@ -39,22 +39,24 @@ LF_logistic(
 \item{step}{Number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
 such that the dual optimization problem for constructing the projection direction converges (default = \code{NULL})}
 
-\item{resol}{Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
+\item{resol}{The factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 such that the dual optimization problem for constructing the projection direction converges (default = 1.5)}
 
 \item{maxiter}{Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 such that the dual optimization problem for constructing the projection direction converges (default = 10)}
 
-\item{alpha}{Level of significance to conduct the test (default = \code{NULL})}
+\item{alpha}{Level of significance to test if the case probability is less than or qual to 0 (default = 0.05)}
 }
 \value{
-\item{prop.est}{The bias corrected estimator of the linear functional}
-\item{se}{The standard error of the bias-corrected estimator}
+\item{prop.est}{The bias corrected estimator of the case probability}
+\item{se_linear}{The standard error of the bias-corrected estimator of the linear functional}
+\item{CI}{The confidence interval for the case probability}
+\item{decision}{The decision of whether the null hypothesis claiming the case probability = 0.5, is rejected (\code{decision}\eqn{=1}) or not (\code{decision}\eqn{=0})}
 \item{proj}{The projection direction, of length \eqn{p}}
-\item{plug.in}{The plug-in LASSO estimator of the linear functional}
+\item{plug.in}{The plug-in LASSO estimator of the case probability}
 }
 \description{
-Computes the bias corrected estimator of the linear functional \code{loading}\eqn{^{\top}\beta} for the high dimensional logistic regression \eqn{Y_i|X_i \sim } Bernoulli\eqn{(\frac{e^{X_i^{\top}\beta}}{1+e^{X_i^{\top}\beta}})} and the corresponding standard error.
+Computes the bias corrected estimator of the case probability h(\code{xnew}\eqn{^{\top}\beta}) for the high dimensional logistic regression \eqn{y|X \sim } Bernoulli(h(\eqn{X^{\top}\beta})) and the corresponding confidence interval. Here \eqn{h(z)=\frac{e^{z}}{1+e^{z}}}.
 }
 \examples{
 A1gen <- function(rho,p){
@@ -71,23 +73,17 @@ p = 400
 mu <- rep(0,p)
 rho = 0.5
 Cov <- (A1gen(rho,p))/2
-Cov2<-matrix(NA,nrow=p,ncol=p)
-for(i in 1:p){
-  for(j in 1:p){
-    Cov2[i,j]<-0.5^(1+abs(i-j))
-  }
-}
 beta <- rep(0,p)
 beta[1:10] <- 0.5*c(1:10)/10
 a0 = 0
 set.seed(12)
-loading <- MASS::mvrnorm(1,mu,Cov2)
+loading <- MASS::mvrnorm(1,mu,Cov)
 true <- FIHR:::expo(t(loading)\%*\%beta+a0)
 X <- MASS::mvrnorm(n,mu,Cov)
 exp_val <- X\%*\%beta+a0
 prob <- exp(exp_val)/(1+exp(exp_val))
 y <- rbinom(n,1,prob)
-Est <- LF_logistic(X = X, y = y, loading = loading, intercept = TRUE, weight = NULL)
+Est <- LF_logistic(X = X, y = y, xnew = loading)
 }
 \references{
 \insertRef{linlog}{FIHR}

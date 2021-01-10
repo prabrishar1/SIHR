@@ -1,13 +1,15 @@
-#' Constructs the projection direction with fixed tuning parameter in high dimensional regression
+#' Constructs the projection direction with a fixed tuning parameter
+#'
+#' @description Constructs the projection direction, used for bias-correction, with a fixed tuning parameter
 #'
 #' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
 #' @param loading Loading, of length \eqn{p}
 #' @param mu The dual tuning parameter used in the construction of the projection direction
-#' @param model The high dimensional regression model, either \code{linear} or \code{logistic}
-#' @param weight The weight vector of length \eqn{n}, used in correcting the plug-in estimator ; to be supplied if \code{model="logistic"} (default=NULL)
-#' @param deriv.vec The first derivative vector of the logit function at \eqn{X\widehat{\beta}} ; to be supplied if \code{model="logistic"}
+#' @param model The high dimensional regression model, either \code{linear} or \code{logistic} (default = \code{linear})
+#' @param weight The weight vector of length \eqn{n}; to be supplied if \code{model="logistic"} (default=NULL)
+#' @param deriv.vec The first derivative vector of the logit function at \eqn{X\widehat{\beta}}, of length \eqn{n} ; to be supplied if \code{model="logistic"} (default = \code{NULL})
 #' @return
-#' \item{proj}{The projection direction}
+#' \item{proj}{The projection direction, of length \eqn{p}}
 #' @export
 #'
 #' @examples
@@ -57,20 +59,23 @@ Direction_fixedtuning<-function(X,loading,mu=NULL,model = "linear",weight=NULL,d
   return(returnList)
 }
 
-#' Searches for the best step size and computes the projection direction in high dimensional regression
+#' Searches for the best step size and computes the projection direction with the searched best step size
+#'
+#' @description Searches for the best step size and computes the projection direction with the searched best step size
 #'
 #' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
 #' @param loading Loading, of length \eqn{p}
-#' @param model The high dimensional regression model, either \code{linear} or \code{logistic}
-#' @param weight The weight vector of length \eqn{n}, used in correcting the plug-in estimator ; to be supplied if \code{model="logistic"} (default=NULL)
-#' @param deriv.vec The first derivative vector of the logit function at \eqn{X\widehat{\beta}} ; to be supplied if \code{model="logistic"}
-#' @param resol Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
+#' @param model The high dimensional regression model, either \code{linear} or \code{logistic} (default = \code{linear})
+#' @param weight The weight vector of length \eqn{n}; to be supplied if \code{model="logistic"} (default=NULL)
+#' @param deriv.vec The first derivative vector of the logit function at \eqn{X\widehat{\beta}}, of length \eqn{n} ; to be supplied if \code{model="logistic"} (default = \code{NULL})
+#' @param resol The factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = 1.5)
 #' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = 10)
 #'
 #' @return
-#' \item{proj}{The projection direction}
+#' \item{proj}{The projection direction, of length \eqn{p}}
+#' \item{step}{The best step size}
 #' @export
 #'
 #' @examples

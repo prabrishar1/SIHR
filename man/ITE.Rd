@@ -20,17 +20,18 @@ ITE(
   step1 = NULL,
   step2 = NULL,
   resol = 1.5,
-  maxiter = 10
+  maxiter = 10,
+  alpha = 0.05
 )
 }
 \arguments{
-\item{X1}{First design matrix, of dimension \eqn{n_1} x \eqn{p}}
+\item{X1}{Design matrix for the first sample, of dimension \eqn{n_1} x \eqn{p}}
 
-\item{y1}{First outcome vector, of length \eqn{n_1}}
+\item{y1}{Outcome vector for the first sample, of length \eqn{n_1}}
 
-\item{X2}{Second design matrix, of dimension \eqn{n_2} x \eqn{p}}
+\item{X2}{Design matrix for the second sample, of dimension \eqn{n_2} x \eqn{p}}
 
-\item{y2}{Second outcome vector, of length \eqn{n_2}}
+\item{y2}{Outcome vector for the second sample, of length \eqn{n_2}}
 
 \item{loading}{Loading, of length \eqn{p}}
 
@@ -54,22 +55,22 @@ such that the dual optimization problem for constructing the first \eqn{(k=1)} p
 \item{step2}{Number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
 such that the dual optimization problem for constructing the second \eqn{(k=2)} projection direction converges (default = \code{NULL})}
 
-\item{resol}{Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
+\item{resol}{The factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 such that the dual optimization problem for constructing the projection direction converges (default = 1.5)}
 
 \item{maxiter}{Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 such that the dual optimization problem for constructing the projection direction converges (default = 10)}
+
+\item{alpha}{Level of significance to conduct the test \eqn{H_0:} \code{loading}\eqn{^{\top}(\beta_1-\beta_2)\leq 0} vs \eqn{H_1:} \code{loading}\eqn{^{\top}(\beta_1-\beta_2)> 0} (default = 0.05)}
 }
 \value{
-\item{prop.est}{The bias-corrected estimator for the difference of linear functionals}
+\item{prop.est}{The bias-corrected estimator for the difference of the linear functionals}
 \item{se}{The standard error of the bias-corrected estimator}
-\item{proj1}{The first \eqn{(k=1)} projection direction, of length \eqn{p}}
-\item{proj2}{The second \eqn{(k=2)} projection direction, of length \eqn{p}}
-\item{plug.in1}{The plug-in LASSO estimator for the first \eqn{(k=1)} linear functional}
-\item{plug.in2}{The plug-in LASSO estimator for the second \eqn{(k=2)} linear functional}
+\item{CI}{The confidence interval for the difference of the linear functionals}
+\item{decision}{The decision of whether the null hypothesis claiming the difference of the linear functionals is less than equal to 0 is rejected (\code{decision}\eqn{=1}) or not (\code{decision}\eqn{=0})}
 }
 \description{
-Computes the bias corrected estimator of \code{loading}\eqn{^{\top}(\beta_1-\beta_2)} for the high dimensional linear regression \eqn{Y_k=X_k^{\top}\beta_k + \epsilon_k,  k=1,2} and the corresponding standard error.
+Computes the bias corrected estimator of \eqn{<}\code{loading}\eqn{,\beta_1-\beta_2>} for the high dimensional linear regression \code{yk}\eqn{=}\code{Xk}\eqn{^{\top}\beta_k + \epsilon_k,  k=1,2} and the corresponding standard error along with the confidence interval.
 }
 \examples{
 n1 = 100
@@ -88,12 +89,6 @@ mu <- rep(0,p)
 mu[1:5] <- c(1:5)/5
 rho = 0.5
 Cov <- (A1gen(rho,p))/2
-Cov2<-matrix(NA,nrow=p,ncol=p)
-for(i in 1:p){
- for(j in 1:p){
-   Cov2[i,j]<-0.5^(1+abs(i-j))
-  }
-}
 beta1 <- rep(0,p)
 beta1[1:10] <- c(1:10)/5
 beta2 <- rep(0,p)
@@ -102,7 +97,7 @@ X1 <- MASS::mvrnorm(n1,mu,Cov)
 X2 <- MASS::mvrnorm(n2,mu,Cov)
 y1 = X1\%*\%beta1 + rnorm(n1)
 y2 = X2\%*\%beta2 + rnorm(n2)
-loading <- MASS::mvrnorm(1,rep(0,p),Cov2)
+loading <- MASS::mvrnorm(1,rep(0,p),Cov)
 Est <- ITE(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
 }
 \references{
