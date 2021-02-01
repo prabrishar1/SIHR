@@ -56,20 +56,53 @@ mu <- rep(0,p)
 mu[1:5] <- c(1:5)/5
 rho = 0.5
 Cov <- (A1gen(rho,p))/2
-Cov2<-matrix(NA,nrow=p,ncol=p)
-for(i in 1:p){
-    for(j in 1:p){
-    Cov2[i,j]<-0.5^(1+abs(i-j))
-    } 
-  }
 beta <- rep(0,p)
 beta[1:10] <- c(1:10)/5
 X <- MASS::mvrnorm(n,mu,Cov)
 y = X%*%beta + rnorm(n)
-loading <- MASS::mvrnorm(1,rep(0,p),Cov2)
+loading <- MASS::mvrnorm(1,rep(0,p),Cov)
 Est = FIHR::LF(X = X, y = y, loading = loading, intercept = TRUE)
 Est$prop.est
 Est$se
+Est$CI
+Est$decision
+```
+
+Individualised Treatment Effect in high-dimensional logistic regression model
+
+```{r ITE Linear Model}
+
+library(MASS)
+n1 = 100
+p = 400
+n2 = 150
+A1gen <- function(rho,p){
+A1=matrix(0,p,p)
+for(i in 1:p){
+for(j in 1:p){
+  A1[i,j]<-rho^(abs(i-j))
+}
+}
+A1
+}
+mu <- rep(0,p)
+mu[1:5] <- c(1:5)/5
+rho = 0.5
+Cov <- (A1gen(rho,p))/2
+beta1 <- rep(0,p)
+beta1[1:10] <- c(1:10)/5
+beta2 <- rep(0,p)
+beta2[1:5] <- c(1:5)/10
+X1 <- MASS::mvrnorm(n1,mu,Cov)
+X2 <- MASS::mvrnorm(n2,mu,Cov)
+y1 = X1%*%beta1 + rnorm(n1)
+y2 = X2%*%beta2 + rnorm(n2)
+loading <- MASS::mvrnorm(1,rep(0,p),Cov)
+Est <- FIHR::ITE(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
+Est$prop.est
+Est$se
+Est$CI
+Est$decision
 ```
 
 Inference for linear functional in high-dimensional logistic regression model
@@ -106,6 +139,46 @@ loading <- MASS::mvrnorm(1,mu,Cov2)
 Est = FIHR::LF_logistic(X = X, y = y, loading = loading, intercept = TRUE, weight = rep(1,n))
 Est$prop.est
 Est$se
+Est$CI
+Est$decision
+```
+
+Individualised Treatment Effect in high-dimensional logistic model
+
+```{r ITE Logistic Model}
+A1gen <- function(rho,p){
+A1=matrix(0,p,p)
+for(i in 1:p){
+ for(j in 1:p){
+   A1[i,j]<-rho^(abs(i-j))
+ }
+}
+A1
+}
+n1 = 100
+n2 = 200
+p = 400
+mu <- rep(0,p)
+rho = 0.5
+Cov <- (A1gen(rho,p))/2
+beta1 <- rep(0,p)
+beta1[1:10] <- c(1:10)/5
+beta2 <- rep(0,p)
+beta2[1:5] <- c(1:5)/10
+X1 <- MASS::mvrnorm(n1,mu,Cov)
+X2 <- MASS::mvrnorm(n2,mu,Cov)
+exp_val1 <- X1%*%beta1
+exp_val2 <- X2%*%beta2
+prob1 <- exp(exp_val1)/(1+exp(exp_val1))
+prob2 <- exp(exp_val2)/(1+exp(exp_val2))
+y1 <- rbinom(n1,1,prob1)
+y2 <- rbinom(n2,1,prob2)
+loading <- MASS::mvrnorm(1,mu,Cov)
+Est <- FIHR::ITE_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
+Est$prop.est
+Est$se
+Est$CI
+Est$decision
 ```
 
 Inference for quadratic functional in high-dimensional linear model
@@ -137,18 +210,24 @@ test.set <- c(30:100)
 Est = FIHR::QF(X = X, y = y, G=test.set)
 Est$prop.est
 Est$se
+Est$CI
+Est$decision
 
 ## Inference for Quadratic Functional with known matrix A in middle
 
 Est = FIHR::QF(X = X, y = y, G=test.set, Cov.weight = FALSE,A = diag(1:400,400))
 Est$prop.est
 Est$se
+Est$CI
+Est$decision
 
 ## Inference for square norm of regression vector
 
-Est = FIHR::QF(X = X, y = y, G=test.set, Cov.weight = FALSE,A = diag(1,400))
+Est = FIHR::QF(X = X, y = y, G=test.set, Cov.weight = FALSE)
 Est$prop.est
 Est$se
+Est$CI
+Est$decision
 ```
 
 Finding projection direction in high dimensional linear regression
@@ -164,7 +243,6 @@ step = 3
 ## Finding Projection Direction using fixed tuning parameter
 
 Direction.est <- FIHR::Direction_fixedtuning(X,loading=c(1,rep(0,(p-1))),mu=sqrt(2.01*log(p)/n)*resol^{-(step-1)})
-Direction.est$proj
 
 ## Finding Projection Direction using best step size
 
@@ -201,92 +279,8 @@ f_prime <- exp(Xc%*%htheta)/(1+exp(Xc%*%htheta))^2
 ## Finding Projection Direction using fixed tuning parameter
 
 Direction.est <- FIHR::Direction_fixedtuning(X,loading=c(1,rep(0,(p-1))),mu=sqrt(2.01*log(p)/n)*resol^{-(step-1)},model = "logistic",weight = 1/f_prime, deriv.vec = f_prime)
-Direction.est$proj
 
 ## Finding Projection Direction using best step size
 
 Direction.est <- FIHR::Direction_searchtuning(Xc,loading,model = "logistic",weight = 1/f_prime, deriv.vec = f_prime)
-Direction.est$proj
-```
-
-Inference for difference of linear functionals in high dimensional linear regression
-
-```{r lindiff linear}
-n1 = 100
-p = 400
-n2 = 150
-A1gen <- function(rho,p){
-A1=matrix(0,p,p)
-for(i in 1:p){
-for(j in 1:p){
-  A1[i,j]<-rho^(abs(i-j))
-}
-}
-A1
-}
-mu <- rep(0,p)
-mu[1:5] <- c(1:5)/5
-rho = 0.5
-Cov <- (A1gen(rho,p))/2
-Cov2<-matrix(NA,nrow=p,ncol=p)
-for(i in 1:p){
-for(j in 1:p){
-  Cov2[i,j]<-0.5^(1+abs(i-j))
-}
-}
-beta1 <- rep(0,p)
-beta1[1:10] <- c(1:10)/5
-beta2 <- rep(0,p)
-beta2[1:5] <- c(1:5)/10
-X1 <- MASS::mvrnorm(n1,mu,Cov)
-X2 <- MASS::mvrnorm(n2,mu,Cov)
-y1 = X1%*%beta1 + rnorm(n1)
-y2 = X2%*%beta2 + rnorm(n2)
-loading <- MASS::mvrnorm(1,rep(0,p),Cov2)
-Est <- FIHR::ITE(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
-Est$prop.est
-Est$se
-```
-
-Inference for difference of case probabilities in high dimensional logistic regression
-
-```{r lindiff log}
-A1gen <- function(rho,p){
-A1=matrix(0,p,p)
-for(i in 1:p){
- for(j in 1:p){
-   A1[i,j]<-rho^(abs(i-j))
- }
-}
-A1
-}
-n1 = 100
-n2 = 200
-p = 400
-mu <- rep(0,p)
-rho = 0.5
-Cov <- (A1gen(rho,p))/2
-Cov2<-matrix(NA,nrow=p,ncol=p)
-for(i in 1:p){
- for(j in 1:p){
-   Cov2[i,j]<-0.5^(1+abs(i-j))
- }
-}
-
-beta1 <- rep(0,p)
-beta1[1:10] <- c(1:10)/5
-beta2 <- rep(0,p)
-beta2[1:5] <- c(1:5)/10
-X1 <- MASS::mvrnorm(n1,mu,Cov)
-X2 <- MASS::mvrnorm(n2,mu,Cov)
-exp_val1 <- X1%*%beta1
-exp_val2 <- X2%*%beta2
-prob1 <- exp(exp_val1)/(1+exp(exp_val1))
-prob2 <- exp(exp_val2)/(1+exp(exp_val2))
-y1 <- rbinom(n1,1,prob1)
-y2 <- rbinom(n2,1,prob2)
-loading <- MASS::mvrnorm(1,mu,Cov2)
-Est <- FIHR::ITE_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
-Est$prop.est
-Est$se
 ```

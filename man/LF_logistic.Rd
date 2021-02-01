@@ -7,7 +7,7 @@
 LF_logistic(
   X,
   y,
-  xnew,
+  loading,
   weight = NULL,
   intercept = TRUE,
   init.Lasso = NULL,
@@ -24,9 +24,9 @@ LF_logistic(
 
 \item{y}{Outcome vector, of length \eqn{n}}
 
-\item{xnew}{Loading, of length \eqn{p}}
+\item{loading}{Loading, of length \eqn{p}}
 
-\item{weight}{The weight vector, of length \eqn{n}; if set to \code{NULL}, \eqn{w_i = h(X_i^{\top}\hat{\beta})(1-h(X_i^{\top}\hat{\beta}))} for \eqn{i=1,\ldots,n} (default = \code{NULL})}
+\item{weight}{The weight vector, of length \eqn{n}; if set to \code{NULL}, \eqn{i_{th}} weight is the inverse of the first derivative of the logit function at \eqn{X_i^{\top}}\code{init.Lasso} (default = \code{NULL})}
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
 
@@ -45,18 +45,20 @@ such that the dual optimization problem for constructing the projection directio
 \item{maxiter}{Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 such that the dual optimization problem for constructing the projection direction converges (default = 10)}
 
-\item{alpha}{Level of significance to test if the case probability is less than or qual to 0 (default = 0.05)}
+\item{alpha}{Level of significance to test the null hypothesis that the case probability is less than or equal to 0.5 (default = 0.05)}
 }
 \value{
 \item{prop.est}{The bias corrected estimator of the case probability}
-\item{se_linear}{The standard error of the bias-corrected estimator of the linear functional}
+\item{se}{The standard error of the bias-corrected estimator}
 \item{CI}{The confidence interval for the case probability}
-\item{decision}{The decision of whether the null hypothesis claiming the case probability = 0.5, is rejected (\code{decision}\eqn{=1}) or not (\code{decision}\eqn{=0})}
+\item{decision}{\code{decision}\eqn{=1} implies the case probability is above 0.5 \eqn{\newline}
+\code{decision}\eqn{=0} implies the case probability is below 0.5}
 \item{proj}{The projection direction, of length \eqn{p}}
 \item{plug.in}{The plug-in LASSO estimator of the case probability}
 }
 \description{
-Computes the bias corrected estimator of the case probability h(\code{xnew}\eqn{^{\top}\beta}) for the high dimensional logistic regression \eqn{y|X \sim } Bernoulli(h(\eqn{X^{\top}\beta})) and the corresponding confidence interval. Here \eqn{h(z)=\frac{e^{z}}{1+e^{z}}}.
+Computes the bias corrected estimator of the case probability for the high dimensional logistic regression model and the corresponding standard error.
+Here case probability refers to the conditional probability of the binary response variable taking value 1 given the predictors take value \code{loading}.
 }
 \examples{
 A1gen <- function(rho,p){
@@ -83,7 +85,7 @@ X <- MASS::mvrnorm(n,mu,Cov)
 exp_val <- X\%*\%beta+a0
 prob <- exp(exp_val)/(1+exp(exp_val))
 y <- rbinom(n,1,prob)
-Est <- LF_logistic(X = X, y = y, xnew = loading)
+Est <- LF_logistic(X = X, y = y, loading = loading)
 }
 \references{
 \insertRef{linlog}{FIHR}

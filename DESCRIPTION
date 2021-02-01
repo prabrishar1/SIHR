@@ -2,7 +2,7 @@ Package: FIHR
 Type: Package
 Title: Functional Inference in High Dimensional Regression
 Version: 0.1.0
-Description: It provides inference for linear and quadratic functionals in high-dimensional linear regression model and linear functional in high-dimensional logistic regression model. It computes bias-corrected estimators for the linear and quadratic functionals and provides correponding standard error estimates.
+Description: It provides inference for linear and quadratic forms in high-dimensional linear regression models and linear functionals in high-dimensional logistic regression models. It computes bias-corrected estimators for the linear and quadratic forms and provides correponding standard error estimates.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
@@ -19,4 +19,4 @@ Suggests:
     knitr,
     rmarkdown,
     MASS
-Authors@R: c(person("Zijian Guo", role = "aut", email = "zijguo@stat.rutgers.edu"),person("Prabrisha Rakshit", role = c("aut", "cre"), email = "pr412@scarletmail.rutgers.edu"))
+Authors@R: c(person("Prabrisha Rakshit", role = c("aut", "cre"), email = "pr412@scarletmail.rutgers.edu"),person("Tony Cai", role = "aut", email = "tcai@wharton.upenn.edu"),person("Zijian Guo", role = "aut", email = "zijguo@stat.rutgers.edu"))

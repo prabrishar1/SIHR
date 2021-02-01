@@ -2,7 +2,7 @@
 % Please edit documentation in R/QF.R
 \name{QF}
 \alias{QF}
-\title{Inference for quadratic functional in high dimensional linear regression}
+\title{Inference for quadratic forms in high dimensional linear regression}
 \usage{
 QF(
   X,
@@ -10,10 +10,10 @@ QF(
   G,
   Cov.weight = TRUE,
   A = diag(ncol(X)),
-  init.Lasso = NULL,
-  tau.vec = NULL,
-  lambda = NULL,
   intercept = TRUE,
+  tau.vec = c(1),
+  init.Lasso = NULL,
+  lambda = NULL,
   mu = NULL,
   step = NULL,
   resol = 1.25,
@@ -26,19 +26,19 @@ QF(
 
 \item{y}{Outcome vector, of length \eqn{n}}
 
-\item{G}{The set of indices, \code{G} in \eqn{\beta_G^{\top}A\beta_G}}
+\item{G}{The set of indices, \code{G} in the quadratic form}
 
-\item{Cov.weight}{Logical, if set to \code{TRUE} then \code{A}\eqn{=\Sigma}, else need to provide an \code{A} (default = TRUE)}
+\item{Cov.weight}{Logical, if set to \code{TRUE} then \code{A} is the population covariance matrix, else need to provide an \code{A} (default = TRUE)}
 
-\item{A}{The matrix A in the quadratic functional, of dimension \eqn{p}x\eqn{p}, when \code{Cov.weight = FALSE}}
+\item{A}{The matrix A in the quadratic form, of dimension \eqn{p\times}\eqn{p} (default = \eqn{I_{p \times p}})}
+
+\item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
+
+\item{tau.vec}{The vector of enlargement factors for asymptotic variance of the bias-corrected estimator to handle super-efficiency (default = \eqn{1})}
 
 \item{init.Lasso}{Initial LASSO estimator for the regression vector (default = \code{NULL})}
 
-\item{tau.vec}{The vector of enlargement factors for asymptotic variance of the bias-corrected estimator to handle super-efficiency (default = \code{NULL})}
-
 \item{lambda}{The tuning parameter used in the construction of initial LASSO estimator of the regression vector if \code{init.Lasso = NULL} (default = \code{NULL})}
-
-\item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
 
 \item{mu}{The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})}
 
@@ -51,18 +51,20 @@ such that the dual optimization problem for constructing the projection directio
 \item{maxiter}{Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 such that the dual optimization problem for constructing the projection direction converges (default = 10)}
 
-\item{alpha}{Level of significance to test if the quadratic functional is equal to 0 (default = 0.05)}
+\item{alpha}{Level of significance to test the null hypothesis which claims that the quadratic form is equal to 0 (default = 0.05)}
 }
 \value{
-\item{prop.est}{The bias-corrected estimator of the quadratic functional restricted to \code{G}}
+\item{prop.est}{The bias-corrected estimator of the quadratic form}
 \item{se}{The standard error of the bias-corrected estimator}
-\item{CI}{The matrix of confidence interval for the quadratic functional; row corresponds to \code{tau.vec}}
-\item{decision}{The decision whether the null hypothesis claiming the quadratic form is equal to 0, is rejected (\code{decision}\eqn{=1}) or not (\code{decision}\eqn{=0}); row corresponds to \code{tau.vec}}
+\item{CI}{The matrix of confidence interval for the quadratic form; row corresponds to the values of \code{tau.vec}}
+\item{decision}{\code{decision}\eqn{=1} implies the quadratic form is positive \eqn{\newline}
+\code{decision}\eqn{=0} implies the quadratic form is zero \eqn{\newline}
+row corresponds to the values of \code{tau.vec}}
 \item{proj}{The projection direction, of length \eqn{p}}
-\item{plug.in}{The plug-in LASSO estimator for the quadratic functional restricted to \code{G}}
+\item{plug.in}{The plug-in LASSO estimator for the quadratic form restricted to \code{G}}
 }
 \description{
-Computes the bias-corrected estimator of the quadratic functional \eqn{\beta_G^{\top}A\beta_G} for the high dimensional linear regression \eqn{y = X^{\top}\beta + \epsilon} and the corresponding standard error along with the confidence interval.
+Computes the bias-corrected estimator of the quadratic form restricted to the set of indices \code{G} for the high dimensional linear regression and the corresponding standard error.
 }
 \examples{
 n = 100

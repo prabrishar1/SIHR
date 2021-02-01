@@ -2,7 +2,7 @@
 % Please edit documentation in R/LF_linear.R
 \name{LF}
 \alias{LF}
-\title{Inference for the linear functional in high dimensional linear regression}
+\title{Inference for the linear form in high dimensional linear regression}
 \usage{
 LF(
   X,
@@ -42,18 +42,19 @@ such that the dual optimization problem for constructing the projection directio
 \item{maxiter}{Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 such that the dual optimization problem for constructing the projection direction converges (default = 10)}
 
-\item{alpha}{Level of significance to conduct the test \eqn{H_0: \code{loading}^{\top}\beta \leq 0} vs \eqn{H_1: \code{loading}^{\top}\beta > 0} (default = 0.05)}
+\item{alpha}{Level of significance to test the null hypothesis which claims that the linear form is less than or equal to 0 (default = 0.05)}
 }
 \value{
-\item{prop.est}{The bias-corrected estimator for the linear functional}
+\item{prop.est}{The bias-corrected estimator for the linear form}
 \item{se}{The standard error of the bias-corrected estimator}
-\item{CI}{The confidence interval for the linear functional}
-\item{decision}{The decision of whether the null hypothesis claiming the linear functional is less than equal to 0 is rejected (\code{decision}\eqn{=1}) or not (\code{decision}\eqn{=0})}
+\item{CI}{The confidence interval for the linear form}
+\item{decision}{\code{decision}\eqn{=1} implies the linear form is above zero \eqn{\newline}
+\code{decision}\eqn{=0} implies the linear form is below zero}
 \item{proj}{The projection direction, of length \eqn{p}}
-\item{plug.in}{The plug-in LASSO estimator for the linear functional}
+\item{plug.in}{The plug-in LASSO estimator for the linear form}
 }
 \description{
-Computes the bias corrected estimator of linear functional \code{xnew}\eqn{^{\top}\beta} for the high dimensional linear regression \eqn{y=X^{\top}\beta + \epsilon} and the corresponding standard error along with the confidence interval.
+Computes the bias corrected estimator of the linear combination of high dimensional regression vector and the corresponding standard error.
 }
 \examples{
 n = 100

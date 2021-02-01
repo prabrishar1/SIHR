@@ -22,9 +22,9 @@ Direction_fixedtuning(
 
 \item{model}{The high dimensional regression model, either \code{linear} or \code{logistic} (default = \code{linear})}
 
-\item{weight}{The weight vector of length \eqn{n}; to be supplied if \code{model="logistic"} (default=NULL)}
+\item{weight}{The weight vector of length \eqn{n}; to be supplied if \code{model="logistic"} (default=\code{NULL} when \code{model=linear})}
 
-\item{deriv.vec}{The first derivative vector of the logit function at \eqn{X\widehat{\beta}}, of length \eqn{n} ; to be supplied if \code{model="logistic"} (default = \code{NULL})}
+\item{deriv.vec}{The first derivative vector of the logit function at \eqn{X.}(\code{init.Lasso}), of length \eqn{n} ; to be supplied if \code{model="logistic"}. Here \code{init.Lasso} is the initial Lasso estimate of the regression vector. (default = \code{NULL} when \code{model=linear})}
 }
 \value{
 \item{proj}{The projection direction, of length \eqn{p}}

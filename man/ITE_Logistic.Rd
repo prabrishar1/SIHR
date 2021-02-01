@@ -2,14 +2,14 @@
 % Please edit documentation in R/LF_logistic.R
 \name{ITE_Logistic}
 \alias{ITE_Logistic}
-\title{Inference for diference of the case probability in the high dimensional logistic regression}
+\title{Inference for difference of case probabilities in the high dimensional logistic regression}
 \usage{
 ITE_Logistic(
   X1,
   y1,
   X2,
   y2,
-  xnew,
+  loading,
   weight = NULL,
   intercept = TRUE,
   init.Lasso1 = NULL,
@@ -34,29 +34,29 @@ ITE_Logistic(
 
 \item{y2}{Outcome vector for the second sample, of length \eqn{n_2}}
 
-\item{xnew}{Loading, of length \eqn{p}}
+\item{loading}{Loading, of length \eqn{p}}
 
-\item{weight}{The weight vector, of length \eqn{n}; if set to \code{NULL}, \eqn{w_i = h(X_i^{\top}\hat{\beta})(1-h(X_i^{\top}\hat{\beta}))} for \eqn{i=1,\ldots,n} (default = \code{NULL})}
+\item{weight}{The weight vector, of length \eqn{n}; if set to \code{NULL}, \eqn{i_{th}} weight is the inverse of the first derivative of the logit function at \eqn{X_i^{\top}}\code{init.Lasso} (default = \code{NULL})}
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
 
-\item{init.Lasso1}{Initial LASSO estimator of the regression vector \eqn{\beta_1} (default = \code{NULL})}
+\item{init.Lasso1}{Initial LASSO estimator of the first regression vector (default = \code{NULL})}
 
-\item{init.Lasso2}{Initial LASSO estimator of the regression vector \eqn{\beta_2} (default = \code{NULL})}
+\item{init.Lasso2}{Initial LASSO estimator of the second regression vector (default = \code{NULL})}
 
-\item{lambda1}{The tuning parameter in the construction of LASSO estimator of the regression vector \eqn{\beta_1} (default = \code{NULL})}
+\item{lambda1}{The tuning parameter in the construction of LASSO estimator of the first regression vector (default = \code{NULL})}
 
-\item{lambda2}{The tuning parameter in the construction of LASSO estimator of the regression vector \eqn{\beta_2} (default = \code{NULL})}
+\item{lambda2}{The tuning parameter in the construction of LASSO estimator of the second regression vector (default = \code{NULL})}
 
-\item{mu1}{The dual tuning parameter used in the construction of the first \eqn{(k=1)} projection direction (default = \code{NULL})}
+\item{mu1}{The dual tuning parameter used in the construction of the first projection direction (default = \code{NULL})}
 
-\item{mu2}{The dual tuning parameter used in the construction of the second \eqn{(k=2)} projection direction (default = \code{NULL})}
+\item{mu2}{The dual tuning parameter used in the construction of the second projection direction (default = \code{NULL})}
 
 \item{step1}{Number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
-such that the dual optimization problem for constructing the first \eqn{(k=1)} projection direction converges (default = \code{NULL})}
+such that the dual optimization problem for constructing the first projection direction converges (default = \code{NULL})}
 
 \item{step2}{Number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
-such that the dual optimization problem for constructing the second \eqn{(k=2)} projection direction converges (default = \code{NULL})}
+such that the dual optimization problem for constructing the second projection direction converges (default = \code{NULL})}
 
 \item{resol}{The factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 such that the dual optimization problem for constructing the projection direction converges (default = 1.5)}
@@ -64,15 +64,18 @@ such that the dual optimization problem for constructing the projection directio
 \item{maxiter}{Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 such that the dual optimization problem for constructing the projection direction converges (default = 10)}
 
-\item{alpha}{Level ofsignificance to test if the difference in case probabilities is less than equal to 0}
+\item{alpha}{Level ofsignificance to test the null hypothesis which claims that the first case probability is not greater than the second case probability (default = 0.05)}
 }
 \value{
-\item{prop.est}{The bias-corrected estimator for the difference of case probabilities}
-\item{se_linear}{The standard error of the bias-corrected estimator of \code{xnew}\eqn{^{\top}(\beta_1-\beta_2)}}
-\item{decision}{The decision of whether the null hypothesis claiming the difference between case probabilities is less than equal to 0 is rejected (\code{decision}\eqn{=1}) or not (\code{decision}\eqn{=0})}
+\item{prop.est}{The bias-corrected estimator for the difference between case probabilities}
+\item{se}{The standard error for the bias-corrected estimator}
+\item{CI}{The confidence interval for the difference between case probabilities}
+\item{decision}{\code{decision}\eqn{=1} implies the first case probability is greater than the second one\eqn{\newline}
+\code{decision}\eqn{=0} implies the first case probability is less than the second one}
 }
 \description{
-Computes the bias corrected estimator of h(\code{xnew}\eqn{^{\top}\beta_1})-h(\code{xnew}\eqn{^{\top}\beta_2}) for the high dimensional logistic regression \eqn{yk|Xk \sim } Bernoulli\eqn{(\frac{e^{Xk\beta_k}}{1+e^{Xk\beta_k}}),  k=1,2} and the corresponding standard error.
+Computes the bias corrected estimator of the difference between case probabilities with respect to two high dimensional logistic regression models
+and the corresponding standard error. Here the case probability refers to the conditional probability of the binary response variable taking value 1 given the predictors are assigned to \code{loading}.
 }
 \examples{
 A1gen <- function(rho,p){
@@ -103,5 +106,5 @@ prob2 <- exp(exp_val2)/(1+exp(exp_val2))
 y1 <- rbinom(n1,1,prob1)
 y2 <- rbinom(n2,1,prob2)
 loading <- MASS::mvrnorm(1,mu,Cov)
-Est <- ITE_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,xnew = loading, intercept = TRUE)
+Est <- ITE_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
 }

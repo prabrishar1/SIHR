@@ -2,7 +2,7 @@
 % Please edit documentation in R/LF_linear.R
 \name{ITE}
 \alias{ITE}
-\title{Individualised treatment selection in the high dimensional linear regression}
+\title{Individualized treatment effect in the high dimensional linear regression}
 \usage{
 ITE(
   X1,
@@ -37,23 +37,23 @@ ITE(
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
 
-\item{init.Lasso1}{Initial LASSO estimator of the regression vector \eqn{\beta_1} (default = \code{NULL})}
+\item{init.Lasso1}{Initial LASSO estimator of the first regression vector (default = \code{NULL})}
 
-\item{init.Lasso2}{Initial LASSO estimator of the regression vector \eqn{\beta_2} (default = \code{NULL})}
+\item{init.Lasso2}{Initial LASSO estimator of the second regression vector (default = \code{NULL})}
 
-\item{lambda1}{The tuning parameter in the construction of LASSO estimator of the regression vector \eqn{\beta_1} (default = \code{NULL})}
+\item{lambda1}{The tuning parameter in the construction of LASSO estimator of the first regression vector (default = \code{NULL})}
 
-\item{lambda2}{The tuning parameter in the construction of LASSO estimator of the regression vector \eqn{\beta_2} (default = \code{NULL})}
+\item{lambda2}{The tuning parameter in the construction of LASSO estimator of the second regression vector (default = \code{NULL})}
 
-\item{mu1}{The dual tuning parameter used in the construction of the first \eqn{(k=1)} projection direction (default = \code{NULL})}
+\item{mu1}{The dual tuning parameter used in the construction of the first projection direction (default = \code{NULL})}
 
-\item{mu2}{The dual tuning parameter used in the construction of the second \eqn{(k=2)} projection direction (default = \code{NULL})}
+\item{mu2}{The dual tuning parameter used in the construction of the second projection direction (default = \code{NULL})}
 
 \item{step1}{Number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
-such that the dual optimization problem for constructing the first \eqn{(k=1)} projection direction converges (default = \code{NULL})}
+such that the dual optimization problem for constructing the first projection direction converges (default = \code{NULL})}
 
 \item{step2}{Number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
-such that the dual optimization problem for constructing the second \eqn{(k=2)} projection direction converges (default = \code{NULL})}
+such that the dual optimization problem for constructing the second projection direction converges (default = \code{NULL})}
 
 \item{resol}{The factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 such that the dual optimization problem for constructing the projection direction converges (default = 1.5)}
@@ -61,16 +61,18 @@ such that the dual optimization problem for constructing the projection directio
 \item{maxiter}{Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 such that the dual optimization problem for constructing the projection direction converges (default = 10)}
 
-\item{alpha}{Level of significance to conduct the test \eqn{H_0:} \code{loading}\eqn{^{\top}(\beta_1-\beta_2)\leq 0} vs \eqn{H_1:} \code{loading}\eqn{^{\top}(\beta_1-\beta_2)> 0} (default = 0.05)}
+\item{alpha}{Level of significance to test the null hypothesis which claims that the first linear form is not greater than the second one (default = 0.05)}
 }
 \value{
-\item{prop.est}{The bias-corrected estimator for the difference of the linear functionals}
+\item{prop.est}{The bias-corrected estimator of the ITE}
 \item{se}{The standard error of the bias-corrected estimator}
-\item{CI}{The confidence interval for the difference of the linear functionals}
-\item{decision}{The decision of whether the null hypothesis claiming the difference of the linear functionals is less than equal to 0 is rejected (\code{decision}\eqn{=1}) or not (\code{decision}\eqn{=0})}
+\item{CI}{The confidence interval for the ITE}
+\item{decision}{\code{decision}\eqn{=1} implies the ITE is above zero \eqn{\newline}
+\code{decision}\eqn{=0} implies the ITE is below zero}
 }
 \description{
-Computes the bias corrected estimator of \eqn{<}\code{loading}\eqn{,\beta_1-\beta_2>} for the high dimensional linear regression \code{yk}\eqn{=}\code{Xk}\eqn{^{\top}\beta_k + \epsilon_k,  k=1,2} and the corresponding standard error along with the confidence interval.
+Computes the bias corrected estimator of the Individualized Treatment Effect (ITE)
+and the corresponding standard error along with the confidence interval. Here ITE is defined as the difference between the linear combination of the first regression vector and that of the second regression vector.
 }
 \examples{
 n1 = 100

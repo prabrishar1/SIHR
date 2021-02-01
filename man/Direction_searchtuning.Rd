@@ -21,9 +21,9 @@ Direction_searchtuning(
 
 \item{model}{The high dimensional regression model, either \code{linear} or \code{logistic} (default = \code{linear})}
 
-\item{weight}{The weight vector of length \eqn{n}; to be supplied if \code{model="logistic"} (default=NULL)}
+\item{weight}{The weight vector of length \eqn{n}; to be supplied if \code{model="logistic"} (default=\code{NULL} when \code{model=linear})}
 
-\item{deriv.vec}{The first derivative vector of the logit function at \eqn{X\widehat{\beta}}, of length \eqn{n} ; to be supplied if \code{model="logistic"} (default = \code{NULL})}
+\item{deriv.vec}{The first derivative vector of the logit function at \eqn{X.}(\code{init.Lasso}), of length \eqn{n} ; to be supplied if \code{model="logistic"}. Here \code{init.Lasso} is the initial Lasso estimate of the regression vector. (default = \code{NULL} when \code{model=linear})}
 
 \item{resol}{The factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 such that the dual optimization problem for constructing the projection direction converges (default = 1.5)}

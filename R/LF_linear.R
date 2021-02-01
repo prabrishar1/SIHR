@@ -190,10 +190,10 @@ Direction_searchtuning_lin<-function(X,loading,mu=NULL, resol = 1.5, maxiter = 1
   return(returnList)
 }
 
-#' Inference for the linear functional in high dimensional linear regression
+#' Inference for the linear form in high dimensional linear regression
 #'
 #' @description
-#' Computes the bias corrected estimator of linear functional \code{xnew}\eqn{^{\top}\beta} for the high dimensional linear regression \eqn{y=X^{\top}\beta + \epsilon} and the corresponding standard error along with the confidence interval.
+#' Computes the bias corrected estimator of the linear combination of high dimensional regression vector and the corresponding standard error.
 #'
 #' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
 #' @param y Outcome vector, of length \eqn{n}
@@ -208,15 +208,16 @@ Direction_searchtuning_lin<-function(X,loading,mu=NULL, resol = 1.5, maxiter = 1
 #' such that the dual optimization problem for constructing the projection direction converges (default = 1.5)
 #' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = 10)
-#' @param alpha Level of significance to conduct the test \eqn{H_0: \code{loading}^{\top}\beta \leq 0} vs \eqn{H_1: \code{loading}^{\top}\beta > 0} (default = 0.05)
+#' @param alpha Level of significance to test the null hypothesis which claims that the linear form is less than or equal to 0 (default = 0.05)
 #'
 #' @return
-#' \item{prop.est}{The bias-corrected estimator for the linear functional}
+#' \item{prop.est}{The bias-corrected estimator for the linear form}
 #' \item{se}{The standard error of the bias-corrected estimator}
-#' \item{CI}{The confidence interval for the linear functional}
-#' \item{decision}{The decision of whether the null hypothesis claiming the linear functional is less than equal to 0 is rejected (\code{decision}\eqn{=1}) or not (\code{decision}\eqn{=0})}
+#' \item{CI}{The confidence interval for the linear form}
+#' \item{decision}{\code{decision}\eqn{=1} implies the linear form is above zero \eqn{\newline}
+#' \code{decision}\eqn{=0} implies the linear form is below zero}
 #' \item{proj}{The projection direction, of length \eqn{p}}
-#' \item{plug.in}{The plug-in LASSO estimator for the linear functional}
+#' \item{plug.in}{The plug-in LASSO estimator for the linear form}
 #'
 #' @export
 #'
@@ -353,10 +354,8 @@ LF<-function(X,y,loading,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step
       CI <- c(debias.est - qnorm(1-alpha/2)*se, debias.est + qnorm(1-alpha/2)*se)
       if(debias.est - qnorm(1-alpha)*se > 0){
         dec <- 1
-        #print("The null hypothesis claiming the linear functional is less than equal to 0, is rejected")
       }else{
         dec <- 0
-        #print("The null hypothesis claiming the linear functional is less than equal to 0, cannot be rejected")
       }
       returnList <- list("prop.est" = debias.est,
                          "se" = se,
@@ -370,10 +369,11 @@ LF<-function(X,y,loading,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step
   }
 }
 
-#' Individualised treatment selection in the high dimensional linear regression
+#' Individualized treatment effect in the high dimensional linear regression
 #'
 #' @description
-#' Computes the bias corrected estimator of \eqn{<}\code{loading}\eqn{,\beta_1-\beta_2>} for the high dimensional linear regression \code{yk}\eqn{=}\code{Xk}\eqn{^{\top}\beta_k + \epsilon_k,  k=1,2} and the corresponding standard error along with the confidence interval.
+#' Computes the bias corrected estimator of the Individualized Treatment Effect (ITE)
+#' and the corresponding standard error along with the confidence interval. Here ITE is defined as the difference between the linear combination of the first regression vector and that of the second regression vector.
 #'
 #' @param X1 Design matrix for the first sample, of dimension \eqn{n_1} x \eqn{p}
 #' @param y1 Outcome vector for the first sample, of length \eqn{n_1}
@@ -381,27 +381,28 @@ LF<-function(X,y,loading,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step
 #' @param y2 Outcome vector for the second sample, of length \eqn{n_2}
 #' @param loading Loading, of length \eqn{p}
 #' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
-#' @param init.Lasso1 Initial LASSO estimator of the regression vector \eqn{\beta_1} (default = \code{NULL})
-#' @param init.Lasso2 Initial LASSO estimator of the regression vector \eqn{\beta_2} (default = \code{NULL})
-#' @param lambda1 The tuning parameter in the construction of LASSO estimator of the regression vector \eqn{\beta_1} (default = \code{NULL})
-#' @param lambda2 The tuning parameter in the construction of LASSO estimator of the regression vector \eqn{\beta_2} (default = \code{NULL})
-#' @param mu1 The dual tuning parameter used in the construction of the first \eqn{(k=1)} projection direction (default = \code{NULL})
-#' @param mu2 The dual tuning parameter used in the construction of the second \eqn{(k=2)} projection direction (default = \code{NULL})
+#' @param init.Lasso1 Initial LASSO estimator of the first regression vector (default = \code{NULL})
+#' @param init.Lasso2 Initial LASSO estimator of the second regression vector (default = \code{NULL})
+#' @param lambda1 The tuning parameter in the construction of LASSO estimator of the first regression vector (default = \code{NULL})
+#' @param lambda2 The tuning parameter in the construction of LASSO estimator of the second regression vector (default = \code{NULL})
+#' @param mu1 The dual tuning parameter used in the construction of the first projection direction (default = \code{NULL})
+#' @param mu2 The dual tuning parameter used in the construction of the second projection direction (default = \code{NULL})
 #' @param step1 Number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
-#' such that the dual optimization problem for constructing the first \eqn{(k=1)} projection direction converges (default = \code{NULL})
+#' such that the dual optimization problem for constructing the first projection direction converges (default = \code{NULL})
 #' @param step2 Number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
-#' such that the dual optimization problem for constructing the second \eqn{(k=2)} projection direction converges (default = \code{NULL})
+#' such that the dual optimization problem for constructing the second projection direction converges (default = \code{NULL})
 #' @param resol The factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = 1.5)
 #' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = 10)
-#' @param alpha Level of significance to conduct the test \eqn{H_0:} \code{loading}\eqn{^{\top}(\beta_1-\beta_2)\leq 0} vs \eqn{H_1:} \code{loading}\eqn{^{\top}(\beta_1-\beta_2)> 0} (default = 0.05)
+#' @param alpha Level of significance to test the null hypothesis which claims that the first linear form is not greater than the second one (default = 0.05)
 #'
 #' @return
-#' \item{prop.est}{The bias-corrected estimator for the difference of the linear functionals}
+#' \item{prop.est}{The bias-corrected estimator of the ITE}
 #' \item{se}{The standard error of the bias-corrected estimator}
-#' \item{CI}{The confidence interval for the difference of the linear functionals}
-#' \item{decision}{The decision of whether the null hypothesis claiming the difference of the linear functionals is less than equal to 0 is rejected (\code{decision}\eqn{=1}) or not (\code{decision}\eqn{=0})}
+#' \item{CI}{The confidence interval for the ITE}
+#' \item{decision}{\code{decision}\eqn{=1} implies the ITE is above zero \eqn{\newline}
+#' \code{decision}\eqn{=0} implies the ITE is below zero}
 #' @export
 #'
 #' @importFrom Rdpack reprompt
@@ -448,10 +449,8 @@ ITE<-function(X1,y1,X2,y2,loading,intercept=TRUE,init.Lasso1=NULL,init.Lasso2=NU
   CI <- c(debias.est - qnorm(1-alpha/2)*se, debias.est + qnorm(1-alpha/2)*se)
   if(debias.est - qnorm(1-alpha)*se > 0){
     dec <- 1
-    #print("The null hypothesis claiming the difference of the linear functionals is less than equal to 0, is rejected")
   }else{
     dec <- 0
-    #print("The null hypothesis claiming the difference of the linear functionals is less than equal to 0, cannot be rejected")
   }
   returnList <- list("prop.est" = debias.est,
                      "se" = se,
