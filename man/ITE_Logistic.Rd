@@ -52,17 +52,19 @@ ITE_Logistic(
 
 \item{mu2}{The dual tuning parameter used in the construction of the second projection direction (default = \code{NULL})}
 
-\item{step1}{Number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
-such that the dual optimization problem for constructing the first projection direction converges (default = \code{NULL})}
+\item{step1}{\code{mu1}=\eqn{(2.01*log(p)/n1)^{-\frac{\code{resol}*\code{step1}}{2}}}; if set to \code{NULL} it is
+computed to be the number of steps (< \code{maxiter}) to obtain the smallest \code{mu1}
+such that the dual optimization problem for constructing the projection direction converges (default = \code{NULL})}
 
-\item{step2}{Number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
+\item{step2}{\code{mu2}=\eqn{(2.01*log(p)/n2)^{-\frac{\code{resol}*\code{step2}}{2}}}; if set to \code{NULL} it is
+computed to be the number of steps (< \code{maxiter}) to obtain the smallest \code{mu2}
 such that the dual optimization problem for constructing the second projection direction converges (default = \code{NULL})}
 
-\item{resol}{The factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-such that the dual optimization problem for constructing the projection direction converges (default = 1.5)}
+\item{resol}{The factor by which \code{mu1} (and \code{mu2}) is increased/decreased to obtain the smallest \code{mu1} (and \code{mu2})
+such that the dual optimization problem for constructing the first (and the second) projection direction converges (default = 1.5)}
 
-\item{maxiter}{Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-such that the dual optimization problem for constructing the projection direction converges (default = 10)}
+\item{maxiter}{Maximum number of steps along which \code{mu1} (and \code{mu2}) is increased/decreased to obtain the smallest \code{mu} (and \code{mu2})
+such that the dual optimization problem for constructing the first (and the second) projection direction converges (default = 10)}
 
 \item{alpha}{Level ofsignificance to test the null hypothesis which claims that the first case probability is not greater than the second case probability (default = 0.05)}
 }

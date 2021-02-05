@@ -202,7 +202,8 @@ Direction_searchtuning_lin<-function(X,loading,mu=NULL, resol = 1.5, maxiter = 1
 #' @param init.Lasso Initial LASSO estimator of the regression vector (default = \code{NULL})
 #' @param lambda The tuning parameter in the construction of LASSO estimator of the regression vector (default = \code{NULL})
 #' @param mu The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})
-#' @param step Number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
+#' @param step \code{mu}=\eqn{(2.01*log(p)/n)^{-\frac{\code{resol}*\code{step}}{2}}}; if set to \code{NULL} it is
+#' computed to be the number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = \code{NULL})
 #' @param resol The factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = 1.5)
@@ -387,14 +388,16 @@ LF<-function(X,y,loading,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step
 #' @param lambda2 The tuning parameter in the construction of LASSO estimator of the second regression vector (default = \code{NULL})
 #' @param mu1 The dual tuning parameter used in the construction of the first projection direction (default = \code{NULL})
 #' @param mu2 The dual tuning parameter used in the construction of the second projection direction (default = \code{NULL})
-#' @param step1 Number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
+#' @param step1 \code{mu1}=\eqn{(2.01*log(p)/n1)^{-\frac{\code{resol}*\code{step1}}{2}}}; if set to \code{NULL} it is
+#' computed to be the number of steps (< \code{maxiter}) to obtain the smallest \code{mu1}
 #' such that the dual optimization problem for constructing the first projection direction converges (default = \code{NULL})
-#' @param step2 Number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
+#' @param step2 \code{mu2}=\eqn{(2.01*log(p)/n2)^{-\frac{\code{resol}*\code{step2}}{2}}}; if set to \code{NULL} it is
+#' computed to be the number of steps (< \code{maxiter}) to obtain the smallest \code{mu2}
 #' such that the dual optimization problem for constructing the second projection direction converges (default = \code{NULL})
-#' @param resol The factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-#' such that the dual optimization problem for constructing the projection direction converges (default = 1.5)
-#' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-#' such that the dual optimization problem for constructing the projection direction converges (default = 10)
+#' @param resol The factor by which \code{mu1} (and \code{mu2}) is increased/decreased to obtain the smallest \code{mu1} (and \code{mu2})
+#' such that the dual optimization problem for constructing the first (and the second) projection direction converges (default = 1.5)
+#' @param maxiter Maximum number of steps along which \code{mu1} (and \code{mu2}) is increased/decreased to obtain the smallest \code{mu1} (and \code{mu2})
+#' such that the dual optimization problem for constructing the first (and the second) projection direction converges (default = 10)
 #' @param alpha Level of significance to test the null hypothesis which claims that the first linear form is not greater than the second one (default = 0.05)
 #'
 #' @return

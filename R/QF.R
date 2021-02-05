@@ -207,7 +207,8 @@ Direction_searchtuning_robust<-function(X,loading,mu=NULL, resol = 1.5, maxiter 
 #' @param init.Lasso Initial LASSO estimator for the regression vector (default = \code{NULL})
 #' @param lambda The tuning parameter used in the construction of initial LASSO estimator of the regression vector if \code{init.Lasso = NULL} (default = \code{NULL})
 #' @param mu The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})
-#' @param step Number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
+#' @param step \code{mu}=\eqn{(2.01*log(p)/n)^{-\frac{\code{resol}*\code{step}}{2}}}; if set to \code{NULL} it is
+#' computed to be the number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = \code{NULL})
 #' @param resol Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = 1.5)

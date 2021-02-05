@@ -33,7 +33,8 @@ LF(
 
 \item{mu}{The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})}
 
-\item{step}{Number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
+\item{step}{\code{mu}=\eqn{(2.01*log(p)/n)^{-\frac{\code{resol}*\code{step}}{2}}}; if set to \code{NULL} it is
+computed to be the number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
 such that the dual optimization problem for constructing the projection direction converges (default = \code{NULL})}
 
 \item{resol}{The factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
