@@ -49,11 +49,11 @@ ITE(
 
 \item{mu2}{The dual tuning parameter used in the construction of the second projection direction (default = \code{NULL})}
 
-\item{step1}{\code{mu1}=\eqn{(2.01*log(p)/n1)^{-\frac{\code{resol}*\code{step1}}{2}}}; if set to \code{NULL} it is
+\item{step1}{The step size used to compute \code{mu1}; if set to \code{NULL} it is
 computed to be the number of steps (< \code{maxiter}) to obtain the smallest \code{mu1}
 such that the dual optimization problem for constructing the first projection direction converges (default = \code{NULL})}
 
-\item{step2}{\code{mu2}=\eqn{(2.01*log(p)/n2)^{-\frac{\code{resol}*\code{step2}}{2}}}; if set to \code{NULL} it is
+\item{step2}{The step size used to compute \code{mu2}; if set to \code{NULL} it is
 computed to be the number of steps (< \code{maxiter}) to obtain the smallest \code{mu2}
 such that the dual optimization problem for constructing the second projection direction converges (default = \code{NULL})}
 
@@ -63,18 +63,19 @@ such that the dual optimization problem for constructing the first (and the seco
 \item{maxiter}{Maximum number of steps along which \code{mu1} (and \code{mu2}) is increased/decreased to obtain the smallest \code{mu1} (and \code{mu2})
 such that the dual optimization problem for constructing the first (and the second) projection direction converges (default = 10)}
 
-\item{alpha}{Level of significance to test the null hypothesis which claims that the first linear form is not greater than the second one (default = 0.05)}
+\item{alpha}{Level of significance to test the null hypothesis which claims that ITE is not above zero (default = 0.05)}
 }
 \value{
 \item{prop.est}{The bias-corrected estimator of the ITE}
 \item{se}{The standard error of the bias-corrected estimator}
 \item{CI}{The confidence interval for the ITE}
 \item{decision}{\code{decision}\eqn{=1} implies the ITE is above zero \eqn{\newline}
-\code{decision}\eqn{=0} implies the ITE is below zero}
+\code{decision}\eqn{=0} implies the ITE is not above zero}
 }
 \description{
 Computes the bias corrected estimator of the Individualized Treatment Effect (ITE)
-and the corresponding standard error along with the confidence interval. Here ITE is defined as the difference between the linear combination of the first regression vector and that of the second regression vector.
+and the corresponding standard error. It also constructs the confidence interval for ITE and test
+whether ITE is above zero or not. Here ITE is defined as a linear combination of the difference between two regression vectors.
 }
 \examples{
 n1 = 100

@@ -26,7 +26,7 @@ LF_logistic(
 
 \item{loading}{Loading, of length \eqn{p}}
 
-\item{weight}{The weight vector, of length \eqn{n}; if set to \code{NULL}, \eqn{i_{th}} weight is the inverse of the first derivative of the logit function at \eqn{X_i^{\top}}\code{init.Lasso} (default = \code{NULL})}
+\item{weight}{The weight vector used for bias correction, of length \eqn{n}; if set to \code{NULL}, the weight is the inverse of the first derivative of the logit function (default = \code{NULL})}
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
 
@@ -36,7 +36,7 @@ LF_logistic(
 
 \item{mu}{The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})}
 
-\item{step}{\code{mu}=\eqn{(2.01*log(p)/n)^{-\frac{\code{resol}*\code{step}}{2}}}; if set to \code{NULL} it is
+\item{step}{The step size used to compute \code{mu}; if set to \code{NULL} it is
 computed to be the number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
 such that the dual optimization problem for constructing the projection direction converges (default = \code{NULL})}
 
@@ -53,12 +53,13 @@ such that the dual optimization problem for constructing the projection directio
 \item{se}{The standard error of the bias-corrected estimator}
 \item{CI}{The confidence interval for the case probability}
 \item{decision}{\code{decision}\eqn{=1} implies the case probability is above 0.5 \eqn{\newline}
-\code{decision}\eqn{=0} implies the case probability is below 0.5}
+\code{decision}\eqn{=0} implies the case probability is not above 0.5}
 \item{proj}{The projection direction, of length \eqn{p}}
 \item{plug.in}{The plug-in LASSO estimator of the case probability}
 }
 \description{
-Computes the bias corrected estimator of the case probability for the high dimensional logistic regression model and the corresponding standard error.
+Computes the bias corrected estimator of the case probability in the high dimensional logistic regression model and the corresponding standard error.
+It also constructs the confidence interval for the case probability and test whether the case probability is above zero or not.
 Here case probability refers to the conditional probability of the binary response variable taking value 1 given the predictors take value \code{loading}.
 }
 \examples{

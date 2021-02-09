@@ -190,10 +190,11 @@ Direction_searchtuning_lin<-function(X,loading,mu=NULL, resol = 1.5, maxiter = 1
   return(returnList)
 }
 
-#' Inference for the linear form in high dimensional linear regression
+#' Inference for a linear combination of regression coefficients in high dimensional linear regression.
 #'
 #' @description
-#' Computes the bias corrected estimator of the linear combination of high dimensional regression vector and the corresponding standard error.
+#' Computes the bias corrected estimator of the linear combination of regression coefficients and the corresponding standard error.
+#' It also constructs the confidence interval for the linear combination of regression coefficients and test whether it is above zero or not.
 #'
 #' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
 #' @param y Outcome vector, of length \eqn{n}
@@ -202,23 +203,24 @@ Direction_searchtuning_lin<-function(X,loading,mu=NULL, resol = 1.5, maxiter = 1
 #' @param init.Lasso Initial LASSO estimator of the regression vector (default = \code{NULL})
 #' @param lambda The tuning parameter in the construction of LASSO estimator of the regression vector (default = \code{NULL})
 #' @param mu The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})
-#' @param step \code{mu}=\eqn{(2.01*log(p)/n)^{-\frac{\code{resol}*\code{step}}{2}}}; if set to \code{NULL} it is
+#' @param step The step size used to compute \code{mu}; if set to \code{NULL} it is
 #' computed to be the number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = \code{NULL})
 #' @param resol The factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = 1.5)
 #' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = 10)
-#' @param alpha Level of significance to test the null hypothesis which claims that the linear form is less than or equal to 0 (default = 0.05)
+#' @param alpha Level of significance to test the null hypothesis which claims that the linear combination of the regression coefficients
+#' is less than or equal to zero (default = 0.05)
 #'
 #' @return
-#' \item{prop.est}{The bias-corrected estimator for the linear form}
+#' \item{prop.est}{The bias-corrected estimator for the linear combination of regression coefficients}
 #' \item{se}{The standard error of the bias-corrected estimator}
-#' \item{CI}{The confidence interval for the linear form}
-#' \item{decision}{\code{decision}\eqn{=1} implies the linear form is above zero \eqn{\newline}
-#' \code{decision}\eqn{=0} implies the linear form is below zero}
+#' \item{CI}{The confidence interval for the linear combination of regression coefficients}
+#' \item{decision}{\code{decision}\eqn{=1} implies the linear combination of regression coefficients is above zero \eqn{\newline}
+#' \code{decision}\eqn{=0} implies the linear combination of regression coefficients is not above zero}
 #' \item{proj}{The projection direction, of length \eqn{p}}
-#' \item{plug.in}{The plug-in LASSO estimator for the linear form}
+#' \item{plug.in}{The plug-in LASSO estimator for the linear combination of regression coefficients}
 #'
 #' @export
 #'
@@ -374,7 +376,8 @@ LF<-function(X,y,loading,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step
 #'
 #' @description
 #' Computes the bias corrected estimator of the Individualized Treatment Effect (ITE)
-#' and the corresponding standard error along with the confidence interval. Here ITE is defined as the difference between the linear combination of the first regression vector and that of the second regression vector.
+#' and the corresponding standard error. It also constructs the confidence interval for ITE and test
+#' whether ITE is above zero or not. Here ITE is defined as a linear combination of the difference between two regression vectors.
 #'
 #' @param X1 Design matrix for the first sample, of dimension \eqn{n_1} x \eqn{p}
 #' @param y1 Outcome vector for the first sample, of length \eqn{n_1}
@@ -388,24 +391,24 @@ LF<-function(X,y,loading,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step
 #' @param lambda2 The tuning parameter in the construction of LASSO estimator of the second regression vector (default = \code{NULL})
 #' @param mu1 The dual tuning parameter used in the construction of the first projection direction (default = \code{NULL})
 #' @param mu2 The dual tuning parameter used in the construction of the second projection direction (default = \code{NULL})
-#' @param step1 \code{mu1}=\eqn{(2.01*log(p)/n1)^{-\frac{\code{resol}*\code{step1}}{2}}}; if set to \code{NULL} it is
+#' @param step1 The step size used to compute \code{mu1}; if set to \code{NULL} it is
 #' computed to be the number of steps (< \code{maxiter}) to obtain the smallest \code{mu1}
 #' such that the dual optimization problem for constructing the first projection direction converges (default = \code{NULL})
-#' @param step2 \code{mu2}=\eqn{(2.01*log(p)/n2)^{-\frac{\code{resol}*\code{step2}}{2}}}; if set to \code{NULL} it is
+#' @param step2 The step size used to compute \code{mu2}; if set to \code{NULL} it is
 #' computed to be the number of steps (< \code{maxiter}) to obtain the smallest \code{mu2}
 #' such that the dual optimization problem for constructing the second projection direction converges (default = \code{NULL})
 #' @param resol The factor by which \code{mu1} (and \code{mu2}) is increased/decreased to obtain the smallest \code{mu1} (and \code{mu2})
 #' such that the dual optimization problem for constructing the first (and the second) projection direction converges (default = 1.5)
 #' @param maxiter Maximum number of steps along which \code{mu1} (and \code{mu2}) is increased/decreased to obtain the smallest \code{mu1} (and \code{mu2})
 #' such that the dual optimization problem for constructing the first (and the second) projection direction converges (default = 10)
-#' @param alpha Level of significance to test the null hypothesis which claims that the first linear form is not greater than the second one (default = 0.05)
+#' @param alpha Level of significance to test the null hypothesis which claims that ITE is not above zero (default = 0.05)
 #'
 #' @return
 #' \item{prop.est}{The bias-corrected estimator of the ITE}
 #' \item{se}{The standard error of the bias-corrected estimator}
 #' \item{CI}{The confidence interval for the ITE}
 #' \item{decision}{\code{decision}\eqn{=1} implies the ITE is above zero \eqn{\newline}
-#' \code{decision}\eqn{=0} implies the ITE is below zero}
+#' \code{decision}\eqn{=0} implies the ITE is not above zero}
 #' @export
 #'
 #' @importFrom Rdpack reprompt

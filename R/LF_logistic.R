@@ -164,18 +164,19 @@ Direction_searchtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec,res
 #' Inference for the case probability in high dimensional logistic regression
 #'
 #' @description
-#' Computes the bias corrected estimator of the case probability for the high dimensional logistic regression model and the corresponding standard error.
+#' Computes the bias corrected estimator of the case probability in the high dimensional logistic regression model and the corresponding standard error.
+#' It also constructs the confidence interval for the case probability and test whether the case probability is above zero or not.
 #' Here case probability refers to the conditional probability of the binary response variable taking value 1 given the predictors take value \code{loading}.
 #'
 #' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
 #' @param y Outcome vector, of length \eqn{n}
 #' @param loading Loading, of length \eqn{p}
 #' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
-#' @param weight The weight vector, of length \eqn{n}; if set to \code{NULL}, \eqn{i_{th}} weight is the inverse of the first derivative of the logit function at \eqn{X_i^{\top}}\code{init.Lasso} (default = \code{NULL})
+#' @param weight The weight vector used for bias correction, of length \eqn{n}; if set to \code{NULL}, the weight is the inverse of the first derivative of the logit function (default = \code{NULL})
 #' @param init.Lasso Initial LASSO estimator of the regression vector (default = \code{NULL})
 #' @param lambda The tuning parameter used in the construction of LASSO estimator of the regression vector (default = \code{NULL})
 #' @param mu The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})
-#' @param step \code{mu}=\eqn{(2.01*log(p)/n)^{-\frac{\code{resol}*\code{step}}{2}}}; if set to \code{NULL} it is
+#' @param step The step size used to compute \code{mu}; if set to \code{NULL} it is
 #' computed to be the number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = \code{NULL})
 #' @param resol The factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
@@ -189,7 +190,7 @@ Direction_searchtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec,res
 #' \item{se}{The standard error of the bias-corrected estimator}
 #' \item{CI}{The confidence interval for the case probability}
 #' \item{decision}{\code{decision}\eqn{=1} implies the case probability is above 0.5 \eqn{\newline}
-#' \code{decision}\eqn{=0} implies the case probability is below 0.5}
+#' \code{decision}\eqn{=0} implies the case probability is not above 0.5}
 #' \item{proj}{The projection direction, of length \eqn{p}}
 #' \item{plug.in}{The plug-in LASSO estimator of the case probability}
 #'
@@ -360,18 +361,20 @@ LF_logistic<-function(X,y,loading,weight=NULL,intercept=TRUE,init.Lasso=NULL,lam
   }
 }
 
-#' Inference for difference of case probabilities in the high dimensional logistic regression
+#' Inference for difference of case probabilities in high dimensional logistic regressions
 #'
 #' @description
 #' Computes the bias corrected estimator of the difference between case probabilities with respect to two high dimensional logistic regression models
-#' and the corresponding standard error. Here the case probability refers to the conditional probability of the binary response variable taking value 1 given the predictors are assigned to \code{loading}.
+#' and the corresponding standard error. It also constructs the confidence interval for the difference of case probabilities and test
+#' whether it is above zero or not. Here the case probability refers to the conditional probability of the binary response variable taking value 1 given the predictors are assigned to \code{loading}.
 #'
 #' @param X1 Design matrix for the first sample, of dimension \eqn{n_1} x \eqn{p}
 #' @param y1 Outcome vector for the first sample, of length \eqn{n_1}
 #' @param X2 Design matrix for the second sample, of dimension \eqn{n_2} x \eqn{p}
 #' @param y2 Outcome vector for the second sample, of length \eqn{n_2}
 #' @param loading Loading, of length \eqn{p}
-#' @param weight The weight vector, of length \eqn{n}; if set to \code{NULL}, \eqn{i_{th}} weight is the inverse of the first derivative of the logit function at \eqn{X_i^{\top}}\code{init.Lasso} (default = \code{NULL})
+#' @param weight The weight vector used for bias correction, of length \eqn{n}; if set to \code{NULL}, the weight is
+#' the inverse of the first derivative of the logit function (default = \code{NULL})
 #' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
 #' @param init.Lasso1 Initial LASSO estimator of the first regression vector (default = \code{NULL})
 #' @param init.Lasso2 Initial LASSO estimator of the second regression vector (default = \code{NULL})
@@ -379,10 +382,10 @@ LF_logistic<-function(X,y,loading,weight=NULL,intercept=TRUE,init.Lasso=NULL,lam
 #' @param lambda2 The tuning parameter in the construction of LASSO estimator of the second regression vector (default = \code{NULL})
 #' @param mu1 The dual tuning parameter used in the construction of the first projection direction (default = \code{NULL})
 #' @param mu2 The dual tuning parameter used in the construction of the second projection direction (default = \code{NULL})
-#' @param step1 \code{mu1}=\eqn{(2.01*log(p)/n1)^{-\frac{\code{resol}*\code{step1}}{2}}}; if set to \code{NULL} it is
+#' @param step1 The step size used to compute \code{mu1}; if set to \code{NULL} it is
 #' computed to be the number of steps (< \code{maxiter}) to obtain the smallest \code{mu1}
 #' such that the dual optimization problem for constructing the projection direction converges (default = \code{NULL})
-#' @param step2 \code{mu2}=\eqn{(2.01*log(p)/n2)^{-\frac{\code{resol}*\code{step2}}{2}}}; if set to \code{NULL} it is
+#' @param step2 The step size used to compute \code{mu2}; if set to \code{NULL} it is
 #' computed to be the number of steps (< \code{maxiter}) to obtain the smallest \code{mu2}
 #' such that the dual optimization problem for constructing the second projection direction converges (default = \code{NULL})
 #' @param resol The factor by which \code{mu1} (and \code{mu2}) is increased/decreased to obtain the smallest \code{mu1} (and \code{mu2})

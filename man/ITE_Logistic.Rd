@@ -2,7 +2,7 @@
 % Please edit documentation in R/LF_logistic.R
 \name{ITE_Logistic}
 \alias{ITE_Logistic}
-\title{Inference for difference of case probabilities in the high dimensional logistic regression}
+\title{Inference for difference of case probabilities in high dimensional logistic regressions}
 \usage{
 ITE_Logistic(
   X1,
@@ -36,7 +36,8 @@ ITE_Logistic(
 
 \item{loading}{Loading, of length \eqn{p}}
 
-\item{weight}{The weight vector, of length \eqn{n}; if set to \code{NULL}, \eqn{i_{th}} weight is the inverse of the first derivative of the logit function at \eqn{X_i^{\top}}\code{init.Lasso} (default = \code{NULL})}
+\item{weight}{The weight vector used for bias correction, of length \eqn{n}; if set to \code{NULL}, the weight is
+the inverse of the first derivative of the logit function (default = \code{NULL})}
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
 
@@ -52,11 +53,11 @@ ITE_Logistic(
 
 \item{mu2}{The dual tuning parameter used in the construction of the second projection direction (default = \code{NULL})}
 
-\item{step1}{\code{mu1}=\eqn{(2.01*log(p)/n1)^{-\frac{\code{resol}*\code{step1}}{2}}}; if set to \code{NULL} it is
+\item{step1}{The step size used to compute \code{mu1}; if set to \code{NULL} it is
 computed to be the number of steps (< \code{maxiter}) to obtain the smallest \code{mu1}
 such that the dual optimization problem for constructing the projection direction converges (default = \code{NULL})}
 
-\item{step2}{\code{mu2}=\eqn{(2.01*log(p)/n2)^{-\frac{\code{resol}*\code{step2}}{2}}}; if set to \code{NULL} it is
+\item{step2}{The step size used to compute \code{mu2}; if set to \code{NULL} it is
 computed to be the number of steps (< \code{maxiter}) to obtain the smallest \code{mu2}
 such that the dual optimization problem for constructing the second projection direction converges (default = \code{NULL})}
 
@@ -77,7 +78,8 @@ such that the dual optimization problem for constructing the first (and the seco
 }
 \description{
 Computes the bias corrected estimator of the difference between case probabilities with respect to two high dimensional logistic regression models
-and the corresponding standard error. Here the case probability refers to the conditional probability of the binary response variable taking value 1 given the predictors are assigned to \code{loading}.
+and the corresponding standard error. It also constructs the confidence interval for the difference of case probabilities and test
+whether it is above zero or not. Here the case probability refers to the conditional probability of the binary response variable taking value 1 given the predictors are assigned to \code{loading}.
 }
 \examples{
 A1gen <- function(rho,p){

@@ -2,7 +2,7 @@
 % Please edit documentation in R/LF_linear.R
 \name{LF}
 \alias{LF}
-\title{Inference for the linear form in high dimensional linear regression}
+\title{Inference for a linear combination of regression coefficients in high dimensional linear regression.}
 \usage{
 LF(
   X,
@@ -33,7 +33,7 @@ LF(
 
 \item{mu}{The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})}
 
-\item{step}{\code{mu}=\eqn{(2.01*log(p)/n)^{-\frac{\code{resol}*\code{step}}{2}}}; if set to \code{NULL} it is
+\item{step}{The step size used to compute \code{mu}; if set to \code{NULL} it is
 computed to be the number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
 such that the dual optimization problem for constructing the projection direction converges (default = \code{NULL})}
 
@@ -43,19 +43,21 @@ such that the dual optimization problem for constructing the projection directio
 \item{maxiter}{Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 such that the dual optimization problem for constructing the projection direction converges (default = 10)}
 
-\item{alpha}{Level of significance to test the null hypothesis which claims that the linear form is less than or equal to 0 (default = 0.05)}
+\item{alpha}{Level of significance to test the null hypothesis which claims that the linear combination of the regression coefficients
+is less than or equal to zero (default = 0.05)}
 }
 \value{
-\item{prop.est}{The bias-corrected estimator for the linear form}
+\item{prop.est}{The bias-corrected estimator for the linear combination of regression coefficients}
 \item{se}{The standard error of the bias-corrected estimator}
-\item{CI}{The confidence interval for the linear form}
-\item{decision}{\code{decision}\eqn{=1} implies the linear form is above zero \eqn{\newline}
-\code{decision}\eqn{=0} implies the linear form is below zero}
+\item{CI}{The confidence interval for the linear combination of regression coefficients}
+\item{decision}{\code{decision}\eqn{=1} implies the linear combination of regression coefficients is above zero \eqn{\newline}
+\code{decision}\eqn{=0} implies the linear combination of regression coefficients is not above zero}
 \item{proj}{The projection direction, of length \eqn{p}}
-\item{plug.in}{The plug-in LASSO estimator for the linear form}
+\item{plug.in}{The plug-in LASSO estimator for the linear combination of regression coefficients}
 }
 \description{
-Computes the bias corrected estimator of the linear combination of high dimensional regression vector and the corresponding standard error.
+Computes the bias corrected estimator of the linear combination of regression coefficients and the corresponding standard error.
+It also constructs the confidence interval for the linear combination of regression coefficients and test whether it is above zero or not.
 }
 \examples{
 n = 100

@@ -193,10 +193,10 @@ Direction_searchtuning_robust<-function(X,loading,mu=NULL, resol = 1.5, maxiter 
   return(returnList)
 }
 
-#' Inference for quadratic forms in high dimensional linear regression
+#' Inference for quadratic forms of the regression vector in high dimensional linear regression
 #'
-#' @description Computes the bias-corrected estimator of the quadratic form restricted to the set of indices \code{G} for the high dimensional linear regression and the corresponding standard error.
-#'
+#' @description Computes the bias-corrected estimator of the quadratic form of the regression vector, restricted to the set of indices \code{G} for the high dimensional linear regression and the corresponding standard error.
+#' It also constructs the confidence interval for the quadratic form and test whether it is above zero or not.
 #' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
 #' @param y Outcome vector, of length \eqn{n}
 #' @param G The set of indices, \code{G} in the quadratic form
@@ -207,24 +207,24 @@ Direction_searchtuning_robust<-function(X,loading,mu=NULL, resol = 1.5, maxiter 
 #' @param init.Lasso Initial LASSO estimator for the regression vector (default = \code{NULL})
 #' @param lambda The tuning parameter used in the construction of initial LASSO estimator of the regression vector if \code{init.Lasso = NULL} (default = \code{NULL})
 #' @param mu The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})
-#' @param step \code{mu}=\eqn{(2.01*log(p)/n)^{-\frac{\code{resol}*\code{step}}{2}}}; if set to \code{NULL} it is
+#' @param step The step size used to compute \code{mu}; if set to \code{NULL} it is
 #' computed to be the number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = \code{NULL})
 #' @param resol Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = 1.5)
 #' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = 10)
-#' @param alpha Level of significance to test the null hypothesis which claims that the quadratic form is equal to 0 (default = 0.05)
+#' @param alpha Level of significance to test the null hypothesis which claims that the quadratic form of the regression vector is equal to 0 (default = 0.05)
 #'
 #' @return
-#' \item{prop.est}{The bias-corrected estimator of the quadratic form}
+#' \item{prop.est}{The bias-corrected estimator of the quadratic form of the regression vector}
 #' \item{se}{The standard error of the bias-corrected estimator}
-#' \item{CI}{The matrix of confidence interval for the quadratic form; row corresponds to the values of \code{tau.vec}}
-#' \item{decision}{\code{decision}\eqn{=1} implies the quadratic form is positive \eqn{\newline}
-#' \code{decision}\eqn{=0} implies the quadratic form is zero \eqn{\newline}
-#' row corresponds to the values of \code{tau.vec}}
+#' \item{CI}{The matrix of confidence interval for the quadratic form of the regression vector; row corresponds to different values of \code{tau.vec}}
+#' \item{decision}{\code{decision}\eqn{=1} implies the quadratic form of the regression vector is above zero \eqn{\newline}
+#' \code{decision}\eqn{=0} implies the quadratic form of the regression vector is zero \eqn{\newline}
+#' row corresponds to different values of \code{tau.vec}}
 #' \item{proj}{The projection direction, of length \eqn{p}}
-#' \item{plug.in}{The plug-in LASSO estimator for the quadratic form restricted to \code{G}}
+#' \item{plug.in}{The plug-in LASSO estimator for the quadratic form of the regression vector restricted to \code{G}}
 #' @export
 #'
 #' @importFrom Rdpack reprompt
