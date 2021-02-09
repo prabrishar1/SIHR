@@ -231,7 +231,7 @@ Direction_searchtuning_lin<-function(X,loading,mu=NULL, resol = 1.5, maxiter = 1
 #'
 #' @references
 #'
-#' \insertRef{linlin}{FIHR}
+#' \insertRef{linlin}{SIHR}
 #'
 #' @examples
 #' n = 100
@@ -418,7 +418,7 @@ LF<-function(X,y,loading,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step
 #'
 #' @references
 #'
-#' \insertRef{linlin}{FIHR}
+#' \insertRef{linlin}{SIHR}
 #'
 #' @examples
 #' n1 = 100
@@ -448,8 +448,8 @@ LF<-function(X,y,loading,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step
 #' loading <- MASS::mvrnorm(1,rep(0,p),Cov)
 #' Est <- ITE(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
 ITE<-function(X1,y1,X2,y2,loading,intercept=TRUE,init.Lasso1=NULL,init.Lasso2=NULL,lambda1=NULL,lambda2=NULL,mu1=NULL,mu2=NULL,step1=NULL,step2=NULL,resol = 1.5,maxiter=10,alpha=0.05){
-  Est1<-FIHR::LF(X1,y1,loading,intercept=intercept,init.Lasso=init.Lasso1,lambda=lambda1,mu=mu1,step=step1,resol = 1.5,maxiter=10,alpha=alpha)
-  Est2<-FIHR::LF(X2,y2,loading,intercept=intercept,init.Lasso=init.Lasso2,lambda=lambda2,mu=mu2,step=step2,resol = 1.5,maxiter=10,alpha=alpha)
+  Est1<-SIHR::LF(X1,y1,loading,intercept=intercept,init.Lasso=init.Lasso1,lambda=lambda1,mu=mu1,step=step1,resol = 1.5,maxiter=10,alpha=alpha)
+  Est2<-SIHR::LF(X2,y2,loading,intercept=intercept,init.Lasso=init.Lasso2,lambda=lambda2,mu=mu2,step=step2,resol = 1.5,maxiter=10,alpha=alpha)
   debias.est<-Est1$prop.est - Est2$prop.est
   se<-sqrt((Est1$se)^2 + (Est2$se)^2)
   CI <- c(debias.est - qnorm(1-alpha/2)*se, debias.est + qnorm(1-alpha/2)*se)

@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Functional Inference in High Dimensional Regression • FIHR</title>
+<title>Functional Inference in High Dimensional Regression • SIHR</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
@@ -30,7 +30,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">FIHR</a>
+        <a class="navbar-link" href="index.html">SIHR</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
       </span>
     </div>
@@ -61,24 +61,24 @@
   <div class="contents col-md-9">
 <div id="fihr" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#fihr" class="anchor"></a>FIHR</h1></div>
+<a href="#fihr" class="anchor"></a>SIHR</h1></div>
 <!-- badges: start -->
 <!-- badges: end -->
-<p>The goal of FIHR is to provide inference for linear and quadratic functionals in high-dimensional linear and logistic regression models. It computes bias-corrected estimators and corresponding standard errors for the linear and quadratic functionals.</p>
+<p>The goal of SIHR is to provide inference for linear and quadratic functionals in high-dimensional linear and logistic regression models. It computes bias-corrected estimators and corresponding standard errors for the linear and quadratic functionals.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<p>You can install the released version of FIHR from <a href="https://CRAN.R-project.org">CRAN</a> with:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="kw">install.packages</span>(<span class="st">"FIHR"</span>)</span></code></pre></div>
+<p>You can install the released version of SIHR from <a href="https://CRAN.R-project.org">CRAN</a> with:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="kw">install.packages</span>(<span class="st">"SIHR"</span>)</span></code></pre></div>
 <p>And the development version from <a href="https://github.com/">GitHub</a> with:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="co"># install.packages("devtools")</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">"prabrishar1/FIHR"</span>)</span></code></pre></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">"prabrishar1/SIHR"</span>)</span></code></pre></div>
 </div>
 <div id="example" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h2>
 <p>These are basic examples which show how to solve the common high-dimensional inference problems:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="kw">library</span>(FIHR)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="kw">library</span>(SIHR)</span></code></pre></div>
 <p>Inference for linear functional in high-dimensional linear regression model</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="kw">library</span>(MASS)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a>n =<span class="st"> </span><span class="dv">100</span></span>
@@ -107,7 +107,7 @@
 <span id="cb4-25"><a href="#cb4-25" aria-hidden="true"></a>X &lt;-<span class="st"> </span>MASS<span class="op">::</span><span class="kw">mvrnorm</span>(n,mu,Cov)</span>
 <span id="cb4-26"><a href="#cb4-26" aria-hidden="true"></a>y =<span class="st"> </span>X<span class="op">%*%</span>beta <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(n)</span>
 <span id="cb4-27"><a href="#cb4-27" aria-hidden="true"></a>loading &lt;-<span class="st"> </span>MASS<span class="op">::</span><span class="kw">mvrnorm</span>(<span class="dv">1</span>,<span class="kw">rep</span>(<span class="dv">0</span>,p),Cov2)</span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true"></a>Est =<span class="st"> </span>FIHR<span class="op">::</span><span class="kw">LF</span>(<span class="dt">X =</span> X, <span class="dt">y =</span> y, <span class="dt">loading =</span> loading, <span class="dt">intercept =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true"></a>Est =<span class="st"> </span>SIHR<span class="op">::</span><span class="kw">LF</span>(<span class="dt">X =</span> X, <span class="dt">y =</span> y, <span class="dt">loading =</span> loading, <span class="dt">intercept =</span> <span class="ot">TRUE</span>)</span>
 <span id="cb4-29"><a href="#cb4-29" aria-hidden="true"></a><span class="co">#&gt; [1] 4</span></span>
 <span id="cb4-30"><a href="#cb4-30" aria-hidden="true"></a><span class="co">#&gt; [1] "step is 4"</span></span>
 <span id="cb4-31"><a href="#cb4-31" aria-hidden="true"></a>Est<span class="op">$</span>prop.est</span>
@@ -144,7 +144,7 @@
 <span id="cb5-26"><a href="#cb5-26" aria-hidden="true"></a>prob &lt;-<span class="st"> </span><span class="kw">exp</span>(exp_val)<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span><span class="kw">exp</span>(exp_val))</span>
 <span id="cb5-27"><a href="#cb5-27" aria-hidden="true"></a>y &lt;-<span class="st"> </span><span class="kw">rbinom</span>(n,<span class="dv">1</span>,prob)</span>
 <span id="cb5-28"><a href="#cb5-28" aria-hidden="true"></a>loading &lt;-<span class="st"> </span>MASS<span class="op">::</span><span class="kw">mvrnorm</span>(<span class="dv">1</span>,mu,Cov2)</span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true"></a>Est =<span class="st"> </span>FIHR<span class="op">::</span><span class="kw">LF_logistic</span>(<span class="dt">X =</span> X, <span class="dt">y =</span> y, <span class="dt">loading =</span> loading, <span class="dt">intercept =</span> <span class="ot">TRUE</span>, <span class="dt">weight =</span> <span class="kw">rep</span>(<span class="dv">1</span>,n))</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true"></a>Est =<span class="st"> </span>SIHR<span class="op">::</span><span class="kw">LF_logistic</span>(<span class="dt">X =</span> X, <span class="dt">y =</span> y, <span class="dt">loading =</span> loading, <span class="dt">intercept =</span> <span class="ot">TRUE</span>, <span class="dt">weight =</span> <span class="kw">rep</span>(<span class="dv">1</span>,n))</span>
 <span id="cb5-30"><a href="#cb5-30" aria-hidden="true"></a><span class="co">#&gt; Warning in htheta * col.norm: longer object length is not a multiple of shorter</span></span>
 <span id="cb5-31"><a href="#cb5-31" aria-hidden="true"></a><span class="co">#&gt; object length</span></span>
 <span id="cb5-32"><a href="#cb5-32" aria-hidden="true"></a><span class="co">#&gt; [1] 3</span></span>
@@ -176,7 +176,7 @@
 <span id="cb6-20"><a href="#cb6-20" aria-hidden="true"></a></span>
 <span id="cb6-21"><a href="#cb6-21" aria-hidden="true"></a><span class="co">## Inference for Quadratic Functional with Population Covariance Matrix in middle</span></span>
 <span id="cb6-22"><a href="#cb6-22" aria-hidden="true"></a></span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true"></a>Est =<span class="st"> </span>FIHR<span class="op">::</span><span class="kw">QF</span>(<span class="dt">X =</span> X, <span class="dt">y =</span> y, <span class="dt">G=</span>test.set)</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true"></a>Est =<span class="st"> </span>SIHR<span class="op">::</span><span class="kw">QF</span>(<span class="dt">X =</span> X, <span class="dt">y =</span> y, <span class="dt">G=</span>test.set)</span>
 <span id="cb6-24"><a href="#cb6-24" aria-hidden="true"></a>Est<span class="op">$</span>prop.est</span>
 <span id="cb6-25"><a href="#cb6-25" aria-hidden="true"></a><span class="co">#&gt;           [,1]</span></span>
 <span id="cb6-26"><a href="#cb6-26" aria-hidden="true"></a><span class="co">#&gt; [1,] 0.1643904</span></span>
@@ -185,7 +185,7 @@
 <span id="cb6-29"><a href="#cb6-29" aria-hidden="true"></a></span>
 <span id="cb6-30"><a href="#cb6-30" aria-hidden="true"></a><span class="co">## Inference for Quadratic Functional with known matrix A in middle</span></span>
 <span id="cb6-31"><a href="#cb6-31" aria-hidden="true"></a></span>
-<span id="cb6-32"><a href="#cb6-32" aria-hidden="true"></a>Est =<span class="st"> </span>FIHR<span class="op">::</span><span class="kw">QF</span>(<span class="dt">X =</span> X, <span class="dt">y =</span> y, <span class="dt">G=</span>test.set, <span class="dt">Cov.weight =</span> <span class="ot">FALSE</span>,<span class="dt">A =</span> <span class="kw">diag</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">400</span>,<span class="dv">400</span>))</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true"></a>Est =<span class="st"> </span>SIHR<span class="op">::</span><span class="kw">QF</span>(<span class="dt">X =</span> X, <span class="dt">y =</span> y, <span class="dt">G=</span>test.set, <span class="dt">Cov.weight =</span> <span class="ot">FALSE</span>,<span class="dt">A =</span> <span class="kw">diag</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">400</span>,<span class="dv">400</span>))</span>
 <span id="cb6-33"><a href="#cb6-33" aria-hidden="true"></a>Est<span class="op">$</span>prop.est</span>
 <span id="cb6-34"><a href="#cb6-34" aria-hidden="true"></a><span class="co">#&gt;         [,1]</span></span>
 <span id="cb6-35"><a href="#cb6-35" aria-hidden="true"></a><span class="co">#&gt; [1,] 39.8805</span></span>
@@ -194,7 +194,7 @@
 <span id="cb6-38"><a href="#cb6-38" aria-hidden="true"></a></span>
 <span id="cb6-39"><a href="#cb6-39" aria-hidden="true"></a><span class="co">## Inference for square norm of regression vector</span></span>
 <span id="cb6-40"><a href="#cb6-40" aria-hidden="true"></a></span>
-<span id="cb6-41"><a href="#cb6-41" aria-hidden="true"></a>Est =<span class="st"> </span>FIHR<span class="op">::</span><span class="kw">QF</span>(<span class="dt">X =</span> X, <span class="dt">y =</span> y, <span class="dt">G=</span>test.set, <span class="dt">Cov.weight =</span> <span class="ot">FALSE</span>,<span class="dt">A =</span> <span class="kw">diag</span>(<span class="dv">1</span>,<span class="dv">400</span>))</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true"></a>Est =<span class="st"> </span>SIHR<span class="op">::</span><span class="kw">QF</span>(<span class="dt">X =</span> X, <span class="dt">y =</span> y, <span class="dt">G=</span>test.set, <span class="dt">Cov.weight =</span> <span class="ot">FALSE</span>,<span class="dt">A =</span> <span class="kw">diag</span>(<span class="dv">1</span>,<span class="dv">400</span>))</span>
 <span id="cb6-42"><a href="#cb6-42" aria-hidden="true"></a>Est<span class="op">$</span>prop.est</span>
 <span id="cb6-43"><a href="#cb6-43" aria-hidden="true"></a><span class="co">#&gt;           [,1]</span></span>
 <span id="cb6-44"><a href="#cb6-44" aria-hidden="true"></a><span class="co">#&gt; [1,] 0.2694152</span></span>
@@ -209,7 +209,7 @@
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true"></a></span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true"></a><span class="co">## Finding Projection Direction using fixed tuning parameter</span></span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true"></a></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true"></a>Direction.est &lt;-<span class="st"> </span>FIHR<span class="op">::</span><span class="kw">Direction_fixedtuning</span>(X,<span class="dt">loading=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="kw">rep</span>(<span class="dv">0</span>,(p<span class="dv">-1</span>))),<span class="dt">mu=</span><span class="kw">sqrt</span>(<span class="fl">2.01</span><span class="op">*</span><span class="kw">log</span>(p)<span class="op">/</span>n)<span class="op">*</span>resol<span class="op">^</span>{<span class="op">-</span>(step<span class="dv">-1</span>)})</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true"></a>Direction.est &lt;-<span class="st"> </span>SIHR<span class="op">::</span><span class="kw">Direction_fixedtuning</span>(X,<span class="dt">loading=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="kw">rep</span>(<span class="dv">0</span>,(p<span class="dv">-1</span>))),<span class="dt">mu=</span><span class="kw">sqrt</span>(<span class="fl">2.01</span><span class="op">*</span><span class="kw">log</span>(p)<span class="op">/</span>n)<span class="op">*</span>resol<span class="op">^</span>{<span class="op">-</span>(step<span class="dv">-1</span>)})</span>
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true"></a><span class="co">#&gt; [1] "fixed mu"</span></span>
 <span id="cb7-11"><a href="#cb7-11" aria-hidden="true"></a><span class="co">#&gt; [1] 0.1542347</span></span>
 <span id="cb7-12"><a href="#cb7-12" aria-hidden="true"></a>Direction.est<span class="op">$</span>proj</span>
@@ -296,7 +296,7 @@
 <span id="cb7-93"><a href="#cb7-93" aria-hidden="true"></a></span>
 <span id="cb7-94"><a href="#cb7-94" aria-hidden="true"></a><span class="co">## Finding Projection Direction using best step size</span></span>
 <span id="cb7-95"><a href="#cb7-95" aria-hidden="true"></a></span>
-<span id="cb7-96"><a href="#cb7-96" aria-hidden="true"></a>Direction.est &lt;-<span class="st"> </span>FIHR<span class="op">::</span><span class="kw">Direction_searchtuning</span>(X,<span class="dt">loading=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="kw">rep</span>(<span class="dv">0</span>,(p<span class="dv">-1</span>))))</span>
+<span id="cb7-96"><a href="#cb7-96" aria-hidden="true"></a>Direction.est &lt;-<span class="st"> </span>SIHR<span class="op">::</span><span class="kw">Direction_searchtuning</span>(X,<span class="dt">loading=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="kw">rep</span>(<span class="dv">0</span>,(p<span class="dv">-1</span>))))</span>
 <span id="cb7-97"><a href="#cb7-97" aria-hidden="true"></a><span class="co">#&gt; [1] 3</span></span>
 <span id="cb7-98"><a href="#cb7-98" aria-hidden="true"></a>Direction.est<span class="op">$</span>proj</span>
 <span id="cb7-99"><a href="#cb7-99" aria-hidden="true"></a><span class="co">#&gt;   [1]  8.424134e-01  3.445511e-21 -8.727709e-22 -6.090141e-21 -4.477814e-21</span></span>
@@ -403,7 +403,7 @@
 <span id="cb8-21"><a href="#cb8-21" aria-hidden="true"></a></span>
 <span id="cb8-22"><a href="#cb8-22" aria-hidden="true"></a><span class="co">## Finding Projection Direction using fixed tuning parameter</span></span>
 <span id="cb8-23"><a href="#cb8-23" aria-hidden="true"></a></span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true"></a>Direction.est &lt;-<span class="st"> </span>FIHR<span class="op">::</span><span class="kw">Direction_fixedtuning</span>(X,<span class="dt">loading=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="kw">rep</span>(<span class="dv">0</span>,(p<span class="dv">-1</span>))),<span class="dt">mu=</span><span class="kw">sqrt</span>(<span class="fl">2.01</span><span class="op">*</span><span class="kw">log</span>(p)<span class="op">/</span>n)<span class="op">*</span>resol<span class="op">^</span>{<span class="op">-</span>(step<span class="dv">-1</span>)},<span class="dt">model =</span> <span class="st">"logistic"</span>,<span class="dt">weight =</span> <span class="dv">1</span><span class="op">/</span>f_prime, <span class="dt">deriv.vec =</span> f_prime)</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true"></a>Direction.est &lt;-<span class="st"> </span>SIHR<span class="op">::</span><span class="kw">Direction_fixedtuning</span>(X,<span class="dt">loading=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="kw">rep</span>(<span class="dv">0</span>,(p<span class="dv">-1</span>))),<span class="dt">mu=</span><span class="kw">sqrt</span>(<span class="fl">2.01</span><span class="op">*</span><span class="kw">log</span>(p)<span class="op">/</span>n)<span class="op">*</span>resol<span class="op">^</span>{<span class="op">-</span>(step<span class="dv">-1</span>)},<span class="dt">model =</span> <span class="st">"logistic"</span>,<span class="dt">weight =</span> <span class="dv">1</span><span class="op">/</span>f_prime, <span class="dt">deriv.vec =</span> f_prime)</span>
 <span id="cb8-25"><a href="#cb8-25" aria-hidden="true"></a><span class="co">#&gt; [1] "fixed mu"</span></span>
 <span id="cb8-26"><a href="#cb8-26" aria-hidden="true"></a><span class="co">#&gt; [1] 0.2181208</span></span>
 <span id="cb8-27"><a href="#cb8-27" aria-hidden="true"></a>Direction.est<span class="op">$</span>proj</span>
@@ -490,7 +490,7 @@
 <span id="cb8-108"><a href="#cb8-108" aria-hidden="true"></a></span>
 <span id="cb8-109"><a href="#cb8-109" aria-hidden="true"></a><span class="co">## Finding Projection Direction using best step size</span></span>
 <span id="cb8-110"><a href="#cb8-110" aria-hidden="true"></a></span>
-<span id="cb8-111"><a href="#cb8-111" aria-hidden="true"></a>Direction.est &lt;-<span class="st"> </span>FIHR<span class="op">::</span><span class="kw">Direction_searchtuning</span>(Xc,loading,<span class="dt">model =</span> <span class="st">"logistic"</span>,<span class="dt">weight =</span> <span class="dv">1</span><span class="op">/</span>f_prime, <span class="dt">deriv.vec =</span> f_prime)</span>
+<span id="cb8-111"><a href="#cb8-111" aria-hidden="true"></a>Direction.est &lt;-<span class="st"> </span>SIHR<span class="op">::</span><span class="kw">Direction_searchtuning</span>(Xc,loading,<span class="dt">model =</span> <span class="st">"logistic"</span>,<span class="dt">weight =</span> <span class="dv">1</span><span class="op">/</span>f_prime, <span class="dt">deriv.vec =</span> f_prime)</span>
 <span id="cb8-112"><a href="#cb8-112" aria-hidden="true"></a><span class="co">#&gt; [1] 2</span></span>
 <span id="cb8-113"><a href="#cb8-113" aria-hidden="true"></a>Direction.est<span class="op">$</span>proj</span>
 <span id="cb8-114"><a href="#cb8-114" aria-hidden="true"></a><span class="co">#&gt;   [1]  4.209382e-01  3.295984e-01  9.995600e-23  7.471056e-23  1.892610e-22</span></span>

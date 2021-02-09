@@ -83,5 +83,5 @@ loading <- MASS::mvrnorm(1,rep(0,p),Cov)
 Est <- LF(X = X, y = y, loading = loading, intercept = TRUE)
 }
 \references{
-\insertRef{linlin}{FIHR}
+\insertRef{linlin}{SIHR}
 }

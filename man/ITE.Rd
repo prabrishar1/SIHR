@@ -106,5 +106,5 @@ loading <- MASS::mvrnorm(1,rep(0,p),Cov)
 Est <- ITE(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
 }
 \references{
-\insertRef{linlin}{FIHR}
+\insertRef{linlin}{SIHR}
 }

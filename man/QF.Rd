@@ -89,9 +89,9 @@ beta[1:10] <- c(1:10)/5
 X <- MASS::mvrnorm(n,mu,Cov)
 y = X\%*\%beta + rnorm(n)
 test.set =c(30:50)
-Est <-FIHR::QF(X = X, y = y, G = test.set)
+Est <-SIHR::QF(X = X, y = y, G = test.set)
 
 }
 \references{
-\insertRef{grouplin}{FIHR}
+\insertRef{grouplin}{SIHR}
 }

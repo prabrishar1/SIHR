@@ -13,12 +13,12 @@ knitr::opts_chunk$set(
 )
 ```
 
-# FIHR
+# SIHR
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of FIHR is to provide inference for linear and quadratic functionals in high-dimensional linear and logistic regression models. It computes bias-corrected estimators and corresponding standard errors for the linear and quadratic functionals.
+The goal of SIHR is to provide inference for linear and quadratic functionals in high-dimensional linear and logistic regression models. It computes bias-corrected estimators and corresponding standard errors for the linear and quadratic functionals.
 
 ## Installation
 
@@ -26,14 +26,14 @@ You can install the development version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("prabrishar1/FIHR")
+devtools::install_github("prabrishar1/SIHR")
 ```
 ## Example
 
 These are basic examples which show how to solve the common high-dimensional inference problems:
 
 ```{r example}
-library(FIHR)
+library(SIHR)
 ```
 
 Inference for linear functional in high-dimensional linear regression model
@@ -61,7 +61,7 @@ beta[1:10] <- c(1:10)/5
 X <- MASS::mvrnorm(n,mu,Cov)
 y = X%*%beta + rnorm(n)
 loading <- MASS::mvrnorm(1,rep(0,p),Cov)
-Est = FIHR::LF(X = X, y = y, loading = loading, intercept = TRUE)
+Est = SIHR::LF(X = X, y = y, loading = loading, intercept = TRUE)
 Est$prop.est
 Est$se
 Est$CI
@@ -98,7 +98,7 @@ X2 <- MASS::mvrnorm(n2,mu,Cov)
 y1 = X1%*%beta1 + rnorm(n1)
 y2 = X2%*%beta2 + rnorm(n2)
 loading <- MASS::mvrnorm(1,rep(0,p),Cov)
-Est <- FIHR::ITE(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
+Est <- SIHR::ITE(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
 Est$prop.est
 Est$se
 Est$CI
@@ -136,7 +136,7 @@ exp_val <- X%*%beta
 prob <- exp(exp_val)/(1+exp(exp_val))
 y <- rbinom(n,1,prob)
 loading <- MASS::mvrnorm(1,mu,Cov2)
-Est = FIHR::LF_logistic(X = X, y = y, loading = loading, intercept = TRUE, weight = rep(1,n))
+Est = SIHR::LF_logistic(X = X, y = y, loading = loading, intercept = TRUE, weight = rep(1,n))
 Est$prop.est
 Est$se
 Est$CI
@@ -174,7 +174,7 @@ prob2 <- exp(exp_val2)/(1+exp(exp_val2))
 y1 <- rbinom(n1,1,prob1)
 y2 <- rbinom(n2,1,prob2)
 loading <- MASS::mvrnorm(1,mu,Cov)
-Est <- FIHR::ITE_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
+Est <- SIHR::ITE_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
 Est$prop.est
 Est$se
 Est$CI
@@ -207,7 +207,7 @@ test.set <- c(30:100)
 
 ## Inference for Quadratic Functional with Population Covariance Matrix in middle
 
-Est = FIHR::QF(X = X, y = y, G=test.set)
+Est = SIHR::QF(X = X, y = y, G=test.set)
 Est$prop.est
 Est$se
 Est$CI
@@ -215,7 +215,7 @@ Est$decision
 
 ## Inference for Quadratic Functional with known matrix A in middle
 
-Est = FIHR::QF(X = X, y = y, G=test.set, Cov.weight = FALSE,A = diag(1:400,400))
+Est = SIHR::QF(X = X, y = y, G=test.set, Cov.weight = FALSE,A = diag(1:400,400))
 Est$prop.est
 Est$se
 Est$CI
@@ -223,7 +223,7 @@ Est$decision
 
 ## Inference for square norm of regression vector
 
-Est = FIHR::QF(X = X, y = y, G=test.set, Cov.weight = FALSE)
+Est = SIHR::QF(X = X, y = y, G=test.set, Cov.weight = FALSE)
 Est$prop.est
 Est$se
 Est$CI
@@ -242,11 +242,11 @@ step = 3
 
 ## Finding Projection Direction using fixed tuning parameter
 
-Direction.est <- FIHR::Direction_fixedtuning(X,loading=c(1,rep(0,(p-1))),mu=sqrt(2.01*log(p)/n)*resol^{-(step-1)})
+Direction.est <- SIHR::Direction_fixedtuning(X,loading=c(1,rep(0,(p-1))),mu=sqrt(2.01*log(p)/n)*resol^{-(step-1)})
 
 ## Finding Projection Direction using best step size
 
-Direction.est <- FIHR::Direction_searchtuning(X,loading=c(1,rep(0,(p-1))))
+Direction.est <- SIHR::Direction_searchtuning(X,loading=c(1,rep(0,(p-1))))
 Direction.est$proj
 
 ```
@@ -278,9 +278,9 @@ f_prime <- exp(Xc%*%htheta)/(1+exp(Xc%*%htheta))^2
 
 ## Finding Projection Direction using fixed tuning parameter
 
-Direction.est <- FIHR::Direction_fixedtuning(X,loading=c(1,rep(0,(p-1))),mu=sqrt(2.01*log(p)/n)*resol^{-(step-1)},model = "logistic",weight = 1/f_prime, deriv.vec = f_prime)
+Direction.est <- SIHR::Direction_fixedtuning(X,loading=c(1,rep(0,(p-1))),mu=sqrt(2.01*log(p)/n)*resol^{-(step-1)},model = "logistic",weight = 1/f_prime, deriv.vec = f_prime)
 
 ## Finding Projection Direction using best step size
 
-Direction.est <- FIHR::Direction_searchtuning(Xc,loading,model = "logistic",weight = 1/f_prime, deriv.vec = f_prime)
+Direction.est <- SIHR::Direction_searchtuning(Xc,loading,model = "logistic",weight = 1/f_prime, deriv.vec = f_prime)
 ```

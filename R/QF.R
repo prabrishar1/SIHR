@@ -253,11 +253,11 @@ Direction_searchtuning_robust<-function(X,loading,mu=NULL, resol = 1.5, maxiter 
 #' X <- MASS::mvrnorm(n,mu,Cov)
 #' y = X%*%beta + rnorm(n)
 #' test.set =c(30:50)
-#' Est <-FIHR::QF(X = X, y = y, G = test.set)
+#' Est <-SIHR::QF(X = X, y = y, G = test.set)
 #'
 #' @references
 #'
-#' \insertRef{grouplin}{FIHR}
+#' \insertRef{grouplin}{SIHR}
 QF <- function(X, y, G, Cov.weight = TRUE, A = diag(ncol(X)), intercept = TRUE, tau.vec = c(1), init.Lasso = NULL,
                lambda = NULL,  mu = NULL,
                step = NULL, resol = 1.25, maxiter = 10, alpha = 0.05) {
