@@ -82,7 +82,6 @@ beta[1:10] <- 0.5*c(1:10)/10
 a0 = 0
 set.seed(12)
 loading <- MASS::mvrnorm(1,mu,Cov)
-true <- SIHR:::expo(t(loading)\%*\%beta+a0)
 X <- MASS::mvrnorm(n,mu,Cov)
 exp_val <- X\%*\%beta+a0
 prob <- exp(exp_val)/(1+exp(exp_val))

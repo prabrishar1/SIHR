@@ -1,44 +1,15 @@
----
-output: github_document
----
-
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
-```{r, include = FALSE}
+## ---- include = FALSE---------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
-```
 
-# SIHR
-
-<!-- badges: start -->
-<!-- badges: end -->
-
-The goal of SIHR is to provide inference procedures in the high-dimensional setting for (1)linear functionals (LF) and quadratic functionals (QF) in linear regression, (2)linear functional in logistic regression, (3) individual treatment effects (ITE) in linear and logistic regression.
-
-## Installation
-
-You can install the development version from [GitHub](https://github.com/) with:
-
-``` r
-# install.packages("devtools")
-devtools::install_github("prabrishar1/SIHR")
-```
-## Example
-
-These are basic examples which show how to solve the common high-dimensional inference problems:
-
-```{r example}
+## ----example------------------------------------------------------------------
 library(SIHR)
-```
 
-Inference for linear functional in high-dimensional linear regression model
-
-```{r Linear Functional Linear Model}
+## ----Linear Functional Linear Model-------------------------------------------
 
 library(MASS)
 n = 100
@@ -66,11 +37,8 @@ Est$prop.est
 Est$se
 Est$CI
 Est$decision
-```
 
-Individualised Treatment Effect in high-dimensional logistic regression model
-
-```{r ITE Linear Model}
+## ----ITE Linear Model---------------------------------------------------------
 
 n1 = 100
 p = 400
@@ -101,11 +69,8 @@ Est$prop.est
 Est$se
 Est$CI
 Est$decision
-```
 
-Inference for linear functional in high-dimensional logistic regression model
-
-```{r Linear Functional Logistic Model}
+## ----Linear Functional Logistic Model-----------------------------------------
 library(MASS)
 A1gen <- function(rho,p){
   A1=matrix(0,p,p)
@@ -139,11 +104,8 @@ Est$prop.est
 Est$se
 Est$CI
 Est$decision
-```
 
-Individualised Treatment Effect in high-dimensional logistic model
-
-```{r ITE Logistic Model}
+## ----ITE Logistic Model-------------------------------------------------------
 A1gen <- function(rho,p){
 A1=matrix(0,p,p)
 for(i in 1:p){
@@ -177,11 +139,8 @@ Est$prop.est
 Est$se
 Est$CI
 Est$decision
-```
 
-Inference for quadratic functional in high-dimensional linear model
-
-```{r Group Linear Model}
+## ----Group Linear Model-------------------------------------------------------
 
 library(MASS)
 A1gen <- function(rho,p){
@@ -226,11 +185,8 @@ Est$prop.est
 Est$se
 Est$CI
 Est$decision
-```
 
-Finding projection direction in high dimensional linear regression
-
-```{r proj linear}
+## ----proj linear--------------------------------------------------------------
 
 n = 100
 p = 400
@@ -247,11 +203,8 @@ Direction.est <- SIHR::Direction_fixedtuning(X,loading=c(1,rep(0,(p-1))),mu=sqrt
 Direction.est <- SIHR::Direction_searchtuning(X,loading=c(1,rep(0,(p-1))))
 Direction.est$proj
 
-```
 
-Finding projection direction in high dimensional logistic regression
-
-```{r proj logistic}
+## ----proj logistic------------------------------------------------------------
 
 n = 50
 p = 400
@@ -281,4 +234,4 @@ Direction.est <- SIHR::Direction_fixedtuning(X,loading=c(1,rep(0,(p-1))),mu=sqrt
 ## Finding Projection Direction using best step size
 
 Direction.est <- SIHR::Direction_searchtuning(Xc,loading,model = "logistic",weight = 1/f_prime, deriv.vec = f_prime)
-```
+

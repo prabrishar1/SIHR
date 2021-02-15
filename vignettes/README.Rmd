@@ -1,5 +1,10 @@
 ---
-output: github_document
+title: "SIHR"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Put the title of your vignette here}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
