@@ -7,9 +7,9 @@
 <!-- badges: end -->
 
 The goal of SIHR is to provide inference procedures in the
-high-dimensional setting for (1)linear functionals (LF) and quadratic
-functionals (QF) in linear regression, (2)linear functional in logistic
-regression, (3) individual treatment effects (ITE) in linear and
+high-dimensional setting for (1) linear functionals (LF) and quadratic
+functionals (QF) in linear regression, (2) linear functional in logistic
+regression (LF_logistic), (3) individual treatment effects (ITE) in linear and
 logistic regression.
 
 ## Installation
@@ -22,8 +22,8 @@ You can install the development version from
 
 ## Example
 
-These are basic examples which show how to solve the common
-high-dimensional inference problems:
+These are basic examples which show how to use the package to conduct 
+high-dimensional inference:
 
     library(SIHR)
 
@@ -69,7 +69,7 @@ model
     Est$decision
     #> [1] 1
 
-Individualised Treatment Effect in high-dimensional logistic regression
+Individualized Treatment Effect in high-dimensional logistic regression
 model
 
 
@@ -168,7 +168,7 @@ model
     Est$decision
     #> [1] 1
 
-Individualised Treatment Effect in high-dimensional logistic model
+Individualized Treatment Effect in high-dimensional logistic model
 
     A1gen <- function(rho,p){
     A1=matrix(0,p,p)
