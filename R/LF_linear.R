@@ -105,8 +105,6 @@ Direction_fixedtuning_lin<-function(X,loading,mu=NULL){
   obj<-1/4*sum((X%*%H%*%v)^2)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
   prob<-Problem(Minimize(obj))
   result<-solve(prob)
-  print("fixed mu")
-  print(mu)
   opt.sol<-result$getValue(v)
   cvxr_status<-result$status
   direction<-(-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
@@ -184,7 +182,6 @@ Direction_searchtuning_lin<-function(X,loading,mu=NULL, resol = 1.5, maxiter = 1
   }
   direction<-(-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
   step<-tryno-1
-  print(step)
   returnList <- list("proj"=direction,
                      "step"=step)
   return(returnList)

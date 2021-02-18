@@ -33,9 +33,20 @@ X <- MASS::mvrnorm(n,mu,Cov)
 y = X%*%beta + rnorm(n)
 loading <- MASS::mvrnorm(1,rep(0,p),Cov)
 Est = SIHR::LF(X = X, y = y, loading = loading, intercept = TRUE)
+
+### Point esitmator
+
 Est$prop.est
+
+### Standard error 
+
 Est$se
+
+### Confidence interval
 Est$CI
+
+### test whether the linear functional is below zero or not (1 indicates that it is above zero)
+
 Est$decision
 
 ## ----ITE Linear Model---------------------------------------------------------
@@ -65,9 +76,19 @@ y1 = X1%*%beta1 + rnorm(n1)
 y2 = X2%*%beta2 + rnorm(n2)
 loading <- MASS::mvrnorm(1,rep(0,p),Cov)
 Est <- SIHR::ITE(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
+### Point esitmator
+
 Est$prop.est
+
+### Standard error 
+
 Est$se
+
+### Confidence interval
 Est$CI
+
+### test whether the linear ITE is below zero or not (1 indicates that it is above zero)
+
 Est$decision
 
 ## ----Linear Functional Logistic Model-----------------------------------------
@@ -100,9 +121,19 @@ prob <- exp(exp_val)/(1+exp(exp_val))
 y <- rbinom(n,1,prob)
 loading <- MASS::mvrnorm(1,mu,Cov2)
 Est = SIHR::LF_logistic(X = X, y = y, loading = loading, intercept = TRUE, weight = rep(1,n))
+### Point esitmator
+
 Est$prop.est
+
+### Standard error 
+
 Est$se
+
+### Confidence interval
 Est$CI
+
+### test whether the case probability is below 0.5 or not (1 indicates that it is above 0.5)
+
 Est$decision
 
 ## ----ITE Logistic Model-------------------------------------------------------
@@ -135,9 +166,19 @@ y1 <- rbinom(n1,1,prob1)
 y2 <- rbinom(n2,1,prob2)
 loading <- MASS::mvrnorm(1,mu,Cov)
 Est <- SIHR::ITE_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
+### Point esitmator
+
 Est$prop.est
+
+### Standard error 
+
 Est$se
+
+### Confidence interval
 Est$CI
+
+### test whether the first case probability is smaller than the second case probability or not (1 indicates that the first case probability is larger than the second case probability)
+
 Est$decision
 
 ## ----Group Linear Model-------------------------------------------------------
@@ -165,25 +206,55 @@ test.set <- c(30:100)
 ## Inference for Quadratic Functional with Population Covariance Matrix in middle
 
 Est = SIHR::QF(X = X, y = y, G=test.set)
+### Point esitmator
+
 Est$prop.est
+
+### Standard error 
+
 Est$se
+
+### Confidence interval
 Est$CI
+
+### test whether the quadratic form is equal to zero or not (1 indicates that it is above zero)
+
 Est$decision
 
 ## Inference for Quadratic Functional with known matrix A in middle
 
 Est = SIHR::QF(X = X, y = y, G=test.set, Cov.weight = FALSE,A = diag(1:400,400))
+### Point esitmator
+
 Est$prop.est
+
+### Standard error 
+
 Est$se
+
+### Confidence interval
 Est$CI
+
+### test whether the quadratic form is equal to zero or not (1 indicates that it is above zero)
+
 Est$decision
 
 ## Inference for square norm of regression vector
 
 Est = SIHR::QF(X = X, y = y, G=test.set, Cov.weight = FALSE)
+### Point esitmator
+
 Est$prop.est
+
+### Standard error 
+
 Est$se
+
+### Confidence interval
 Est$CI
+
+### test whether the quadratic form is equal to zero or not (1 indicates that it is above zero)
+
 Est$decision
 
 ## ----proj linear--------------------------------------------------------------
@@ -198,10 +269,17 @@ step = 3
 
 Direction.est <- SIHR::Direction_fixedtuning(X,loading=c(1,rep(0,(p-1))),mu=sqrt(2.01*log(p)/n)*resol^{-(step-1)})
 
+### First 20 entries of the projection vector
+
+Direction.est$proj[1:20]
+
 ## Finding Projection Direction using best step size
 
 Direction.est <- SIHR::Direction_searchtuning(X,loading=c(1,rep(0,(p-1))))
-Direction.est$proj
+
+### First 20 entries of the projection vector
+
+Direction.est$proj[1:20]
 
 
 ## ----proj logistic------------------------------------------------------------
@@ -231,7 +309,16 @@ f_prime <- exp(Xc%*%htheta)/(1+exp(Xc%*%htheta))^2
 
 Direction.est <- SIHR::Direction_fixedtuning(X,loading=c(1,rep(0,(p-1))),mu=sqrt(2.01*log(p)/n)*resol^{-(step-1)},model = "logistic",weight = 1/f_prime, deriv.vec = f_prime)
 
+### First 20 entries of the projection vector
+
+Direction.est$proj[1:20]
+
 ## Finding Projection Direction using best step size
 
 Direction.est <- SIHR::Direction_searchtuning(Xc,loading,model = "logistic",weight = 1/f_prime, deriv.vec = f_prime)
+
+### First 20 entries of the projection vector
+
+Direction.est$proj[1:20]
+
 

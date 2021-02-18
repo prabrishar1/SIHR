@@ -108,8 +108,6 @@ Direction_fixedtuning_robust<-function(X,loading,mu=NULL){
   obj<-1/4*sum((X%*%H%*%v)^2)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
   prob<-Problem(Minimize(obj))
   result<-solve(prob)
-  print("fixed mu")
-  print(mu)
   opt.sol<-result$getValue(v)
   cvxr_status<-result$status
   direction<-(-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
@@ -187,7 +185,6 @@ Direction_searchtuning_robust<-function(X,loading,mu=NULL, resol = 1.5, maxiter 
   }
   direction<-(-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
   step<-tryno-1
-  print(step)
   returnList <- list("proj"=direction,
                      "step"=step)
   return(returnList)
@@ -417,12 +414,12 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = diag(ncol(X)), intercept = TRUE, 
 #          tau.vec <- 1
 #        }
 
-        if (abs(correction) > abs(lasso.plugin)) {
-          warning(paste("The model is most likely misspecified because the correction term is larger than the lasso estimate in absolute value.",
-                        "See cluster or group: ", paste(colnames(Xc)[G], collapse = ", "),
-                        ". The value of the lasso.plugin and correction are", round(lasso.plugin, 5),
-                        " respectively ", round(correction, 5), "."))
-        }
+#        if (abs(correction) > abs(lasso.plugin)) {
+#          warning(paste("The model is most likely misspecified because the correction term is larger than the lasso estimate in absolute value.",
+#                        "See cluster or group: ", paste(colnames(Xc)[G], collapse = ", "),
+#                        ". The value of the lasso.plugin and correction are", round(lasso.plugin, 5),
+#                        " respectively ", round(correction, 5), "."))
+#        }
 
         ### Correct standard error value by tau.
         tau <- pmin(tau.vec, spar.est * log(p) / sqrt(n))
@@ -453,11 +450,9 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = diag(ncol(X)), intercept = TRUE, 
         CI[i,] <- c(debias.est - qnorm(1-alpha/2)*se.vec[i], debias.est + qnorm(1-alpha/2)*se.vec[i])
         if(debias.est - qnorm(1-alpha)*se.vec[i] > 0){
           dec[i]<-1
-          #print("The null hypothesis claiming the quadratic form is equal to 0, is rejected")
-        }else{
+          }else{
           dec[i]<-0
-          #print("The null hypothesis claiming the quadratic form is equal to 0, cannot be rejected")
-        }
+          }
       }
       returnList <- list("prop.est" = debias.est,
                          "se" = se.vec,

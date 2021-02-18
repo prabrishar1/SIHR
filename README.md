@@ -53,19 +53,25 @@ model
     y = X%*%beta + rnorm(n)
     loading <- MASS::mvrnorm(1,rep(0,p),Cov)
     Est = SIHR::LF(X = X, y = y, loading = loading, intercept = TRUE)
-    #> [1] 3
-    #> [1] 3
-    #> [1] 3
     #> [1] "step is 3"
-    #> [1] "fixed mu"
-    #> [1] 0.1542668
+
+    ### Point esitmator
+
     Est$prop.est
     #>          [,1]
-    #> [1,] 8.754123
+    #> [1,] 7.201888
+
+    ### Standard error 
+
     Est$se
-    #> [1] 1.961673
+    #> [1] 1.934024
+
+    ### Confidence interval
     Est$CI
-    #> [1]  4.909315 12.598932
+    #> [1]  3.41127 10.99251
+
+    ### test whether the linear functional is below zero or not (1 indicates that it is above zero)
+
     Est$decision
     #> [1] 1
 
@@ -98,25 +104,25 @@ model
     y2 = X2%*%beta2 + rnorm(n2)
     loading <- MASS::mvrnorm(1,rep(0,p),Cov)
     Est <- SIHR::ITE(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
-    #> [1] 3
-    #> [1] 3
-    #> [1] 3
     #> [1] "step is 3"
-    #> [1] "fixed mu"
-    #> [1] 0.1542668
-    #> [1] 3
-    #> [1] 3
-    #> [1] 3
     #> [1] "step is 3"
-    #> [1] "fixed mu"
-    #> [1] 0.1542668
+    ### Point esitmator
+
     Est$prop.est
     #>           [,1]
-    #> [1,] -6.921414
+    #> [1,] -4.933254
+
+    ### Standard error 
+
     Est$se
-    #> [1] 2.356758
+    #> [1] 2.544137
+
+    ### Confidence interval
     Est$CI
-    #> [1] -11.540575  -2.302254
+    #> [1] -9.91967164  0.05316355
+
+    ### test whether the linear ITE is below zero or not (1 indicates that it is above zero)
+
     Est$decision
     #> [1] 0
 
@@ -152,21 +158,26 @@ model
     y <- rbinom(n,1,prob)
     loading <- MASS::mvrnorm(1,mu,Cov2)
     Est = SIHR::LF_logistic(X = X, y = y, loading = loading, intercept = TRUE, weight = rep(1,n))
-    #> [1] 3
-    #> [1] 3
-    #> [1] 3
     #> [1] "step is 3"
-    #> [1] "fixed mu"
-    #> [1] 0.1542668
+    ### Point esitmator
+
     Est$prop.est
-    #> [1] 0.8656799
+    #> [1] 0.4316879
+
+    ### Standard error 
+
     Est$se
     #>           [,1]
-    #> [1,] 0.5817977
+    #> [1,] 0.6485316
+
+    ### Confidence interval
     Est$CI
-    #> [1] 0.3971592 0.9843867
+    #> [1] 0.05640361 0.90612637
+
+    ### test whether the case probability is below 0.5 or not (1 indicates that it is above 0.5)
+
     Est$decision
-    #> [1] 1
+    #> [1] 0
 
 Individualised Treatment Effect in high-dimensional logistic model
 
@@ -199,27 +210,27 @@ Individualised Treatment Effect in high-dimensional logistic model
     y2 <- rbinom(n2,1,prob2)
     loading <- MASS::mvrnorm(1,mu,Cov)
     Est <- SIHR::ITE_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
-    #> [1] 3
-    #> [1] 3
-    #> [1] 3
     #> [1] "step is 3"
-    #> [1] "fixed mu"
-    #> [1] 0.1542668
-    #> [1] 3
-    #> [1] 3
-    #> [1] 3
     #> [1] "step is 3"
-    #> [1] "fixed mu"
-    #> [1] 0.1542668
+    ### Point esitmator
+
     Est$prop.est
-    #> [1] -0.8057362
+    #> [1] 0.4426277
+
+    ### Standard error 
+
     Est$se
     #>           [,1]
-    #> [1,] 0.9111076
+    #> [1,] 0.8172937
+
+    ### Confidence interval
     Est$CI
-    #> [1] -2.5914742  0.9800018
+    #> [1] -1.159239  2.044494
+
+    ### test whether the first case probability is smaller than the second case probability or not (1 indicates that the first case probability is larger than the second case probability)
+
     Est$decision
-    #> [1] 0
+    #> [1] 1
 
 Inference for quadratic functional in high-dimensional linear model
 
@@ -247,49 +258,51 @@ Inference for quadratic functional in high-dimensional linear model
     ## Inference for Quadratic Functional with Population Covariance Matrix in middle
 
     Est = SIHR::QF(X = X, y = y, G=test.set)
-    #> [1] 5
-    #> [1] 5
-    #> [1] 5
-    #> [1] "fixed mu"
-    #> [1] 0.1421723
     #> [1] "step is 5"
-    #> Warning in SIHR::QF(X = X, y = y, G = test.set): The model is most likely
-    #> misspecified because the correction term is larger than the lasso estimate in
-    #> absolute value. See cluster or group: X30, X31, X32, X33, X34, X35, X36, X37,
-    #> X38, X39, X40, X41, X42, X43, X44, X45, X46, X47, X48, X49, X50, X51, X52, X53,
-    #> X54, X55, X56, X57, X58, X59, X60, X61, X62, X63, X64, X65, X66, X67, X68, X69,
-    #> X70, X71, X72, X73, X74, X75, X76, X77, X78, X79, X80, X81, X82, X83, X84, X85,
-    #> X86, X87, X88, X89, X90, X91, X92, X93, X94, X95, X96, X97, X98, X99, X100 . The
-    #> value of the lasso.plugin and correction are 0.02344 respectively 0.07335 .
+    ### Point esitmator
+
     Est$prop.est
-    #>            [,1]
-    #> [1,] 0.09678704
+    #>           [,1]
+    #> [1,] 0.6896886
+
+    ### Standard error 
+
     Est$se
-    #> [1] 0.1028702
+    #> [1] 0.1411606
+
+    ### Confidence interval
     Est$CI
-    #>            [,1]     [,2]
-    #> [1,] -0.1048349 0.298409
+    #>          [,1]      [,2]
+    #> [1,] 0.413019 0.9663582
+
+    ### test whether the quadratic form is equal to zero or not (1 indicates that it is above zero)
+
     Est$decision
-    #> [1] 0
+    #> [1] 1
 
     ## Inference for Quadratic Functional with known matrix A in middle
 
     Est = SIHR::QF(X = X, y = y, G=test.set, Cov.weight = FALSE,A = diag(1:400,400))
     #> [1] "Warning : Matrix A in the quadratic form is taken as the identity matrix"
-    #> [1] 4
-    #> [1] 5
-    #> [1] 4
-    #> [1] "fixed mu"
-    #> [1] 0.1777154
-    #> [1] "step is 4"
+    #> [1] "step is 5"
+    ### Point esitmator
+
     Est$prop.est
     #>          [,1]
-    #> [1,] 2.610302
+    #> [1,] 19.01264
+
+    ### Standard error 
+
     Est$se
-    #> [1] 0.8137623
+    #> [1] 2.412881
+
+    ### Confidence interval
     Est$CI
-    #>          [,1]     [,2]
-    #> [1,] 1.015358 4.205247
+    #>          [,1]    [,2]
+    #> [1,] 14.28348 23.7418
+
+    ### test whether the quadratic form is equal to zero or not (1 indicates that it is above zero)
+
     Est$decision
     #> [1] 1
 
@@ -297,22 +310,27 @@ Inference for quadratic functional in high-dimensional linear model
 
     Est = SIHR::QF(X = X, y = y, G=test.set, Cov.weight = FALSE)
     #> [1] "Warning : Matrix A in the quadratic form is taken as the identity matrix"
-    #> [1] 5
-    #> [1] 4
-    #> [1] 4
-    #> [1] "fixed mu"
-    #> [1] 0.1777154
-    #> [1] "step is 4"
+    #> [1] "step is 5"
+    ### Point esitmator
+
     Est$prop.est
-    #>            [,1]
-    #> [1,] 0.08681543
+    #>          [,1]
+    #> [1,] 0.401667
+
+    ### Standard error 
+
     Est$se
-    #> [1] 0.1024298
+    #> [1] 0.1158121
+
+    ### Confidence interval
     Est$CI
-    #>            [,1]      [,2]
-    #> [1,] -0.1139432 0.2875741
+    #>           [,1]      [,2]
+    #> [1,] 0.1746794 0.6286545
+
+    ### test whether the quadratic form is equal to zero or not (1 indicates that it is above zero)
+
     Est$decision
-    #> [1] 0
+    #> [1] 1
 
 Finding projection direction in high dimensional linear regression
 
@@ -326,94 +344,26 @@ Finding projection direction in high dimensional linear regression
     ## Finding Projection Direction using fixed tuning parameter
 
     Direction.est <- SIHR::Direction_fixedtuning(X,loading=c(1,rep(0,(p-1))),mu=sqrt(2.01*log(p)/n)*resol^{-(step-1)})
-    #> [1] "fixed mu"
-    #> [1] 0.1542347
+
+    ### First 20 entries of the projection vector
+
+    Direction.est$proj[1:20]
+    #>  [1]  1.219006e+00 -1.863506e-20 -5.951143e-21 -9.733998e-22 -4.150478e-21
+    #>  [6]  8.169505e-02  3.111971e-21 -7.455498e-21  5.202361e-21 -1.215674e-20
+    #> [11]  1.411756e-20 -1.554899e-21 -5.525592e-21  2.928243e-21 -4.692882e-21
+    #> [16] -4.683409e-21  1.837901e-20 -2.595092e-21  1.275243e-20 -1.363453e-01
 
     ## Finding Projection Direction using best step size
 
     Direction.est <- SIHR::Direction_searchtuning(X,loading=c(1,rep(0,(p-1))))
-    #> [1] 3
-    Direction.est$proj
-    #>   [1]  6.153863e-01  1.420175e-22  1.812455e-02 -1.867472e-22 -1.151811e-21
-    #>   [6] -1.889849e-21  7.643401e-03  1.228272e-21 -7.546314e-22  1.674520e-21
-    #>  [11] -4.092914e-22 -2.589979e-02  9.246626e-22  2.295892e-21  9.593602e-22
-    #>  [16] -7.359118e-22 -2.851292e-03 -1.862691e-02  6.990818e-22  1.895041e-03
-    #>  [21]  4.075018e-22 -4.184164e-22  1.102489e-21 -1.723396e-21 -7.293593e-22
-    #>  [26] -2.485113e-21 -9.442043e-22  1.418892e-02 -7.220306e-22  1.106877e-21
-    #>  [31]  1.717093e-21 -1.177397e-21  2.628007e-21 -2.366763e-21  6.857750e-22
-    #>  [36]  1.275047e-21 -4.479678e-22  8.190668e-22 -1.430923e-21  4.143562e-22
-    #>  [41] -2.908977e-21 -1.460223e-22  1.857951e-21  8.957426e-22  1.288449e-21
-    #>  [46] -9.082935e-22 -5.777117e-22 -1.669370e-21 -1.549366e-21  6.010710e-22
-    #>  [51]  1.272371e-22 -5.600599e-22  7.043514e-22  1.852485e-02  1.721818e-21
-    #>  [56] -3.638629e-22  2.502178e-21  4.517224e-22  3.827135e-02  5.169460e-22
-    #>  [61] -2.126055e-21  1.699745e-21  7.678307e-22 -1.605222e-21  2.535009e-22
-    #>  [66] -1.431515e-21 -1.116932e-21  1.110926e-05 -1.459922e-21  1.359307e-21
-    #>  [71] -1.982331e-02 -1.621720e-21  6.120440e-22 -1.429610e-21 -3.844135e-22
-    #>  [76] -8.168642e-23  3.110311e-22 -2.884457e-22  2.405911e-21 -1.048347e-02
-    #>  [81] -5.340699e-02  1.567628e-22  1.831085e-22  1.505941e-21  1.783649e-02
-    #>  [86]  2.179671e-22  2.888240e-22  4.906938e-22  7.808067e-02  7.953271e-23
-    #>  [91]  8.979873e-22  1.123540e-21 -7.301066e-02 -1.544843e-21 -2.125353e-22
-    #>  [96] -2.751136e-22  7.844654e-22 -1.135009e-21  5.559081e-23  1.085240e-21
-    #> [101]  1.171077e-22  2.140230e-22  1.498549e-21 -1.525131e-21 -2.307585e-22
-    #> [106] -1.067209e-22  9.146301e-22  8.036471e-22  1.567159e-21 -8.030335e-22
-    #> [111] -1.527339e-21  4.018928e-22 -3.967709e-22 -4.835329e-22 -2.029934e-02
-    #> [116]  1.086620e-21  1.048839e-21 -2.121374e-03  2.426092e-21  4.430049e-22
-    #> [121] -4.042872e-22 -1.624651e-21  6.258935e-22 -4.926947e-22  5.876260e-22
-    #> [126]  8.807756e-22 -2.086620e-21  7.548818e-22  2.861558e-22  1.370502e-21
-    #> [131]  1.202665e-21 -1.885008e-21 -3.639943e-21  5.093995e-22  1.187337e-21
-    #> [136] -9.159397e-22  1.987759e-21 -1.525037e-21 -1.918040e-21 -6.451236e-22
-    #> [141] -1.405290e-21  1.293256e-21  1.058590e-21  1.256132e-21 -1.965083e-21
-    #> [146]  1.942020e-21 -3.105835e-22  2.575627e-02 -4.149437e-22  4.020713e-22
-    #> [151]  2.211744e-03  1.360607e-21 -1.936026e-21 -2.108958e-21 -1.964524e-21
-    #> [156] -5.236840e-22 -1.650069e-21 -9.102558e-22  1.178555e-22 -1.465825e-21
-    #> [161] -2.537326e-21 -3.539186e-22 -9.084276e-22  1.679537e-21  1.122039e-21
-    #> [166] -9.481736e-22 -8.889386e-22  7.899339e-22 -1.962320e-21  5.001305e-22
-    #> [171] -2.005510e-23  5.720211e-22 -8.430097e-22 -7.940741e-22 -4.720765e-22
-    #> [176]  3.883682e-22  6.396280e-22  4.968226e-22  7.652114e-22 -1.393527e-21
-    #> [181]  2.030256e-22  3.078642e-21  3.606258e-02  1.615682e-22 -1.484908e-21
-    #> [186]  2.741059e-21  8.564333e-22 -1.130609e-21  3.158542e-23  8.669693e-22
-    #> [191] -7.310951e-22  8.399206e-22  4.406541e-22  1.110776e-21 -8.666016e-22
-    #> [196]  2.896655e-21 -1.736689e-22 -1.310188e-22 -1.637246e-21  3.400723e-22
-    #> [201]  1.770712e-22  1.272346e-21  8.984598e-22 -5.066872e-22  3.497617e-21
-    #> [206]  1.231189e-21 -1.629833e-21  9.739437e-22  9.513532e-22 -3.138927e-23
-    #> [211]  1.768770e-22  1.265735e-21 -4.547119e-03  4.245182e-22 -5.282849e-03
-    #> [216] -5.054031e-22 -2.663859e-22 -1.996185e-21  1.071240e-21  2.977299e-02
-    #> [221] -1.268395e-21 -6.521012e-22  5.538102e-03 -1.400123e-02  1.617057e-21
-    #> [226]  2.141486e-22 -1.714278e-21 -2.140622e-21 -1.674959e-21 -1.596596e-21
-    #> [231] -1.049159e-21  1.558777e-21  1.812031e-21  8.849795e-23 -2.068672e-22
-    #> [236]  1.296121e-21 -1.158615e-21  6.155592e-22 -1.659527e-21 -1.160278e-21
-    #> [241] -2.033767e-22  6.578554e-22  1.819679e-21 -6.020866e-22 -1.634769e-21
-    #> [246] -7.150421e-22  1.582658e-22 -2.127728e-22  1.352041e-21  3.437914e-02
-    #> [251] -9.120502e-22 -1.575024e-21 -1.558246e-21  1.379496e-21  1.065738e-21
-    #> [256] -7.389512e-22  2.339543e-23 -3.230080e-21  3.150217e-22 -1.263387e-21
-    #> [261]  1.992417e-21  1.156849e-21  4.492078e-03  2.657560e-22  1.327219e-21
-    #> [266]  1.336872e-22 -4.161562e-03  9.233349e-03 -1.113092e-21 -1.115879e-22
-    #> [271] -2.326205e-22  2.159424e-21 -5.591220e-22  3.086443e-21 -2.169197e-22
-    #> [276] -2.041898e-21 -1.234479e-22  8.164965e-22  1.056295e-21 -3.019909e-22
-    #> [281]  3.365900e-21  6.565994e-22 -6.360673e-22  6.652114e-22 -3.543823e-21
-    #> [286] -6.260079e-22 -3.165193e-23 -1.489062e-21  1.841092e-02 -6.068682e-02
-    #> [291] -5.522904e-22 -2.095851e-21  2.339723e-23 -2.056404e-21 -6.542013e-22
-    #> [296] -1.101623e-02 -1.989310e-21  1.747782e-21 -2.395100e-21  6.638690e-22
-    #> [301]  1.036840e-21 -1.842092e-21  3.492307e-21  6.608443e-03 -8.573017e-22
-    #> [306] -1.470385e-21  2.251066e-21 -3.010584e-22  5.459693e-22 -9.324596e-22
-    #> [311] -1.357321e-21  1.117839e-02 -8.539391e-22 -9.811961e-22  6.302845e-22
-    #> [316]  1.209060e-21 -1.073261e-21  5.341449e-02 -1.079478e-02 -1.758486e-21
-    #> [321]  2.703203e-22 -1.464303e-21  9.741456e-22  5.359795e-22 -3.228481e-22
-    #> [326] -1.227669e-22  7.715332e-22 -3.245738e-02 -1.097583e-21 -5.201793e-23
-    #> [331]  1.248811e-21 -8.889716e-22  5.516817e-22  6.331999e-22 -2.709587e-22
-    #> [336]  1.413540e-21  1.849655e-22  1.446142e-21  4.449758e-22  1.409309e-21
-    #> [341]  2.197691e-21 -2.798552e-22 -8.080141e-22  1.427442e-22  1.396337e-21
-    #> [346] -4.595372e-23 -1.200218e-21  3.608354e-22 -1.421190e-21 -1.701096e-21
-    #> [351]  1.206605e-21 -2.102615e-02 -4.128993e-21  2.062226e-21  1.032577e-21
-    #> [356]  2.626411e-22 -1.942685e-22 -1.784422e-21 -1.817778e-02  9.458530e-22
-    #> [361] -4.867141e-02 -9.188646e-22 -1.807932e-21  1.759228e-21  1.386390e-21
-    #> [366] -2.832220e-22  3.246121e-22  7.745827e-22 -1.604399e-21 -1.642985e-22
-    #> [371] -1.154091e-22  2.985844e-22 -6.407683e-22 -9.949305e-23  1.901995e-21
-    #> [376]  1.030075e-21  4.272566e-22  2.224329e-22 -3.132703e-21 -1.124954e-21
-    #> [381] -2.156735e-21 -3.824580e-21 -2.031466e-21 -3.173441e-22  1.486855e-21
-    #> [386]  7.702068e-22 -1.672242e-21  1.652798e-22 -2.247011e-21  2.848394e-21
-    #> [391] -2.176901e-02  6.798921e-22  2.126275e-02  1.308301e-21 -1.438302e-21
-    #> [396]  2.276733e-21 -7.116615e-22 -7.854369e-22  1.203616e-22  8.649040e-03
+
+    ### First 20 entries of the projection vector
+
+    Direction.est$proj[1:20]
+    #>  [1]  1.219006e+00 -1.855709e-20 -5.936970e-21 -9.968212e-22 -4.142387e-21
+    #>  [6]  8.169505e-02  3.113345e-21 -7.425863e-21  5.186845e-21 -1.215231e-20
+    #> [11]  1.407508e-20 -1.577103e-21 -5.474844e-21  2.942562e-21 -4.689394e-21
+    #> [16] -4.639912e-21  1.825912e-20 -2.543917e-21  1.264617e-20 -1.363453e-01
 
 Finding projection direction in high dimensional logistic regression
 
@@ -442,10 +392,23 @@ Finding projection direction in high dimensional logistic regression
     ## Finding Projection Direction using fixed tuning parameter
 
     Direction.est <- SIHR::Direction_fixedtuning(X,loading=c(1,rep(0,(p-1))),mu=sqrt(2.01*log(p)/n)*resol^{-(step-1)},model = "logistic",weight = 1/f_prime, deriv.vec = f_prime)
-    #> [1] "fixed mu"
-    #> [1] 0.2181208
+
+    ### First 20 entries of the projection vector
+
+    Direction.est$proj[1:20]
+    #>  [1]  1.493989e+00 -2.630972e-20 -8.716890e-20 -2.472090e-01  3.015969e-19
+    #>  [6]  1.950913e-03 -6.563375e-20 -1.924222e-20 -2.304296e-19  1.999689e-19
+    #> [11] -5.646258e-20 -1.372131e-01  2.618685e-20  1.122307e-19  2.812996e-19
+    #> [16]  2.922945e-21  1.765690e-20  2.621264e-20  5.658853e-20  4.759133e-20
 
     ## Finding Projection Direction using best step size
 
     Direction.est <- SIHR::Direction_searchtuning(Xc,loading,model = "logistic",weight = 1/f_prime, deriv.vec = f_prime)
-    #> [1] 2
+
+    ### First 20 entries of the projection vector
+
+    Direction.est$proj[1:20]
+    #>  [1]  3.842416e-01  3.189588e-01  3.047882e-22  2.254978e-22 -5.224985e-22
+    #>  [6]  4.836602e-23  3.315918e-22 -3.544576e-22 -1.018956e-22  7.304296e-22
+    #> [11]  2.933804e-22 -1.649531e-22 -4.543796e-22  1.005291e-22 -7.182578e-23
+    #> [16]  5.722510e-23  2.225512e-22 -8.178783e-23 -1.494641e-22 -1.900137e-22
