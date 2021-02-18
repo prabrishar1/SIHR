@@ -314,7 +314,7 @@ Inference for quadratic functional in high-dimensional linear model
     Est$decision
     #> [1] 0
 
-Finding projection direction in high dimensional linear regression
+Constructing projection directions in high dimensional linear regression
 
 
     n = 100
@@ -415,7 +415,7 @@ Finding projection direction in high dimensional linear regression
     #> [391] -2.176901e-02  6.798921e-22  2.126275e-02  1.308301e-21 -1.438302e-21
     #> [396]  2.276733e-21 -7.116615e-22 -7.854369e-22  1.203616e-22  8.649040e-03
 
-Finding projection direction in high dimensional logistic regression
+Constructing projection directions in high dimensional logistic regression
 
 
     n = 50
