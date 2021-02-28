@@ -83,7 +83,7 @@ Direction_fixedtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec){
   return(returnList)
 }
 
-Direction_searchtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec,resol=1.5, maxiter=10){     #included weight and deriv.vec
+Direction_searchtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec,resol=1.5, maxiter=6){     #included weight and deriv.vec
   pp<-ncol(X)
   n<-nrow(X)
   tryno = 1;
@@ -179,7 +179,7 @@ Direction_searchtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec,res
 #' @param resol The factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = 1.5)
 #' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-#' such that the dual optimization problem for constructing the projection direction converges (default = 10)
+#' such that the dual optimization problem for constructing the projection direction converges (default = 6)
 #' @param alpha Level of significance to test the null hypothesis that the case probability is less than or equal to 0.5 (default = 0.05)
 #'
 #' @return
@@ -225,7 +225,7 @@ Direction_searchtuning_logistic<-function(X,loading,mu=NULL,weight,deriv.vec,res
 #' prob <- exp(exp_val)/(1+exp(exp_val))
 #' y <- rbinom(n,1,prob)
 #' Est <- LF_logistic(X = X, y = y, loading = loading)
-LF_logistic<-function(X,y,loading,weight=NULL,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step=NULL,resol = 1.5,maxiter=10, alpha = 0.05){
+LF_logistic<-function(X,y,loading,weight=NULL,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step=NULL,resol = 1.5,maxiter=6, alpha = 0.05){
   xnew <- loading
   X<-as.matrix(X)
   p <- ncol(X);
@@ -235,23 +235,19 @@ LF_logistic<-function(X,y,loading,weight=NULL,intercept=TRUE,init.Lasso=NULL,lam
   if(n_y!=n)
   {
     print("Check dimensions of X and y")
-  }
-  else
-  {
+  }else{
     data = na.omit(data.frame(y,X))
     X <- as.matrix(data[,-1])
     y <- as.vector(data[,1])
     p <- ncol(X);
     n <- nrow(X);
-    col.norm <- 1 / sqrt((1 / n) * diag(t(X) %*% X))
+    col.norm <- 1/sqrt((1/n)*diag(t(X)%*%X)+0.0001);
     Xnor <- X %*% diag(col.norm);
     if(is.null(init.Lasso))
     {
       init.Lasso <- Initialization.step(X,y,lambda,intercept)
       htheta <- init.Lasso$lasso.est
-    }
-    else
-    {
+    }    else    {
       htheta <- init.Lasso
     }
 
@@ -322,7 +318,7 @@ LF_logistic<-function(X,y,loading,weight=NULL,intercept=TRUE,init.Lasso=NULL,lam
         print(paste("step is", step))
         Direction.Est<-Direction_fixedtuning_logistic(Xc,loading,mu=sqrt(2.01*log(pp)/n)*resol^{-(step-1)},weight = weight,deriv.vec = deriv.vec)
 
-        while(is.na(Direction.Est)&&(step>0)){
+        while(is.na(Direction.Est)&&(step>0) || length(Direction.Est$proj)==0&&(step>0)){
           step<-step-1
           Direction.Est<-Direction_fixedtuning_logistic(Xc,loading,mu=sqrt(2.01*log(pp)/n)*resol^{-(step-1)},weight = weight,deriv.vec = deriv.vec)
         }
@@ -387,7 +383,7 @@ LF_logistic<-function(X,y,loading,weight=NULL,intercept=TRUE,init.Lasso=NULL,lam
 #' @param resol The factor by which \code{mu1} (and \code{mu2}) is increased/decreased to obtain the smallest \code{mu1} (and \code{mu2})
 #' such that the dual optimization problem for constructing the first (and the second) projection direction converges (default = 1.5)
 #' @param maxiter Maximum number of steps along which \code{mu1} (and \code{mu2}) is increased/decreased to obtain the smallest \code{mu} (and \code{mu2})
-#' such that the dual optimization problem for constructing the first (and the second) projection direction converges (default = 10)
+#' such that the dual optimization problem for constructing the first (and the second) projection direction converges (default = 6)
 #' @param alpha Level ofsignificance to test the null hypothesis which claims that the first case probability is not greater than the second case probability (default = 0.05)
 #'
 #' @return
@@ -431,7 +427,7 @@ LF_logistic<-function(X,y,loading,weight=NULL,intercept=TRUE,init.Lasso=NULL,lam
 #' y2 <- rbinom(n2,1,prob2)
 #' loading <- MASS::mvrnorm(1,mu,Cov)
 #' Est <- ITE_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
-ITE_Logistic<-function(X1,y1,X2,y2,loading,weight=NULL,intercept=TRUE,init.Lasso1=NULL,init.Lasso2=NULL,lambda1=NULL,lambda2=NULL,mu1=NULL,mu2=NULL,step1=NULL,step2=NULL,resol = 1.5,maxiter=10,alpha=0.05){
+ITE_Logistic<-function(X1,y1,X2,y2,loading,weight=NULL,intercept=TRUE,init.Lasso1=NULL,init.Lasso2=NULL,lambda1=NULL,lambda2=NULL,mu1=NULL,mu2=NULL,step1=NULL,step2=NULL,resol = 1.5,maxiter=6,alpha=0.05){
   Est1<-LF_logistic(X=X1,y=y1,loading = loading,weight=weight,intercept=intercept,init.Lasso=init.Lasso1,lambda=lambda1,mu=mu1,step=step1,resol=resol,maxiter=maxiter,alpha=alpha)
   Est2<-LF_logistic(X=X2,y=y2,loading = loading,weight=weight,intercept=intercept,init.Lasso=init.Lasso2,lambda=lambda2,mu=mu2,step=step2,resol=resol,maxiter=maxiter,alpha=alpha)
   logit<-function(z)

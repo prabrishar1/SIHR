@@ -15,7 +15,7 @@ LF_logistic(
   mu = NULL,
   step = NULL,
   resol = 1.5,
-  maxiter = 10,
+  maxiter = 6,
   alpha = 0.05
 )
 }
@@ -44,7 +44,7 @@ such that the dual optimization problem for constructing the projection directio
 such that the dual optimization problem for constructing the projection direction converges (default = 1.5)}
 
 \item{maxiter}{Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-such that the dual optimization problem for constructing the projection direction converges (default = 10)}
+such that the dual optimization problem for constructing the projection direction converges (default = 6)}
 
 \item{alpha}{Level of significance to test the null hypothesis that the case probability is less than or equal to 0.5 (default = 0.05)}
 }

@@ -69,7 +69,7 @@ Direction_fixedtuning<-function(X,loading,mu=NULL,model = "linear",weight=NULL,d
 #' @param resol The factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = 1.5)
 #' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-#' such that the dual optimization problem for constructing the projection direction converges (default = 10)
+#' such that the dual optimization problem for constructing the projection direction converges (default = 6)
 #'
 #' @return
 #' \item{proj}{The projection direction, of length \eqn{p}}
@@ -81,7 +81,7 @@ Direction_fixedtuning<-function(X,loading,mu=NULL,model = "linear",weight=NULL,d
 #' p = 400
 #' X = matrix(sample(-2:2,n*p,replace = TRUE),nrow = n,ncol = p)
 #' Direction_searchtuning(X,loading=c(1,rep(0,(p-1))))
-Direction_searchtuning<-function(X,loading,model="linear",weight=NULL,deriv.vec=NULL,resol=1.5, maxiter=10){     #included weight and f_prime
+Direction_searchtuning<-function(X,loading,model="linear",weight=NULL,deriv.vec=NULL,resol=1.5, maxiter=6){     #included weight and f_prime
   pp<-ncol(X)
   n<-nrow(X)
   tryno = 1;

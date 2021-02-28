@@ -115,7 +115,7 @@ Direction_fixedtuning_robust<-function(X,loading,mu=NULL){
   return(returnList)
 }
 
-Direction_searchtuning_robust<-function(X,loading,mu=NULL, resol = 1.5, maxiter = 10){
+Direction_searchtuning_robust<-function(X,loading,mu=NULL, resol = 1.5, maxiter = 6){
   pp<-ncol(X)
   n<-nrow(X)
   tryno = 1;
@@ -210,7 +210,7 @@ Direction_searchtuning_robust<-function(X,loading,mu=NULL, resol = 1.5, maxiter 
 #' @param resol Resolution or the factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = 1.5)
 #' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-#' such that the dual optimization problem for constructing the projection direction converges (default = 10)
+#' such that the dual optimization problem for constructing the projection direction converges (default = 6)
 #' @param alpha Level of significance to test the null hypothesis which claims that the quadratic form of the regression vector is equal to 0 (default = 0.05)
 #'
 #' @return
@@ -257,7 +257,7 @@ Direction_searchtuning_robust<-function(X,loading,mu=NULL, resol = 1.5, maxiter 
 #' \insertRef{grouplin}{SIHR}
 QF <- function(X, y, G, Cov.weight = TRUE, A = diag(ncol(X)), intercept = TRUE, tau.vec = c(1), init.Lasso = NULL,
                lambda = NULL,  mu = NULL,
-               step = NULL, resol = 1.25, maxiter = 10, alpha = 0.05) {
+               step = NULL, resol = 1.5, maxiter = 6, alpha = 0.05) {
   p <- ncol(X)
   n <- nrow(X)
   n_y <- length(y)
@@ -381,7 +381,7 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = diag(ncol(X)), intercept = TRUE, 
                 index.sel <- sample(1:n, size = ceiling(0.5 * min(n, p)), replace = FALSE)
                 Direction.Est.temp <- Direction_searchtuning_robust(Xc[index.sel, ],
                                                                     loading, mu = NULL,
-                                                                    resol = 1.25,maxiter = 6)
+                                                                    resol = 1.5,maxiter = 6)
                 step.vec[t] <- Direction.Est.temp$step
               }
               step <- getmode(step.vec)

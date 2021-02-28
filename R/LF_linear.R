@@ -112,7 +112,7 @@ Direction_fixedtuning_lin<-function(X,loading,mu=NULL){
   return(returnList)
 }
 
-Direction_searchtuning_lin<-function(X,loading,mu=NULL, resol = 1.5, maxiter = 10){
+Direction_searchtuning_lin<-function(X,loading,mu=NULL, resol = 1.5, maxiter = 6){
   pp<-ncol(X)
   n<-nrow(X)
   tryno = 1;
@@ -206,7 +206,7 @@ Direction_searchtuning_lin<-function(X,loading,mu=NULL, resol = 1.5, maxiter = 1
 #' @param resol The factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = 1.5)
 #' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-#' such that the dual optimization problem for constructing the projection direction converges (default = 10)
+#' such that the dual optimization problem for constructing the projection direction converges (default = 6)
 #' @param alpha Level of significance to test the null hypothesis which claims that the linear combination of the regression coefficients
 #' is less than or equal to zero (default = 0.05)
 #'
@@ -252,7 +252,7 @@ Direction_searchtuning_lin<-function(X,loading,mu=NULL, resol = 1.5, maxiter = 1
 #' y = X%*%beta + rnorm(n)
 #' loading <- MASS::mvrnorm(1,rep(0,p),Cov)
 #' Est <- LF(X = X, y = y, loading = loading, intercept = TRUE)
-LF<-function(X,y,loading,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step=NULL,resol = 1.5,maxiter=10,alpha=0.05){
+LF<-function(X,y,loading,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step=NULL,resol = 1.5,maxiter=6,alpha=0.05){
   xnew<-loading
   p <- ncol(X);
   n <- nrow(X);
@@ -342,7 +342,7 @@ LF<-function(X,y,loading,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step
         }
         print(paste("step is", step))
         Direction.Est<-Direction_fixedtuning_lin(Xc,loading,mu=sqrt(2.01*log(pp)/n)*resol^{-(step-1)})
-        while(is.na(Direction.Est)&&(step>0)){
+        while(is.na(Direction.Est)&&(step>0) || length(Direction.Est$proj)==0&&(step>0)){
           step<-step-1
           Direction.Est <- Direction_fixedtuning_lin(Xc, loading, mu = sqrt(2.01 * log(pp) / n) * resol^{-(step - 1)})
         }
@@ -397,7 +397,7 @@ LF<-function(X,y,loading,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step
 #' @param resol The factor by which \code{mu1} (and \code{mu2}) is increased/decreased to obtain the smallest \code{mu1} (and \code{mu2})
 #' such that the dual optimization problem for constructing the first (and the second) projection direction converges (default = 1.5)
 #' @param maxiter Maximum number of steps along which \code{mu1} (and \code{mu2}) is increased/decreased to obtain the smallest \code{mu1} (and \code{mu2})
-#' such that the dual optimization problem for constructing the first (and the second) projection direction converges (default = 10)
+#' such that the dual optimization problem for constructing the first (and the second) projection direction converges (default = 6)
 #' @param alpha Level of significance to test the null hypothesis which claims that ITE is not above zero (default = 0.05)
 #'
 #' @return
@@ -444,9 +444,9 @@ LF<-function(X,y,loading,intercept=TRUE,init.Lasso=NULL,lambda=NULL,mu=NULL,step
 #' y2 = X2%*%beta2 + rnorm(n2)
 #' loading <- MASS::mvrnorm(1,rep(0,p),Cov)
 #' Est <- ITE(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
-ITE<-function(X1,y1,X2,y2,loading,intercept=TRUE,init.Lasso1=NULL,init.Lasso2=NULL,lambda1=NULL,lambda2=NULL,mu1=NULL,mu2=NULL,step1=NULL,step2=NULL,resol = 1.5,maxiter=10,alpha=0.05){
-  Est1<-SIHR::LF(X1,y1,loading,intercept=intercept,init.Lasso=init.Lasso1,lambda=lambda1,mu=mu1,step=step1,resol = 1.5,maxiter=10,alpha=alpha)
-  Est2<-SIHR::LF(X2,y2,loading,intercept=intercept,init.Lasso=init.Lasso2,lambda=lambda2,mu=mu2,step=step2,resol = 1.5,maxiter=10,alpha=alpha)
+ITE<-function(X1,y1,X2,y2,loading,intercept=TRUE,init.Lasso1=NULL,init.Lasso2=NULL,lambda1=NULL,lambda2=NULL,mu1=NULL,mu2=NULL,step1=NULL,step2=NULL,resol = 1.5,maxiter=6,alpha=0.05){
+  Est1<-SIHR::LF(X1,y1,loading,intercept=intercept,init.Lasso=init.Lasso1,lambda=lambda1,mu=mu1,step=step1,resol = resol,maxiter=maxiter,alpha=alpha)
+  Est2<-SIHR::LF(X2,y2,loading,intercept=intercept,init.Lasso=init.Lasso2,lambda=lambda2,mu=mu2,step=step2,resol = resol,maxiter=maxiter,alpha=alpha)
   debias.est<-Est1$prop.est - Est2$prop.est
   se<-sqrt((Est1$se)^2 + (Est2$se)^2)
   CI <- c(debias.est - qnorm(1-alpha/2)*se, debias.est + qnorm(1-alpha/2)*se)

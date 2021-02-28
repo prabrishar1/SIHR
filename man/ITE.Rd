@@ -20,7 +20,7 @@ ITE(
   step1 = NULL,
   step2 = NULL,
   resol = 1.5,
-  maxiter = 10,
+  maxiter = 6,
   alpha = 0.05
 )
 }
@@ -61,7 +61,7 @@ such that the dual optimization problem for constructing the second projection d
 such that the dual optimization problem for constructing the first (and the second) projection direction converges (default = 1.5)}
 
 \item{maxiter}{Maximum number of steps along which \code{mu1} (and \code{mu2}) is increased/decreased to obtain the smallest \code{mu1} (and \code{mu2})
-such that the dual optimization problem for constructing the first (and the second) projection direction converges (default = 10)}
+such that the dual optimization problem for constructing the first (and the second) projection direction converges (default = 6)}
 
 \item{alpha}{Level of significance to test the null hypothesis which claims that ITE is not above zero (default = 0.05)}
 }

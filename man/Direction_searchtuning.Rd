@@ -11,7 +11,7 @@ Direction_searchtuning(
   weight = NULL,
   deriv.vec = NULL,
   resol = 1.5,
-  maxiter = 10
+  maxiter = 6
 )
 }
 \arguments{
@@ -29,7 +29,7 @@ Direction_searchtuning(
 such that the dual optimization problem for constructing the projection direction converges (default = 1.5)}
 
 \item{maxiter}{Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
-such that the dual optimization problem for constructing the projection direction converges (default = 10)}
+such that the dual optimization problem for constructing the projection direction converges (default = 6)}
 }
 \value{
 \item{proj}{The projection direction, of length \eqn{p}}
