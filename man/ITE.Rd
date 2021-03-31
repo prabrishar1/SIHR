@@ -78,31 +78,19 @@ and the corresponding standard error. It also constructs the confidence interval
 whether ITE is above zero or not. Here ITE is defined as a linear combination of the difference between two regression vectors.
 }
 \examples{
-n1 = 100
-p = 400
-n2 = 150
-A1gen <- function(rho,p){
-A1=matrix(0,p,p)
-for(i in 1:p){
- for(j in 1:p){
-   A1[i,j]<-rho^(abs(i-j))
- }
-}
-A1
-}
+n1 <- 90
+p <- 200
+n2 <- 90
 mu <- rep(0,p)
-mu[1:5] <- c(1:5)/5
-rho = 0.5
-Cov <- (A1gen(rho,p))/2
 beta1 <- rep(0,p)
 beta1[1:10] <- c(1:10)/5
 beta2 <- rep(0,p)
 beta2[1:5] <- c(1:5)/10
-X1 <- MASS::mvrnorm(n1,mu,Cov)
-X2 <- MASS::mvrnorm(n2,mu,Cov)
-y1 = X1\%*\%beta1 + rnorm(n1)
-y2 = X2\%*\%beta2 + rnorm(n2)
-loading <- MASS::mvrnorm(1,rep(0,p),Cov)
+X1 <- MASS::mvrnorm(n1, mu, diag(p))
+X2 <- MASS::mvrnorm(n2, mu, diag(p))
+y1 <- X1\%*\%beta1 + rnorm(n1)
+y2 <- X2\%*\%beta2 + rnorm(n2)
+loading <- c(1,rep(0, (p-1)))
 Est <- ITE(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
 }
 \references{

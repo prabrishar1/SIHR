@@ -13,46 +13,42 @@
 #' @export
 #'
 #' @examples
-#' n = 100
-#' p = 400
-#' X = matrix(sample(-2:2,n*p,replace = TRUE),nrow = n,ncol = p)
-#' resol = 1.5
-#' step = 3
-#' Direction_fixedtuning(X,loading=c(1,rep(0,(p-1))),mu=sqrt(2.01*log(p)/n)*resol^{-(step-1)})
+#' n <- 100
+#' p <- 400
+#' X <- matrix(sample(-2:2,n*p,replace = TRUE),nrow = n,ncol = p)
+#' resol <- 1.5
+#' step <- 3
+#' Est <- Direction_fixedtuning(X,loading=c(1,rep(0,(p-1))),mu=sqrt(2.01*log(p)/n)*resol^{-(step-1)})
 
-Direction_fixedtuning<-function(X,loading,mu=NULL,model = "linear",weight=NULL,deriv.vec=NULL){
-  pp<-ncol(X)
-  n<-nrow(X)
+Direction_fixedtuning <- function(X, loading, mu = NULL, model = "linear", weight = NULL, deriv.vec = NULL){
+  pp <- ncol(X)
+  n <- nrow(X)
   if(is.null(mu)){
-    mu<-sqrt(2.01*log(pp)/n)
+    mu <- sqrt(2.01*log(pp)/n)
   }
-  loading.norm<-sqrt(sum(loading^2))
+  loading.norm <- sqrt(sum(loading^2))
 
-  if (loading.norm==0){
+  if (loading.norm == 0){
     H <- cbind(loading, diag(1, pp))
   }else{
     H <- cbind(loading / loading.norm, diag(1, pp))
   }
 
-  v<-Variable(pp+1)
-  if(model=="linear")
+  v <- Variable(pp+1)
+  if(model == "linear")
   {
-    obj<-1/4*sum((X%*%H%*%v)^2)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
-  }
-  else if(model == "logistic")
-  {
-    obj<-1/4*sum(((X%*%H%*%v)^2)*weight*deriv.vec)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
-  }
-  else
-  {
+    obj <- 1/4*sum((X%*%H%*%v)^2)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
+  } else if(model == "logistic") {
+    obj <- 1/4*sum(((X%*%H%*%v)^2)*weight*deriv.vec)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
+  } else {
     print("Method not yet developed")
     stop()
   }
-  prob<-Problem(Minimize(obj))
-  result<-solve(prob)
-  opt.sol<-result$getValue(v)
-  cvxr_status<-result$status
-  direction<-(-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
+  prob <- Problem(Minimize(obj))
+  result <- solve(prob)
+  opt.sol <- result$getValue(v)
+  cvxr_status <- result$status
+  direction <- (-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
   returnList <- list("proj"=direction)
   return(returnList)
 }
@@ -77,104 +73,88 @@ Direction_fixedtuning<-function(X,loading,mu=NULL,model = "linear",weight=NULL,d
 #' @export
 #'
 #' @examples
-#' n = 100
-#' p = 400
-#' X = matrix(sample(-2:2,n*p,replace = TRUE),nrow = n,ncol = p)
-#' Direction_searchtuning(X,loading=c(1,rep(0,(p-1))))
-Direction_searchtuning<-function(X,loading,model="linear",weight=NULL,deriv.vec=NULL,resol=1.5, maxiter=6){     #included weight and f_prime
-  pp<-ncol(X)
-  n<-nrow(X)
-  tryno = 1;
-  opt.sol = rep(0,pp+1);
-  lamstop = 0;
-  cvxr_status = "optimal";
-
-  mu = sqrt(2.01*log(pp)/n);
+#' n <- 100
+#' p <- 400
+#' X <- matrix(sample(-2:2,n*p,replace = TRUE),nrow = n,ncol = p)
+#' Est <- Direction_searchtuning(X,loading=c(1,rep(0,(p-1))))
+Direction_searchtuning <- function(X, loading, model = "linear", weight = NULL, deriv.vec = NULL, resol = 1.5, maxiter = 6){
+  pp <- ncol(X)
+  n <- nrow(X)
+  tryno <- 1
+  opt.sol <- rep(0,pp+1)
+  lamstop <- 0
+  cvxr_status <- "optimal"
+  mu <- sqrt(2.01*log(pp)/n)
   while (lamstop == 0 && tryno < maxiter){
-    ###### This iteration is to find a good tuning parameter
-    lastv = opt.sol;
-    lastresp = cvxr_status;
-    loading.norm<-sqrt(sum(loading^2))
-
-    if (loading.norm==0){
+    lastv <- opt.sol;
+    lastresp <- cvxr_status;
+    loading.norm <- sqrt(sum(loading^2))
+    if (loading.norm == 0){
       H <- cbind(loading, diag(1, pp))
     }else{
       H <- cbind(loading / loading.norm, diag(1, pp))
     }
-
-    v<-Variable(pp+1)
-    if(model=="linear")
+    v <- Variable(pp+1)
+    if(model == "linear")
     {
-      obj<-1/4*sum((X%*%H%*%v)^2)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
-    }
-    else if(model=="logistic")
-    {
-      obj<-1/4*sum(((X%*%H%*%v)^2)*weight*deriv.vec)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
-    }
-    else
-    {
+      obj <- 1/4*sum((X%*%H%*%v)^2)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
+    } else if(model=="logistic") {
+      obj <- 1/4*sum(((X%*%H%*%v)^2)*weight*deriv.vec)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
+    } else {
       print("Method not yet developed")
       stop()
     }
-    prob<-Problem(Minimize(obj))
-    result<-solve(prob)
-    cvxr_status<-result$status
-    if(tryno==1){
-      if(cvxr_status=="optimal"){
-        incr = 0;
-        mu=mu/resol;
-
-        opt.sol<-result$getValue(v)
-
-        temp.vec<-(-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
-        if(model=="linear")
+    prob <- Problem(Minimize(obj))
+    result <- solve(prob)
+    cvxr_status <- result$status
+    if(tryno == 1){
+      if(cvxr_status == "optimal"){
+        incr = 0
+        mu=mu/resol
+        opt.sol <- result$getValue(v)
+        temp.vec <- (-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
+        if(model == "linear")
         {
-          initial.sd<-sqrt(sum(((X%*% temp.vec)^2))/(n)^2)*loading.norm
+          initial.sd <- sqrt(sum(((X%*% temp.vec)^2))/(n)^2)*loading.norm
+        } else {
+          initial.sd <- sqrt(sum(((X%*% temp.vec)^2)*weight*deriv.vec)/(n)^2)*loading.norm
         }
-        else
-        {
-          initial.sd<-sqrt(sum(((X%*% temp.vec)^2)*weight*deriv.vec)/(n)^2)*loading.norm
-        }
-        temp.sd<-initial.sd
-      }else{
-        incr = 1;
-        mu=mu*resol;
+        temp.sd <- initial.sd
+      } else {
+        incr <- 1
+        mu <- mu*resol
       }
-    }else{
-      if(incr == 1){ ### if the tuning parameter is increased in the last step
-        if(cvxr_status=="optimal"){
-
-          opt.sol<-result$getValue(v)
-
-          lamstop = 1;
-        }else{
-          mu=mu*resol;
-        }
-      }else{
-        if(cvxr_status=="optimal"&&temp.sd<3*initial.sd){
-          mu = mu/resol;
+    } else {
+      if(incr == 1){
+        if(cvxr_status == "optimal"){
           opt.sol <- result$getValue(v)
-          temp.vec<-(-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
-          if(model=="linear")
+          lamstop <- 1
+        } else {
+          mu <- mu*resol
+        }
+      } else {
+        if(cvxr_status == "optimal" && temp.sd < 3*initial.sd){
+          mu <- mu/resol
+          opt.sol <- result$getValue(v)
+          temp.vec <- (-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
+          if(model == "linear")
           {
-            temp.sd<-sqrt(sum(((X%*% temp.vec)^2))/(n)^2)*loading.norm
+            temp.sd <- sqrt(sum(((X%*% temp.vec)^2))/(n)^2)*loading.norm
+          } else {
+            temp.sd <- sqrt(sum(((X%*% temp.vec)^2)*weight*deriv.vec)/(n)^2)*loading.norm
           }
-          else
-          {
-            temp.sd<-sqrt(sum(((X%*% temp.vec)^2)*weight*deriv.vec)/(n)^2)*loading.norm
-          }
-        }else{
-          mu=mu*resol;
-          opt.sol=lastv;
-          lamstop=1;
-          tryno=tryno-1
+        } else {
+          mu <- mu*resol
+          opt.sol <- lastv
+          lamstop <- 1
+          tryno <- tryno-1
         }
       }
     }
-    tryno = tryno + 1;
+    tryno = tryno + 1
   }
-  direction<-(-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
-  step<-tryno-1
+  direction <- (-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
+  step <- tryno-1
   returnList <- list("proj"=direction,
                      "step"=step)
   return(returnList)

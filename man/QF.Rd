@@ -70,7 +70,7 @@ It also constructs the confidence interval for the quadratic form and test wheth
 }
 \examples{
 n = 100
-p = 400
+p = 200
 A1gen <- function(rho,p){
 A1=matrix(0,p,p)
 for(i in 1:p){

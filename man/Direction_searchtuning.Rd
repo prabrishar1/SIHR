@@ -39,8 +39,8 @@ such that the dual optimization problem for constructing the projection directio
 Searches for the best step size and computes the projection direction with the searched best step size
 }
 \examples{
-n = 100
-p = 400
-X = matrix(sample(-2:2,n*p,replace = TRUE),nrow = n,ncol = p)
-Direction_searchtuning(X,loading=c(1,rep(0,(p-1))))
+n <- 100
+p <- 400
+X <- matrix(sample(-2:2,n*p,replace = TRUE),nrow = n,ncol = p)
+Est <- Direction_searchtuning(X,loading=c(1,rep(0,(p-1))))
 }

@@ -33,10 +33,10 @@ Direction_fixedtuning(
 Constructs the projection direction, used for bias-correction, with a fixed tuning parameter
 }
 \examples{
-n = 100
-p = 400
-X = matrix(sample(-2:2,n*p,replace = TRUE),nrow = n,ncol = p)
-resol = 1.5
-step = 3
-Direction_fixedtuning(X,loading=c(1,rep(0,(p-1))),mu=sqrt(2.01*log(p)/n)*resol^{-(step-1)})
+n <- 100
+p <- 400
+X <- matrix(sample(-2:2,n*p,replace = TRUE),nrow = n,ncol = p)
+resol <- 1.5
+step <- 3
+Est <- Direction_fixedtuning(X,loading=c(1,rep(0,(p-1))),mu=sqrt(2.01*log(p)/n)*resol^{-(step-1)})
 }

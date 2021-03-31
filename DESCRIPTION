@@ -1,6 +1,6 @@
 Package: SIHR
 Type: Package
-Title: Functional Inference in High Dimensional Regression
+Title: Statistical Inference in High Dimensional Regression
 Version: 0.1.0
 Description: Inference procedures in the high-dimensional setting for (1)linear functionals (LF) and quadratic functionals (QF) in linear regression, (2)linear functional in logistic regression, (3) individual treatment effects (ITE) in linear and logistic regression.
 License: GPL-3
@@ -20,5 +20,5 @@ Suggests:
     knitr,
     rmarkdown,
     MASS
-Authors@R: c(person("Prabrisha Rakshit", role = c("aut", "cre"), email = "pr412@scarletmail.rutgers.edu"),person("Tony Cai", role = "aut", email = "tcai@wharton.upenn.edu"),person("Zijian Guo", role = "aut", email = "zijguo@stat.rutgers.edu"))
+Authors@R: c(person("Prabrisha Rakshit", role = c("aut", "cre"), email = "prabrisha.rakshit@rutgers.edu"),person("Tony Cai", role = "aut", email = "tcai@wharton.upenn.edu"),person("Zijian Guo", role = "aut", email = "zijguo@stat.rutgers.edu"))
 VignetteBuilder: knitr

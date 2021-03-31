@@ -64,24 +64,23 @@ Here case probability refers to the conditional probability of the binary respon
 }
 \examples{
 A1gen <- function(rho,p){
- A1=matrix(0,p,p)
+ A1 <- matrix(0,p,p)
  for(i in 1:p){
    for(j in 1:p){
-     A1[i,j]<-rho^(abs(i-j))
+     A1[i,j] <- rho^(abs(i-j))
    }
  }
  A1
 }
-n = 100
-p = 400
+n <- 90
+p <- 200
 mu <- rep(0,p)
-rho = 0.5
+rho <- 0.5
 Cov <- (A1gen(rho,p))/2
 beta <- rep(0,p)
 beta[1:10] <- 0.5*c(1:10)/10
-a0 = 0
-set.seed(12)
-loading <- MASS::mvrnorm(1,mu,Cov)
+a0 <- 0
+loading <- c(1,rep(0,(p-1)))
 X <- MASS::mvrnorm(n,mu,Cov)
 exp_val <- X\%*\%beta+a0
 prob <- exp(exp_val)/(1+exp(exp_val))

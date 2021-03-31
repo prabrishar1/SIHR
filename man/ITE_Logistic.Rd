@@ -83,19 +83,19 @@ whether it is above zero or not. Here the case probability refers to the conditi
 }
 \examples{
 A1gen <- function(rho,p){
-A1=matrix(0,p,p)
+A1 <- matrix(0,p,p)
 for(i in 1:p){
   for(j in 1:p){
-    A1[i,j]<-rho^(abs(i-j))
+    A1[i,j] <- rho^(abs(i-j))
   }
 }
 A1
 }
-n1 = 100
-n2 = 200
-p = 400
+n1 <- 50
+n2 <- 50
+p <- 100
 mu <- rep(0,p)
-rho = 0.5
+rho <- 0.5
 Cov <- (A1gen(rho,p))/2
 beta1 <- rep(0,p)
 beta1[1:10] <- c(1:10)/5
@@ -109,6 +109,6 @@ prob1 <- exp(exp_val1)/(1+exp(exp_val1))
 prob2 <- exp(exp_val2)/(1+exp(exp_val2))
 y1 <- rbinom(n1,1,prob1)
 y2 <- rbinom(n2,1,prob2)
-loading <- MASS::mvrnorm(1,mu,Cov)
+loading <- c(1,rep(0,(p-1)))
 Est <- ITE_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
 }
