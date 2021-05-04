@@ -10,6 +10,7 @@
 #' @param loading Loading, of length \eqn{p}
 #' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
 #' @param weight The weight vector used for bias correction, of length \eqn{n}; if set to \code{NULL}, the weight is the inverse of the first derivative of the logit function (default = \code{NULL})
+#' @param center Should the design matrix \code{X} and \code{loading} be centered (default = \code{FALSE})
 #' @param init.Lasso Initial LASSO estimator of the regression vector (default = \code{NULL})
 #' @param lambda The tuning parameter used in the construction of LASSO estimator of the regression vector (default = \code{NULL})
 #' @param mu The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})
@@ -21,6 +22,7 @@
 #' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = 6)
 #' @param alpha Level of significance to test the null hypothesis that the case probability is less than or equal to 0.5 (default = 0.05)
+#' @param verbose Should inetrmediate message(s) be printed (default = \code{TRUE})
 #'
 #' @return
 #' \item{prop.est}{The bias corrected estimator of the case probability}
@@ -64,7 +66,7 @@
 #' prob <- exp(exp_val)/(1+exp(exp_val))
 #' y <- rbinom(n,1,prob)
 #' Est <- LF_logistic(X = X, y = y, loading = loading)
-LF_logistic <- function(X, y, loading, weight = NULL, intercept = TRUE, init.Lasso = NULL, lambda = NULL, mu = NULL, step = NULL, resol = 1.5, maxiter = 6, alpha = 0.05){
+LF_logistic <- function(X, y, loading, weight = NULL, center = FALSE, intercept = TRUE, init.Lasso = NULL, lambda = NULL, mu = NULL, step = NULL, resol = 1.5, maxiter = 6, alpha = 0.05, verbose = TRUE){
   xnew <- loading
   X <- as.matrix(X)
   p <- ncol(X)
@@ -73,13 +75,19 @@ LF_logistic <- function(X, y, loading, weight = NULL, intercept = TRUE, init.Las
 
   if(n_y!=n)
   {
-    print("Check dimensions of X and y")
+    stop("Error: Check dimensions of X and y")
   } else {
     data <- na.omit(data.frame(y,X))
     X <- as.matrix(data[,-1])
     y <- as.vector(data[,1])
     p <- ncol(X)
     n <- nrow(X)
+    if(center == TRUE){
+      mean = colMeans(X)
+      M = matrix(rep(mean,nrow(X)),byrow = T, nrow = nrow(X), ncol = ncol(X))
+      X = X - M
+      xnew = xnew - mean
+    }
     col.norm <- 1/sqrt((1/n)*diag(t(X)%*%X)+0.0001)
     Xnor <- X %*% diag(col.norm)
     if(is.null(init.Lasso))
@@ -127,7 +135,7 @@ LF_logistic <- function(X, y, loading, weight = NULL, intercept = TRUE, init.Las
     }
     if(count!=0 && intercept==TRUE)
     {
-      print("Data is singular")
+      stop("Data is singular")
     }else{
       if ((n >= 6*p)){
         gamma.hat <- weight[1]*deriv.vec[1]*Xc[1,]%*%t(Xc[1,])
@@ -159,7 +167,9 @@ LF_logistic <- function(X, y, loading, weight = NULL, intercept = TRUE, init.Las
           step <- step-1
           Direction.Est <-  Direction_fixedtuning_logistic(Xc, loading, mu = sqrt(2.01*log(pp)/n)*resol^{-(step-1)}, weight = weight, deriv.vec = deriv.vec)
         }
-        print(paste("step is", step))
+        if(verbose == TRUE){
+          print(paste("step is", step))
+        }
         direction <- Direction.Est$proj
       }
       exp_pred <- Xc%*%(htheta)
@@ -182,7 +192,8 @@ LF_logistic <- function(X, y, loading, weight = NULL, intercept = TRUE, init.Las
                          "CI" = c(expo(CI[1]),expo(CI[2])),
                          "decision" = dec,
                          "proj"=direction,
-                         "plug.in"=expo(lasso.plugin)
+                         "plug.in"=expo(lasso.plugin),
+                         "init.Lasso"=init.Lasso
       )
       return(returnList)
     }
@@ -204,6 +215,7 @@ LF_logistic <- function(X, y, loading, weight = NULL, intercept = TRUE, init.Las
 #' @param weight The weight vector used for bias correction, of length \eqn{n}; if set to \code{NULL}, the weight is
 #' the inverse of the first derivative of the logit function (default = \code{NULL})
 #' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
+#' @param center Should the design matrices \code{X1}, \code{X2} and \code{loading} be centered (default = \code{FALSE})
 #' @param init.Lasso1 Initial LASSO estimator of the first regression vector (default = \code{NULL})
 #' @param init.Lasso2 Initial LASSO estimator of the second regression vector (default = \code{NULL})
 #' @param lambda1 The tuning parameter in the construction of LASSO estimator of the first regression vector (default = \code{NULL})
@@ -221,6 +233,7 @@ LF_logistic <- function(X, y, loading, weight = NULL, intercept = TRUE, init.Las
 #' @param maxiter Maximum number of steps along which \code{mu1} (and \code{mu2}) is increased/decreased to obtain the smallest \code{mu} (and \code{mu2})
 #' such that the dual optimization problem for constructing the first (and the second) projection direction converges (default = 6)
 #' @param alpha Level ofsignificance to test the null hypothesis which claims that the first case probability is not greater than the second case probability (default = 0.05)
+#' @param verbose Should inetrmediate message(s) be printed (default = \code{TRUE})
 #'
 #' @return
 #' \item{prop.est}{The bias-corrected estimator for the difference between case probabilities}
@@ -263,9 +276,9 @@ LF_logistic <- function(X, y, loading, weight = NULL, intercept = TRUE, init.Las
 #' y2 <- rbinom(n2,1,prob2)
 #' loading <- c(1,rep(0,(p-1)))
 #' Est <- ITE_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
-ITE_Logistic <- function(X1, y1, X2, y2, loading, weight = NULL, intercept = TRUE, init.Lasso1 = NULL, init.Lasso2 = NULL, lambda1 = NULL, lambda2 = NULL, mu1 = NULL, mu2 = NULL, step1 = NULL, step2 = NULL, resol = 1.5, maxiter = 6, alpha = 0.05){
-  Est1 <- LF_logistic(X=X1, y=y1, loading = loading, weight = weight, intercept = intercept, init.Lasso = init.Lasso1, lambda = lambda1, mu = mu1, step = step1, resol = resol, maxiter = maxiter, alpha = alpha)
-  Est2 <- LF_logistic(X=X2, y=y2, loading = loading, weight = weight, intercept = intercept, init.Lasso = init.Lasso2, lambda = lambda2, mu = mu2, step = step2, resol = resol, maxiter = maxiter, alpha = alpha)
+ITE_Logistic <- function(X1, y1, X2, y2, loading, weight = NULL, intercept = TRUE, center = FALSE, init.Lasso1 = NULL, init.Lasso2 = NULL, lambda1 = NULL, lambda2 = NULL, mu1 = NULL, mu2 = NULL, step1 = NULL, step2 = NULL, resol = 1.5, maxiter = 6, alpha = 0.05, verbose = TRUE){
+  Est1 <- LF_logistic(X=X1, y=y1, loading = loading, weight = weight, intercept = intercept, center = center, init.Lasso = init.Lasso1, lambda = lambda1, mu = mu1, step = step1, resol = resol, maxiter = maxiter, alpha = alpha, verbose = verbose)
+  Est2 <- LF_logistic(X=X2, y=y2, loading = loading, weight = weight, intercept = intercept, center = center, init.Lasso = init.Lasso2, lambda = lambda2, mu = mu2, step = step2, resol = resol, maxiter = maxiter, alpha = alpha, verbose = verbose)
   logit <- function(z)
   {
     a <- log(z/(1-z))

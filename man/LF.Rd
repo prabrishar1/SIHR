@@ -9,13 +9,15 @@ LF(
   y,
   loading,
   intercept = TRUE,
+  center = FALSE,
   init.Lasso = NULL,
   lambda = NULL,
   mu = NULL,
   step = NULL,
   resol = 1.5,
   maxiter = 6,
-  alpha = 0.05
+  alpha = 0.05,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -26,6 +28,8 @@ LF(
 \item{loading}{Loading, of length \eqn{p}}
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
+
+\item{center}{Should the design matrix \code{X} and \code{loading} be centered (default = \code{FALSE})}
 
 \item{init.Lasso}{Initial LASSO estimator of the regression vector (default = \code{NULL})}
 
@@ -45,6 +49,8 @@ such that the dual optimization problem for constructing the projection directio
 
 \item{alpha}{Level of significance to test the null hypothesis which claims that the linear combination of the regression coefficients
 is less than or equal to zero (default = 0.05)}
+
+\item{verbose}{Should inetrmediate message(s) be printed (default = \code{TRUE})}
 }
 \value{
 \item{prop.est}{The bias-corrected estimator for the linear combination of regression coefficients}

@@ -12,6 +12,7 @@ ITE_Logistic(
   loading,
   weight = NULL,
   intercept = TRUE,
+  center = FALSE,
   init.Lasso1 = NULL,
   init.Lasso2 = NULL,
   lambda1 = NULL,
@@ -22,7 +23,8 @@ ITE_Logistic(
   step2 = NULL,
   resol = 1.5,
   maxiter = 6,
-  alpha = 0.05
+  alpha = 0.05,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -40,6 +42,8 @@ ITE_Logistic(
 the inverse of the first derivative of the logit function (default = \code{NULL})}
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
+
+\item{center}{Should the design matrices \code{X1}, \code{X2} and \code{loading} be centered (default = \code{FALSE})}
 
 \item{init.Lasso1}{Initial LASSO estimator of the first regression vector (default = \code{NULL})}
 
@@ -68,6 +72,8 @@ such that the dual optimization problem for constructing the first (and the seco
 such that the dual optimization problem for constructing the first (and the second) projection direction converges (default = 6)}
 
 \item{alpha}{Level ofsignificance to test the null hypothesis which claims that the first case probability is not greater than the second case probability (default = 0.05)}
+
+\item{verbose}{Should inetrmediate message(s) be printed (default = \code{TRUE})}
 }
 \value{
 \item{prop.est}{The bias-corrected estimator for the difference between case probabilities}

@@ -11,6 +11,7 @@ ITE(
   y2,
   loading,
   intercept = TRUE,
+  center = FALSE,
   init.Lasso1 = NULL,
   init.Lasso2 = NULL,
   lambda1 = NULL,
@@ -21,7 +22,8 @@ ITE(
   step2 = NULL,
   resol = 1.5,
   maxiter = 6,
-  alpha = 0.05
+  alpha = 0.05,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -36,6 +38,8 @@ ITE(
 \item{loading}{Loading, of length \eqn{p}}
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
+
+\item{center}{Should the design matrices \code{X1}, \code{X2} and \code{loading} be centered (default = \code{FALSE})}
 
 \item{init.Lasso1}{Initial LASSO estimator of the first regression vector (default = \code{NULL})}
 
@@ -64,6 +68,8 @@ such that the dual optimization problem for constructing the first (and the seco
 such that the dual optimization problem for constructing the first (and the second) projection direction converges (default = 6)}
 
 \item{alpha}{Level of significance to test the null hypothesis which claims that ITE is not above zero (default = 0.05)}
+
+\item{verbose}{Should inetrmediate message(s) be printed (default = \code{TRUE})}
 }
 \value{
 \item{prop.est}{The bias-corrected estimator of the ITE}

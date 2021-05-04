@@ -9,8 +9,9 @@ QF(
   y,
   G,
   Cov.weight = TRUE,
-  A = diag(ncol(X)),
+  A = NULL,
   intercept = TRUE,
+  center = FALSE,
   tau.vec = c(1),
   init.Lasso = NULL,
   lambda = NULL,
@@ -18,7 +19,8 @@ QF(
   step = NULL,
   resol = 1.5,
   maxiter = 6,
-  alpha = 0.05
+  alpha = 0.05,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -33,6 +35,8 @@ QF(
 \item{A}{The matrix A in the quadratic form, of dimension \eqn{p\times}\eqn{p} (default = \eqn{I_{p \times p}})}
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
+
+\item{center}{Should the design matrix \code{X} be centered (default = \code{FALSE})}
 
 \item{tau.vec}{The vector of enlargement factors for asymptotic variance of the bias-corrected estimator to handle super-efficiency (default = \eqn{1})}
 
@@ -53,6 +57,8 @@ such that the dual optimization problem for constructing the projection directio
 such that the dual optimization problem for constructing the projection direction converges (default = 6)}
 
 \item{alpha}{Level of significance to test the null hypothesis which claims that the quadratic form of the regression vector is equal to 0 (default = 0.05)}
+
+\item{verbose}{Should inetrmediate message(s) be printed (default = \code{TRUE})}
 }
 \value{
 \item{prop.est}{The bias-corrected estimator of the quadratic form of the regression vector}

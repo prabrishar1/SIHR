@@ -9,6 +9,7 @@ LF_logistic(
   y,
   loading,
   weight = NULL,
+  center = FALSE,
   intercept = TRUE,
   init.Lasso = NULL,
   lambda = NULL,
@@ -16,7 +17,8 @@ LF_logistic(
   step = NULL,
   resol = 1.5,
   maxiter = 6,
-  alpha = 0.05
+  alpha = 0.05,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -27,6 +29,8 @@ LF_logistic(
 \item{loading}{Loading, of length \eqn{p}}
 
 \item{weight}{The weight vector used for bias correction, of length \eqn{n}; if set to \code{NULL}, the weight is the inverse of the first derivative of the logit function (default = \code{NULL})}
+
+\item{center}{Should the design matrix \code{X} and \code{loading} be centered (default = \code{FALSE})}
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
 
@@ -47,6 +51,8 @@ such that the dual optimization problem for constructing the projection directio
 such that the dual optimization problem for constructing the projection direction converges (default = 6)}
 
 \item{alpha}{Level of significance to test the null hypothesis that the case probability is less than or equal to 0.5 (default = 0.05)}
+
+\item{verbose}{Should inetrmediate message(s) be printed (default = \code{TRUE})}
 }
 \value{
 \item{prop.est}{The bias corrected estimator of the case probability}

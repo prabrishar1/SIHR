@@ -41,8 +41,7 @@ Direction_fixedtuning <- function(X, loading, mu = NULL, model = "linear", weigh
   } else if(model == "logistic") {
     obj <- 1/4*sum(((X%*%H%*%v)^2)*weight*deriv.vec)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
   } else {
-    print("Method not yet developed")
-    stop()
+    stop("Method not yet developed")
   }
   prob <- Problem(Minimize(obj))
   result <- solve(prob)
@@ -101,8 +100,7 @@ Direction_searchtuning <- function(X, loading, model = "linear", weight = NULL, 
     } else if(model=="logistic") {
       obj <- 1/4*sum(((X%*%H%*%v)^2)*weight*deriv.vec)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
     } else {
-      print("Method not yet developed")
-      stop()
+      stop("Method not yet developed")
     }
     prob <- Problem(Minimize(obj))
     result <- solve(prob)

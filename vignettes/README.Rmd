@@ -261,7 +261,7 @@ Est$decision
 
 ## Inference for Quadratic Functional with known matrix A in middle
 
-Est = SIHR::QF(X = X, y = y, G=test.set, Cov.weight = FALSE,A = diag(1:400,400))
+Est = SIHR::QF(X = X, y = y, G=test.set, Cov.weight = FALSE, A = diag(1:400,400))
 ### Point esitmator
 
 Est$prop.est
@@ -279,7 +279,7 @@ Est$decision
 
 ## Inference for square norm of regression vector
 
-Est = SIHR::QF(X = X, y = y, G=test.set, Cov.weight = FALSE)
+Est = SIHR::QF(X = X, y = y, G=test.set, Cov.weight = FALSE, A = diag(400))
 ### Point esitmator
 
 Est$prop.est
