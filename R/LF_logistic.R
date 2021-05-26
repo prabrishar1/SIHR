@@ -8,8 +8,8 @@
 #' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
 #' @param y Outcome vector, of length \eqn{n}
 #' @param loading Loading, of length \eqn{p}
-#' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
 #' @param weight The weight vector used for bias correction, of length \eqn{n}; if set to \code{NULL}, the weight is the inverse of the first derivative of the logit function (default = \code{NULL})
+#' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
 #' @param center Should the design matrix \code{X} and \code{loading} be centered (default = \code{FALSE})
 #' @param init.Lasso Initial LASSO estimator of the regression vector (default = \code{NULL})
 #' @param lambda The tuning parameter used in the construction of LASSO estimator of the regression vector (default = \code{NULL})
@@ -66,7 +66,7 @@
 #' prob <- exp(exp_val)/(1+exp(exp_val))
 #' y <- rbinom(n,1,prob)
 #' Est <- LF_logistic(X = X, y = y, loading = loading)
-LF_logistic <- function(X, y, loading, weight = NULL, center = FALSE, intercept = TRUE, init.Lasso = NULL, lambda = NULL, mu = NULL, step = NULL, resol = 1.5, maxiter = 6, alpha = 0.05, verbose = TRUE){
+LF_logistic <- function(X, y, loading, weight = NULL, intercept = TRUE, center = FALSE, init.Lasso = NULL, lambda = NULL, mu = NULL, step = NULL, resol = 1.5, maxiter = 6, alpha = 0.05, verbose = TRUE){
   xnew <- loading
   X <- as.matrix(X)
   p <- ncol(X)
@@ -87,6 +87,9 @@ LF_logistic <- function(X, y, loading, weight = NULL, center = FALSE, intercept 
       M = matrix(rep(mean,nrow(X)),byrow = T, nrow = nrow(X), ncol = ncol(X))
       X = X - M
       xnew = xnew - mean
+    }else{
+      X = X
+      xnew = xnew
     }
     col.norm <- 1/sqrt((1/n)*diag(t(X)%*%X)+0.0001)
     Xnor <- X %*% diag(col.norm)

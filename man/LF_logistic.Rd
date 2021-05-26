@@ -9,8 +9,8 @@ LF_logistic(
   y,
   loading,
   weight = NULL,
-  center = FALSE,
   intercept = TRUE,
+  center = FALSE,
   init.Lasso = NULL,
   lambda = NULL,
   mu = NULL,
@@ -30,9 +30,9 @@ LF_logistic(
 
 \item{weight}{The weight vector used for bias correction, of length \eqn{n}; if set to \code{NULL}, the weight is the inverse of the first derivative of the logit function (default = \code{NULL})}
 
-\item{center}{Should the design matrix \code{X} and \code{loading} be centered (default = \code{FALSE})}
-
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
+
+\item{center}{Should the design matrix \code{X} and \code{loading} be centered (default = \code{FALSE})}
 
 \item{init.Lasso}{Initial LASSO estimator of the regression vector (default = \code{NULL})}
 

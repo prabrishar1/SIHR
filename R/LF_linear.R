@@ -73,7 +73,6 @@ LF <- function(X, y,loading, intercept = TRUE, center = FALSE, init.Lasso = NULL
   if(n_y!=n)
   {
     stop("Error : Check dimensions of X and y")
-    #print("Check dimensions of X and y")
   } else {
     data <- na.omit(data.frame(y, X))
     X <- as.matrix(data[,-1])
@@ -85,6 +84,9 @@ LF <- function(X, y,loading, intercept = TRUE, center = FALSE, init.Lasso = NULL
       M = matrix(rep(mean,nrow(X)),byrow = T, nrow = nrow(X), ncol = ncol(X))
       X = X - M
       xnew = xnew - mean
+    }else{
+      X = X
+      xnew = xnew
     }
     col.norm <- 1 / sqrt((1 / n) * diag(t(X) %*% X))
     Xnor <- X %*% diag(col.norm)

@@ -241,7 +241,7 @@ Est$decision
 
 ## Inference for square norm of regression vector
 
-Est = SIHR::QF(X = X, y = y, G=test.set, Cov.weight = FALSE, A = diag(400))
+Est = SIHR::QF(X = X, y = y, G=test.set, Cov.weight = FALSE, A = diag(ncol(X)))
 ### Point esitmator
 
 Est$prop.est

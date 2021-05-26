@@ -32,7 +32,7 @@ QF(
 
 \item{Cov.weight}{Logical, if set to \code{TRUE} then \code{A} is the population covariance matrix, else need to provide an \code{A} (default = TRUE)}
 
-\item{A}{The matrix A in the quadratic form, of dimension \eqn{p\times}\eqn{p} (default = \eqn{I_{p \times p}})}
+\item{A}{The matrix A in the quadratic form, of dimension \eqn{p\times}\eqn{p} (default = \code{NULL})}
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
 
