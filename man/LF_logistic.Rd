@@ -69,6 +69,7 @@ It also constructs the confidence interval for the case probability and test whe
 Here case probability refers to the conditional probability of the binary response variable taking value 1 given the predictors take value \code{loading}.
 }
 \examples{
+\dontrun{
 A1gen <- function(rho,p){
  A1 <- matrix(0,p,p)
  for(i in 1:p){
@@ -92,6 +93,7 @@ exp_val <- X\%*\%beta+a0
 prob <- exp(exp_val)/(1+exp(exp_val))
 y <- rbinom(n,1,prob)
 Est <- LF_logistic(X = X, y = y, loading = loading)
+}
 }
 \references{
 \insertRef{linlog}{SIHR}

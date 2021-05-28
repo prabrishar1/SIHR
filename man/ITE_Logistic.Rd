@@ -88,6 +88,7 @@ and the corresponding standard error. It also constructs the confidence interval
 whether it is above zero or not. Here the case probability refers to the conditional probability of the binary response variable taking value 1 given the predictors are assigned to \code{loading}.
 }
 \examples{
+\dontrun{
 A1gen <- function(rho,p){
 A1 <- matrix(0,p,p)
 for(i in 1:p){
@@ -117,4 +118,5 @@ y1 <- rbinom(n1,1,prob1)
 y2 <- rbinom(n2,1,prob2)
 loading <- c(1,rep(0,(p-1)))
 Est <- ITE_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
+}
 }

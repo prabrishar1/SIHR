@@ -84,6 +84,7 @@ and the corresponding standard error. It also constructs the confidence interval
 whether ITE is above zero or not. Here ITE is defined as a linear combination of the difference between two regression vectors.
 }
 \examples{
+\dontrun{
 n1 <- 90
 p <- 200
 n2 <- 90
@@ -98,6 +99,7 @@ y1 <- X1\%*\%beta1 + rnorm(n1)
 y2 <- X2\%*\%beta2 + rnorm(n2)
 loading <- c(1,rep(0, (p-1)))
 Est <- ITE(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
+}
 }
 \references{
 \insertRef{linlin}{SIHR}

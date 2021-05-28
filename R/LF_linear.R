@@ -232,6 +232,7 @@ LF <- function(X, y,loading, intercept = TRUE, center = FALSE, init.Lasso = NULL
 #' \insertRef{linlin}{SIHR}
 #'
 #' @examples
+#' \dontrun{
 #' n1 <- 90
 #' p <- 200
 #' n2 <- 90
@@ -246,6 +247,7 @@ LF <- function(X, y,loading, intercept = TRUE, center = FALSE, init.Lasso = NULL
 #' y2 <- X2%*%beta2 + rnorm(n2)
 #' loading <- c(1,rep(0, (p-1)))
 #' Est <- ITE(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
+#' }
 ITE <- function(X1, y1, X2, y2, loading, intercept = TRUE, center = FALSE, init.Lasso1 = NULL, init.Lasso2 = NULL, lambda1 = NULL, lambda2 = NULL, mu1 = NULL, mu2 = NULL, step1 = NULL, step2 = NULL, resol = 1.5, maxiter = 6, alpha = 0.05, verbose = TRUE){
   Est1 <- SIHR::LF(X1, y1, loading, intercept = intercept, center = center, init.Lasso = init.Lasso1, lambda = lambda1, mu = mu1, step = step1, resol = resol, maxiter = maxiter, alpha = alpha, verbose = verbose)
   Est2 <- SIHR::LF(X2, y2, loading, intercept = intercept, center = center, init.Lasso = init.Lasso2, lambda = lambda2, mu = mu2, step = step2, resol = resol, maxiter = maxiter, alpha = alpha, verbose = verbose)

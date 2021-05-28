@@ -43,6 +43,7 @@
 #'
 #' \insertRef{linlog}{SIHR}
 #' @examples
+#' \dontrun{
 #' A1gen <- function(rho,p){
 #'  A1 <- matrix(0,p,p)
 #'  for(i in 1:p){
@@ -66,6 +67,7 @@
 #' prob <- exp(exp_val)/(1+exp(exp_val))
 #' y <- rbinom(n,1,prob)
 #' Est <- LF_logistic(X = X, y = y, loading = loading)
+#' }
 LF_logistic <- function(X, y, loading, weight = NULL, intercept = TRUE, center = FALSE, init.Lasso = NULL, lambda = NULL, mu = NULL, step = NULL, resol = 1.5, maxiter = 6, alpha = 0.05, verbose = TRUE){
   xnew <- loading
   X <- as.matrix(X)
@@ -250,6 +252,7 @@ LF_logistic <- function(X, y, loading, weight = NULL, intercept = TRUE, center =
 #' @importFrom stats coef na.omit
 #' @import CVXR Matrix glmnet
 #' @examples
+#' \dontrun{
 #' A1gen <- function(rho,p){
 #' A1 <- matrix(0,p,p)
 #' for(i in 1:p){
@@ -279,6 +282,7 @@ LF_logistic <- function(X, y, loading, weight = NULL, intercept = TRUE, center =
 #' y2 <- rbinom(n2,1,prob2)
 #' loading <- c(1,rep(0,(p-1)))
 #' Est <- ITE_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
+#' }
 ITE_Logistic <- function(X1, y1, X2, y2, loading, weight = NULL, intercept = TRUE, center = FALSE, init.Lasso1 = NULL, init.Lasso2 = NULL, lambda1 = NULL, lambda2 = NULL, mu1 = NULL, mu2 = NULL, step1 = NULL, step2 = NULL, resol = 1.5, maxiter = 6, alpha = 0.05, verbose = TRUE){
   Est1 <- LF_logistic(X=X1, y=y1, loading = loading, weight = weight, intercept = intercept, center = center, init.Lasso = init.Lasso1, lambda = lambda1, mu = mu1, step = step1, resol = resol, maxiter = maxiter, alpha = alpha, verbose = verbose)
   Est2 <- LF_logistic(X=X2, y=y2, loading = loading, weight = weight, intercept = intercept, center = center, init.Lasso = init.Lasso2, lambda = lambda2, mu = mu2, step = step2, resol = resol, maxiter = maxiter, alpha = alpha, verbose = verbose)
