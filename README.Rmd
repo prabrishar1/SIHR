@@ -212,6 +212,7 @@ Est$CI
 ### test whether the first case probability is smaller than the second case probability or not (1 indicates that the first case probability is larger than the second case probability)
 
 Est$decision
+
 ```
 
 Inference for quadratic functional in high-dimensional linear model

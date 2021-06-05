@@ -84,7 +84,7 @@ and the corresponding standard error. It also constructs the confidence interval
 whether ITE is above zero or not. Here ITE is defined as a linear combination of the difference between two regression vectors.
 }
 \examples{
-\dontrun{
+\donttest{
 n1 <- 90
 p <- 200
 n2 <- 90

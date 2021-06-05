@@ -232,7 +232,7 @@ LF <- function(X, y,loading, intercept = TRUE, center = FALSE, init.Lasso = NULL
 #' \insertRef{linlin}{SIHR}
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' n1 <- 90
 #' p <- 200
 #' n2 <- 90

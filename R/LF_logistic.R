@@ -43,7 +43,7 @@
 #'
 #' \insertRef{linlog}{SIHR}
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' A1gen <- function(rho,p){
 #'  A1 <- matrix(0,p,p)
 #'  for(i in 1:p){
@@ -252,7 +252,7 @@ LF_logistic <- function(X, y, loading, weight = NULL, intercept = TRUE, center =
 #' @importFrom stats coef na.omit
 #' @import CVXR Matrix glmnet
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' A1gen <- function(rho,p){
 #' A1 <- matrix(0,p,p)
 #' for(i in 1:p){

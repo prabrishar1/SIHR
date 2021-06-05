@@ -69,7 +69,7 @@ It also constructs the confidence interval for the case probability and test whe
 Here case probability refers to the conditional probability of the binary response variable taking value 1 given the predictors take value \code{loading}.
 }
 \examples{
-\dontrun{
+\donttest{
 A1gen <- function(rho,p){
  A1 <- matrix(0,p,p)
  for(i in 1:p){
