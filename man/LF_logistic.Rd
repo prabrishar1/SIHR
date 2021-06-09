@@ -9,6 +9,7 @@ LF_logistic(
   y,
   loading,
   weight = NULL,
+  trans = TRUE,
   intercept = TRUE,
   center = FALSE,
   init.Lasso = NULL,
@@ -29,6 +30,8 @@ LF_logistic(
 \item{loading}{Loading, of length \eqn{p}}
 
 \item{weight}{The weight vector used for bias correction, of length \eqn{n}; if set to \code{NULL}, the weight is the inverse of the first derivative of the logit function (default = \code{NULL})}
+
+\item{trans}{Should results for the case probability (\code{TRUE}) or the linear form (\code{FALSE}) be reported (default = \code{TRUE})}
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
 
@@ -55,17 +58,17 @@ such that the dual optimization problem for constructing the projection directio
 \item{verbose}{Should inetrmediate message(s) be printed (default = \code{TRUE})}
 }
 \value{
-\item{prop.est}{The bias corrected estimator of the case probability}
+\item{prop.est}{The bias corrected estimator of the case probability or the linear form}
 \item{se}{The standard error of the bias-corrected estimator}
-\item{CI}{The confidence interval for the case probability}
+\item{CI}{The confidence interval for the case probability or the linear form}
 \item{decision}{\code{decision}\eqn{=1} implies the case probability is above 0.5 \eqn{\newline}
 \code{decision}\eqn{=0} implies the case probability is not above 0.5}
 \item{proj}{The projection direction, of length \eqn{p}}
-\item{plug.in}{The plug-in LASSO estimator of the case probability}
+\item{plug.in}{The plug-in LASSO estimator of the case probability or the linear form}
 }
 \description{
-Computes the bias corrected estimator of the case probability in the high dimensional logistic regression model and the corresponding standard error.
-It also constructs the confidence interval for the case probability and test whether the case probability is above zero or not.
+Computes the bias corrected estimator of the case probability or the linear combination of coefficients in the high dimensional logistic regression model and the corresponding standard error.
+It also constructs the confidence interval for the case probability or the linear form and test whether the case probability is above zero or not.
 Here case probability refers to the conditional probability of the binary response variable taking value 1 given the predictors take value \code{loading}.
 }
 \examples{

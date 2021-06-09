@@ -149,7 +149,10 @@ exp_val <- X%*%beta
 prob <- exp(exp_val)/(1+exp(exp_val))
 y <- rbinom(n,1,prob)
 loading <- MASS::mvrnorm(1,mu,Cov)
-Est = SIHR::LF_logistic(X = X, y = y, loading = loading, intercept = TRUE, weight = rep(1,n))
+Est = SIHR::LF_logistic(X = X, y = y, loading = loading, weight = rep(1,n), trans = TRUE)
+
+### trans = TRUE implies target quantity is the case probability
+
 ### Point esitmator
 
 Est$prop.est
@@ -197,7 +200,10 @@ prob2 <- exp(exp_val2)/(1+exp(exp_val2))
 y1 <- rbinom(n1,1,prob1)
 y2 <- rbinom(n2,1,prob2)
 loading <- MASS::mvrnorm(1,mu,Cov)
-Est <- SIHR::ITE_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
+Est <- SIHR::ITE_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, weight = NULL, trans = FALSE)
+
+### trans = FALSE implies the target quantity is the difference between two linear combinations of the regression coefficients
+
 ### Point esitmator
 
 Est$prop.est

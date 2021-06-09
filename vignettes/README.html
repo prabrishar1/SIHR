@@ -370,16 +370,16 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb2-32"><a href="#cb2-32" aria-hidden="true"></a></span>
 <span id="cb2-33"><a href="#cb2-33" aria-hidden="true"></a>Est<span class="op">$</span>prop.est</span>
 <span id="cb2-34"><a href="#cb2-34" aria-hidden="true"></a><span class="co">#&gt;          [,1]</span></span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true"></a><span class="co">#&gt; [1,] 6.978727</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true"></a><span class="co">#&gt; [1,] 11.62519</span></span>
 <span id="cb2-36"><a href="#cb2-36" aria-hidden="true"></a></span>
 <span id="cb2-37"><a href="#cb2-37" aria-hidden="true"></a><span class="co">### Standard error </span></span>
 <span id="cb2-38"><a href="#cb2-38" aria-hidden="true"></a></span>
 <span id="cb2-39"><a href="#cb2-39" aria-hidden="true"></a>Est<span class="op">$</span>se</span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true"></a><span class="co">#&gt; [1] 1.969343</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true"></a><span class="co">#&gt; [1] 1.875633</span></span>
 <span id="cb2-41"><a href="#cb2-41" aria-hidden="true"></a></span>
 <span id="cb2-42"><a href="#cb2-42" aria-hidden="true"></a><span class="co">### Confidence interval</span></span>
 <span id="cb2-43"><a href="#cb2-43" aria-hidden="true"></a>Est<span class="op">$</span>CI</span>
-<span id="cb2-44"><a href="#cb2-44" aria-hidden="true"></a><span class="co">#&gt; [1]  3.118885 10.838568</span></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true"></a><span class="co">#&gt; [1]  7.949013 15.301358</span></span>
 <span id="cb2-45"><a href="#cb2-45" aria-hidden="true"></a></span>
 <span id="cb2-46"><a href="#cb2-46" aria-hidden="true"></a><span class="co">### test whether the linear functional is below zero or not (1 indicates that it is above zero)</span></span>
 <span id="cb2-47"><a href="#cb2-47" aria-hidden="true"></a></span>
@@ -418,16 +418,16 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb3-30"><a href="#cb3-30" aria-hidden="true"></a></span>
 <span id="cb3-31"><a href="#cb3-31" aria-hidden="true"></a>Est<span class="op">$</span>prop.est</span>
 <span id="cb3-32"><a href="#cb3-32" aria-hidden="true"></a><span class="co">#&gt;          [,1]</span></span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true"></a><span class="co">#&gt; [1,] 5.755477</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true"></a><span class="co">#&gt; [1,] 4.792377</span></span>
 <span id="cb3-34"><a href="#cb3-34" aria-hidden="true"></a></span>
 <span id="cb3-35"><a href="#cb3-35" aria-hidden="true"></a><span class="co">### Standard error </span></span>
 <span id="cb3-36"><a href="#cb3-36" aria-hidden="true"></a></span>
 <span id="cb3-37"><a href="#cb3-37" aria-hidden="true"></a>Est<span class="op">$</span>se</span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true"></a><span class="co">#&gt; [1] 2.494058</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true"></a><span class="co">#&gt; [1] 2.574439</span></span>
 <span id="cb3-39"><a href="#cb3-39" aria-hidden="true"></a></span>
 <span id="cb3-40"><a href="#cb3-40" aria-hidden="true"></a><span class="co">### Confidence interval</span></span>
 <span id="cb3-41"><a href="#cb3-41" aria-hidden="true"></a>Est<span class="op">$</span>CI</span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true"></a><span class="co">#&gt; [1]  0.8672139 10.6437397</span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true"></a><span class="co">#&gt; [1] -0.2534306  9.8381839</span></span>
 <span id="cb3-43"><a href="#cb3-43" aria-hidden="true"></a></span>
 <span id="cb3-44"><a href="#cb3-44" aria-hidden="true"></a><span class="co">### test whether the linear ITE is below zero or not (1 indicates that it is above zero)</span></span>
 <span id="cb3-45"><a href="#cb3-45" aria-hidden="true"></a></span>
@@ -449,40 +449,33 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb4-13"><a href="#cb4-13" aria-hidden="true"></a>mu &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>,p)</span>
 <span id="cb4-14"><a href="#cb4-14" aria-hidden="true"></a>rho =<span class="st"> </span><span class="fl">0.5</span></span>
 <span id="cb4-15"><a href="#cb4-15" aria-hidden="true"></a>Cov &lt;-<span class="st"> </span>(<span class="kw">A1gen</span>(rho,p))<span class="op">/</span><span class="dv">2</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true"></a>Cov2&lt;-<span class="kw">matrix</span>(<span class="ot">NA</span>,<span class="dt">nrow=</span>p,<span class="dt">ncol=</span>p)</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>p){</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true"></a>    <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>p){</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true"></a>    Cov2[i,j]&lt;-<span class="fl">0.5</span><span class="op">^</span>(<span class="dv">1</span><span class="op">+</span><span class="kw">abs</span>(i<span class="op">-</span>j))</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true"></a>    } </span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true"></a>  }</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true"></a>beta &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>,p)</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true"></a>beta[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>] &lt;-<span class="fl">0.5</span><span class="op">*</span><span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)<span class="op">/</span><span class="dv">10</span></span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true"></a>X &lt;-<span class="st"> </span>MASS<span class="op">::</span><span class="kw">mvrnorm</span>(n,mu,Cov)</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true"></a>exp_val &lt;-<span class="st"> </span>X<span class="op">%*%</span>beta</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true"></a>prob &lt;-<span class="st"> </span><span class="kw">exp</span>(exp_val)<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span><span class="kw">exp</span>(exp_val))</span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true"></a>y &lt;-<span class="st"> </span><span class="kw">rbinom</span>(n,<span class="dv">1</span>,prob)</span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true"></a>loading &lt;-<span class="st"> </span>MASS<span class="op">::</span><span class="kw">mvrnorm</span>(<span class="dv">1</span>,mu,Cov2)</span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true"></a>Est =<span class="st"> </span>SIHR<span class="op">::</span><span class="kw">LF_logistic</span>(<span class="dt">X =</span> X, <span class="dt">y =</span> y, <span class="dt">loading =</span> loading, <span class="dt">intercept =</span> <span class="ot">TRUE</span>, <span class="dt">weight =</span> <span class="kw">rep</span>(<span class="dv">1</span>,n))</span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true"></a><span class="co">#&gt; [1] &quot;step is 3&quot;</span></span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true"></a><span class="co">### Point esitmator</span></span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true"></a></span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true"></a>Est<span class="op">$</span>prop.est</span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true"></a><span class="co">#&gt; [1] 0.8655747</span></span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true"></a></span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true"></a><span class="co">### Standard error </span></span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true"></a></span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true"></a>Est<span class="op">$</span>se</span>
-<span id="cb4-39"><a href="#cb4-39" aria-hidden="true"></a><span class="co">#&gt;           [,1]</span></span>
-<span id="cb4-40"><a href="#cb4-40" aria-hidden="true"></a><span class="co">#&gt; [1,] 0.6902853</span></span>
-<span id="cb4-41"><a href="#cb4-41" aria-hidden="true"></a></span>
-<span id="cb4-42"><a href="#cb4-42" aria-hidden="true"></a><span class="co">### Confidence interval</span></span>
-<span id="cb4-43"><a href="#cb4-43" aria-hidden="true"></a>Est<span class="op">$</span>CI</span>
-<span id="cb4-44"><a href="#cb4-44" aria-hidden="true"></a><span class="co">#&gt; [1] 0.02794017 0.99930723</span></span>
-<span id="cb4-45"><a href="#cb4-45" aria-hidden="true"></a></span>
-<span id="cb4-46"><a href="#cb4-46" aria-hidden="true"></a><span class="co">### test whether the case probability is below 0.5 or not (1 indicates that it is above 0.5)</span></span>
-<span id="cb4-47"><a href="#cb4-47" aria-hidden="true"></a></span>
-<span id="cb4-48"><a href="#cb4-48" aria-hidden="true"></a>Est<span class="op">$</span>decision</span>
-<span id="cb4-49"><a href="#cb4-49" aria-hidden="true"></a><span class="co">#&gt; [1] 0</span></span></code></pre></div>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true"></a>beta &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>,p)</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true"></a>beta[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>] &lt;-<span class="fl">0.5</span><span class="op">*</span><span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)<span class="op">/</span><span class="dv">10</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true"></a>X &lt;-<span class="st"> </span>MASS<span class="op">::</span><span class="kw">mvrnorm</span>(n,mu,Cov)</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true"></a>exp_val &lt;-<span class="st"> </span>X<span class="op">%*%</span>beta</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true"></a>prob &lt;-<span class="st"> </span><span class="kw">exp</span>(exp_val)<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span><span class="kw">exp</span>(exp_val))</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true"></a>y &lt;-<span class="st"> </span><span class="kw">rbinom</span>(n,<span class="dv">1</span>,prob)</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true"></a>loading &lt;-<span class="st"> </span>MASS<span class="op">::</span><span class="kw">mvrnorm</span>(<span class="dv">1</span>,mu,Cov)</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true"></a>Est =<span class="st"> </span>SIHR<span class="op">::</span><span class="kw">LF_logistic</span>(<span class="dt">X =</span> X, <span class="dt">y =</span> y, <span class="dt">loading =</span> loading, <span class="dt">weight =</span> <span class="kw">rep</span>(<span class="dv">1</span>,n), <span class="dt">trans =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true"></a><span class="co">#&gt; [1] &quot;step is 3&quot;</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true"></a><span class="co">### Point esitmator for the case probability</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true"></a></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true"></a>Est<span class="op">$</span>prop.est</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true"></a><span class="co">#&gt; [1] 0.07499952</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true"></a></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true"></a><span class="co">### Standard error </span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true"></a></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true"></a>Est<span class="op">$</span>se</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true"></a><span class="co">#&gt; [1] 0.1639868</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true"></a></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true"></a><span class="co">### Confidence interval for the case probability</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true"></a>Est<span class="op">$</span>CI</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true"></a><span class="co">#&gt; [1] 0.0007879788 0.8928918175</span></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true"></a></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true"></a><span class="co">### test whether the case probability is below 0.5 or not (1 indicates that it is above 0.5)</span></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true"></a></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true"></a>Est<span class="op">$</span>decision</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true"></a><span class="co">#&gt; [1] 0</span></span></code></pre></div>
 <p>Individualised Treatment Effect in high-dimensional logistic model</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a>A1gen &lt;-<span class="st"> </span><span class="cf">function</span>(rho,p){</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a>A1=<span class="kw">matrix</span>(<span class="dv">0</span>,p,p)</span>
@@ -512,28 +505,27 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb5-26"><a href="#cb5-26" aria-hidden="true"></a>y1 &lt;-<span class="st"> </span><span class="kw">rbinom</span>(n1,<span class="dv">1</span>,prob1)</span>
 <span id="cb5-27"><a href="#cb5-27" aria-hidden="true"></a>y2 &lt;-<span class="st"> </span><span class="kw">rbinom</span>(n2,<span class="dv">1</span>,prob2)</span>
 <span id="cb5-28"><a href="#cb5-28" aria-hidden="true"></a>loading &lt;-<span class="st"> </span>MASS<span class="op">::</span><span class="kw">mvrnorm</span>(<span class="dv">1</span>,mu,Cov)</span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true"></a>Est &lt;-<span class="st"> </span>SIHR<span class="op">::</span><span class="kw">ITE_Logistic</span>(<span class="dt">X1 =</span> X1, <span class="dt">y1 =</span> y1, <span class="dt">X2 =</span> X2, <span class="dt">y2 =</span> y2,<span class="dt">loading =</span> loading, <span class="dt">intercept =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true"></a>Est &lt;-<span class="st"> </span>SIHR<span class="op">::</span><span class="kw">ITE_Logistic</span>(<span class="dt">X1 =</span> X1, <span class="dt">y1 =</span> y1, <span class="dt">X2 =</span> X2, <span class="dt">y2 =</span> y2,<span class="dt">loading =</span> loading, <span class="dt">weight =</span> <span class="ot">NULL</span>, <span class="dt">trans =</span> <span class="ot">FALSE</span>)</span>
 <span id="cb5-30"><a href="#cb5-30" aria-hidden="true"></a><span class="co">#&gt; [1] &quot;step is 3&quot;</span></span>
 <span id="cb5-31"><a href="#cb5-31" aria-hidden="true"></a><span class="co">#&gt; [1] &quot;step is 3&quot;</span></span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true"></a><span class="co">### Point esitmator</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true"></a><span class="co">### Point esitmator for the difference between two linear combinations of the regression coefficients</span></span>
 <span id="cb5-33"><a href="#cb5-33" aria-hidden="true"></a></span>
 <span id="cb5-34"><a href="#cb5-34" aria-hidden="true"></a>Est<span class="op">$</span>prop.est</span>
-<span id="cb5-35"><a href="#cb5-35" aria-hidden="true"></a><span class="co">#&gt; [1] 0.6765119</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true"></a><span class="co">#&gt; [1] -2.243046</span></span>
 <span id="cb5-36"><a href="#cb5-36" aria-hidden="true"></a></span>
 <span id="cb5-37"><a href="#cb5-37" aria-hidden="true"></a><span class="co">### Standard error </span></span>
 <span id="cb5-38"><a href="#cb5-38" aria-hidden="true"></a></span>
 <span id="cb5-39"><a href="#cb5-39" aria-hidden="true"></a>Est<span class="op">$</span>se</span>
-<span id="cb5-40"><a href="#cb5-40" aria-hidden="true"></a><span class="co">#&gt;          [,1]</span></span>
-<span id="cb5-41"><a href="#cb5-41" aria-hidden="true"></a><span class="co">#&gt; [1,] 1.138107</span></span>
-<span id="cb5-42"><a href="#cb5-42" aria-hidden="true"></a></span>
-<span id="cb5-43"><a href="#cb5-43" aria-hidden="true"></a><span class="co">### Confidence interval</span></span>
-<span id="cb5-44"><a href="#cb5-44" aria-hidden="true"></a>Est<span class="op">$</span>CI</span>
-<span id="cb5-45"><a href="#cb5-45" aria-hidden="true"></a><span class="co">#&gt; [1] -1.554136  2.907160</span></span>
-<span id="cb5-46"><a href="#cb5-46" aria-hidden="true"></a></span>
-<span id="cb5-47"><a href="#cb5-47" aria-hidden="true"></a><span class="co">### test whether the first case probability is smaller than the second case probability or not (1 indicates that the first case probability is larger than the second case probability)</span></span>
-<span id="cb5-48"><a href="#cb5-48" aria-hidden="true"></a></span>
-<span id="cb5-49"><a href="#cb5-49" aria-hidden="true"></a>Est<span class="op">$</span>decision</span>
-<span id="cb5-50"><a href="#cb5-50" aria-hidden="true"></a><span class="co">#&gt; [1] 1</span></span></code></pre></div>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true"></a><span class="co">#&gt; [1] 5.398565</span></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true"></a></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true"></a><span class="co">### Confidence interval for the difference between the linear forms</span></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true"></a>Est<span class="op">$</span>CI</span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true"></a><span class="co">#&gt; [1] -12.824039   8.337946</span></span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true"></a></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true"></a><span class="co">### test whether the first case probability is smaller than the second case probability or not (1 indicates that the first case probability is larger than the second case probability)</span></span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true"></a></span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true"></a>Est<span class="op">$</span>decision</span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true"></a><span class="co">#&gt; [1] 0</span></span></code></pre></div>
 <p>Inference for quadratic functional in high-dimensional linear model</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a><span class="kw">library</span>(MASS)</span>
@@ -559,22 +551,22 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb6-22"><a href="#cb6-22" aria-hidden="true"></a><span class="co">## Inference for Quadratic Functional with Population Covariance Matrix in middle</span></span>
 <span id="cb6-23"><a href="#cb6-23" aria-hidden="true"></a></span>
 <span id="cb6-24"><a href="#cb6-24" aria-hidden="true"></a>Est =<span class="st"> </span>SIHR<span class="op">::</span><span class="kw">QF</span>(<span class="dt">X =</span> X, <span class="dt">y =</span> y, <span class="dt">G=</span>test.set)</span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true"></a><span class="co">#&gt; [1] &quot;step is 5&quot;</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true"></a><span class="co">#&gt; [1] &quot;step is 4&quot;</span></span>
 <span id="cb6-26"><a href="#cb6-26" aria-hidden="true"></a><span class="co">### Point esitmator</span></span>
 <span id="cb6-27"><a href="#cb6-27" aria-hidden="true"></a></span>
 <span id="cb6-28"><a href="#cb6-28" aria-hidden="true"></a>Est<span class="op">$</span>prop.est</span>
 <span id="cb6-29"><a href="#cb6-29" aria-hidden="true"></a><span class="co">#&gt;           [,1]</span></span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true"></a><span class="co">#&gt; [1,] 0.3945963</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true"></a><span class="co">#&gt; [1,] 0.2733242</span></span>
 <span id="cb6-31"><a href="#cb6-31" aria-hidden="true"></a></span>
 <span id="cb6-32"><a href="#cb6-32" aria-hidden="true"></a><span class="co">### Standard error </span></span>
 <span id="cb6-33"><a href="#cb6-33" aria-hidden="true"></a></span>
 <span id="cb6-34"><a href="#cb6-34" aria-hidden="true"></a>Est<span class="op">$</span>se</span>
-<span id="cb6-35"><a href="#cb6-35" aria-hidden="true"></a><span class="co">#&gt; [1] 0.1252518</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true"></a><span class="co">#&gt; [1] 0.1126538</span></span>
 <span id="cb6-36"><a href="#cb6-36" aria-hidden="true"></a></span>
 <span id="cb6-37"><a href="#cb6-37" aria-hidden="true"></a><span class="co">### Confidence interval</span></span>
 <span id="cb6-38"><a href="#cb6-38" aria-hidden="true"></a>Est<span class="op">$</span>CI</span>
-<span id="cb6-39"><a href="#cb6-39" aria-hidden="true"></a><span class="co">#&gt;           [,1]      [,2]</span></span>
-<span id="cb6-40"><a href="#cb6-40" aria-hidden="true"></a><span class="co">#&gt; [1,] 0.1491073 0.6400853</span></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true"></a><span class="co">#&gt;            [,1]      [,2]</span></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true"></a><span class="co">#&gt; [1,] 0.05252679 0.4941216</span></span>
 <span id="cb6-41"><a href="#cb6-41" aria-hidden="true"></a></span>
 <span id="cb6-42"><a href="#cb6-42" aria-hidden="true"></a><span class="co">### test whether the quadratic form is equal to zero or not (1 indicates that it is above zero)</span></span>
 <span id="cb6-43"><a href="#cb6-43" aria-hidden="true"></a></span>
@@ -589,17 +581,17 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb6-52"><a href="#cb6-52" aria-hidden="true"></a></span>
 <span id="cb6-53"><a href="#cb6-53" aria-hidden="true"></a>Est<span class="op">$</span>prop.est</span>
 <span id="cb6-54"><a href="#cb6-54" aria-hidden="true"></a><span class="co">#&gt;          [,1]</span></span>
-<span id="cb6-55"><a href="#cb6-55" aria-hidden="true"></a><span class="co">#&gt; [1,] 9.545806</span></span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true"></a><span class="co">#&gt; [1,] 7.814534</span></span>
 <span id="cb6-56"><a href="#cb6-56" aria-hidden="true"></a></span>
 <span id="cb6-57"><a href="#cb6-57" aria-hidden="true"></a><span class="co">### Standard error </span></span>
 <span id="cb6-58"><a href="#cb6-58" aria-hidden="true"></a></span>
 <span id="cb6-59"><a href="#cb6-59" aria-hidden="true"></a>Est<span class="op">$</span>se</span>
-<span id="cb6-60"><a href="#cb6-60" aria-hidden="true"></a><span class="co">#&gt; [1] 1.784806</span></span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true"></a><span class="co">#&gt; [1] 1.422743</span></span>
 <span id="cb6-61"><a href="#cb6-61" aria-hidden="true"></a></span>
 <span id="cb6-62"><a href="#cb6-62" aria-hidden="true"></a><span class="co">### Confidence interval</span></span>
 <span id="cb6-63"><a href="#cb6-63" aria-hidden="true"></a>Est<span class="op">$</span>CI</span>
-<span id="cb6-64"><a href="#cb6-64" aria-hidden="true"></a><span class="co">#&gt;         [,1]     [,2]</span></span>
-<span id="cb6-65"><a href="#cb6-65" aria-hidden="true"></a><span class="co">#&gt; [1,] 6.04765 13.04396</span></span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true"></a><span class="co">#&gt;          [,1]     [,2]</span></span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true"></a><span class="co">#&gt; [1,] 5.026008 10.60306</span></span>
 <span id="cb6-66"><a href="#cb6-66" aria-hidden="true"></a></span>
 <span id="cb6-67"><a href="#cb6-67" aria-hidden="true"></a><span class="co">### test whether the quadratic form is equal to zero or not (1 indicates that it is above zero)</span></span>
 <span id="cb6-68"><a href="#cb6-68" aria-hidden="true"></a></span>
@@ -614,17 +606,17 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb6-77"><a href="#cb6-77" aria-hidden="true"></a></span>
 <span id="cb6-78"><a href="#cb6-78" aria-hidden="true"></a>Est<span class="op">$</span>prop.est</span>
 <span id="cb6-79"><a href="#cb6-79" aria-hidden="true"></a><span class="co">#&gt;           [,1]</span></span>
-<span id="cb6-80"><a href="#cb6-80" aria-hidden="true"></a><span class="co">#&gt; [1,] 0.1234903</span></span>
+<span id="cb6-80"><a href="#cb6-80" aria-hidden="true"></a><span class="co">#&gt; [1,] 0.1481515</span></span>
 <span id="cb6-81"><a href="#cb6-81" aria-hidden="true"></a></span>
 <span id="cb6-82"><a href="#cb6-82" aria-hidden="true"></a><span class="co">### Standard error </span></span>
 <span id="cb6-83"><a href="#cb6-83" aria-hidden="true"></a></span>
 <span id="cb6-84"><a href="#cb6-84" aria-hidden="true"></a>Est<span class="op">$</span>se</span>
-<span id="cb6-85"><a href="#cb6-85" aria-hidden="true"></a><span class="co">#&gt; [1] 0.108395</span></span>
+<span id="cb6-85"><a href="#cb6-85" aria-hidden="true"></a><span class="co">#&gt; [1] 0.1005681</span></span>
 <span id="cb6-86"><a href="#cb6-86" aria-hidden="true"></a></span>
 <span id="cb6-87"><a href="#cb6-87" aria-hidden="true"></a><span class="co">### Confidence interval</span></span>
 <span id="cb6-88"><a href="#cb6-88" aria-hidden="true"></a>Est<span class="op">$</span>CI</span>
 <span id="cb6-89"><a href="#cb6-89" aria-hidden="true"></a><span class="co">#&gt;             [,1]      [,2]</span></span>
-<span id="cb6-90"><a href="#cb6-90" aria-hidden="true"></a><span class="co">#&gt; [1,] -0.08895992 0.3359405</span></span>
+<span id="cb6-90"><a href="#cb6-90" aria-hidden="true"></a><span class="co">#&gt; [1,] -0.04895829 0.3452614</span></span>
 <span id="cb6-91"><a href="#cb6-91" aria-hidden="true"></a></span>
 <span id="cb6-92"><a href="#cb6-92" aria-hidden="true"></a><span class="co">### test whether the quadratic form is equal to zero or not (1 indicates that it is above zero)</span></span>
 <span id="cb6-93"><a href="#cb6-93" aria-hidden="true"></a></span>
@@ -645,10 +637,10 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb7-12"><a href="#cb7-12" aria-hidden="true"></a><span class="co">### First 20 entries of the projection vector</span></span>
 <span id="cb7-13"><a href="#cb7-13" aria-hidden="true"></a></span>
 <span id="cb7-14"><a href="#cb7-14" aria-hidden="true"></a>Direction.est<span class="op">$</span>proj[<span class="dv">1</span><span class="op">:</span><span class="dv">20</span>]</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true"></a><span class="co">#&gt;  [1]  7.429576e-01 -3.059503e-21 -4.190773e-21 -4.770861e-21  6.100022e-22</span></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true"></a><span class="co">#&gt;  [6] -1.181585e-21  9.850994e-22  3.729781e-22 -4.005775e-21 -1.378177e-21</span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true"></a><span class="co">#&gt; [11] -2.065392e-21  5.895802e-22  1.712616e-22  3.845178e-21  6.178861e-22</span></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true"></a><span class="co">#&gt; [16] -1.551783e-21 -2.761226e-21  7.510425e-22 -3.409483e-03 -3.579224e-02</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true"></a><span class="co">#&gt;  [1]  6.788928e-01 -8.908950e-22 -1.133683e-21 -2.070364e-21  5.340971e-22</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true"></a><span class="co">#&gt;  [6] -9.618450e-22 -8.099739e-22 -1.177760e-21 -9.473657e-22 -6.589415e-22</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true"></a><span class="co">#&gt; [11] -1.047790e-21  1.744437e-21 -4.800295e-23  6.395174e-22  1.018520e-21</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true"></a><span class="co">#&gt; [16] -2.405071e-22 -1.797804e-21 -2.477080e-22 -3.779655e-22 -1.201321e-22</span></span>
 <span id="cb7-19"><a href="#cb7-19" aria-hidden="true"></a></span>
 <span id="cb7-20"><a href="#cb7-20" aria-hidden="true"></a><span class="co">## Finding Projection Direction using best step size</span></span>
 <span id="cb7-21"><a href="#cb7-21" aria-hidden="true"></a></span>
@@ -657,10 +649,10 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb7-24"><a href="#cb7-24" aria-hidden="true"></a><span class="co">### First 20 entries of the projection vector</span></span>
 <span id="cb7-25"><a href="#cb7-25" aria-hidden="true"></a></span>
 <span id="cb7-26"><a href="#cb7-26" aria-hidden="true"></a>Direction.est<span class="op">$</span>proj[<span class="dv">1</span><span class="op">:</span><span class="dv">20</span>]</span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true"></a><span class="co">#&gt;  [1]  7.429576e-01 -3.138260e-21 -4.305808e-21 -4.902417e-21  6.204822e-22</span></span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true"></a><span class="co">#&gt;  [6] -1.236075e-21  1.013855e-21  3.840692e-22 -4.074211e-21 -1.405409e-21</span></span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true"></a><span class="co">#&gt; [11] -2.093245e-21  6.165620e-22  1.455550e-22  3.913737e-21  6.097996e-22</span></span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true"></a><span class="co">#&gt; [16] -1.659028e-21 -2.836681e-21  7.550728e-22 -3.409483e-03 -3.579224e-02</span></span></code></pre></div>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true"></a><span class="co">#&gt;  [1]  6.788928e-01 -9.057306e-22 -1.160401e-21 -2.112998e-21  6.357443e-22</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true"></a><span class="co">#&gt;  [6] -1.024895e-21 -7.756040e-22 -1.151813e-21 -9.770494e-22 -6.559167e-22</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true"></a><span class="co">#&gt; [11] -1.045900e-21  1.783228e-21 -4.527613e-23  6.485887e-22  1.007628e-21</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true"></a><span class="co">#&gt; [16] -2.635153e-22 -1.784377e-21 -2.657435e-22 -4.326114e-22 -1.022247e-22</span></span></code></pre></div>
 <p>Finding projection direction in high dimensional logistic regression</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a>n =<span class="st"> </span><span class="dv">50</span></span>
@@ -691,22 +683,19 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb8-27"><a href="#cb8-27" aria-hidden="true"></a><span class="co">### First 20 entries of the projection vector</span></span>
 <span id="cb8-28"><a href="#cb8-28" aria-hidden="true"></a></span>
 <span id="cb8-29"><a href="#cb8-29" aria-hidden="true"></a>Direction.est<span class="op">$</span>proj[<span class="dv">1</span><span class="op">:</span><span class="dv">20</span>]</span>
-<span id="cb8-30"><a href="#cb8-30" aria-hidden="true"></a><span class="co">#&gt;  [1]  5.520523e+00 -1.373860e-05  1.730014e-05 -7.489411e-06  1.055153e-05</span></span>
-<span id="cb8-31"><a href="#cb8-31" aria-hidden="true"></a><span class="co">#&gt;  [6]  1.047502e-05  5.912767e-07 -7.990645e-01 -7.914544e-01 -4.757009e-01</span></span>
-<span id="cb8-32"><a href="#cb8-32" aria-hidden="true"></a><span class="co">#&gt; [11]  2.977187e-06 -7.098389e-06 -4.728934e-06 -8.271937e-06 -7.144019e-06</span></span>
-<span id="cb8-33"><a href="#cb8-33" aria-hidden="true"></a><span class="co">#&gt; [16] -4.743955e-06  1.571478e-06  5.289400e-06 -3.183250e-06 -1.188393e-05</span></span>
-<span id="cb8-34"><a href="#cb8-34" aria-hidden="true"></a></span>
-<span id="cb8-35"><a href="#cb8-35" aria-hidden="true"></a><span class="co">## Finding Projection Direction using best step size</span></span>
-<span id="cb8-36"><a href="#cb8-36" aria-hidden="true"></a></span>
-<span id="cb8-37"><a href="#cb8-37" aria-hidden="true"></a>Direction.est &lt;-<span class="st"> </span>SIHR<span class="op">::</span><span class="kw">Direction_searchtuning</span>(Xc,loading,<span class="dt">model =</span> <span class="st">&quot;logistic&quot;</span>,<span class="dt">weight =</span> <span class="dv">1</span><span class="op">/</span>f_prime, <span class="dt">deriv.vec =</span> f_prime)</span>
-<span id="cb8-38"><a href="#cb8-38" aria-hidden="true"></a></span>
-<span id="cb8-39"><a href="#cb8-39" aria-hidden="true"></a><span class="co">### First 20 entries of the projection vector</span></span>
-<span id="cb8-40"><a href="#cb8-40" aria-hidden="true"></a></span>
-<span id="cb8-41"><a href="#cb8-41" aria-hidden="true"></a>Direction.est<span class="op">$</span>proj[<span class="dv">1</span><span class="op">:</span><span class="dv">20</span>]</span>
-<span id="cb8-42"><a href="#cb8-42" aria-hidden="true"></a><span class="co">#&gt;  [1]  3.192585e-01  2.754499e-01  1.162607e-22  3.534972e-23  1.477396e-22</span></span>
-<span id="cb8-43"><a href="#cb8-43" aria-hidden="true"></a><span class="co">#&gt;  [6] -8.230033e-23 -2.580829e-22  2.306439e-22 -5.900701e-22 -4.067359e-22</span></span>
-<span id="cb8-44"><a href="#cb8-44" aria-hidden="true"></a><span class="co">#&gt; [11] -5.434030e-22 -2.230826e-22  2.784272e-23 -6.284910e-23 -1.301114e-22</span></span>
-<span id="cb8-45"><a href="#cb8-45" aria-hidden="true"></a><span class="co">#&gt; [16]  4.826527e-23 -3.041335e-22  7.024117e-23 -3.268171e-23  3.361171e-22</span></span></code></pre></div>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true"></a><span class="co">#&gt;  [1] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA</span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true"></a></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true"></a><span class="co">## Finding Projection Direction using best step size</span></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true"></a></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true"></a>Direction.est &lt;-<span class="st"> </span>SIHR<span class="op">::</span><span class="kw">Direction_searchtuning</span>(Xc,loading,<span class="dt">model =</span> <span class="st">&quot;logistic&quot;</span>,<span class="dt">weight =</span> <span class="dv">1</span><span class="op">/</span>f_prime, <span class="dt">deriv.vec =</span> f_prime)</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true"></a></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true"></a><span class="co">### First 20 entries of the projection vector</span></span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true"></a></span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true"></a>Direction.est<span class="op">$</span>proj[<span class="dv">1</span><span class="op">:</span><span class="dv">20</span>]</span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true"></a><span class="co">#&gt;  [1]  5.751253e-01  5.165156e-01  5.753448e-22 -3.044644e-22  5.249305e-22</span></span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true"></a><span class="co">#&gt;  [6] -2.712539e-22 -7.345754e-22  7.223679e-22 -1.260772e-21  5.622743e-23</span></span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true"></a><span class="co">#&gt; [11]  6.043352e-22 -8.950844e-22 -1.313301e-21 -9.395083e-22 -3.570698e-22</span></span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true"></a><span class="co">#&gt; [16] -5.152652e-22  1.461902e-21 -1.087989e-21 -3.627488e-22  7.359625e-22</span></span></code></pre></div>
 </div>
 </div>
 

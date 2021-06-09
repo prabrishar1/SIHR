@@ -107,21 +107,15 @@ p = 400
 mu <- rep(0,p)
 rho = 0.5
 Cov <- (A1gen(rho,p))/2
-Cov2<-matrix(NA,nrow=p,ncol=p)
-for(i in 1:p){
-    for(j in 1:p){
-    Cov2[i,j]<-0.5^(1+abs(i-j))
-    } 
-  }
 beta <- rep(0,p)
 beta[1:10] <-0.5*c(1:10)/10
 X <- MASS::mvrnorm(n,mu,Cov)
 exp_val <- X%*%beta
 prob <- exp(exp_val)/(1+exp(exp_val))
 y <- rbinom(n,1,prob)
-loading <- MASS::mvrnorm(1,mu,Cov2)
-Est = SIHR::LF_logistic(X = X, y = y, loading = loading, intercept = TRUE, weight = rep(1,n))
-### Point esitmator
+loading <- MASS::mvrnorm(1,mu,Cov)
+Est = SIHR::LF_logistic(X = X, y = y, loading = loading, weight = rep(1,n), trans = TRUE)
+### Point esitmator for the case probability
 
 Est$prop.est
 
@@ -129,7 +123,7 @@ Est$prop.est
 
 Est$se
 
-### Confidence interval
+### Confidence interval for the case probability
 Est$CI
 
 ### test whether the case probability is below 0.5 or not (1 indicates that it is above 0.5)
@@ -165,8 +159,8 @@ prob2 <- exp(exp_val2)/(1+exp(exp_val2))
 y1 <- rbinom(n1,1,prob1)
 y2 <- rbinom(n2,1,prob2)
 loading <- MASS::mvrnorm(1,mu,Cov)
-Est <- SIHR::ITE_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
-### Point esitmator
+Est <- SIHR::ITE_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, weight = NULL, trans = FALSE)
+### Point esitmator for the difference between two linear combinations of the regression coefficients
 
 Est$prop.est
 
@@ -174,7 +168,7 @@ Est$prop.est
 
 Est$se
 
-### Confidence interval
+### Confidence interval for the difference between the linear forms
 Est$CI
 
 ### test whether the first case probability is smaller than the second case probability or not (1 indicates that the first case probability is larger than the second case probability)

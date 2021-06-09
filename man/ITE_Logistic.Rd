@@ -11,6 +11,7 @@ ITE_Logistic(
   y2,
   loading,
   weight = NULL,
+  trans = TRUE,
   intercept = TRUE,
   center = FALSE,
   init.Lasso1 = NULL,
@@ -40,6 +41,8 @@ ITE_Logistic(
 
 \item{weight}{The weight vector used for bias correction, of length \eqn{n}; if set to \code{NULL}, the weight is
 the inverse of the first derivative of the logit function (default = \code{NULL})}
+
+\item{trans}{Should results for the case probability (\code{TRUE}) or the linear form (\code{FALSE}) be reported (default = \code{TRUE})}
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
 
@@ -76,16 +79,16 @@ such that the dual optimization problem for constructing the first (and the seco
 \item{verbose}{Should inetrmediate message(s) be printed (default = \code{TRUE})}
 }
 \value{
-\item{prop.est}{The bias-corrected estimator for the difference between case probabilities}
+\item{prop.est}{The bias-corrected estimator for the difference between case probabilities or linear forms}
 \item{se}{The standard error for the bias-corrected estimator}
-\item{CI}{The confidence interval for the difference between case probabilities}
+\item{CI}{The confidence interval for the difference between case probabilities or linear forms}
 \item{decision}{\code{decision}\eqn{=1} implies the first case probability is greater than the second one\eqn{\newline}
 \code{decision}\eqn{=0} implies the first case probability is less than the second one}
 }
 \description{
-Computes the bias corrected estimator of the difference between case probabilities with respect to two high dimensional logistic regression models
-and the corresponding standard error. It also constructs the confidence interval for the difference of case probabilities and test
-whether it is above zero or not. Here the case probability refers to the conditional probability of the binary response variable taking value 1 given the predictors are assigned to \code{loading}.
+Computes the bias corrected estimator of the difference between case probabilities or linear combinations of regression coefficients with respect to two high dimensional logistic regression models
+and the corresponding standard error. It also constructs the confidence interval for the difference of case probabilities or linear forms and test
+whether the difference is above zero or not. Here the case probability refers to the conditional probability of the binary response variable taking value 1 given the predictors are assigned to \code{loading}.
 }
 \examples{
 \donttest{
