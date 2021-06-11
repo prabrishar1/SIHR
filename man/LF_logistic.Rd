@@ -2,7 +2,7 @@
 % Please edit documentation in R/LF_logistic.R
 \name{LF_logistic}
 \alias{LF_logistic}
-\title{Inference for the case probability in high dimensional logistic regression}
+\title{Inference for the case probability or a linear combination of regression coefficients in high dimensional logistic regression.}
 \usage{
 LF_logistic(
   X,
@@ -11,7 +11,6 @@ LF_logistic(
   weight = NULL,
   trans = TRUE,
   intercept = TRUE,
-  center = FALSE,
   init.Lasso = NULL,
   lambda = NULL,
   mu = NULL,
@@ -31,11 +30,9 @@ LF_logistic(
 
 \item{weight}{The weight vector used for bias correction, of length \eqn{n}; if set to \code{NULL}, the weight is the inverse of the first derivative of the logit function (default = \code{NULL})}
 
-\item{trans}{Should results for the case probability (\code{TRUE}) or the linear form (\code{FALSE}) be reported (default = \code{TRUE})}
+\item{trans}{Should results for the case probability (\code{TRUE}) or the linear combination (\code{FALSE}) be reported (default = \code{TRUE})}
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
-
-\item{center}{Should the design matrix \code{X} and \code{loading} be centered (default = \code{FALSE})}
 
 \item{init.Lasso}{Initial LASSO estimator of the regression vector (default = \code{NULL})}
 
@@ -58,17 +55,17 @@ such that the dual optimization problem for constructing the projection directio
 \item{verbose}{Should inetrmediate message(s) be printed (default = \code{TRUE})}
 }
 \value{
-\item{prop.est}{The bias corrected estimator of the case probability or the linear form}
+\item{prop.est}{The bias corrected estimator of the case probability or the linear combination of regression coefficients}
 \item{se}{The standard error of the bias-corrected estimator}
-\item{CI}{The confidence interval for the case probability or the linear form}
+\item{CI}{The confidence interval for the case probability or the linear combination}
 \item{decision}{\code{decision}\eqn{=1} implies the case probability is above 0.5 \eqn{\newline}
 \code{decision}\eqn{=0} implies the case probability is not above 0.5}
 \item{proj}{The projection direction, of length \eqn{p}}
-\item{plug.in}{The plug-in LASSO estimator of the case probability or the linear form}
+\item{plug.in}{The plug-in LASSO estimator of the case probability or the linear combination}
 }
 \description{
-Computes the bias corrected estimator of the case probability or the linear combination of coefficients in the high dimensional logistic regression model and the corresponding standard error.
-It also constructs the confidence interval for the case probability or the linear form and test whether the case probability is above zero or not.
+Computes the bias corrected estimator of the case probability or the linear combination of regression coefficients in the high dimensional logistic regression model and the corresponding standard error.
+It also constructs the confidence interval for the case probability or the linear combination and tests whether the case probability is above \eqn{0.5} or not.
 Here case probability refers to the conditional probability of the binary response variable taking value 1 given the predictors take value \code{loading}.
 }
 \examples{
@@ -95,7 +92,7 @@ X <- MASS::mvrnorm(n,mu,Cov)
 exp_val <- X\%*\%beta+a0
 prob <- exp(exp_val)/(1+exp(exp_val))
 y <- rbinom(n,1,prob)
-Est <- LF_logistic(X = X, y = y, loading = loading)
+Est <- LF_logistic(X = X, y = y, loading = loading, trans = TRUE)
 }
 }
 \references{

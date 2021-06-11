@@ -13,7 +13,6 @@ ITE_Logistic(
   weight = NULL,
   trans = TRUE,
   intercept = TRUE,
-  center = FALSE,
   init.Lasso1 = NULL,
   init.Lasso2 = NULL,
   lambda1 = NULL,
@@ -42,11 +41,9 @@ ITE_Logistic(
 \item{weight}{The weight vector used for bias correction, of length \eqn{n}; if set to \code{NULL}, the weight is
 the inverse of the first derivative of the logit function (default = \code{NULL})}
 
-\item{trans}{Should results for the case probability (\code{TRUE}) or the linear form (\code{FALSE}) be reported (default = \code{TRUE})}
+\item{trans}{Should results for the case probability (\code{TRUE}) or the linear combination (\code{FALSE}) be reported (default = \code{TRUE})}
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
-
-\item{center}{Should the design matrices \code{X1}, \code{X2} and \code{loading} be centered (default = \code{FALSE})}
 
 \item{init.Lasso1}{Initial LASSO estimator of the first regression vector (default = \code{NULL})}
 
@@ -79,16 +76,16 @@ such that the dual optimization problem for constructing the first (and the seco
 \item{verbose}{Should inetrmediate message(s) be printed (default = \code{TRUE})}
 }
 \value{
-\item{prop.est}{The bias-corrected estimator for the difference between case probabilities or linear forms}
+\item{prop.est}{The bias-corrected estimator for the difference between case probabilities or the linear combination of the difference between two regression vectors}
 \item{se}{The standard error for the bias-corrected estimator}
-\item{CI}{The confidence interval for the difference between case probabilities or linear forms}
-\item{decision}{\code{decision}\eqn{=1} implies the first case probability is greater than the second one\eqn{\newline}
-\code{decision}\eqn{=0} implies the first case probability is less than the second one}
+\item{CI}{The confidence interval for the difference between case probabilities or the linear combination of the difference between two regression vectors}
+\item{decision}{\code{decision}\eqn{=1} implies the first case probability or linear combination is greater than the second one\eqn{\newline}
+\code{decision}\eqn{=0} implies the first case probability or linear combination is less than the second one}
 }
 \description{
-Computes the bias corrected estimator of the difference between case probabilities or linear combinations of regression coefficients with respect to two high dimensional logistic regression models
-and the corresponding standard error. It also constructs the confidence interval for the difference of case probabilities or linear forms and test
-whether the difference is above zero or not. Here the case probability refers to the conditional probability of the binary response variable taking value 1 given the predictors are assigned to \code{loading}.
+Computes the bias corrected estimator of the difference between case probabilities or a linear combination of the difference between two regression vectors with respect to two high dimensional logistic regression models
+and the corresponding standard error. It also constructs the confidence interval for the difference of case probabilities or a linear combination of the difference between the regression vectors and test
+whether it is above zero or not. Here the case probability refers to the conditional probability of the binary response variable taking value 1 given the predictors are assigned to \code{loading}.
 }
 \examples{
 \donttest{
@@ -120,6 +117,6 @@ prob2 <- exp(exp_val2)/(1+exp(exp_val2))
 y1 <- rbinom(n1,1,prob1)
 y2 <- rbinom(n2,1,prob2)
 loading <- c(1,rep(0,(p-1)))
-Est <- ITE_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
+Est <- ITE_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, trans = FALSE)
 }
 }

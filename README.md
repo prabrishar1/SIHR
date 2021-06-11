@@ -30,7 +30,6 @@ high-dimensional inference problems:
 Inference for linear functional in high-dimensional linear regression
 model
 
-
     library(MASS)
     n = 100
     p = 400
@@ -59,16 +58,16 @@ model
 
     Est$prop.est
     #>           [,1]
-    #> [1,] 0.1244559
+    #> [1,] -1.472131
 
     ### Standard error 
 
     Est$se
-    #> [1] 2.363089
+    #> [1] 2.453395
 
     ### Confidence interval
     Est$CI
-    #> [1] -4.507114  4.756026
+    #> [1] -6.280697  3.336434
 
     ### test whether the linear functional is below zero or not (1 indicates that it is above zero)
 
@@ -110,16 +109,16 @@ model
 
     Est$prop.est
     #>          [,1]
-    #> [1,] 3.788314
+    #> [1,] -1.80703
 
     ### Standard error 
 
     Est$se
-    #> [1] 2.653494
+    #> [1] 2.651258
 
     ### Confidence interval
     Est$CI
-    #> [1] -1.412439  8.989067
+    #> [1] -7.003400  3.389339
 
     ### test whether the linear ITE is below zero or not (1 indicates that it is above zero)
 
@@ -159,16 +158,16 @@ model
     ### Point esitmator
 
     Est$prop.est
-    #> [1] 0.9572705
+    #> [1] 0.9323544
 
     ### Standard error 
 
     Est$se
-    #> [1] 0.1312175
+    #> [1] 0.1662482
 
     ### Confidence interval
     Est$CI
-    #> [1] 0.03999069 0.99991701
+    #> [1] 0.07290314 0.99958623
 
     ### test whether the case probability is below 0.5 or not (1 indicates that it is above 0.5)
 
@@ -214,16 +213,16 @@ Individualised Treatment Effect in high-dimensional logistic model
     ### Point esitmator
 
     Est$prop.est
-    #> [1] 4.021285
+    #> [1] 3.916573
 
     ### Standard error 
 
     Est$se
-    #> [1] 26.39128
+    #> [1] 4.992152
 
     ### Confidence interval
     Est$CI
-    #> [1] -47.70467  55.74724
+    #> [1] -5.867865 13.701010
 
     ### test whether the first case probability is smaller than the second case probability or not (1 indicates that the first case probability is larger than the second case probability)
 
@@ -256,22 +255,22 @@ Inference for quadratic functional in high-dimensional linear model
     ## Inference for Quadratic Functional with Population Covariance Matrix in middle
 
     Est = SIHR::QF(X = X, y = y, G=test.set)
-    #> [1] "step is 5"
+    #> [1] "step is 4"
     ### Point esitmator
 
     Est$prop.est
     #>           [,1]
-    #> [1,] 0.4161004
+    #> [1,] 0.6190974
 
     ### Standard error 
 
     Est$se
-    #> [1] 0.1255411
+    #> [1] 0.1408278
 
     ### Confidence interval
     Est$CI
-    #>           [,1]      [,2]
-    #> [1,] 0.1700445 0.6621564
+    #>         [,1]      [,2]
+    #> [1,] 0.34308 0.8951149
 
     ### test whether the quadratic form is equal to zero or not (1 indicates that it is above zero)
 
@@ -286,17 +285,17 @@ Inference for quadratic functional in high-dimensional linear model
 
     Est$prop.est
     #>          [,1]
-    #> [1,] 7.201911
+    #> [1,] 13.95282
 
     ### Standard error 
 
     Est$se
-    #> [1] 1.7642
+    #> [1] 1.961894
 
     ### Confidence interval
     Est$CI
     #>          [,1]     [,2]
-    #> [1,] 3.744143 10.65968
+    #> [1,] 10.10758 17.79807
 
     ### test whether the quadratic form is equal to zero or not (1 indicates that it is above zero)
 
@@ -311,17 +310,17 @@ Inference for quadratic functional in high-dimensional linear model
 
     Est$prop.est
     #>           [,1]
-    #> [1,] 0.1956405
+    #> [1,] 0.3604669
 
     ### Standard error 
 
     Est$se
-    #> [1] 0.112315
+    #> [1] 0.1134924
 
     ### Confidence interval
     Est$CI
-    #>             [,1]      [,2]
-    #> [1,] -0.02449285 0.4157738
+    #>           [,1]      [,2]
+    #> [1,] 0.1380258 0.5829079
 
     ### test whether the quadratic form is equal to zero or not (1 indicates that it is above zero)
 
@@ -344,10 +343,10 @@ Finding projection direction in high dimensional linear regression
     ### First 20 entries of the projection vector
 
     Direction.est$proj[1:20]
-    #>  [1]  4.835190e-01 -3.306644e-23 -2.783299e-22  5.960151e-23 -2.684990e-22
-    #>  [6]  3.312855e-23 -2.130227e-22  6.633345e-22 -6.331568e-22 -3.688063e-22
-    #> [11]  5.069792e-22  1.186103e-22 -1.077724e-22 -3.313699e-24  2.654455e-22
-    #> [16] -5.888462e-22  1.544136e-22 -3.442721e-22  4.274563e-22 -8.024777e-22
+    #>  [1]  4.885238e-01 -1.307729e-22 -4.820590e-22 -4.730563e-22  4.099459e-22
+    #>  [6] -2.121057e-22  1.107240e-22  7.074245e-22 -3.298831e-22 -8.909411e-22
+    #> [11]  3.190602e-22 -5.479171e-22 -1.459483e-22  7.406262e-22  3.444757e-22
+    #> [16] -4.639920e-22  5.241628e-22  2.439795e-22 -6.310831e-23  3.374623e-22
 
     ## Finding Projection Direction using best step size
 
@@ -356,10 +355,10 @@ Finding projection direction in high dimensional linear regression
     ### First 20 entries of the projection vector
 
     Direction.est$proj[1:20]
-    #>  [1]  4.835190e-01 -5.285642e-23 -2.753639e-22  7.270882e-23 -2.123133e-22
-    #>  [6]  7.664165e-24 -2.075464e-22  6.750919e-22 -5.993390e-22 -3.928339e-22
-    #> [11]  5.409380e-22  1.246299e-22 -5.928579e-23 -2.771408e-23  2.744377e-22
-    #> [16] -5.807120e-22  1.539846e-22 -3.444516e-22  4.386639e-22 -8.056170e-22
+    #>  [1]  4.885238e-01 -1.091991e-22 -4.462848e-22 -4.090694e-22  3.788719e-22
+    #>  [6] -2.294092e-22  8.874104e-23  6.652129e-22 -2.989711e-22 -7.574834e-22
+    #> [11]  2.808130e-22 -4.763676e-22 -1.261935e-22  6.774587e-22  3.529624e-22
+    #> [16] -4.617330e-22  4.629765e-22  2.600671e-22 -5.794442e-23  3.159084e-22
 
 Finding projection direction in high dimensional logistic regression
 
@@ -392,10 +391,10 @@ Finding projection direction in high dimensional logistic regression
     ### First 20 entries of the projection vector
 
     Direction.est$proj[1:20]
-    #>  [1]  5.060577e-01  1.479554e-22  2.037718e-22 -2.609702e-22 -2.874620e-22
-    #>  [6]  1.048546e-22 -1.309181e-22  3.602635e-22  1.973670e-22  8.979607e-23
-    #> [11]  1.802463e-23  1.861761e-02  3.577473e-22  3.544377e-22  9.134559e-22
-    #> [16]  1.105506e-21 -7.830594e-22  2.947592e-22  3.776454e-22 -1.976461e-02
+    #>  [1]  6.511117e-01  4.123117e-22  7.241358e-22  7.602244e-22  2.299752e-23
+    #>  [6] -4.955183e-23 -8.210490e-22 -8.675124e-22 -5.280283e-22 -5.776955e-22
+    #> [11]  5.245559e-22  4.773688e-22 -6.437349e-22 -2.290232e-22 -3.748980e-22
+    #> [16]  8.661947e-23  1.961746e-22 -1.045093e-21 -4.234274e-23  9.773197e-23
 
     ## Finding Projection Direction using best step size
 
@@ -404,7 +403,7 @@ Finding projection direction in high dimensional logistic regression
     ### First 20 entries of the projection vector
 
     Direction.est$proj[1:20]
-    #>  [1]  5.334476e-01  3.397123e-01 -3.663615e-22 -3.266426e-22  5.739884e-22
-    #>  [6] -1.309792e-22  3.441060e-22  1.292248e-22 -2.992545e-22  1.827732e-22
-    #> [11] -3.934405e-22  1.044785e-22  1.891645e-22  2.598206e-22  3.144474e-22
-    #> [16] -3.944675e-02  4.560835e-22  2.524700e-23 -7.669567e-24 -1.625782e-22
+    #>  [1]  3.115592e-01  2.276609e-01 -1.185920e-23  5.761868e-23 -1.308618e-22
+    #>  [6] -6.694081e-23 -1.811012e-22 -1.467710e-22 -3.668997e-22 -9.046264e-23
+    #> [11] -1.098490e-22  6.921171e-23  2.515489e-22 -1.454993e-22 -3.883868e-22
+    #> [16] -7.668592e-23  9.941822e-23  1.244238e-22  3.409436e-24  2.887665e-23

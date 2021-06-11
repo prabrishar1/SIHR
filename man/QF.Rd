@@ -11,7 +11,6 @@ QF(
   Cov.weight = TRUE,
   A = NULL,
   intercept = TRUE,
-  center = FALSE,
   tau.vec = c(1),
   init.Lasso = NULL,
   lambda = NULL,
@@ -35,8 +34,6 @@ QF(
 \item{A}{The matrix A in the quadratic form, of dimension \eqn{p\times}\eqn{p} (default = \code{NULL})}
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
-
-\item{center}{Should the design matrix \code{X} be centered (default = \code{FALSE})}
 
 \item{tau.vec}{The vector of enlargement factors for asymptotic variance of the bias-corrected estimator to handle super-efficiency (default = \eqn{1})}
 

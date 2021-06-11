@@ -2,7 +2,7 @@
 title: "SIHR"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Put the title of your vignette here}
+  %\VignetteIndexEntry{SIHR}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -36,7 +36,6 @@ library(SIHR)
 Inference for linear functional in high-dimensional linear regression model
 
 ```{r Linear Functional Linear Model}
-
 library(MASS)
 n = 100
 p = 400

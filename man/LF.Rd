@@ -9,7 +9,6 @@ LF(
   y,
   loading,
   intercept = TRUE,
-  center = FALSE,
   init.Lasso = NULL,
   lambda = NULL,
   mu = NULL,
@@ -28,8 +27,6 @@ LF(
 \item{loading}{Loading, of length \eqn{p}}
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
-
-\item{center}{Should the design matrix \code{X} and \code{loading} be centered (default = \code{FALSE})}
 
 \item{init.Lasso}{Initial LASSO estimator of the regression vector (default = \code{NULL})}
 
@@ -55,15 +52,15 @@ is less than or equal to zero (default = 0.05)}
 \value{
 \item{prop.est}{The bias-corrected estimator for the linear combination of regression coefficients}
 \item{se}{The standard error of the bias-corrected estimator}
-\item{CI}{The confidence interval for the linear combination of regression coefficients}
-\item{decision}{\code{decision}\eqn{=1} implies the linear combination of regression coefficients is above zero \eqn{\newline}
-\code{decision}\eqn{=0} implies the linear combination of regression coefficients is not above zero}
+\item{CI}{The confidence interval for the linear combination}
+\item{decision}{\code{decision}\eqn{=1} implies the linear combination is above zero \eqn{\newline}
+\code{decision}\eqn{=0} implies the linear combination is not above zero}
 \item{proj}{The projection direction, of length \eqn{p}}
-\item{plug.in}{The plug-in LASSO estimator for the linear combination of regression coefficients}
+\item{plug.in}{The plug-in LASSO estimator for the linear combination}
 }
 \description{
 Computes the bias corrected estimator of the linear combination of regression coefficients and the corresponding standard error.
-It also constructs the confidence interval for the linear combination of regression coefficients and test whether it is above zero or not.
+It also constructs the confidence interval for the linear combination and tests whether it is above zero or not.
 }
 \examples{
 n <- 90

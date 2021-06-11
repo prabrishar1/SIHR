@@ -1,17 +1,16 @@
-#' Inference for the case probability in high dimensional logistic regression
+#' Inference for the case probability or a linear combination of regression coefficients in high dimensional logistic regression.
 #'
 #' @description
-#' Computes the bias corrected estimator of the case probability or the linear combination of coefficients in the high dimensional logistic regression model and the corresponding standard error.
-#' It also constructs the confidence interval for the case probability or the linear form and test whether the case probability is above zero or not.
+#' Computes the bias corrected estimator of the case probability or the linear combination of regression coefficients in the high dimensional logistic regression model and the corresponding standard error.
+#' It also constructs the confidence interval for the case probability or the linear combination and tests whether the case probability is above \eqn{0.5} or not.
 #' Here case probability refers to the conditional probability of the binary response variable taking value 1 given the predictors take value \code{loading}.
 #'
 #' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
 #' @param y Outcome vector, of length \eqn{n}
 #' @param loading Loading, of length \eqn{p}
 #' @param weight The weight vector used for bias correction, of length \eqn{n}; if set to \code{NULL}, the weight is the inverse of the first derivative of the logit function (default = \code{NULL})
-#' @param trans Should results for the case probability (\code{TRUE}) or the linear form (\code{FALSE}) be reported (default = \code{TRUE})
+#' @param trans Should results for the case probability (\code{TRUE}) or the linear combination (\code{FALSE}) be reported (default = \code{TRUE})
 #' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
-#' @param center Should the design matrix \code{X} and \code{loading} be centered (default = \code{FALSE})
 #' @param init.Lasso Initial LASSO estimator of the regression vector (default = \code{NULL})
 #' @param lambda The tuning parameter used in the construction of LASSO estimator of the regression vector (default = \code{NULL})
 #' @param mu The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})
@@ -26,13 +25,13 @@
 #' @param verbose Should inetrmediate message(s) be printed (default = \code{TRUE})
 #'
 #' @return
-#' \item{prop.est}{The bias corrected estimator of the case probability or the linear form}
+#' \item{prop.est}{The bias corrected estimator of the case probability or the linear combination of regression coefficients}
 #' \item{se}{The standard error of the bias-corrected estimator}
-#' \item{CI}{The confidence interval for the case probability or the linear form}
+#' \item{CI}{The confidence interval for the case probability or the linear combination}
 #' \item{decision}{\code{decision}\eqn{=1} implies the case probability is above 0.5 \eqn{\newline}
 #' \code{decision}\eqn{=0} implies the case probability is not above 0.5}
 #' \item{proj}{The projection direction, of length \eqn{p}}
-#' \item{plug.in}{The plug-in LASSO estimator of the case probability or the linear form}
+#' \item{plug.in}{The plug-in LASSO estimator of the case probability or the linear combination}
 #'
 #' @export
 #'
@@ -67,9 +66,9 @@
 #' exp_val <- X%*%beta+a0
 #' prob <- exp(exp_val)/(1+exp(exp_val))
 #' y <- rbinom(n,1,prob)
-#' Est <- LF_logistic(X = X, y = y, loading = loading)
+#' Est <- LF_logistic(X = X, y = y, loading = loading, trans = TRUE)
 #' }
-LF_logistic <- function(X, y, loading, weight = NULL, trans = TRUE, intercept = TRUE, center = FALSE, init.Lasso = NULL, lambda = NULL, mu = NULL, step = NULL, resol = 1.5, maxiter = 6, alpha = 0.05, verbose = TRUE){
+LF_logistic <- function(X, y, loading, weight = NULL, trans = TRUE, intercept = TRUE, init.Lasso = NULL, lambda = NULL, mu = NULL, step = NULL, resol = 1.5, maxiter = 6, alpha = 0.05, verbose = TRUE){
   xnew <- loading
   X <- as.matrix(X)
   p <- ncol(X)
@@ -85,15 +84,10 @@ LF_logistic <- function(X, y, loading, weight = NULL, trans = TRUE, intercept = 
     y <- as.vector(data[,1])
     p <- ncol(X)
     n <- nrow(X)
-    if(center == TRUE){
-      mean = colMeans(X)
-      M = matrix(rep(mean,nrow(X)),byrow = T, nrow = nrow(X), ncol = ncol(X))
-      X = X - M
-      xnew = xnew - mean
-    }else{
-      X = X
-      xnew = xnew
-    }
+    mean = colMeans(X)
+    M = matrix(rep(mean,nrow(X)),byrow = T, nrow = nrow(X), ncol = ncol(X))
+    X = X - M
+    xnew = xnew - mean
     col.norm <- 1/sqrt((1/n)*diag(t(X)%*%X)+0.0001)
     Xnor <- X %*% diag(col.norm)
     if(is.null(init.Lasso))
@@ -184,7 +178,6 @@ LF_logistic <- function(X, y, loading, weight = NULL, trans = TRUE, intercept = 
 
       correction <- sum((Xc%*%direction)*weighed.residual)/n
       debias.est <- lasso.plugin+correction*loading.norm
-      #rho_hat <- exp(loading%*%htheta)/(1+exp(loading%*%htheta))^2
       rho_hat <- exp(debias.est)/(1+exp(debias.est))^2
       se_linear <- sqrt(mean((Xc%*%direction)^2*weight^2*deriv.vec))*loading.norm/sqrt(n)
       CI_linear <- c(debias.est - qnorm(1-alpha/2)*se_linear, debias.est + qnorm(1-alpha/2)*se_linear)
@@ -219,9 +212,9 @@ LF_logistic <- function(X, y, loading, weight = NULL, trans = TRUE, intercept = 
 #' Inference for difference of case probabilities in high dimensional logistic regressions
 #'
 #' @description
-#' Computes the bias corrected estimator of the difference between case probabilities or linear combinations of regression coefficients with respect to two high dimensional logistic regression models
-#' and the corresponding standard error. It also constructs the confidence interval for the difference of case probabilities or linear forms and test
-#' whether the difference is above zero or not. Here the case probability refers to the conditional probability of the binary response variable taking value 1 given the predictors are assigned to \code{loading}.
+#' Computes the bias corrected estimator of the difference between case probabilities or a linear combination of the difference between two regression vectors with respect to two high dimensional logistic regression models
+#' and the corresponding standard error. It also constructs the confidence interval for the difference of case probabilities or a linear combination of the difference between the regression vectors and test
+#' whether it is above zero or not. Here the case probability refers to the conditional probability of the binary response variable taking value 1 given the predictors are assigned to \code{loading}.
 #'
 #' @param X1 Design matrix for the first sample, of dimension \eqn{n_1} x \eqn{p}
 #' @param y1 Outcome vector for the first sample, of length \eqn{n_1}
@@ -230,9 +223,8 @@ LF_logistic <- function(X, y, loading, weight = NULL, trans = TRUE, intercept = 
 #' @param loading Loading, of length \eqn{p}
 #' @param weight The weight vector used for bias correction, of length \eqn{n}; if set to \code{NULL}, the weight is
 #' the inverse of the first derivative of the logit function (default = \code{NULL})
-#' @param trans Should results for the case probability (\code{TRUE}) or the linear form (\code{FALSE}) be reported (default = \code{TRUE})
+#' @param trans Should results for the case probability (\code{TRUE}) or the linear combination (\code{FALSE}) be reported (default = \code{TRUE})
 #' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
-#' @param center Should the design matrices \code{X1}, \code{X2} and \code{loading} be centered (default = \code{FALSE})
 #' @param init.Lasso1 Initial LASSO estimator of the first regression vector (default = \code{NULL})
 #' @param init.Lasso2 Initial LASSO estimator of the second regression vector (default = \code{NULL})
 #' @param lambda1 The tuning parameter in the construction of LASSO estimator of the first regression vector (default = \code{NULL})
@@ -253,11 +245,11 @@ LF_logistic <- function(X, y, loading, weight = NULL, trans = TRUE, intercept = 
 #' @param verbose Should inetrmediate message(s) be printed (default = \code{TRUE})
 #'
 #' @return
-#' \item{prop.est}{The bias-corrected estimator for the difference between case probabilities or linear forms}
+#' \item{prop.est}{The bias-corrected estimator for the difference between case probabilities or the linear combination of the difference between two regression vectors}
 #' \item{se}{The standard error for the bias-corrected estimator}
-#' \item{CI}{The confidence interval for the difference between case probabilities or linear forms}
-#' \item{decision}{\code{decision}\eqn{=1} implies the first case probability is greater than the second one\eqn{\newline}
-#' \code{decision}\eqn{=0} implies the first case probability is less than the second one}
+#' \item{CI}{The confidence interval for the difference between case probabilities or the linear combination of the difference between two regression vectors}
+#' \item{decision}{\code{decision}\eqn{=1} implies the first case probability or linear combination is greater than the second one\eqn{\newline}
+#' \code{decision}\eqn{=0} implies the first case probability or linear combination is less than the second one}
 #' @export
 #'
 #' @importFrom Rdpack reprompt
@@ -293,17 +285,11 @@ LF_logistic <- function(X, y, loading, weight = NULL, trans = TRUE, intercept = 
 #' y1 <- rbinom(n1,1,prob1)
 #' y2 <- rbinom(n2,1,prob2)
 #' loading <- c(1,rep(0,(p-1)))
-#' Est <- ITE_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
+#' Est <- ITE_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, trans = FALSE)
 #' }
-ITE_Logistic <- function(X1, y1, X2, y2, loading, weight = NULL, trans = TRUE, intercept = TRUE, center = FALSE, init.Lasso1 = NULL, init.Lasso2 = NULL, lambda1 = NULL, lambda2 = NULL, mu1 = NULL, mu2 = NULL, step1 = NULL, step2 = NULL, resol = 1.5, maxiter = 6, alpha = 0.05, verbose = TRUE){
-  Est1 <- LF_logistic(X=X1, y=y1, loading = loading, weight = weight, trans = FALSE, intercept = intercept, center = center, init.Lasso = init.Lasso1, lambda = lambda1, mu = mu1, step = step1, resol = resol, maxiter = maxiter, alpha = alpha, verbose = verbose)
-  Est2 <- LF_logistic(X=X2, y=y2, loading = loading, weight = weight, trans = FALSE, intercept = intercept, center = center, init.Lasso = init.Lasso2, lambda = lambda2, mu = mu2, step = step2, resol = resol, maxiter = maxiter, alpha = alpha, verbose = verbose)
-#  logit <- function(z)
-#  {
-#    a <- log(z/(1-z))
-#    return(a)
-#  }
-#  debias.est <- logit(Est1$prop.est) - logit(Est2$prop.est)
+ITE_Logistic <- function(X1, y1, X2, y2, loading, weight = NULL, trans = TRUE, intercept = TRUE, init.Lasso1 = NULL, init.Lasso2 = NULL, lambda1 = NULL, lambda2 = NULL, mu1 = NULL, mu2 = NULL, step1 = NULL, step2 = NULL, resol = 1.5, maxiter = 6, alpha = 0.05, verbose = TRUE){
+  Est1 <- LF_logistic(X=X1, y=y1, loading = loading, weight = weight, trans = FALSE, intercept = intercept, init.Lasso = init.Lasso1, lambda = lambda1, mu = mu1, step = step1, resol = resol, maxiter = maxiter, alpha = alpha, verbose = verbose)
+  Est2 <- LF_logistic(X=X2, y=y2, loading = loading, weight = weight, trans = FALSE, intercept = intercept, init.Lasso = init.Lasso2, lambda = lambda2, mu = mu2, step = step2, resol = resol, maxiter = maxiter, alpha = alpha, verbose = verbose)
   if(trans == TRUE){
     prop.est = expo(Est1$prop.est) - expo(Est2$prop.est)
     se <- sqrt(((exp(Est1$prop.est)/(1+exp(Est1$prop.est))^2)*Est1$se)^2 + ((exp(Est2$prop.est)/(1+exp(Est2$prop.est))^2)*Est2$se)^2)
@@ -320,8 +306,10 @@ ITE_Logistic <- function(X1, y1, X2, y2, loading, weight = NULL, trans = TRUE, i
     if(CI[2] > 1){
       CI[2] = 1
     }
+  }else{
+    CI = CI
   }
-  if(prop.est - qnorm(1-alpha)*se > 0){
+  if((Est1$prop.est - Est2$prop.est) - qnorm(1-alpha)*sqrt((Est1$se)^2 + (Est2$se)^2) > 0){
     dec <- 1
   }else{
     dec <- 0

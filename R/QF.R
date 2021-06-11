@@ -22,7 +22,6 @@ var.Sigma <- function(Z, gamma) {
 #' @param Cov.weight Logical, if set to \code{TRUE} then \code{A} is the population covariance matrix, else need to provide an \code{A} (default = TRUE)
 #' @param A The matrix A in the quadratic form, of dimension \eqn{p\times}\eqn{p} (default = \code{NULL})
 #' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
-#' @param center Should the design matrix \code{X} be centered (default = \code{FALSE})
 #' @param tau.vec The vector of enlargement factors for asymptotic variance of the bias-corrected estimator to handle super-efficiency (default = \eqn{1})
 #' @param init.Lasso Initial LASSO estimator for the regression vector (default = \code{NULL})
 #' @param lambda The tuning parameter used in the construction of initial LASSO estimator of the regression vector if \code{init.Lasso = NULL} (default = \code{NULL})
@@ -79,7 +78,7 @@ var.Sigma <- function(Z, gamma) {
 #' @references
 #'
 #' \insertRef{grouplin}{SIHR}
-QF <- function(X, y, G, Cov.weight = TRUE, A = NULL, intercept = TRUE, center = FALSE, tau.vec = c(1), init.Lasso = NULL,
+QF <- function(X, y, G, Cov.weight = TRUE, A = NULL, intercept = TRUE, tau.vec = c(1), init.Lasso = NULL,
                lambda = NULL,  mu = NULL, step = NULL, resol = 1.5, maxiter = 6, alpha = 0.05, verbose = TRUE) {
   p <- ncol(X)
   n <- nrow(X)
@@ -99,13 +98,9 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = NULL, intercept = TRUE, center = 
       y <- as.vector(data[,1])
       p <- ncol(X)
       n <- nrow(X)
-      if(center == TRUE){
-        mean = colMeans(X)
-        M = matrix(rep(mean,nrow(X)),byrow = T, nrow = nrow(X), ncol = ncol(X))
-        X = X - M
-      }else{
-        X = X
-      }
+      mean = colMeans(X)
+      M = matrix(rep(mean,nrow(X)),byrow = T, nrow = nrow(X), ncol = ncol(X))
+      X = X - M
       col.norm <- 1 / sqrt((1 / n) * diagXtX(X, MARGIN = 2))
       Xnor <- X %*% diag(col.norm)
       if(is.null(init.Lasso)){

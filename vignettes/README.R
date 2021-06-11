@@ -115,7 +115,10 @@ prob <- exp(exp_val)/(1+exp(exp_val))
 y <- rbinom(n,1,prob)
 loading <- MASS::mvrnorm(1,mu,Cov)
 Est = SIHR::LF_logistic(X = X, y = y, loading = loading, weight = rep(1,n), trans = TRUE)
-### Point esitmator for the case probability
+
+### trans = TRUE implies target quantity is the case probability
+
+### Point esitmator
 
 Est$prop.est
 
@@ -123,7 +126,7 @@ Est$prop.est
 
 Est$se
 
-### Confidence interval for the case probability
+### Confidence interval
 Est$CI
 
 ### test whether the case probability is below 0.5 or not (1 indicates that it is above 0.5)
@@ -160,7 +163,10 @@ y1 <- rbinom(n1,1,prob1)
 y2 <- rbinom(n2,1,prob2)
 loading <- MASS::mvrnorm(1,mu,Cov)
 Est <- SIHR::ITE_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, weight = NULL, trans = FALSE)
-### Point esitmator for the difference between two linear combinations of the regression coefficients
+
+### trans = FALSE implies target quantity is the difference between two linear combinations of the regression coefficients
+
+### Point esitmator
 
 Est$prop.est
 
@@ -168,7 +174,7 @@ Est$prop.est
 
 Est$se
 
-### Confidence interval for the difference between the linear forms
+### Confidence interval
 Est$CI
 
 ### test whether the first case probability is smaller than the second case probability or not (1 indicates that the first case probability is larger than the second case probability)

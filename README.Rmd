@@ -39,7 +39,6 @@ library(SIHR)
 Inference for linear functional in high-dimensional linear regression model
 
 ```{r Linear Functional Linear Model}
-
 library(MASS)
 n = 100
 p = 400

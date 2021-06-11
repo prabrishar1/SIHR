@@ -11,7 +11,6 @@ ITE(
   y2,
   loading,
   intercept = TRUE,
-  center = FALSE,
   init.Lasso1 = NULL,
   init.Lasso2 = NULL,
   lambda1 = NULL,
@@ -38,8 +37,6 @@ ITE(
 \item{loading}{Loading, of length \eqn{p}}
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
-
-\item{center}{Should the design matrices \code{X1}, \code{X2} and \code{loading} be centered (default = \code{FALSE})}
 
 \item{init.Lasso1}{Initial LASSO estimator of the first regression vector (default = \code{NULL})}
 
@@ -80,7 +77,7 @@ such that the dual optimization problem for constructing the first (and the seco
 }
 \description{
 Computes the bias corrected estimator of the Individualized Treatment Effect (ITE)
-and the corresponding standard error. It also constructs the confidence interval for ITE and test
+and the corresponding standard error. It also constructs the confidence interval for ITE and tests
 whether ITE is above zero or not. Here ITE is defined as a linear combination of the difference between two regression vectors.
 }
 \examples{
