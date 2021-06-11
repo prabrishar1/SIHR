@@ -10,7 +10,6 @@ knitr::opts_chunk$set(
 library(SIHR)
 
 ## ----Linear Functional Linear Model-------------------------------------------
-
 library(MASS)
 n = 100
 p = 400

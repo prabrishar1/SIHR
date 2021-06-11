@@ -79,8 +79,8 @@ A1gen <- function(rho,p){
  }
  A1
 }
-n <- 90
-p <- 200
+n <- 100
+p <- 400
 mu <- rep(0,p)
 rho <- 0.5
 Cov <- (A1gen(rho,p))/2
