@@ -11,6 +11,7 @@ LF_logistic(
   weight = NULL,
   trans = TRUE,
   intercept = TRUE,
+  intercept.loading = TRUE,
   init.Lasso = NULL,
   lambda = NULL,
   mu = NULL,
@@ -33,6 +34,8 @@ LF_logistic(
 \item{trans}{Should results for the case probability (\code{TRUE}) or the linear combination (\code{FALSE}) be reported (default = \code{TRUE})}
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
+
+\item{intercept.loading}{Should intercept be included for the \code{loading} (default = \code{TRUE})}
 
 \item{init.Lasso}{Initial LASSO estimator of the regression vector (default = \code{NULL})}
 

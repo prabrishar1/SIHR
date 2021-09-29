@@ -220,6 +220,78 @@ Est$decision
 
 ```
 
+Inference for single regression coefficient in high-dimensional binary generalized linear model
+
+```{r Generalized Linear Model}
+
+sp = 20
+n = 400
+p = 800
+
+sig1 = toeplitz(seq(0.6, 0,length.out = p/10))
+Sig = Matrix::bdiag(rep(list(sig1),10))+diag(rep(0.4,p))
+X = MASS::mvrnorm(n, mu=rep(0,p), Sigma=Sig)
+b = rep(0,p)
+b[1:sp] = rep(c(0.4,-0.4), sp/2)
+
+## Inference for single regression coefficient in high-dimensional binary probit model
+f = function(x){
+  pnorm(x)
+}
+prob = f(X %*% b)
+y = rep(1,n)
+while(sum(y)/n<0.02 | sum(y)/n>0.98 ){
+  for(gen.y in 1:n){
+  y[gen.y] = rbinom(1,1,prob[gen.y])
+ }
+}
+Est = SIHR::GLM_binary(X = X, y = y, loading = 1, model = "probit", intercept = FALSE)
+
+### Point esitmator
+
+Est$prop.est
+
+### Standard error 
+
+Est$se
+
+### Confidence interval
+Est$CI
+
+### test whether the first regression coefficient is equal to zero or not (1 indicates that it is significantly different from zero)
+
+Est$decision
+
+## Inference for single regression coefficient in high-dimensional binary inverse t_1 model
+f = function(x){
+  pt(x,1)
+}
+prob = f(X %*% b)
+y = rep(1,n)
+while(sum(y)/n<0.02 | sum(y)/n>0.98 ){
+  for(gen.y in 1:n){
+  y[gen.y] = rbinom(1,1,prob[gen.y])
+ }
+}
+Est = SIHR::GLM_binary(X = X, y = y, loading = 2, model = "inverse t1", intercept = FALSE, lambda=0.1*sqrt(log(p)/n))
+
+### Point esitmator
+
+Est$prop.est
+
+### Standard error 
+
+Est$se
+
+### Confidence interval
+
+Est$CI
+
+### test whether the second regression coefficient is equal to zero or not (1 indicates that it is significantly different from zero)
+
+Est$decision
+```
+
 Inference for quadratic functional in high-dimensional linear model
 
 ```{r Group Linear Model}
@@ -264,7 +336,7 @@ Est$decision
 
 ## Inference for Quadratic Functional with known matrix A in middle
 
-Est = SIHR::QF(X = X, y = y, G=test.set, Cov.weight = FALSE,A = diag(1:400,400))
+Est = SIHR::QF(X = X, y = y, G=test.set, Cov.weight = FALSE,A = diag(1:length(test.set),length(test.set)))
 ### Point esitmator
 
 Est$prop.est
@@ -282,7 +354,7 @@ Est$decision
 
 ## Inference for square norm of regression vector
 
-Est = SIHR::QF(X = X, y = y, G=test.set, Cov.weight = FALSE, A = diag(ncol(X)))
+Est = SIHR::QF(X = X, y = y, G=test.set, Cov.weight = FALSE, A = diag(length(test.set)))
 ### Point esitmator
 
 Est$prop.est

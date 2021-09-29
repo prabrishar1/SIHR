@@ -50,7 +50,7 @@ Lasso_log <- function(X, y, lambda = NULL, intercept = TRUE) {
   }
 }
 
-Direction_fixedtuning_logistic <- function(X, loading, mu = NULL, weight, deriv.vec){
+Direction_fixedtuning_glm <- function(X, loading, mu = NULL, weight, deriv.vec){
   pp <- ncol(X)
   n <- nrow(X)
   if(is.null(mu)){
@@ -77,7 +77,7 @@ Direction_fixedtuning_logistic <- function(X, loading, mu = NULL, weight, deriv.
   return(returnList)
 }
 
-Direction_searchtuning_logistic <- function(X,loading,mu=NULL,weight,deriv.vec,resol=1.5, maxiter=6){
+Direction_searchtuning_glm <- function(X,loading,mu=NULL,weight,deriv.vec,resol=1.5, maxiter=6){
   pp <- ncol(X)
   n <- nrow(X)
   tryno <- 1

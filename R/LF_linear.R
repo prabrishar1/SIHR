@@ -8,6 +8,7 @@
 #' @param y Outcome vector, of length \eqn{n}
 #' @param loading Loading, of length \eqn{p}
 #' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
+#' @param intercept.loading Should intercept be included for the \code{loading} (default = \code{TRUE})
 #' @param init.Lasso Initial LASSO estimator of the regression vector (default = \code{NULL})
 #' @param lambda The tuning parameter in the construction of LASSO estimator of the regression vector (default = \code{NULL})
 #' @param mu The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})
@@ -63,7 +64,7 @@
 #' y <- X%*%beta + rnorm(n)
 #' loading <- c(1,rep(0,(p-1)))
 #' Est <- LF(X = X, y = y, loading = loading, intercept = TRUE)
-LF <- function(X, y,loading, intercept = TRUE, init.Lasso = NULL, lambda = NULL, mu = NULL, step = NULL, resol = 1.5, maxiter = 6, alpha = 0.05, verbose = TRUE){
+LF <- function(X, y,loading, intercept = TRUE, intercept.loading = TRUE, init.Lasso = NULL, lambda = NULL, mu = NULL, step = NULL, resol = 1.5, maxiter = 6, alpha = 0.05, verbose = TRUE){
   xnew <- loading
   p <- ncol(X)
   n <- nrow(X)
@@ -81,7 +82,9 @@ LF <- function(X, y,loading, intercept = TRUE, init.Lasso = NULL, lambda = NULL,
     mean = colMeans(X)
     M = matrix(rep(mean,nrow(X)),byrow = T, nrow = nrow(X), ncol = ncol(X))
     X = X - M
-    xnew = xnew - mean
+    if(intercept.loading == TRUE){
+      xnew = xnew - mean
+    }
     col.norm <- 1 / sqrt((1 / n) * diag(t(X) %*% X))
     Xnor <- X %*% diag(col.norm)
     if(is.null(init.Lasso)){
@@ -106,9 +109,17 @@ LF <- function(X, y,loading, intercept = TRUE, init.Lasso = NULL, lambda = NULL,
 
     if(intercept == TRUE){
       loading <- rep(0,pp)
-      loading[1] <- 1
+      if(intercept.loading == TRUE){
+        loading[1] <- 1
+      }
+      if(intercept.loading == FALSE){
+        loading[1] <- 0
+      }
       loading[-1] <- xnew
     } else {
+      if(intercept.loading == TRUE){
+        print(paste("Setting intercept = FALSE and intercept.loading = FALSE"))
+      }
       loading <- xnew
     }
     loading.norm <- sqrt(sum(loading^2))
@@ -133,7 +144,7 @@ LF <- function(X, y,loading, intercept = TRUE, init.Lasso = NULL, lambda = NULL,
       }
       sigma.hat <- (1/n)*(t(Xc)%*%Xc)
       if ((n >= 6*p) && (tmp >= 1e-4)){
-        direction <- solve(sigma.hat)%*%loading
+        direction <- solve(sigma.hat)%*%loading/loading.norm
       } else {
         if(is.null(step)){
           step.vec <- rep(NA,3)
@@ -188,6 +199,7 @@ LF <- function(X, y,loading, intercept = TRUE, init.Lasso = NULL, lambda = NULL,
 #' @param y2 Outcome vector for the second sample, of length \eqn{n_2}
 #' @param loading Loading, of length \eqn{p}
 #' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
+#' @param intercept.loading Should intercept be included for the \code{loading} (default = \code{TRUE})
 #' @param init.Lasso1 Initial LASSO estimator of the first regression vector (default = \code{NULL})
 #' @param init.Lasso2 Initial LASSO estimator of the second regression vector (default = \code{NULL})
 #' @param lambda1 The tuning parameter in the construction of LASSO estimator of the first regression vector (default = \code{NULL})
@@ -241,9 +253,9 @@ LF <- function(X, y,loading, intercept = TRUE, init.Lasso = NULL, lambda = NULL,
 #' loading <- c(1,rep(0, (p-1)))
 #' Est <- ITE(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
 #' }
-ITE <- function(X1, y1, X2, y2, loading, intercept = TRUE, init.Lasso1 = NULL, init.Lasso2 = NULL, lambda1 = NULL, lambda2 = NULL, mu1 = NULL, mu2 = NULL, step1 = NULL, step2 = NULL, resol = 1.5, maxiter = 6, alpha = 0.05, verbose = TRUE){
-  Est1 <- SIHR::LF(X1, y1, loading, intercept = intercept, init.Lasso = init.Lasso1, lambda = lambda1, mu = mu1, step = step1, resol = resol, maxiter = maxiter, alpha = alpha, verbose = verbose)
-  Est2 <- SIHR::LF(X2, y2, loading, intercept = intercept, init.Lasso = init.Lasso2, lambda = lambda2, mu = mu2, step = step2, resol = resol, maxiter = maxiter, alpha = alpha, verbose = verbose)
+ITE <- function(X1, y1, X2, y2, loading, intercept = TRUE, intercept.loading = TRUE, init.Lasso1 = NULL, init.Lasso2 = NULL, lambda1 = NULL, lambda2 = NULL, mu1 = NULL, mu2 = NULL, step1 = NULL, step2 = NULL, resol = 1.5, maxiter = 6, alpha = 0.05, verbose = TRUE){
+  Est1 <- SIHR::LF(X1, y1, loading, intercept = intercept, intercept.loading = intercept.loading, init.Lasso = init.Lasso1, lambda = lambda1, mu = mu1, step = step1, resol = resol, maxiter = maxiter, alpha = alpha, verbose = verbose)
+  Est2 <- SIHR::LF(X2, y2, loading, intercept = intercept, intercept.loading = intercept.loading, init.Lasso = init.Lasso2, lambda = lambda2, mu = mu2, step = step2, resol = resol, maxiter = maxiter, alpha = alpha, verbose = verbose)
   debias.est<-Est1$prop.est - Est2$prop.est
   se <- sqrt((Est1$se)^2 + (Est2$se)^2)
   CI <- c(debias.est - qnorm(1-alpha/2)*se, debias.est + qnorm(1-alpha/2)*se)

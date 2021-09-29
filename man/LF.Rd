@@ -9,6 +9,7 @@ LF(
   y,
   loading,
   intercept = TRUE,
+  intercept.loading = TRUE,
   init.Lasso = NULL,
   lambda = NULL,
   mu = NULL,
@@ -27,6 +28,8 @@ LF(
 \item{loading}{Loading, of length \eqn{p}}
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
+
+\item{intercept.loading}{Should intercept be included for the \code{loading} (default = \code{TRUE})}
 
 \item{init.Lasso}{Initial LASSO estimator of the regression vector (default = \code{NULL})}
 

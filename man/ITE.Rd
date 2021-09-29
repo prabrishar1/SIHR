@@ -11,6 +11,7 @@ ITE(
   y2,
   loading,
   intercept = TRUE,
+  intercept.loading = TRUE,
   init.Lasso1 = NULL,
   init.Lasso2 = NULL,
   lambda1 = NULL,
@@ -37,6 +38,8 @@ ITE(
 \item{loading}{Loading, of length \eqn{p}}
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
+
+\item{intercept.loading}{Should intercept be included for the \code{loading} (default = \code{TRUE})}
 
 \item{init.Lasso1}{Initial LASSO estimator of the first regression vector (default = \code{NULL})}
 

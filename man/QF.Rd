@@ -10,7 +10,6 @@ QF(
   G,
   Cov.weight = TRUE,
   A = NULL,
-  intercept = TRUE,
   tau.vec = c(1),
   init.Lasso = NULL,
   lambda = NULL,
@@ -29,11 +28,9 @@ QF(
 
 \item{G}{The set of indices, \code{G} in the quadratic form}
 
-\item{Cov.weight}{Logical, if set to \code{TRUE} then \code{A} is the population covariance matrix, else need to provide an \code{A} (default = TRUE)}
+\item{Cov.weight}{Logical, if set to \code{TRUE} then \code{A } is the \eqn{|G|\times}\eqn{|G|} submatrix of the population covariance matrix, else need to provide an \code{A} (default = TRUE)}
 
-\item{A}{The matrix A in the quadratic form, of dimension \eqn{p\times}\eqn{p} (default = \code{NULL})}
-
-\item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
+\item{A}{The matrix A in the quadratic form, of dimension \eqn{|G|\times}\eqn{|G|} (default = \code{NULL})}
 
 \item{tau.vec}{The vector of enlargement factors for asymptotic variance of the bias-corrected estimator to handle super-efficiency (default = \eqn{1})}
 

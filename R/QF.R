@@ -19,9 +19,8 @@ var.Sigma <- function(Z, gamma) {
 #' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
 #' @param y Outcome vector, of length \eqn{n}
 #' @param G The set of indices, \code{G} in the quadratic form
-#' @param Cov.weight Logical, if set to \code{TRUE} then \code{A} is the population covariance matrix, else need to provide an \code{A} (default = TRUE)
-#' @param A The matrix A in the quadratic form, of dimension \eqn{p\times}\eqn{p} (default = \code{NULL})
-#' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
+#' @param Cov.weight Logical, if set to \code{TRUE} then \code{A } is the \eqn{|G|\times}\eqn{|G|} submatrix of the population covariance matrix, else need to provide an \code{A} (default = TRUE)
+#' @param A The matrix A in the quadratic form, of dimension \eqn{|G|\times}\eqn{|G|} (default = \code{NULL})
 #' @param tau.vec The vector of enlargement factors for asymptotic variance of the bias-corrected estimator to handle super-efficiency (default = \eqn{1})
 #' @param init.Lasso Initial LASSO estimator for the regression vector (default = \code{NULL})
 #' @param lambda The tuning parameter used in the construction of initial LASSO estimator of the regression vector if \code{init.Lasso = NULL} (default = \code{NULL})
@@ -78,7 +77,7 @@ var.Sigma <- function(Z, gamma) {
 #' @references
 #'
 #' \insertRef{grouplin}{SIHR}
-QF <- function(X, y, G, Cov.weight = TRUE, A = NULL, intercept = TRUE, tau.vec = c(1), init.Lasso = NULL,
+QF <- function(X, y, G, Cov.weight = TRUE, A = NULL, tau.vec = c(1), init.Lasso = NULL,
                lambda = NULL,  mu = NULL, step = NULL, resol = 1.5, maxiter = 6, alpha = 0.05, verbose = TRUE) {
   p <- ncol(X)
   n <- nrow(X)
@@ -104,48 +103,25 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = NULL, intercept = TRUE, tau.vec =
       col.norm <- 1 / sqrt((1 / n) * diagXtX(X, MARGIN = 2))
       Xnor <- X %*% diag(col.norm)
       if(is.null(init.Lasso)){
-        init.Lasso<- Initialization.step(X,y,lambda,intercept)
+        init.Lasso<- Initialization.step(X,y,lambda,intercept = FALSE)
         htheta <- init.Lasso$lasso.est
       } else {
         htheta <- init.Lasso
       }
 
-      if (intercept == TRUE) {
-        Xb <- cbind(rep(1,n),Xnor)
-        Xc <- cbind(rep(1, n), X)
-        pp <- (p + 1)
-        G <- G + 1
-      } else {
-        Xb <- Xnor
-        Xc <- X
-        pp <- p
-      }
+      Xb <- Xnor
+      Xc <- X
+      pp <- p
+
       spar.est <- sum(abs(htheta) > 0.001)
       sd.est <- sqrt(sum((y - Xb %*% htheta)^2) / max(0.9*n, n - spar.est))
 
-      count=0
-      for(i in 1:ncol(X)){
-        if(length(unique(X[,i])) == 1){
-          count = count + 1
-        }
-      }
-      if(count!=0 && intercept==TRUE)
-      {
-        stop("Data is singular")
-      } else {
-        if(Cov.weight == FALSE) {
-          if(intercept==TRUE) {
-            Ac <- rbind(c(1,rep(0,ncol(A))),cbind(rep(0,nrow(A)),A))
-          } else {
-            Ac <- A
-          }
-        }
-        if (p == length(G)) {
+      if (p == length(G)) {
           if(Cov.weight==TRUE)
           {
             lasso.plugin <- mean((Xc %*% htheta)^2)
           } else {
-            lasso.plugin <- t(htheta)%*%Ac%*%htheta
+            lasso.plugin <- t(htheta)%*%A%*%htheta
           }
           direction <- htheta
           loading.norm <- 1
@@ -161,8 +137,8 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = NULL, intercept = TRUE, tau.vec =
             loading[G] <- (sigma.hat %*% test.vec)[G]
             lasso.plugin <- mean((Xc %*% test.vec)^2)
           } else {
-            loading[G] <- (Ac %*% test.vec)[G]
-            lasso.plugin <- t(test.vec)%*%Ac%*%test.vec
+            loading[G] <- (A %*% test.vec[G]) # whether you include intercept or not the loading is computed with A
+            lasso.plugin <- t(test.vec[G])%*%A%*%test.vec[G]
           }
           loading.norm <- sqrt(sum(loading^2))
 
@@ -177,7 +153,7 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = NULL, intercept = TRUE, tau.vec =
             }
 
             if ((n >= 6 * p) && (tmp >= 1e-4)) {
-              direction <- solve(sigma.hat) %*% loading
+              direction <- solve(sigma.hat) %*% loading/loading.norm
             } else {
               if (is.null(step)) {
                 step.vec <- rep(NA, 3)
@@ -239,7 +215,6 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = NULL, intercept = TRUE, tau.vec =
                            "proj"=direction,
                            "plug.in" = lasso.plugin)
         return(returnList)
-      }
     }
   }
 }
