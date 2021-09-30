@@ -7,7 +7,7 @@
 GLM_binary(
   X,
   y,
-  loading,
+  index,
   model = "probit",
   intercept = TRUE,
   init.Lasso = NULL,
@@ -26,9 +26,9 @@ GLM_binary(
 
 \item{y}{Outcome vector, of length \eqn{n}}
 
-\item{loading}{Index (less than or equal to \eqn{p}) indicating the concerned regression coefficient. For example, \code{loading = 1} means we carry out inference for the first regression coefficient under the high-dimensional probit model.}
+\item{index}{An integer between \eqn{1} and \eqn{p} indicating the index of the targeted regression coefficient. For example, \code{index} \eqn{= 1} means that the first regression coefficient is our inference target}
 
-\item{model}{The high dimensional generalised linear regression model, either \code{logistic1} or \code{logistic2} or \code{probit} or \code{inverse t1} (default = \code{probit}) ; \code{model}\eqn{=}\code{"logistic1"} uses \code{SIHR::LF_logistic} with \code{weight}\eqn{=}\code{NULL}}
+\item{model}{The high dimensional generalized linear regression model, either \code{logistic1} or \code{logistic2} or \code{probit} or \code{inverse t1} (default = \code{logistic1}) ; \code{model}\eqn{=}\code{"logistic1"} uses \code{SIHR::LF_logistic} with \code{weight}\eqn{=}\code{NULL}; \code{model}\eqn{=}\code{"logistic2"} uses \code{SIHR::LF_logistic} with \code{weight}\eqn{=}\code{rep(1,n)}}
 
 \item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
 
@@ -48,7 +48,7 @@ such that the dual optimization problem for constructing the projection directio
 \item{maxiter}{Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 such that the dual optimization problem for constructing the projection direction converges (default = 6)}
 
-\item{b0}{The number indicating the true value of the concerned regression coefficient}
+\item{b0}{The null value to be tested against}
 
 \item{alpha}{Level of significance to test the null hypothesis that the concerned regression coefficient is equal to \code{b0} (default = 0.05)}
 
@@ -64,8 +64,8 @@ such that the dual optimization problem for constructing the projection directio
 \item{plug.in}{The LASSO estimator of the concerned regression coefficient}
 }
 \description{
-Computes the bias corrected estimator of a single regression coefficinet in the high dimensional probit regression model and the corresponding standard error.
-It also constructs the confidence interval for the concerned regression coefficient and tests whether it is equal to \code{b0} or not. Here \eqn{b0} is a believed to be the true value of the concerned regression coefficient.
+Computes the bias corrected estimator of a single regression coefficient in the high dimensional binary outcome regression model and the corresponding standard error.
+It also constructs the confidence interval for the concerned regression coefficient and tests whether it is equal to a pre-specified value \code{b0}.
 }
 \examples{
 sp = 20
@@ -80,11 +80,12 @@ X = MASS::mvrnorm(n, mu=rep(0,p), Sigma=Sig)
 b = rep(0,p)
 b[1:sp] = rep(c(0.4,-0.4), sp/2)
 prob = f(X \%*\% b)
-y = rep(1,n)
-while(sum(y)/n<0.02 | sum(y)/n>0.98 ){
- for(gen.y in 1:n){
-   y[gen.y] = rbinom(1,1,prob[gen.y])
- }
+y = array(dim = 1)
+for(i in 1:n){
+y[i] = rbinom(1,1,prob[i])
 }
-out.prop = SIHR::GLM_binary(X = X, y = y, loading = 1, model = "probit", intercept = FALSE)
+out.prop = SIHR::GLM_binary(X = X, y = y, index = 1, model = "probit", intercept = FALSE)
+}
+\references{
+\insertRef{glm}{SIHR}
 }

@@ -1,8 +1,8 @@
 Package: SIHR
 Type: Package
 Title: Statistical Inference in High Dimensional Regression
-Version: 0.1.1
-Description: Inference procedures in the high-dimensional setting for (1) linear functionals and quadratic functionals in linear regression ('Cai et al.' (2019) <arXiv:1904.12891>, 'Guo et al.' (2019) <arXiv:1909.01503>), (2) linear functional in logistic regression ('Guo et al.' <arXiv:2012.07133>), (3) individual treatment effects in linear and logistic regression.
+Version: 0.2.0
+Description: Inference procedures in the high-dimensional setting for (1) linear functionals and quadratic functionals in linear regression ('Cai et al.' (2019) <arXiv:1904.12891>, 'Guo et al.' (2019) <arXiv:1909.01503>), (2) linear functional in logistic regression ('Guo et al.' <arXiv:2012.07133>), (3) individual treatment effects in linear and logistic regression, (4) single regression coefficient in binary outcome regression.
 License: GPL-3
 Encoding: UTF-8
 RoxygenNote: 7.1.1

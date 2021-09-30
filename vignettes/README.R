@@ -197,13 +197,11 @@ f = function(x){
   pnorm(x)
 }
 prob = f(X %*% b)
-y = rep(1,n)
-while(sum(y)/n<0.02 | sum(y)/n>0.98 ){
-  for(gen.y in 1:n){
-  y[gen.y] = rbinom(1,1,prob[gen.y])
- }
+y = array(dim = 1)
+for(i in 1:n){
+y[i] = rbinom(1,1,prob[i])
 }
-Est = SIHR::GLM_binary(X = X, y = y, loading = 1, model = "probit", intercept = FALSE)
+Est = SIHR::GLM_binary(X = X, y = y, index = 1, model = "probit", intercept = FALSE)
 
 ### Point esitmator
 
@@ -225,13 +223,11 @@ f = function(x){
   pt(x,1)
 }
 prob = f(X %*% b)
-y = rep(1,n)
-while(sum(y)/n<0.02 | sum(y)/n>0.98 ){
-  for(gen.y in 1:n){
-  y[gen.y] = rbinom(1,1,prob[gen.y])
- }
+y = array(dim = 1)
+for(i in 1:n){
+y[i] = rbinom(1,1,prob[i])
 }
-Est = SIHR::GLM_binary(X = X, y = y, loading = 2, model = "inverse t1", intercept = FALSE, lambda=0.1*sqrt(log(p)/n))
+Est = SIHR::GLM_binary(X = X, y = y, index = 2, model = "inverse t1", intercept = FALSE, lambda = 0.1*sqrt(log(p)/n))
 
 ### Point esitmator
 

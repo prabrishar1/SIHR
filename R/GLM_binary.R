@@ -16,13 +16,13 @@ g = function(x){
 #' Inference for single regression coefficient in high dimensional probit regression model
 #'
 #' @description
-#' Computes the bias corrected estimator of a single regression coefficinet in the high dimensional probit regression model and the corresponding standard error.
-#' It also constructs the confidence interval for the concerned regression coefficient and tests whether it is equal to \code{b0} or not. Here \eqn{b0} is a believed to be the true value of the concerned regression coefficient.
+#' Computes the bias corrected estimator of a single regression coefficient in the high dimensional binary outcome regression model and the corresponding standard error.
+#' It also constructs the confidence interval for the concerned regression coefficient and tests whether it is equal to a pre-specified value \code{b0}.
 #'
 #' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
 #' @param y Outcome vector, of length \eqn{n}
-#' @param loading Index (less than or equal to \eqn{p}) indicating the concerned regression coefficient. For example, \code{loading = 1} means we carry out inference for the first regression coefficient under the high-dimensional probit model.
-#' @param model The high dimensional generalised linear regression model, either \code{logistic1} or \code{logistic2} or \code{probit} or \code{inverse t1} (default = \code{probit}) ; \code{model}\eqn{=}\code{"logistic1"} uses \code{SIHR::LF_logistic} with \code{weight}\eqn{=}\code{NULL}
+#' @param index An integer between \eqn{1} and \eqn{p} indicating the index of the targeted regression coefficient. For example, \code{index} \eqn{= 1} means that the first regression coefficient is our inference target
+#' @param model The high dimensional generalized linear regression model, either \code{logistic1} or \code{logistic2} or \code{probit} or \code{inverse t1} (default = \code{logistic1}) ; \code{model}\eqn{=}\code{"logistic1"} uses \code{SIHR::LF_logistic} with \code{weight}\eqn{=}\code{NULL}; \code{model}\eqn{=}\code{"logistic2"} uses \code{SIHR::LF_logistic} with \code{weight}\eqn{=}\code{rep(1,n)}
 #' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
 #' @param init.Lasso Initial LASSO estimator of the regression vector (default = \code{NULL})
 #' @param lambda The tuning parameter used in the construction of LASSO estimator of the regression vector (default = \code{NULL})
@@ -34,7 +34,7 @@ g = function(x){
 #' such that the dual optimization problem for constructing the projection direction converges (default = 1.5)
 #' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = 6)
-#' @param b0 The number indicating the true value of the concerned regression coefficient
+#' @param b0 The null value to be tested against
 #' @param alpha Level of significance to test the null hypothesis that the concerned regression coefficient is equal to \code{b0} (default = 0.05)
 #' @param verbose Should inetrmediate message(s) be printed (default = \code{TRUE})
 #'
@@ -52,6 +52,9 @@ g = function(x){
 #' @importFrom Rdpack reprompt
 #' @importFrom stats coef na.omit dnorm pnorm dt pt
 #' @import CVXR Matrix glmnet
+#' @references
+#'
+#' \insertRef{glm}{SIHR}
 #'
 #' @examples
 #' sp = 20
@@ -66,15 +69,13 @@ g = function(x){
 #' b = rep(0,p)
 #' b[1:sp] = rep(c(0.4,-0.4), sp/2)
 #' prob = f(X %*% b)
-#' y = rep(1,n)
-#' while(sum(y)/n<0.02 | sum(y)/n>0.98 ){
-#'  for(gen.y in 1:n){
-#'    y[gen.y] = rbinom(1,1,prob[gen.y])
-#'  }
+#' y = array(dim = 1)
+#' for(i in 1:n){
+#' y[i] = rbinom(1,1,prob[i])
 #' }
-#' out.prop = SIHR::GLM_binary(X = X, y = y, loading = 1, model = "probit", intercept = FALSE)
-GLM_binary<-function(X, y, loading, model = "probit", intercept = TRUE, init.Lasso = NULL, lambda = NULL, mu = NULL, step = NULL, resol = 1.5, maxiter = 6, b0 = 0, alpha = 0.05, verbose = TRUE){
-  xnew <- loading
+#' out.prop = SIHR::GLM_binary(X = X, y = y, index = 1, model = "probit", intercept = FALSE)
+GLM_binary<-function(X, y, index, model = "probit", intercept = TRUE, init.Lasso = NULL, lambda = NULL, mu = NULL, step = NULL, resol = 1.5, maxiter = 6, b0 = 0, alpha = 0.05, verbose = TRUE){
+  xnew <- index
   X <- as.matrix(X)
   p <- ncol(X)
   n <- nrow(X)
@@ -96,7 +97,7 @@ GLM_binary<-function(X, y, loading, model = "probit", intercept = TRUE, init.Las
     if(model == "logistic1"){
       ej = rep(0,p)
       ej[xnew] = 1
-      Est <- LF_logistic(X = X, y = y, loading = ej, weight = NULL, trans = FALSE, intercept = intercept, intercept.loading = FALSE)
+      Est <- SIHR::LF_logistic(X = X, y = y, loading = ej, weight = NULL, trans = FALSE, intercept = intercept, intercept.loading = FALSE)
       return(Est)
     } else {
 

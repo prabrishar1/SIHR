@@ -82,7 +82,7 @@ LF <- function(X, y,loading, intercept = TRUE, intercept.loading = TRUE, init.La
     mean = colMeans(X)
     M = matrix(rep(mean,nrow(X)),byrow = T, nrow = nrow(X), ncol = ncol(X))
     X = X - M
-    if(intercept.loading == TRUE){
+    if(intercept.loading == TRUE && intercept == TRUE){
       xnew = xnew - mean
     }
     col.norm <- 1 / sqrt((1 / n) * diag(t(X) %*% X))
