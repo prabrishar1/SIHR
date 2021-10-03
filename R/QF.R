@@ -19,11 +19,11 @@ var.Sigma <- function(Z, gamma) {
 #' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
 #' @param y Outcome vector, of length \eqn{n}
 #' @param G The set of indices, \code{G} in the quadratic form
-#' @param Cov.weight Logical, if set to \code{TRUE} then \code{A } is the \eqn{|G|\times}\eqn{|G|} submatrix of the population covariance matrix, else need to provide an \code{A} (default = TRUE)
+#' @param Cov.weight Logical, if set to \code{TRUE} then \code{A } is the \eqn{|G|\times}\eqn{|G|} submatrix of the population covariance matrix corresponding to the index set \code{G}, else need to provide an \code{A} (default = TRUE)
 #' @param A The matrix A in the quadratic form, of dimension \eqn{|G|\times}\eqn{|G|} (default = \code{NULL})
 #' @param tau.vec The vector of enlargement factors for asymptotic variance of the bias-corrected estimator to handle super-efficiency (default = \eqn{1})
-#' @param init.Lasso Initial LASSO estimator for the regression vector (default = \code{NULL})
-#' @param lambda The tuning parameter used in the construction of initial LASSO estimator of the regression vector if \code{init.Lasso = NULL} (default = \code{NULL})
+#' @param init.coef Initial estimator for the regression vector (default = \code{NULL})
+#' @param lambda The tuning parameter used in the construction of \code{init.coef} (default = \code{NULL})
 #' @param mu The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})
 #' @param step The step size used to compute \code{mu}; if set to \code{NULL} it is
 #' computed to be the number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
@@ -43,7 +43,7 @@ var.Sigma <- function(Z, gamma) {
 #' \code{decision}\eqn{=0} implies the quadratic form of the regression vector is zero \eqn{\newline}
 #' row corresponds to different values of \code{tau.vec}}
 #' \item{proj}{The projection direction, of length \eqn{p}}
-#' \item{plug.in}{The plug-in LASSO estimator for the quadratic form of the regression vector restricted to \code{G}}
+#' \item{plug.in}{The plug-in estimator for the quadratic form of the regression vector restricted to \code{G}}
 #' @export
 #'
 #' @importFrom Rdpack reprompt
@@ -77,7 +77,7 @@ var.Sigma <- function(Z, gamma) {
 #' @references
 #'
 #' \insertRef{grouplin}{SIHR}
-QF <- function(X, y, G, Cov.weight = TRUE, A = NULL, tau.vec = c(1), init.Lasso = NULL,
+QF <- function(X, y, G, Cov.weight = TRUE, A = NULL, tau.vec = c(1), init.coef = NULL,
                lambda = NULL,  mu = NULL, step = NULL, resol = 1.5, maxiter = 6, alpha = 0.05, verbose = TRUE) {
   p <- ncol(X)
   n <- nrow(X)
@@ -102,11 +102,11 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = NULL, tau.vec = c(1), init.Lasso 
       X = X - M
       col.norm <- 1 / sqrt((1 / n) * diagXtX(X, MARGIN = 2))
       Xnor <- X %*% diag(col.norm)
-      if(is.null(init.Lasso)){
-        init.Lasso<- Initialization.step(X,y,lambda,intercept = FALSE)
-        htheta <- init.Lasso$lasso.est
+      if(is.null(init.coef)){
+        init.coef<- Initialization.step(X,y,lambda,intercept = FALSE)
+        htheta <- init.coef$lasso.est
       } else {
-        htheta <- init.Lasso
+        htheta <- init.coef
       }
 
       Xb <- Xnor

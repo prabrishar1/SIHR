@@ -17,15 +17,15 @@ g = function(x){
 #'
 #' @description
 #' Computes the bias corrected estimator of a single regression coefficient in the high dimensional binary outcome regression model and the corresponding standard error.
-#' It also constructs the confidence interval for the concerned regression coefficient and tests whether it is equal to a pre-specified value \code{b0}.
+#' It also constructs the confidence interval for the target regression coefficient and tests whether it is equal to a pre-specified value \code{b0}.
 #'
 #' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
 #' @param y Outcome vector, of length \eqn{n}
 #' @param index An integer between \eqn{1} and \eqn{p} indicating the index of the targeted regression coefficient. For example, \code{index} \eqn{= 1} means that the first regression coefficient is our inference target
-#' @param model The high dimensional generalized linear regression model, either \code{logistic1} or \code{logistic2} or \code{probit} or \code{inverse t1} (default = \code{logistic1}) ; \code{model}\eqn{=}\code{"logistic1"} uses \code{SIHR::LF_logistic} with \code{weight}\eqn{=}\code{NULL}; \code{model}\eqn{=}\code{"logistic2"} uses \code{SIHR::LF_logistic} with \code{weight}\eqn{=}\code{rep(1,n)}
-#' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
-#' @param init.Lasso Initial LASSO estimator of the regression vector (default = \code{NULL})
-#' @param lambda The tuning parameter used in the construction of LASSO estimator of the regression vector (default = \code{NULL})
+#' @param model The fitted GLM, either \code{logistic1} or \code{logistic2} or \code{probit} or \code{inverse t1} (default = \code{logistic1}) ; \code{model}\eqn{=}\code{"logistic1"} uses \code{SIHR::LF_logistic} with \code{weight}\eqn{=}\code{NULL}; \code{model}\eqn{=}\code{"logistic2"} uses \code{SIHR::LF_logistic} with \code{weight}\eqn{=}\code{rep(1,n)}
+#' @param intercept Should intercept be fitted for the initial estimator (default = \code{TRUE})
+#' @param init.coef Initial estimator of the regression vector (default = \code{NULL})
+#' @param lambda The tuning parameter used in the construction of \code{init.coef} (default = \code{NULL})
 #' @param mu The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})
 #' @param step The step size used to compute \code{mu}; if set to \code{NULL} it is
 #' computed to be the number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
@@ -35,17 +35,16 @@ g = function(x){
 #' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = 6)
 #' @param b0 The null value to be tested against
-#' @param alpha Level of significance to test the null hypothesis that the concerned regression coefficient is equal to \code{b0} (default = 0.05)
+#' @param alpha Level of significance to test the null hypothesis that the target regression coefficient is equal to \code{b0} (default = 0.05)
 #' @param verbose Should inetrmediate message(s) be printed (default = \code{TRUE})
 #'
 #' @return
-#' \item{prop.est}{The bias corrected estimator of the concerned regression coefficient}
+#' \item{prop.est}{The bias corrected estimator of the target regression coefficient}
 #' \item{se}{The standard error of the bias-corrected estimator}
-#' \item{CI}{The confidence interval for the concerned regression coefficient}
-#' \item{decision}{\code{decision}\eqn{=1} implies the concerned regression coefficient is not equal to \code{b0} \eqn{\newline}
-#' \code{decision}\eqn{=0} implies the concerned regression coefficient is equal to \code{b0}}
+#' \item{CI}{The confidence interval for the target regression coefficient}
+#' \item{decision}{\code{decision}\eqn{=1} implies the target regression coefficient is not equal to \code{b0} \eqn{\newline}
+#' \code{decision}\eqn{=0} implies the target regression coefficient is equal to \code{b0}}
 #' \item{proj}{The projection direction, of length \eqn{p}}
-#' \item{plug.in}{The LASSO estimator of the concerned regression coefficient}
 #'
 #' @export
 #'
@@ -74,7 +73,7 @@ g = function(x){
 #' y[i] = rbinom(1,1,prob[i])
 #' }
 #' out.prop = SIHR::GLM_binary(X = X, y = y, index = 1, model = "probit", intercept = FALSE)
-GLM_binary<-function(X, y, index, model = "probit", intercept = TRUE, init.Lasso = NULL, lambda = NULL, mu = NULL, step = NULL, resol = 1.5, maxiter = 6, b0 = 0, alpha = 0.05, verbose = TRUE){
+GLM_binary<-function(X, y, index, model = "logistic1", intercept = TRUE, init.coef = NULL, lambda = NULL, mu = NULL, step = NULL, resol = 1.5, maxiter = 6, b0 = 0, alpha = 0.05, verbose = TRUE){
   xnew <- index
   X <- as.matrix(X)
   p <- ncol(X)
@@ -140,7 +139,7 @@ GLM_binary<-function(X, y, index, model = "probit", intercept = TRUE, init.Lasso
         }
       }
 
-    if(is.null(init.Lasso)){
+    if(is.null(init.coef)){
       if(model == "probit"){
         fit = glmnet(X*1.75, y,  family = "binomial", alpha = 1,  intercept = intercept,
                      lambda = 0.06*sqrt(log(p)/n), standardize = FALSE)
@@ -155,20 +154,20 @@ GLM_binary<-function(X, y, index, model = "probit", intercept = TRUE, init.Lasso
     }
 
     if (intercept == TRUE){
-      if(is.null(init.Lasso)){
+      if(is.null(init.coef)){
         htheta <- as.vector(coef(fit))
     } else {
-        htheta <- init.Lasso
+        htheta <- init.coef
     }
     support<-(abs(htheta)>0.001)
     Xc <- cbind(rep(1,n),X);
     #col.norm <- c(1,col.norm); ###What is its use? If useful define
     pp <- (p+1);
     } else {
-      if(is.null(init.Lasso)){
+      if(is.null(init.coef)){
         htheta <- as.vector(coef(fit))[-1]
     } else {
-        htheta <- init.Lasso[-1]
+        htheta <- init.coef[-1]
     }
     support<-(abs(htheta)>0.001)
     Xc <- X
@@ -252,9 +251,8 @@ GLM_binary<-function(X, y, index, model = "probit", intercept = TRUE, init.Lasso
                        "CI" = CI,
                        "decision" = dec,
                        "proj"=direction,
-                       "step"=step,
-                       "plug.in"=lasso.plugin
-  )
+                       "step"=step
+                       )
   return(returnList)
   }
   }

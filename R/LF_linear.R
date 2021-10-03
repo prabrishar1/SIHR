@@ -7,10 +7,10 @@
 #' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
 #' @param y Outcome vector, of length \eqn{n}
 #' @param loading Loading, of length \eqn{p}
-#' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
 #' @param intercept.loading Should intercept be included for the \code{loading} (default = \code{TRUE})
-#' @param init.Lasso Initial LASSO estimator of the regression vector (default = \code{NULL})
-#' @param lambda The tuning parameter in the construction of LASSO estimator of the regression vector (default = \code{NULL})
+#' @param intercept Should intercept be fitted for the initial estimator (default = \code{TRUE})
+#' @param init.coef Initial estimator of the regression vector (default = \code{NULL})
+#' @param lambda The tuning parameter in the construction of \code{init.coef} (default = \code{NULL})
 #' @param mu The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})
 #' @param step The step size used to compute \code{mu}; if set to \code{NULL} it is
 #' computed to be the number of steps (< \code{maxiter}) to obtain the smallest \code{mu}
@@ -30,7 +30,7 @@
 #' \item{decision}{\code{decision}\eqn{=1} implies the linear combination is above zero \eqn{\newline}
 #' \code{decision}\eqn{=0} implies the linear combination is not above zero}
 #' \item{proj}{The projection direction, of length \eqn{p}}
-#' \item{plug.in}{The plug-in LASSO estimator for the linear combination}
+#' \item{plug.in}{The plug-in estimator for the linear combination}
 #'
 #' @export
 #'
@@ -63,8 +63,8 @@
 #' X <- MASS::mvrnorm(n,mu,Cov)
 #' y <- X%*%beta + rnorm(n)
 #' loading <- c(1,rep(0,(p-1)))
-#' Est <- LF(X = X, y = y, loading = loading, intercept = TRUE)
-LF <- function(X, y,loading, intercept = TRUE, intercept.loading = TRUE, init.Lasso = NULL, lambda = NULL, mu = NULL, step = NULL, resol = 1.5, maxiter = 6, alpha = 0.05, verbose = TRUE){
+#' Est <- LF(X = X, y = y, loading = loading)
+LF <- function(X, y,loading, intercept.loading = TRUE, intercept = TRUE, init.coef = NULL, lambda = NULL, mu = NULL, step = NULL, resol = 1.5, maxiter = 6, alpha = 0.05, verbose = TRUE){
   xnew <- loading
   p <- ncol(X)
   n <- nrow(X)
@@ -87,12 +87,12 @@ LF <- function(X, y,loading, intercept = TRUE, intercept.loading = TRUE, init.La
     }
     col.norm <- 1 / sqrt((1 / n) * diag(t(X) %*% X))
     Xnor <- X %*% diag(col.norm)
-    if(is.null(init.Lasso)){
+    if(is.null(init.coef)){
       ####### implement a lasso algorithm to get beta and sigma
-      init.Lasso <-  Initialization.step(X, y, lambda, intercept)
-      htheta <- init.Lasso$lasso.est
+      init.coef <-  Initialization.step(X, y, lambda, intercept)
+      htheta <- init.coef$lasso.est
     } else {
-      htheta <- init.Lasso
+      htheta <- init.coef
     }
     if (intercept == TRUE){
       Xb <- cbind(rep(1,n),Xnor)
@@ -198,12 +198,12 @@ LF <- function(X, y,loading, intercept = TRUE, intercept.loading = TRUE, init.La
 #' @param X2 Design matrix for the second sample, of dimension \eqn{n_2} x \eqn{p}
 #' @param y2 Outcome vector for the second sample, of length \eqn{n_2}
 #' @param loading Loading, of length \eqn{p}
-#' @param intercept Should intercept(s) be fitted (default = \code{TRUE})
 #' @param intercept.loading Should intercept be included for the \code{loading} (default = \code{TRUE})
-#' @param init.Lasso1 Initial LASSO estimator of the first regression vector (default = \code{NULL})
-#' @param init.Lasso2 Initial LASSO estimator of the second regression vector (default = \code{NULL})
-#' @param lambda1 The tuning parameter in the construction of LASSO estimator of the first regression vector (default = \code{NULL})
-#' @param lambda2 The tuning parameter in the construction of LASSO estimator of the second regression vector (default = \code{NULL})
+#' @param intercept Should intercept(s) be fitted for the initial estimators(default = \code{TRUE})
+#' @param init.coef1 Initial estimator of the first regression vector (default = \code{NULL})
+#' @param init.coef2 Initial estimator of the second regression vector (default = \code{NULL})
+#' @param lambda1 The tuning parameter in the construction of \code{init.coef1} (default = \code{NULL})
+#' @param lambda2 The tuning parameter in the construction of \code{init.coef2} (default = \code{NULL})
 #' @param mu1 The dual tuning parameter used in the construction of the first projection direction (default = \code{NULL})
 #' @param mu2 The dual tuning parameter used in the construction of the second projection direction (default = \code{NULL})
 #' @param step1 The step size used to compute \code{mu1}; if set to \code{NULL} it is
@@ -251,11 +251,11 @@ LF <- function(X, y,loading, intercept = TRUE, intercept.loading = TRUE, init.La
 #' y1 <- X1%*%beta1 + rnorm(n1)
 #' y2 <- X2%*%beta2 + rnorm(n2)
 #' loading <- c(1,rep(0, (p-1)))
-#' Est <- ITE(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
+#' Est <- ITE(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading)
 #' }
-ITE <- function(X1, y1, X2, y2, loading, intercept = TRUE, intercept.loading = TRUE, init.Lasso1 = NULL, init.Lasso2 = NULL, lambda1 = NULL, lambda2 = NULL, mu1 = NULL, mu2 = NULL, step1 = NULL, step2 = NULL, resol = 1.5, maxiter = 6, alpha = 0.05, verbose = TRUE){
-  Est1 <- SIHR::LF(X1, y1, loading, intercept = intercept, intercept.loading = intercept.loading, init.Lasso = init.Lasso1, lambda = lambda1, mu = mu1, step = step1, resol = resol, maxiter = maxiter, alpha = alpha, verbose = verbose)
-  Est2 <- SIHR::LF(X2, y2, loading, intercept = intercept, intercept.loading = intercept.loading, init.Lasso = init.Lasso2, lambda = lambda2, mu = mu2, step = step2, resol = resol, maxiter = maxiter, alpha = alpha, verbose = verbose)
+ITE <- function(X1, y1, X2, y2, loading, intercept.loading = TRUE, intercept = TRUE, init.coef1 = NULL, init.coef2 = NULL, lambda1 = NULL, lambda2 = NULL, mu1 = NULL, mu2 = NULL, step1 = NULL, step2 = NULL, resol = 1.5, maxiter = 6, alpha = 0.05, verbose = TRUE){
+  Est1 <- SIHR::LF(X1, y1, loading, intercept.loading = intercept.loading, intercept = intercept, init.coef = init.coef1, lambda = lambda1, mu = mu1, step = step1, resol = resol, maxiter = maxiter, alpha = alpha, verbose = verbose)
+  Est2 <- SIHR::LF(X2, y2, loading, intercept.loading = intercept.loading, intercept = intercept, init.coef = init.coef2, lambda = lambda2, mu = mu2, step = step2, resol = resol, maxiter = maxiter, alpha = alpha, verbose = verbose)
   debias.est<-Est1$prop.est - Est2$prop.est
   se <- sqrt((Est1$se)^2 + (Est2$se)^2)
   CI <- c(debias.est - qnorm(1-alpha/2)*se, debias.est + qnorm(1-alpha/2)*se)
