@@ -7,12 +7,11 @@
 <!-- badges: end -->
 
 The goal of SIHR is to provide inference procedures in the
-high-dimensional setting for (1)linear functionals (LF) (Cai, Cai, and
-Guo 2019) and quadratic functionals (QF)(Guo, Renaux, et al. 2019) in
-linear regression, (2)linear functional in logistic regression (Guo,
-Rakshit, et al. 2019), (3) individual treatment effects (ITE) in linear
-and logistic regression and (4) single regression coefficient in binary
-outcome regression (Cai, Guo, and Ma, n.d.).
+high-dimensional setting for (1)linear functionals (LF) and quadratic
+functionals (QF) in linear regression, (2)linear functional in logistic
+regression, (3) individual treatment effects (ITE) in linear and
+logistic regression and (4) single regression coefficient in binary
+outcome regression.
 
 ## Installation
 
@@ -60,16 +59,16 @@ model
 
     Est$prop.est
     #>           [,1]
-    #> [1,] -2.710286
+    #> [1,] -7.750703
 
     ### Standard error 
 
     Est$se
-    #> [1] 1.999067
+    #> [1] 2.169246
 
     ### Confidence interval
     Est$CI
-    #> [1] -6.628384  1.207813
+    #> [1] -12.002347  -3.499059
 
     ### test whether the linear functional is below zero or not (1 indicates that it is above zero)
 
@@ -110,17 +109,17 @@ model
     ### Point esitmator
 
     Est$prop.est
-    #>          [,1]
-    #> [1,] 1.761438
+    #>           [,1]
+    #> [1,] -5.581559
 
     ### Standard error 
 
     Est$se
-    #> [1] 3.142746
+    #> [1] 2.499677
 
     ### Confidence interval
     Est$CI
-    #> [1] -4.398232  7.921107
+    #> [1] -10.4808351  -0.6822831
 
     ### test whether the linear ITE is below zero or not (1 indicates that it is above zero)
 
@@ -160,16 +159,16 @@ model
     ### Point esitmator
 
     Est$prop.est
-    #> [1] 0.4010301
+    #> [1] 0.3264385
 
     ### Standard error 
 
     Est$se
-    #> [1] 0.740089
+    #> [1] 0.7664956
 
     ### Confidence interval
     Est$CI
-    #> [1] 0.001593916 0.996451292
+    #> [1] 0.000522256 0.997780286
 
     ### test whether the case probability is below 0.5 or not (1 indicates that it is above 0.5)
 
@@ -215,16 +214,16 @@ Individualised Treatment Effect in high-dimensional logistic model
     ### Point esitmator
 
     Est$prop.est
-    #> [1] -2.351335
+    #> [1] -1.409946
 
     ### Standard error 
 
     Est$se
-    #> [1] 4.459392
+    #> [1] 4.766363
 
     ### Confidence interval
     Est$CI
-    #> [1] -11.091582   6.388912
+    #> [1] -10.751845   7.931954
 
     ### test whether the first case probability is smaller than the second case probability or not (1 indicates that the first case probability is larger than the second case probability)
 
@@ -260,16 +259,16 @@ GLM (probit model)
     ### Point esitmator
 
     Est$prop.est
-    #> [1] 0.3533391
+    #> [1] 0.2076012
 
     ### Standard error 
 
     Est$se
-    #> [1] 0.1180848
+    #> [1] 0.1054046
 
     ### Confidence interval
     Est$CI
-    #> [1] 0.1218971 0.5847812
+    #> [1] 0.001011965 0.414190351
 
     ### test whether the first regression coefficient is equal to zero or not (1 indicates that it is significantly different from zero)
 
@@ -303,17 +302,17 @@ GLM (inverse t1 model)
     ### Point esitmator
 
     Est$prop.est
-    #> [1] -0.3399147
+    #> [1] -0.5499067
 
     ### Standard error 
 
     Est$se
-    #> [1] 0.1094344
+    #> [1] 0.1211397
 
     ### Confidence interval
 
     Est$CI
-    #> [1] -0.5544023 -0.1254271
+    #> [1] -0.7873360 -0.3124773
 
     ### test whether the second regression coefficient is equal to zero or not (1 indicates that it is significantly different from zero)
 
@@ -350,18 +349,18 @@ Inference for quadratic functional in high-dimensional linear model
     ### Point esitmator
 
     Est$prop.est
-    #>          [,1]
-    #> [1,] 0.506281
+    #>           [,1]
+    #> [1,] 0.3579101
 
     ### Standard error 
 
     Est$se
-    #> [1] 0.1226881
+    #> [1] 0.1187189
 
     ### Confidence interval
     Est$CI
     #>           [,1]      [,2]
-    #> [1,] 0.2658167 0.7467453
+    #> [1,] 0.1252253 0.5905949
 
     ### test whether the quadratic form is equal to zero or not (1 indicates that it is above zero)
 
@@ -376,17 +375,17 @@ Inference for quadratic functional in high-dimensional linear model
 
     Est$prop.est
     #>          [,1]
-    #> [1,] 2.535089
+    #> [1,] 2.898267
 
     ### Standard error 
 
     Est$se
-    #> [1] 0.8902969
+    #> [1] 0.8041309
 
     ### Confidence interval
     Est$CI
-    #>           [,1]     [,2]
-    #> [1,] 0.7901388 4.280039
+    #>          [,1]     [,2]
+    #> [1,] 1.322199 4.474334
 
     ### test whether the quadratic form is equal to zero or not (1 indicates that it is above zero)
 
@@ -401,17 +400,17 @@ Inference for quadratic functional in high-dimensional linear model
 
     Est$prop.est
     #>           [,1]
-    #> [1,] 0.3121318
+    #> [1,] 0.2738387
 
     ### Standard error 
 
     Est$se
-    #> [1] 0.1074686
+    #> [1] 0.1093765
 
     ### Confidence interval
     Est$CI
     #>           [,1]      [,2]
-    #> [1,] 0.1014973 0.5227663
+    #> [1,] 0.0594647 0.4882128
 
     ### test whether the quadratic form is equal to zero or not (1 indicates that it is above zero)
 
@@ -434,10 +433,10 @@ Finding projection direction in high dimensional linear regression
     ### First 20 entries of the projection vector
 
     Direction.est$proj[1:20]
-    #>  [1]  6.087440e-01  9.047431e-23 -1.775909e-22  5.770540e-22 -4.086164e-22
-    #>  [6]  7.823024e-22 -1.700983e-22 -3.492342e-04  1.020460e-21  2.039530e-22
-    #> [11]  2.612214e-22  2.560820e-22  1.338079e-22 -9.545500e-22  2.763455e-22
-    #> [16] -3.739623e-22  2.444999e-22 -4.943140e-22 -8.236880e-03 -6.490740e-22
+    #>  [1]  5.607283e-01 -5.595600e-22  1.235536e-21  2.449935e-22 -6.992049e-03
+    #>  [6] -4.504528e-23 -1.482542e-22 -1.521506e-22 -2.654100e-22 -1.996896e-22
+    #> [11]  4.154248e-22 -4.927661e-23 -8.973232e-24 -7.282273e-23  9.908534e-22
+    #> [16]  4.930162e-22  5.664041e-22 -8.152939e-22  1.409246e-22  6.194871e-22
 
     ## Finding Projection Direction using best step size
 
@@ -446,10 +445,10 @@ Finding projection direction in high dimensional linear regression
     ### First 20 entries of the projection vector
 
     Direction.est$proj[1:20]
-    #>  [1]  6.087440e-01  8.469122e-23 -1.921934e-22  5.829067e-22 -4.156921e-22
-    #>  [6]  7.819023e-22 -2.031212e-22 -3.492342e-04  1.050463e-21  2.059268e-22
-    #> [11]  2.187954e-22  2.659240e-22  1.356361e-22 -9.403553e-22  2.998784e-22
-    #> [16] -3.376842e-22  2.598785e-22 -4.518358e-22 -8.236880e-03 -6.673704e-22
+    #>  [1]  5.607283e-01 -5.778937e-22  1.312541e-21  2.545603e-22 -6.992049e-03
+    #>  [6] -2.854664e-23 -1.693089e-22 -1.653340e-22 -2.686916e-22 -1.826828e-22
+    #> [11]  4.938496e-22 -2.039571e-23  2.394669e-23 -7.415389e-23  1.051351e-21
+    #> [16]  4.818045e-22  5.965234e-22 -8.930813e-22  1.384202e-22  6.142351e-22
 
 Finding projection direction in high dimensional logistic regression
 
@@ -483,10 +482,10 @@ Finding projection direction in high dimensional logistic regression
     ### First 20 entries of the projection vector
 
     Direction.est$proj[1:20]
-    #>  [1]  3.397445e-01  3.729277e-23 -1.927974e-22 -7.233107e-23 -8.796245e-23
-    #>  [6] -2.753112e-23  7.384742e-23  1.825561e-23  4.129437e-23 -7.956405e-23
-    #> [11]  1.023839e-22 -5.348840e-23 -3.352030e-23 -5.166470e-23 -8.391276e-24
-    #> [16] -5.683316e-23 -1.449247e-22 -3.293484e-23 -2.333875e-23 -4.130985e-23
+    #>  [1]  3.298132e-01 -6.354954e-23 -6.014956e-23  1.422227e-23 -3.172897e-23
+    #>  [6]  1.823724e-23  3.114810e-23  1.542873e-23 -6.710611e-23  3.725745e-23
+    #> [11] -5.090520e-23  7.257707e-23  1.053316e-23  4.912644e-23  1.228531e-23
+    #> [16]  1.182191e-23 -5.913138e-23 -1.722514e-23  3.438262e-23  5.472930e-24
 
     ## Finding Projection Direction using best step size
 
@@ -495,44 +494,7 @@ Finding projection direction in high dimensional logistic regression
     ### First 20 entries of the projection vector
 
     Direction.est$proj[1:20]
-    #>  [1]  4.092802e-01  3.144957e-01  3.371496e-22 -4.142656e-22  2.160712e-23
-    #>  [6]  1.368043e-22  4.034595e-22  2.829536e-22 -8.999946e-23  4.051203e-23
-    #> [11] -7.194496e-22  4.629574e-22 -5.095783e-22  8.882246e-23 -2.220811e-22
-    #> [16] -2.410226e-22 -1.740991e-22 -1.703005e-22 -1.028864e-23 -2.266020e-22
-
-<div id="refs" class="references hanging-indent">
-
-<div id="ref-linlin">
-
-Cai, Tianxi, T. Tony Cai, and Zijian Guo. 2019. “Optimal Statistical
-Inference for Individualized Treatment Effects in High-Dimensional
-Models.” *Journal of the Royal Statistical Society: Series B*.
-<https://arxiv.org/pdf/1904.12891.pdf>.
-
-</div>
-
-<div id="ref-glm">
-
-Cai, T Tony, Zijian Guo, and Rong Ma. n.d. “Statistical Inference for
-High-Dimensional Generalized Linear Models with Binary Outcomes.”
-*Journal of the American Statistical Association*.
-
-</div>
-
-<div id="ref-linlog">
-
-Guo, Zijian, Prabrisha Rakshit, Daniel S. Herman, and Jinbo Chen. 2019.
-“Inference for Case Probability in High-Dimensional Logistic
-Regression.” *Unknown*. <https://arxiv.org/abs/2012.07133>.
-
-</div>
-
-<div id="ref-grouplin">
-
-Guo, Zijian, Claude Renaux, Peter Buhlmann, and T. Tony Cai. 2019.
-“Group Inference in High Dimensions with Applications to Hierarchical
-Testing.” *Unknown*. <https://arxiv.org/pdf/1909.01503.pdf>.
-
-</div>
-
-</div>
+    #>  [1]  3.486979e-01  2.596627e-01 -1.194396e-22 -2.271496e-22 -3.375731e-22
+    #>  [6] -9.876575e-23 -3.244736e-23  8.373347e-23 -1.083039e-22 -1.309022e-22
+    #> [11]  1.742417e-22  2.164754e-22  4.052596e-22 -4.009467e-23  1.013356e-22
+    #> [16] -1.488862e-23  1.134927e-22 -2.012654e-22  2.812060e-22  4.417586e-23

@@ -10,9 +10,9 @@ LF_logistic(
   loading,
   weight = NULL,
   trans = TRUE,
-  intercept = TRUE,
   intercept.loading = TRUE,
-  init.Lasso = NULL,
+  intercept = TRUE,
+  init.coef = NULL,
   lambda = NULL,
   mu = NULL,
   step = NULL,
@@ -33,13 +33,13 @@ LF_logistic(
 
 \item{trans}{Should results for the case probability (\code{TRUE}) or the linear combination (\code{FALSE}) be reported (default = \code{TRUE})}
 
-\item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
-
 \item{intercept.loading}{Should intercept be included for the \code{loading} (default = \code{TRUE})}
 
-\item{init.Lasso}{Initial LASSO estimator of the regression vector (default = \code{NULL})}
+\item{intercept}{Should intercept be fitted for the initial estimator (default = \code{TRUE})}
 
-\item{lambda}{The tuning parameter used in the construction of LASSO estimator of the regression vector (default = \code{NULL})}
+\item{init.coef}{Initial estimator of the regression vector (default = \code{NULL})}
+
+\item{lambda}{The tuning parameter used in the construction of \code{init.coef} (default = \code{NULL})}
 
 \item{mu}{The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})}
 
@@ -64,7 +64,7 @@ such that the dual optimization problem for constructing the projection directio
 \item{decision}{\code{decision}\eqn{=1} implies the case probability is above 0.5 \eqn{\newline}
 \code{decision}\eqn{=0} implies the case probability is not above 0.5}
 \item{proj}{The projection direction, of length \eqn{p}}
-\item{plug.in}{The plug-in LASSO estimator of the case probability or the linear combination}
+\item{plug.in}{The plug-in estimator of the case probability or the linear combination}
 }
 \description{
 Computes the bias corrected estimator of the case probability or the linear combination of regression coefficients in the high dimensional logistic regression model and the corresponding standard error.

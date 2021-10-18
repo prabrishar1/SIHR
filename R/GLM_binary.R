@@ -56,6 +56,7 @@ g = function(x){
 #' \insertRef{glm}{SIHR}
 #'
 #' @examples
+#' \donttest{
 #' sp = 20
 #' n = 400
 #' p = 800
@@ -72,7 +73,8 @@ g = function(x){
 #' for(i in 1:n){
 #' y[i] = rbinom(1,1,prob[i])
 #' }
-#' out.prop = SIHR::GLM_binary(X = X, y = y, index = 1, model = "probit", intercept = FALSE)
+#' Est = SIHR::GLM_binary(X = X, y = y, index = 1, model = "probit", intercept = FALSE)
+#' }
 GLM_binary<-function(X, y, index, model = "logistic1", intercept = TRUE, init.coef = NULL, lambda = NULL, mu = NULL, step = NULL, resol = 1.5, maxiter = 6, b0 = 0, alpha = 0.05, verbose = TRUE){
   xnew <- index
   X <- as.matrix(X)

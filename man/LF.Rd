@@ -8,9 +8,9 @@ LF(
   X,
   y,
   loading,
-  intercept = TRUE,
   intercept.loading = TRUE,
-  init.Lasso = NULL,
+  intercept = TRUE,
+  init.coef = NULL,
   lambda = NULL,
   mu = NULL,
   step = NULL,
@@ -27,13 +27,13 @@ LF(
 
 \item{loading}{Loading, of length \eqn{p}}
 
-\item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
-
 \item{intercept.loading}{Should intercept be included for the \code{loading} (default = \code{TRUE})}
 
-\item{init.Lasso}{Initial LASSO estimator of the regression vector (default = \code{NULL})}
+\item{intercept}{Should intercept be fitted for the initial estimator (default = \code{TRUE})}
 
-\item{lambda}{The tuning parameter in the construction of LASSO estimator of the regression vector (default = \code{NULL})}
+\item{init.coef}{Initial estimator of the regression vector (default = \code{NULL})}
+
+\item{lambda}{The tuning parameter in the construction of \code{init.coef} (default = \code{NULL})}
 
 \item{mu}{The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})}
 
@@ -59,7 +59,7 @@ is less than or equal to zero (default = 0.05)}
 \item{decision}{\code{decision}\eqn{=1} implies the linear combination is above zero \eqn{\newline}
 \code{decision}\eqn{=0} implies the linear combination is not above zero}
 \item{proj}{The projection direction, of length \eqn{p}}
-\item{plug.in}{The plug-in LASSO estimator for the linear combination}
+\item{plug.in}{The plug-in estimator for the linear combination}
 }
 \description{
 Computes the bias corrected estimator of the linear combination of regression coefficients and the corresponding standard error.
@@ -85,7 +85,7 @@ beta[1:10] <- c(1:10)/5
 X <- MASS::mvrnorm(n,mu,Cov)
 y <- X\%*\%beta + rnorm(n)
 loading <- c(1,rep(0,(p-1)))
-Est <- LF(X = X, y = y, loading = loading, intercept = TRUE)
+Est <- LF(X = X, y = y, loading = loading)
 }
 \references{
 \insertRef{linlin}{SIHR}

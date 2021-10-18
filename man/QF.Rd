@@ -11,7 +11,7 @@ QF(
   Cov.weight = TRUE,
   A = NULL,
   tau.vec = c(1),
-  init.Lasso = NULL,
+  init.coef = NULL,
   lambda = NULL,
   mu = NULL,
   step = NULL,
@@ -28,15 +28,15 @@ QF(
 
 \item{G}{The set of indices, \code{G} in the quadratic form}
 
-\item{Cov.weight}{Logical, if set to \code{TRUE} then \code{A } is the \eqn{|G|\times}\eqn{|G|} submatrix of the population covariance matrix, else need to provide an \code{A} (default = TRUE)}
+\item{Cov.weight}{Logical, if set to \code{TRUE} then \code{A } is the \eqn{|G|\times}\eqn{|G|} submatrix of the population covariance matrix corresponding to the index set \code{G}, else need to provide an \code{A} (default = TRUE)}
 
 \item{A}{The matrix A in the quadratic form, of dimension \eqn{|G|\times}\eqn{|G|} (default = \code{NULL})}
 
 \item{tau.vec}{The vector of enlargement factors for asymptotic variance of the bias-corrected estimator to handle super-efficiency (default = \eqn{1})}
 
-\item{init.Lasso}{Initial LASSO estimator for the regression vector (default = \code{NULL})}
+\item{init.coef}{Initial estimator for the regression vector (default = \code{NULL})}
 
-\item{lambda}{The tuning parameter used in the construction of initial LASSO estimator of the regression vector if \code{init.Lasso = NULL} (default = \code{NULL})}
+\item{lambda}{The tuning parameter used in the construction of \code{init.coef} (default = \code{NULL})}
 
 \item{mu}{The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})}
 
@@ -62,7 +62,7 @@ such that the dual optimization problem for constructing the projection directio
 \code{decision}\eqn{=0} implies the quadratic form of the regression vector is zero \eqn{\newline}
 row corresponds to different values of \code{tau.vec}}
 \item{proj}{The projection direction, of length \eqn{p}}
-\item{plug.in}{The plug-in LASSO estimator for the quadratic form of the regression vector restricted to \code{G}}
+\item{plug.in}{The plug-in estimator for the quadratic form of the regression vector restricted to \code{G}}
 }
 \description{
 Computes the bias-corrected estimator of the quadratic form of the regression vector, restricted to the set of indices \code{G} for the high dimensional linear regression and the corresponding standard error.

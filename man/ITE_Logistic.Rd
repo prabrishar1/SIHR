@@ -14,8 +14,8 @@ ITE_Logistic(
   trans = TRUE,
   intercept = TRUE,
   intercept.loading = TRUE,
-  init.Lasso1 = NULL,
-  init.Lasso2 = NULL,
+  init.coef1 = NULL,
+  init.coef2 = NULL,
   lambda1 = NULL,
   lambda2 = NULL,
   mu1 = NULL,
@@ -44,17 +44,17 @@ the inverse of the first derivative of the logit function (default = \code{NULL}
 
 \item{trans}{Should results for the case probability (\code{TRUE}) or the linear combination (\code{FALSE}) be reported (default = \code{TRUE})}
 
-\item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
+\item{intercept}{Should intercept(s) be fitted for the initial estimators (default = \code{TRUE})}
 
 \item{intercept.loading}{Should intercept be included for the \code{loading} (default = \code{TRUE})}
 
-\item{init.Lasso1}{Initial LASSO estimator of the first regression vector (default = \code{NULL})}
+\item{init.coef1}{Initial estimator of the first regression vector (default = \code{NULL})}
 
-\item{init.Lasso2}{Initial LASSO estimator of the second regression vector (default = \code{NULL})}
+\item{init.coef2}{Initial estimator of the second regression vector (default = \code{NULL})}
 
-\item{lambda1}{The tuning parameter in the construction of LASSO estimator of the first regression vector (default = \code{NULL})}
+\item{lambda1}{The tuning parameter in the construction of \code{init.coef1} (default = \code{NULL})}
 
-\item{lambda2}{The tuning parameter in the construction of LASSO estimator of the second regression vector (default = \code{NULL})}
+\item{lambda2}{The tuning parameter in the construction of \code{init.coef2} (default = \code{NULL})}
 
 \item{mu1}{The dual tuning parameter used in the construction of the first projection direction (default = \code{NULL})}
 

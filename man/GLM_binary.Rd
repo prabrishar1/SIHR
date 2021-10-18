@@ -8,9 +8,9 @@ GLM_binary(
   X,
   y,
   index,
-  model = "probit",
+  model = "logistic1",
   intercept = TRUE,
-  init.Lasso = NULL,
+  init.coef = NULL,
   lambda = NULL,
   mu = NULL,
   step = NULL,
@@ -28,13 +28,13 @@ GLM_binary(
 
 \item{index}{An integer between \eqn{1} and \eqn{p} indicating the index of the targeted regression coefficient. For example, \code{index} \eqn{= 1} means that the first regression coefficient is our inference target}
 
-\item{model}{The high dimensional generalized linear regression model, either \code{logistic1} or \code{logistic2} or \code{probit} or \code{inverse t1} (default = \code{logistic1}) ; \code{model}\eqn{=}\code{"logistic1"} uses \code{SIHR::LF_logistic} with \code{weight}\eqn{=}\code{NULL}; \code{model}\eqn{=}\code{"logistic2"} uses \code{SIHR::LF_logistic} with \code{weight}\eqn{=}\code{rep(1,n)}}
+\item{model}{The fitted GLM, either \code{logistic1} or \code{logistic2} or \code{probit} or \code{inverse t1} (default = \code{logistic1}) ; \code{model}\eqn{=}\code{"logistic1"} uses \code{SIHR::LF_logistic} with \code{weight}\eqn{=}\code{NULL}; \code{model}\eqn{=}\code{"logistic2"} uses \code{SIHR::LF_logistic} with \code{weight}\eqn{=}\code{rep(1,n)}}
 
-\item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
+\item{intercept}{Should intercept be fitted for the initial estimator (default = \code{TRUE})}
 
-\item{init.Lasso}{Initial LASSO estimator of the regression vector (default = \code{NULL})}
+\item{init.coef}{Initial estimator of the regression vector (default = \code{NULL})}
 
-\item{lambda}{The tuning parameter used in the construction of LASSO estimator of the regression vector (default = \code{NULL})}
+\item{lambda}{The tuning parameter used in the construction of \code{init.coef} (default = \code{NULL})}
 
 \item{mu}{The dual tuning parameter used in the construction of the projection direction (default = \code{NULL})}
 
@@ -50,24 +50,24 @@ such that the dual optimization problem for constructing the projection directio
 
 \item{b0}{The null value to be tested against}
 
-\item{alpha}{Level of significance to test the null hypothesis that the concerned regression coefficient is equal to \code{b0} (default = 0.05)}
+\item{alpha}{Level of significance to test the null hypothesis that the target regression coefficient is equal to \code{b0} (default = 0.05)}
 
 \item{verbose}{Should inetrmediate message(s) be printed (default = \code{TRUE})}
 }
 \value{
-\item{prop.est}{The bias corrected estimator of the concerned regression coefficient}
+\item{prop.est}{The bias corrected estimator of the target regression coefficient}
 \item{se}{The standard error of the bias-corrected estimator}
-\item{CI}{The confidence interval for the concerned regression coefficient}
-\item{decision}{\code{decision}\eqn{=1} implies the concerned regression coefficient is not equal to \code{b0} \eqn{\newline}
-\code{decision}\eqn{=0} implies the concerned regression coefficient is equal to \code{b0}}
+\item{CI}{The confidence interval for the target regression coefficient}
+\item{decision}{\code{decision}\eqn{=1} implies the target regression coefficient is not equal to \code{b0} \eqn{\newline}
+\code{decision}\eqn{=0} implies the target regression coefficient is equal to \code{b0}}
 \item{proj}{The projection direction, of length \eqn{p}}
-\item{plug.in}{The LASSO estimator of the concerned regression coefficient}
 }
 \description{
 Computes the bias corrected estimator of a single regression coefficient in the high dimensional binary outcome regression model and the corresponding standard error.
-It also constructs the confidence interval for the concerned regression coefficient and tests whether it is equal to a pre-specified value \code{b0}.
+It also constructs the confidence interval for the target regression coefficient and tests whether it is equal to a pre-specified value \code{b0}.
 }
 \examples{
+\donttest{
 sp = 20
 n = 400
 p = 800
@@ -84,7 +84,8 @@ y = array(dim = 1)
 for(i in 1:n){
 y[i] = rbinom(1,1,prob[i])
 }
-out.prop = SIHR::GLM_binary(X = X, y = y, index = 1, model = "probit", intercept = FALSE)
+Est = SIHR::GLM_binary(X = X, y = y, index = 1, model = "probit", intercept = FALSE)
+}
 }
 \references{
 \insertRef{glm}{SIHR}

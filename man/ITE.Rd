@@ -10,10 +10,10 @@ ITE(
   X2,
   y2,
   loading,
-  intercept = TRUE,
   intercept.loading = TRUE,
-  init.Lasso1 = NULL,
-  init.Lasso2 = NULL,
+  intercept = TRUE,
+  init.coef1 = NULL,
+  init.coef2 = NULL,
   lambda1 = NULL,
   lambda2 = NULL,
   mu1 = NULL,
@@ -37,17 +37,17 @@ ITE(
 
 \item{loading}{Loading, of length \eqn{p}}
 
-\item{intercept}{Should intercept(s) be fitted (default = \code{TRUE})}
-
 \item{intercept.loading}{Should intercept be included for the \code{loading} (default = \code{TRUE})}
 
-\item{init.Lasso1}{Initial LASSO estimator of the first regression vector (default = \code{NULL})}
+\item{intercept}{Should intercept(s) be fitted for the initial estimators(default = \code{TRUE})}
 
-\item{init.Lasso2}{Initial LASSO estimator of the second regression vector (default = \code{NULL})}
+\item{init.coef1}{Initial estimator of the first regression vector (default = \code{NULL})}
 
-\item{lambda1}{The tuning parameter in the construction of LASSO estimator of the first regression vector (default = \code{NULL})}
+\item{init.coef2}{Initial estimator of the second regression vector (default = \code{NULL})}
 
-\item{lambda2}{The tuning parameter in the construction of LASSO estimator of the second regression vector (default = \code{NULL})}
+\item{lambda1}{The tuning parameter in the construction of \code{init.coef1} (default = \code{NULL})}
+
+\item{lambda2}{The tuning parameter in the construction of \code{init.coef2} (default = \code{NULL})}
 
 \item{mu1}{The dual tuning parameter used in the construction of the first projection direction (default = \code{NULL})}
 
@@ -98,7 +98,7 @@ X2 <- MASS::mvrnorm(n2, mu, diag(p))
 y1 <- X1\%*\%beta1 + rnorm(n1)
 y2 <- X2\%*\%beta2 + rnorm(n2)
 loading <- c(1,rep(0, (p-1)))
-Est <- ITE(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
+Est <- ITE(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading)
 }
 }
 \references{

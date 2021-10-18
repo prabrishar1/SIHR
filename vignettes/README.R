@@ -31,7 +31,7 @@ beta[1:10] <- c(1:10)/5
 X <- MASS::mvrnorm(n,mu,Cov)
 y = X%*%beta + rnorm(n)
 loading <- MASS::mvrnorm(1,rep(0,p),Cov)
-Est = SIHR::LF(X = X, y = y, loading = loading, intercept = TRUE)
+Est = SIHR::LF(X = X, y = y, loading = loading)
 
 ### Point esitmator
 
@@ -74,7 +74,7 @@ X2 <- MASS::mvrnorm(n2,mu,Cov)
 y1 = X1%*%beta1 + rnorm(n1)
 y2 = X2%*%beta2 + rnorm(n2)
 loading <- MASS::mvrnorm(1,rep(0,p),Cov)
-Est <- SIHR::ITE(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, intercept = TRUE)
+Est <- SIHR::ITE(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading)
 ### Point esitmator
 
 Est$prop.est
@@ -163,7 +163,7 @@ y2 <- rbinom(n2,1,prob2)
 loading <- MASS::mvrnorm(1,mu,Cov)
 Est <- SIHR::ITE_Logistic(X1 = X1, y1 = y1, X2 = X2, y2 = y2,loading = loading, weight = NULL, trans = FALSE)
 
-### trans = FALSE implies target quantity is the difference between two linear combinations of the regression coefficients
+### trans = FALSE implies the target quantity is the difference between two linear combinations of the regression coefficients
 
 ### Point esitmator
 
@@ -180,10 +180,11 @@ Est$CI
 
 Est$decision
 
-## ----Generalized Linear Model-------------------------------------------------
+
+## ----Generalized Linear Model probit------------------------------------------
 
 sp = 20
-n = 400
+n = 500
 p = 800
 
 sig1 = toeplitz(seq(0.6, 0,length.out = p/10))
@@ -201,7 +202,7 @@ y = array(dim = 1)
 for(i in 1:n){
 y[i] = rbinom(1,1,prob[i])
 }
-Est = SIHR::GLM_binary(X = X, y = y, index = 1, model = "probit", intercept = FALSE)
+Est = SIHR::GLM_binary(X = X, y = y,index = 1, model = "probit", intercept = FALSE)
 
 ### Point esitmator
 
@@ -218,7 +219,17 @@ Est$CI
 
 Est$decision
 
-## Inference for single regression coefficient in high-dimensional binary inverse t_1 model
+## ----Generalized Linear Model inverse t1--------------------------------------
+
+sp = 10
+n = 800
+p = 400
+
+sig1 = toeplitz(seq(0.6, 0,length.out = p/10))
+Sig = Matrix::bdiag(rep(list(sig1),10))+diag(rep(0.4,p))
+X = MASS::mvrnorm(n, mu=rep(0,p), Sigma=Sig)
+b = rep(0,p)
+b[1:sp] = rep(c(0.4,-0.4), sp/2)
 f = function(x){
   pt(x,1)
 }
@@ -227,7 +238,7 @@ y = array(dim = 1)
 for(i in 1:n){
 y[i] = rbinom(1,1,prob[i])
 }
-Est = SIHR::GLM_binary(X = X, y = y, index = 2, model = "inverse t1", intercept = FALSE, lambda = 0.1*sqrt(log(p)/n))
+Est = SIHR::GLM_binary(X = X, y = y, index = 2, model = "inverse t1", lambda=0.1*sqrt(log(p)/n))
 
 ### Point esitmator
 
@@ -287,7 +298,7 @@ Est$decision
 
 ## Inference for Quadratic Functional with known matrix A in middle
 
-Est = SIHR::QF(X = X, y = y, G=test.set, Cov.weight = FALSE, A = diag(1:length(test.set),length(test.set)))
+Est = SIHR::QF(X = X, y = y, G=test.set, Cov.weight = FALSE,A = diag(1:length(test.set),length(test.set)))
 ### Point esitmator
 
 Est$prop.est
@@ -368,6 +379,7 @@ loading[-1]=xnew
 htheta <- htheta*col.norm;
 htheta <- as.vector(htheta)
 f_prime <- exp(Xc%*%htheta)/(1+exp(Xc%*%htheta))^2
+step <- 2
 
 ## Finding Projection Direction using fixed tuning parameter
 
