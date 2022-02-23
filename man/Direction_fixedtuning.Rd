@@ -20,11 +20,11 @@ Direction_fixedtuning(
 
 \item{mu}{The dual tuning parameter used in the construction of the projection direction}
 
-\item{model}{The high dimensional regression model, either \code{linear} or \code{logistic} (default = \code{linear})}
+\item{model}{The high dimensional regression model, either \code{linear} or \code{glm} (default = \code{linear})}
 
-\item{weight}{The weight vector of length \eqn{n}; to be supplied if \code{model="logistic"} (default=\code{NULL} when \code{model=linear})}
+\item{weight}{The weight vector of length \eqn{n}; to be supplied if \code{model="glm"} (default=\code{NULL} when \code{model=linear})}
 
-\item{deriv.vec}{The first derivative vector of the logit function at \eqn{X\%*\%}(\code{init.coef}), of length \eqn{n} ; to be supplied if \code{model="logistic"}. Here \code{init.coef} is the initial estimate of the regression vector. (default = \code{NULL} when \code{model=linear})}
+\item{deriv.vec}{The first derivative vector of the logit function at \eqn{X\%*\%}(\code{init.coef}), of length \eqn{n} ; to be supplied if \code{model="glm"}. Here \code{init.coef} is the initial estimate of the regression vector. (default = \code{NULL} when \code{model=linear})}
 }
 \value{
 \item{proj}{The projection direction, of length \eqn{p}}
@@ -35,6 +35,7 @@ Constructs the projection direction, used for bias-correction, with a fixed tuni
 \examples{
 n <- 100
 p <- 400
+set.seed(1203)
 X <- matrix(sample(-2:2,n*p,replace = TRUE),nrow = n,ncol = p)
 resol <- 1.5
 step <- 3

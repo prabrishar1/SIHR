@@ -5,9 +5,9 @@
 #' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
 #' @param loading Loading, of length \eqn{p}
 #' @param mu The dual tuning parameter used in the construction of the projection direction
-#' @param model The high dimensional regression model, either \code{linear} or \code{logistic} (default = \code{linear})
-#' @param weight The weight vector of length \eqn{n}; to be supplied if \code{model="logistic"} (default=\code{NULL} when \code{model=linear})
-#' @param deriv.vec The first derivative vector of the logit function at \eqn{X\%*\%}(\code{init.coef}), of length \eqn{n} ; to be supplied if \code{model="logistic"}. Here \code{init.coef} is the initial estimate of the regression vector. (default = \code{NULL} when \code{model=linear})
+#' @param model The high dimensional regression model, either \code{linear} or \code{glm} (default = \code{linear})
+#' @param weight The weight vector of length \eqn{n}; to be supplied if \code{model="glm"} (default=\code{NULL} when \code{model=linear})
+#' @param deriv.vec The first derivative vector of the logit function at \eqn{X\%*\%}(\code{init.coef}), of length \eqn{n} ; to be supplied if \code{model="glm"}. Here \code{init.coef} is the initial estimate of the regression vector. (default = \code{NULL} when \code{model=linear})
 #' @return
 #' \item{proj}{The projection direction, of length \eqn{p}}
 #' @export
@@ -15,6 +15,7 @@
 #' @examples
 #' n <- 100
 #' p <- 400
+#' set.seed(1203)
 #' X <- matrix(sample(-2:2,n*p,replace = TRUE),nrow = n,ncol = p)
 #' resol <- 1.5
 #' step <- 3
@@ -38,16 +39,20 @@ Direction_fixedtuning <- function(X, loading, mu = NULL, model = "linear", weigh
   if(model == "linear")
   {
     obj <- 1/4*sum((X%*%H%*%v)^2)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
-  } else if(model == "logistic") {
+  } else if(model == "glm") {
     obj <- 1/4*sum(((X%*%H%*%v)^2)*weight*deriv.vec)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
   } else {
     stop("Method not yet developed")
   }
   prob <- Problem(Minimize(obj))
   result <- solve(prob)
-  opt.sol <- result$getValue(v)
-  cvxr_status <- result$status
-  direction <- (-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
+  if(result$status=="optimal" || result$status == "unbounded"){
+    opt.sol<-result$getValue(v)
+    cvxr_status<-result$status
+    direction<-(-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
+  }else{
+    direction <- numeric(0)
+  }
   returnList <- list("proj"=direction)
   return(returnList)
 }
@@ -58,9 +63,9 @@ Direction_fixedtuning <- function(X, loading, mu = NULL, model = "linear", weigh
 #'
 #' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
 #' @param loading Loading, of length \eqn{p}
-#' @param model The high dimensional regression model, either \code{linear} or \code{logistic} (default = \code{linear})
-#' @param weight The weight vector of length \eqn{n}; to be supplied if \code{model="logistic"} (default=\code{NULL} when \code{model=linear})
-#' @param deriv.vec The first derivative vector of the logit function at \eqn{X\%*\%}(\code{init.coef}), of length \eqn{n} ; to be supplied if \code{model="logistic"}. Here \code{init.coef} is the initial estimate of the regression vector. (default = \code{NULL} when \code{model=linear})
+#' @param model The high dimensional regression model, either \code{linear} or \code{glm} (default = \code{linear})
+#' @param weight The weight vector of length \eqn{n}; to be supplied if \code{model="glm"} (default=\code{NULL} when \code{model=linear})
+#' @param deriv.vec The first derivative vector of the logit function at \eqn{X\%*\%}(\code{init.coef}), of length \eqn{n} ; to be supplied if \code{model="glm"}. Here \code{init.coef} is the initial estimate of the regression vector. (default = \code{NULL} when \code{model=linear})
 #' @param resol The factor by which \code{mu} is increased/decreased to obtain the smallest \code{mu}
 #' such that the dual optimization problem for constructing the projection direction converges (default = 1.5)
 #' @param maxiter Maximum number of steps along which \code{mu} is increased/decreased to obtain the smallest \code{mu}
@@ -74,6 +79,7 @@ Direction_fixedtuning <- function(X, loading, mu = NULL, model = "linear", weigh
 #' @examples
 #' n <- 100
 #' p <- 400
+#' set.seed(1203)
 #' X <- matrix(sample(-2:2,n*p,replace = TRUE),nrow = n,ncol = p)
 #' Est <- Direction_searchtuning(X,loading=c(1,rep(0,(p-1))))
 Direction_searchtuning <- function(X, loading, model = "linear", weight = NULL, deriv.vec = NULL, resol = 1.5, maxiter = 6){
@@ -97,7 +103,7 @@ Direction_searchtuning <- function(X, loading, model = "linear", weight = NULL, 
     if(model == "linear")
     {
       obj <- 1/4*sum((X%*%H%*%v)^2)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
-    } else if(model=="logistic") {
+    } else if(model=="glm") {
       obj <- 1/4*sum(((X%*%H%*%v)^2)*weight*deriv.vec)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
     } else {
       stop("Method not yet developed")

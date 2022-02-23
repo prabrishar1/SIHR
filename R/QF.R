@@ -15,7 +15,7 @@ var.Sigma <- function(Z, gamma) {
 #' Inference for quadratic forms of the regression vector in high dimensional linear regression
 #'
 #' @description Computes the bias-corrected estimator of the quadratic form of the regression vector, restricted to the set of indices \code{G} for the high dimensional linear regression and the corresponding standard error.
-#' It also constructs the confidence interval for the quadratic form and test whether it is above zero or not.
+#' It also constructs the confidence interval for the quadratic form and test whether it is above zero or not.             #removed
 #' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
 #' @param y Outcome vector, of length \eqn{n}
 #' @param G The set of indices, \code{G} in the quadratic form
@@ -69,7 +69,9 @@ var.Sigma <- function(Z, gamma) {
 #' Cov <- (A1gen(rho,p))/2
 #' beta <- rep(0,p)
 #' beta[1:10] <- c(1:10)/5
+#' set.seed(1203)
 #' X <- MASS::mvrnorm(n,mu,Cov)
+#' set.seed(1203)
 #' y = X%*%beta + rnorm(n)
 #' test.set =c(30:50)
 #' Est <-SIHR::QF(X = X, y = y, G = test.set)
@@ -103,8 +105,8 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = NULL, tau.vec = c(1), init.coef =
       col.norm <- 1 / sqrt((1 / n) * diagXtX(X, MARGIN = 2))
       Xnor <- X %*% diag(col.norm)
       if(is.null(init.coef)){
-        init.coef<- Initialization.step(X,y,lambda,intercept = FALSE)
-        htheta <- init.coef$lasso.est
+        init.coef<- Initialization.step(X, y, model = "linear", lambda, intercept = TRUE)
+        htheta <- init.coef$lasso.est[-1]
       } else {
         htheta <- init.coef
       }
@@ -137,7 +139,7 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = NULL, tau.vec = c(1), init.coef =
             loading[G] <- (sigma.hat %*% test.vec)[G]
             lasso.plugin <- mean((Xc %*% test.vec)^2)
           } else {
-            loading[G] <- (A %*% test.vec[G]) # whether you include intercept or not the loading is computed with A
+            loading[G] <- (A %*% test.vec[G])
             lasso.plugin <- t(test.vec[G])%*%A%*%test.vec[G]
           }
           loading.norm <- sqrt(sum(loading^2))
@@ -159,21 +161,21 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = NULL, tau.vec = c(1), init.coef =
                 step.vec <- rep(NA, 3)
                 for (t in 1:3) {
                   index.sel <- sample(1:n, size = ceiling(0.5 * min(n, p)), replace = FALSE)
-                  Direction.Est.temp <-  Direction_searchtuning_lin(Xc[index.sel, ],
-                                                                    loading, mu = NULL,
+                  Direction.Est.temp <-  SIHR::Direction_searchtuning(Xc[index.sel, ],
+                                                                    loading, model = "linear",
                                                                     resol = 1.5,maxiter = 6)
                   step.vec[t] <- Direction.Est.temp$step
                 }
                 step <-  getmode(step.vec)
                 step
               }
-              Direction.Est <-  Direction_fixedtuning_lin(Xc, loading, mu = sqrt(2.01 * log(pp) / n) * resol^{-(step - 1)})
+              Direction.Est <-  SIHR::Direction_fixedtuning(Xc, loading, model = "linear", mu = sqrt(2.01 * log(pp) / n) * resol^{-(step - 1)})
               while(is.na(Direction.Est) || length(Direction.Est$proj)==0){
                 step <- step-1
-                Direction.Est <-  Direction_fixedtuning_lin(Xc, loading, mu = sqrt(2.01 * log(pp) / n) * resol^{-(step - 1)})
+                Direction.Est <-  SIHR::Direction_fixedtuning(Xc, loading, model = "linear", mu = sqrt(2.01 * log(pp) / n) * resol^{-(step - 1)})
               }
               if(verbose == TRUE){
-                print(paste("step is", step))
+                cat(paste("step is", step))
               }
               direction <- Direction.Est$proj
             }
@@ -198,23 +200,28 @@ QF <- function(X, y, G, Cov.weight = TRUE, A = NULL, tau.vec = c(1), init.coef =
             se.vec[i] <- se
           }
         }
-        CI <- matrix(NA,nrow=length(tau.vec),ncol=2)
-        dec <- array(dim=1)
-        for(i in 1:length(tau.vec)){
-          CI[i,] <- c(debias.est - qnorm(1-alpha/2)*se.vec[i], debias.est + qnorm(1-alpha/2)*se.vec[i])
-          if(debias.est - qnorm(1-alpha)*se.vec[i] > 0){
-            dec[i] <- 1
-          } else {
-            dec[i] <- 0
-          }
-        }
-        returnList <- list("prop.est" = debias.est,
-                           "se" = se.vec,
-                           "CI" = CI,
-                           "decision" = dec,
-                           "proj"=direction,
-                           "plug.in" = lasso.plugin)
-        return(returnList)
+        #CI <- matrix(NA,nrow=length(tau.vec),ncol=2)
+        #dec <- array(dim=1)
+        #for(i in 1:length(tau.vec)){
+        #  CI[i,] <- c(debias.est - qnorm(1-alpha/2)*se.vec[i], debias.est + qnorm(1-alpha/2)*se.vec[i])
+        #  if(debias.est - qnorm(1-alpha)*se.vec[i] > 0){
+        #    dec[i] <- 1
+        #  } else {
+        #    dec[i] <- 0
+        #  }
+        #}
+        #returnList <- list("prop.est" = debias.est,
+        #                   "se" = se.vec,
+        #                   "CI" = CI,
+        #                   "decision" = dec,
+        #                   "proj"=direction,
+        #                   "plug.in" = lasso.plugin)
+        #return(returnList)
+        out <- list(prop.est = debias.est,
+                    se = se.vec,
+                    proj = direction,
+                    plug.in = lasso.plugin)
+        structure(out, class = "QF")
     }
   }
 }

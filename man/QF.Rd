@@ -66,7 +66,7 @@ row corresponds to different values of \code{tau.vec}}
 }
 \description{
 Computes the bias-corrected estimator of the quadratic form of the regression vector, restricted to the set of indices \code{G} for the high dimensional linear regression and the corresponding standard error.
-It also constructs the confidence interval for the quadratic form and test whether it is above zero or not.
+It also constructs the confidence interval for the quadratic form and test whether it is above zero or not.             #removed
 }
 \examples{
 n = 100
@@ -86,7 +86,9 @@ rho = 0.5
 Cov <- (A1gen(rho,p))/2
 beta <- rep(0,p)
 beta[1:10] <- c(1:10)/5
+set.seed(1203)
 X <- MASS::mvrnorm(n,mu,Cov)
+set.seed(1203)
 y = X\%*\%beta + rnorm(n)
 test.set =c(30:50)
 Est <-SIHR::QF(X = X, y = y, G = test.set)
