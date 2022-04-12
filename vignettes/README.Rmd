@@ -435,6 +435,90 @@ SIHR::inf(Est)$CI
 SIHR::inf(Est)$decision
 ```
 
+Inference for quadratic functional in high-dimensional logistic model
+
+```{r Group Logistic Model}
+
+library(MASS)
+A1gen <- function(rho,p){
+  A1=matrix(0,p,p)
+  for(i in 1:p){
+    for(j in 1:p){
+      A1[i,j]<-rho^(abs(i-j))
+    } 
+  }
+  A1
+}
+rho = 0.6
+Cov <- (A1gen(rho,400))
+mu <- rep(0,400)
+beta <- rep(0,400)
+beta[25:50] <- 0.08
+
+set.seed(1203)
+
+X <- MASS::mvrnorm(100,mu,Cov)
+exp_val <- X%*%beta
+prob <- exp(exp_val)/(1+exp(exp_val))
+set.seed(1203)
+y <- rbinom(100,1,prob)
+test.set <- c(30:100)
+
+## Inference for Quadratic Functional with Population Covariance Matrix in middle
+
+Est = SIHR::QF(X = X, y = y, model = "logistic", G=test.set)
+### Point esitmator
+
+Est$prop.est
+
+### Standard error 
+
+Est$se
+
+### Confidence interval
+SIHR::inf(Est)$CI
+
+### test whether the quadratic form is equal to zero or not (1 indicates that it is above zero)
+
+SIHR::inf(Est)$decision
+
+## Inference for Quadratic Functional with known matrix A in middle
+
+Est = SIHR::QF(X = X, y = y, model = "logistic", G=test.set, Cov.weight = FALSE,A = diag(1:length(test.set),length(test.set)))
+### Point esitmator
+
+Est$prop.est
+
+### Standard error 
+
+Est$se
+
+### Confidence interval
+SIHR::inf(Est)$CI
+
+### test whether the quadratic form is equal to zero or not (1 indicates that it is above zero)
+
+SIHR::inf(Est)$decision
+
+## Inference for square norm of regression vector
+
+Est = SIHR::QF(X = X, y = y, model = "logistic", G=test.set, Cov.weight = FALSE, A = diag(length(test.set)))
+### Point esitmator
+
+Est$prop.est
+
+### Standard error 
+
+Est$se
+
+### Confidence interval
+SIHR::inf(Est)$CI
+
+### test whether the quadratic form is equal to zero or not (1 indicates that it is above zero)
+
+SIHR::inf(Est)$decision
+```
+
 Finding projection direction in high dimensional linear regression
 
 ```{r proj linear}

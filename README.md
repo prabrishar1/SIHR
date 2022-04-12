@@ -398,8 +398,7 @@ Inference for quadratic functional in high-dimensional linear model
     ### Point esitmator
 
     Est$prop.est
-    #>           [,1]
-    #> [1,] 0.5694124
+    #> [1] 0.5694124
 
     ### Standard error 
 
@@ -465,6 +464,106 @@ Inference for quadratic functional in high-dimensional linear model
 
     SIHR::inf(Est)$decision
     #> [1] 1
+
+Inference for quadratic functional in high-dimensional logistic model
+
+
+    library(MASS)
+    A1gen <- function(rho,p){
+      A1=matrix(0,p,p)
+      for(i in 1:p){
+        for(j in 1:p){
+          A1[i,j]<-rho^(abs(i-j))
+        } 
+      }
+      A1
+    }
+    rho = 0.6
+    Cov <- (A1gen(rho,400))
+    mu <- rep(0,400)
+    beta <- rep(0,400)
+    beta[25:50] <- 0.08
+
+    set.seed(1203)
+
+    X <- MASS::mvrnorm(100,mu,Cov)
+    exp_val <- X%*%beta
+    prob <- exp(exp_val)/(1+exp(exp_val))
+    set.seed(1203)
+    y <- rbinom(100,1,prob)
+    test.set <- c(30:100)
+
+    ## Inference for Quadratic Functional with Population Covariance Matrix in middle
+
+    Est = SIHR::QF(X = X, y = y, model = "logistic", G=test.set)
+    ### Point esitmator
+
+    Est$prop.est
+    #> [1] 0
+
+    ### Standard error 
+
+    Est$se
+    #> [1] 0
+
+    ### Confidence interval
+    SIHR::inf(Est)$CI
+    #>      [,1] [,2]
+    #> [1,]    0    0
+
+    ### test whether the quadratic form is equal to zero or not (1 indicates that it is above zero)
+
+    SIHR::inf(Est)$decision
+    #> [1] 0
+
+    ## Inference for Quadratic Functional with known matrix A in middle
+
+    Est = SIHR::QF(X = X, y = y, model = "logistic", G=test.set, Cov.weight = FALSE,A = diag(1:length(test.set),length(test.set)))
+    ### Point esitmator
+
+    Est$prop.est
+    #>      [,1]
+    #> [1,]    0
+
+    ### Standard error 
+
+    Est$se
+    #> [1] 0.1
+
+    ### Confidence interval
+    SIHR::inf(Est)$CI
+    #>            [,1]      [,2]
+    #> [1,] -0.1959964 0.1959964
+
+    ### test whether the quadratic form is equal to zero or not (1 indicates that it is above zero)
+
+    SIHR::inf(Est)$decision
+    #> [1] 0
+
+    ## Inference for square norm of regression vector
+
+    Est = SIHR::QF(X = X, y = y, model = "logistic", G=test.set, Cov.weight = FALSE, A = diag(length(test.set)))
+    #> step is 2
+    ### Point esitmator
+
+    Est$prop.est
+    #>           [,1]
+    #> [1,] 0.1515991
+
+    ### Standard error 
+
+    Est$se
+    #> [1] 0.111116
+
+    ### Confidence interval
+    SIHR::inf(Est)$CI
+    #>             [,1]      [,2]
+    #> [1,] -0.06618424 0.3693825
+
+    ### test whether the quadratic form is equal to zero or not (1 indicates that it is above zero)
+
+    SIHR::inf(Est)$decision
+    #> [1] 0
 
 Finding projection direction in high dimensional linear regression
 
