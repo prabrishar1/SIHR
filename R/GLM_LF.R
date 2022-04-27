@@ -125,7 +125,7 @@ GLM_LF<-function(X, y, model = "linear", loading, intercept.loading = TRUE, inte
           init.coef <-  Initialization.step(X*1.75, y, model = "glm", lambda = 0.06*sqrt(log(p)/n), intercept)
           htheta <- init.coef$lasso.est
         } else if(model == "linear"){
-          init.coef <-  Initialization.step(X, y, model = "linear", lambda, intercept)
+          init.coef <-  SIHR:::Initialization.step(X, y, model = "linear", lambda, intercept)
           htheta <- init.coef$lasso.est
         } else {
           init.coef <-  Initialization.step(X, y, model = "glm", lambda = lambda, intercept)
@@ -134,23 +134,23 @@ GLM_LF<-function(X, y, model = "linear", loading, intercept.loading = TRUE, inte
       } else {
         htheta = init.coef
       }
-      col.norm <- 1 / sqrt((1 / n) * diag(t(X) %*% X))
-      Xnor <- X %*% diag(col.norm)
+      #col.norm <- 1 / sqrt((1 / n) * diag(t(X) %*% X))
+      #Xnor <- X %*% diag(col.norm)
       if (intercept == TRUE){
         support<-(abs(htheta)>0.001)
         Xc <- cbind(rep(1,n),X);
-        Xb <- cbind(rep(1,n),Xnor)
+        #Xb <- cbind(rep(1,n),Xnor)
         pp <- (p+1);
       } else {
         support<-(abs(htheta)>0.001)
         Xc <- X
-        Xb <- Xnor
+        #Xb <- Xnor
         pp <- p
       }
       htheta <- as.vector(htheta)
       if(model == "linear"){
         sparsity <- sum(abs(htheta) > 0.001)
-        sd.est <- sqrt(sum((y - Xb %*% htheta)^2) / max(0.9*n, n - sparsity))
+        sd.est <- sqrt(sum((y - Xc %*% htheta)^2) / max(0.9*n, n - sparsity))
       }
 
       if(intercept==TRUE){
