@@ -1,0 +1,168 @@
+#' Inference for quadratic forms of the regression vector in high dimensional linear and logistic regressions
+#'
+#' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
+#' @param y Outcome vector, of length \eqn{n}
+#' @param G The set of indices, \code{G} in the quadratic form
+#' @param A The matrix A in the quadratic form, of dimension \eqn{|G|\times}\eqn{|G|}.
+#' If \code{NULL} A would be set as the \eqn{|G|\times}\eqn{|G|} submatrix of the population
+#' covariance matrix corresponding to the index set \code{G} (default =
+#' \code{NULL})
+#' @param model The high dimensional regression model, either \code{linear} or
+#'   \code{logistic} or \code{logistic_alternative}
+#' @param intercept Should intercept be fitted for the initial estimator
+#'   (default = \code{TRUE})
+#' @param tau.vec The vector of enlargement factors for asymptotic variance of
+#'   the bias-corrected estimator to handle super-efficiency (default =
+#'   \eqn{c(0.5, 1)})
+#' @param lambda The tuning parameter in fitting model (default = \code{NULL})
+#' @param mu The dual tuning parameter used in the construction of the
+#'   projection direction (default = \code{NULL})
+#' @param init.step The initial step size used to compute \code{mu}; if set to
+#'   \code{NULL} it is computed to be the number of steps (< \code{maxiter}) to
+#'   obtain the smallest \code{mu} such that the dual optimization problem for
+#'   constructing the projection direction converges (default = \code{NULL})
+#' @param resol Resolution or the factor by which \code{mu} is
+#'   increased/decreased to obtain the smallest \code{mu} such that the dual
+#'   optimization problem for constructing the projection direction converges
+#'   (default = 1.5)
+#' @param maxiter aximum number of steps along which \code{mu} is
+#'   increased/decreased to obtain the smallest \code{mu} such that the dual
+#'   optimization problem for constructing the projection direction converges
+#'   (default = 6)
+#' @param alpha Level of significance to construct two-sided confidence interval (default = 0.05)
+#' @param verbose Should intermediate message(s) be printed (default =
+#'   \code{TRUE})
+#'
+#' @return
+#' \item{est.plugin}{The plugin(biased) estimator for the quadratic form
+#'   of the regression vector restricted to \code{G}}
+#' \item{est.debias}{The
+#'   bias-corrected estimator of the quadratic form of the regression vector}
+#' \item{se.vec}{The vector of standard errors of the bias-corrected estimator,
+#'   length of \code{tau.vec}; corrsponding to different values of \code{tau.vec}}
+#' \item{ci.mat}{The matrix of two.sided confidence interval for the quadratic
+#'   form of the regression vector; row corresponds to different values of
+#'   \code{tau.vec}}
+#' @export
+#'
+#' @import CVXR glmnet
+#' @importFrom stats coef dnorm median pnorm qnorm
+#' @examples
+#' X = matrix(rnorm(100*120), nrow=100, ncol=120)
+#' y = X[,1] * 0.5 + X[,2] * 1 + rnorm(100)
+#' G = c(1,2)
+#' A = matrix(c(1.5, 0.8, 0.8, 1.5), nrow=2, ncol=2)
+#' Est = QF(X, y, G, A, model="linear")
+#' Est$est.plugin ## plugin(biased) estimator
+#' Est$est.debias ## bias-corrected estimator
+#' Est$se.vec ## standard errors for bias-corrected estimators for each tau
+#' Est$ci.mat ## two-sided confidence interval for bias-corrected estimator for each tau
+#' \dontrun{
+#' summary(Est)
+#' }
+QF <- function(X, y, G, A=NULL, model=c("linear","logistic","logistic_alternative"),
+               intercept=TRUE, tau.vec=c(0.5, 1), lambda=NULL, mu=NULL, init.step=NULL, resol=1.5,
+               maxiter=6, alpha=0.05, verbose=TRUE){
+  model = match.arg(model)
+  X = as.matrix(X)
+  y = as.vector(y)
+  G = sort(as.vector(G))
+  nullA = ifelse(is.null(A), TRUE, FALSE)
+  nullmu = ifelse(is.null(mu), TRUE, FALSE)
+
+  ### check arguments ###
+  check.args.QF(X=X, y=y, G=G, A=A, model=model, intercept=intercept, tau.vec=tau.vec,
+                lambda=lambda, mu=mu, init.step=init.step, resol=resol, maxiter=maxiter,
+                alpha=alpha, verbose=verbose)
+
+  ### specify relevant functions ###
+  funs.all = relevant.funs(intercept=intercept, model=model)
+  train.fun = funs.all$train.fun
+  pred.fun = funs.all$pred.fun
+  deriv.fun = funs.all$deriv.fun
+  weight.fun = funs.all$deriv.fun
+  cond_var.fun = funs.all$cond_var.fun
+
+  ### centralize X ###
+  X = scale(X, center=TRUE, scale=F)
+
+  ### Compute initial lasso estimator of beta ###
+  beta.init = train.fun(X, y, lambda=lambda)$lasso.est
+
+  ### prepare values ###
+  if(intercept) X = cbind(1, X)
+  n = nrow(X); p = ncol(X)
+  pred = as.vector(pred.fun(X%*%beta.init))
+  deriv = as.vector(deriv.fun(X%*%beta.init))
+  weight = as.vector(weight.fun(X%*%beta.init))
+  cond_var = as.vector(cond_var.fun(pred, y))
+
+  ### Adjust A and loading ###
+  if(intercept) G = G+1
+  if(nullA){
+    A = t(X)%*%X / nrow(X)
+    A = A[G,G]
+  }
+  loading = rep(0, p)
+  loading[G] = A%*%beta.init[G]
+  loading.norm = sqrt(sum(loading^2))
+
+  ################# Correction Direction ####################
+  if(verbose) cat("Computing QF... \n")
+  if (n >= 6*p){
+    temp = weight*deriv*X
+    Sigma.hat = t(temp)%*%temp / n
+    direction = solve(Sigma.hat) %*% loading / loading.norm
+  } else {
+    ### find init.step ###
+    if(is.null(init.step)){
+      step.vec <- rep(NA,3)
+      for(t in 1:3){
+        index.sel <- sample(1:n,size=ceiling(0.5*min(n,p)), replace=FALSE)
+        Direction.Est.temp <-  Direction_searchtuning(X[index.sel,], loading, weight = weight[index.sel], deriv.vec = deriv[index.sel], resol, maxiter)
+        step.vec[t] <- Direction.Est.temp$step
+      }
+      init.step<- getmode(step.vec)
+    }
+    ### for loop to find direction ###
+    if(verbose) cat(sprintf("--> Initial step is : %s \n", init.step))
+    for(step in init.step:1){
+      if(verbose) cat(sprintf("---> Finding Direction with step: %s \n", step))
+      if(nullmu) mu = sqrt(2.01*log(p)/n)*resol^{-(step-1)}
+      Direction.Est <-  Direction_fixedtuning(X, loading, mu = mu, weight = weight, deriv.vec = deriv)
+      if(is.na(Direction.Est)|| length(Direction.Est$proj)==0){
+        step = step - 1
+      }else{
+        if(verbose) cat(sprintf("---> Direction is identified at step: %s \n", step))
+        direction <- Direction.Est$proj
+        break
+      }
+    }
+  }
+  ################# Bias Correction ################
+  est.plugin = as.numeric(t(beta.init[G]) %*% A %*% beta.init[G])
+  correction = 2 * mean((weight * (y-pred) * X) %*% direction)
+  est.debias = as.numeric(est.plugin + correction * loading.norm)
+
+  ############## Compute SE and Construct CI ###############
+  V = 4 * sum(((sqrt(weight^2 * cond_var) * X) %*% direction)^2)/n * loading.norm^2
+  if(nullA){
+    V.add = sum((as.vector((X[,G]%*%beta.init[G])^2) -
+                   as.numeric(t(beta.init[G]) %*% A %*% beta.init[G]))^2) / n
+  } else {
+    V.add = 0
+  }
+  V.vec = (V + V.add + tau.vec)
+  se.vec = sqrt(V.vec/n)
+  ci.mat = cbind(est.debias - qnorm(1-alpha/2)*se.vec, est.debias + qnorm(1-alpha/2)*se.vec)
+  colnames(ci.mat) = c("lower", "upper")
+  rownames(ci.mat) = paste("tau",tau.vec,sep="")
+
+  obj <- list(est.plugin = est.plugin,
+              est.debias = est.debias,
+              se.vec     = se.vec,
+              ci.mat     = ci.mat,
+              tau.vec    = tau.vec)
+  class(obj) = "QF"
+  obj
+}
