@@ -43,6 +43,7 @@
 #' \item{ci.mat}{The matrix of two.sided confidence interval for the quadratic
 #'   form of the regression vector; row corresponds to different values of
 #'   \code{tau.vec}}
+#' \item{proj}{The projection direction}
 #' @export
 #'
 #' @import CVXR glmnet
@@ -162,7 +163,8 @@ QF <- function(X, y, G, A=NULL, model=c("linear","logistic","logistic_alternativ
               est.debias = est.debias,
               se.vec     = se.vec,
               ci.mat     = ci.mat,
-              tau.vec    = tau.vec)
+              tau.vec    = tau.vec,
+              proj       = direction)
   class(obj) = "QF"
   obj
 }

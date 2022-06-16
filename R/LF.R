@@ -3,12 +3,13 @@
 #'
 #' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
 #' @param y Outcome vector, of length \eqn{n}
-#' @param loading.mat Loading matrix, nrow=\eqn{p}
+#' @param loading.mat Loading matrix, nrow=\eqn{p}, each column corresponds to
+#'   a loading of interest
 #' @param model The high dimensional regression model, either \code{linear} or
 #'   \code{logistic} or \code{logistic_alternative} or \code{probit}
 #' @param intercept Should intercept be fitted for the initial estimator
 #'   (default = \code{TRUE})
-#' @param intercept.loading Should intercept be included for the \code{loading}
+#' @param intercept.loading Should intercept be included for the loading
 #'   (default = \code{TRUE})
 #' @param lambda The tuning parameter in fitting model (default = \code{NULL})
 #' @param mu The dual tuning parameter used in the construction of the
@@ -29,20 +30,20 @@
 #'
 #' @return
 #' \item{est.plugin.vec}{The vector of plugin(biased) estimators for the
-#'  linear combination of regression coefficients, length of
-#'   \code{ncol(loading.mat)}; corresponding to different column in
-#'    \code{loading.mat}}
+#'   linear combination of regression coefficients, length of
+#'   \code{ncol(loading.mat)}; each corresponding to a loading of interest}
 #' \item{est.debias.vec}{The vector of bias-corrected
 #'   estimators for the linear combination of regression coefficients, length of
-#'   \code{ncol(loading.mat)}; corresponding to different column in
-#'   \code{loading.mat}}
+#'   \code{ncol(loading.mat)}; each corresponding to a loading of interest}
 #' \item{se.vec}{The vector of standard errors of the
-#'   bias-corrected estimators, length of \code{ncol(loading.mat)}; corresponding
-#'   to different column in \code{loading.mat}}
+#'   bias-corrected estimators, length of \code{ncol(loading.mat)}; each
+#'   corresponding to a loading of interest}
 #' \item{ci.mat}{The matrix of
 #'   two.sided confidence interval for the linear combination, of dimension
-#'   \code{ncol(loading.mat)} x \eqn{2}; the row corresponding to different column
-#'   in \code{loading.mat}}
+#'   \code{ncol(loading.mat)} x \eqn{2}; each row corresponding to a loading of
+#'   interest}
+#' \item{proj.mat}{The matrix of projection directions; each column corresponding
+#'   to a loading of interest}
 #'
 #' @export
 #' @import CVXR glmnet
@@ -111,6 +112,8 @@ LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alternat
   se.vec = rep(NA, n.loading)
   ci.mat = matrix(NA, nrow = n.loading, ncol = 2)
   colnames(ci.mat) = c("lower","upper"); rownames(ci.mat) = paste("loading",1:n.loading,sep="")
+  proj.mat = matrix(NA, nrow=p, ncol=n.loading)
+
   for(i.loading in 1:n.loading){
     ### adjust loading ###
     loading = as.vector(loading.mat[,i.loading])
@@ -171,12 +174,14 @@ LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alternat
     est.debias.vec[i.loading] = est.debias
     se.vec[i.loading] = se
     ci.mat[i.loading, ] = ci
+    proj.mat[, i.loading] = direction
   }
 
   obj <- list(est.plugin.vec = est.plugin.vec,
               est.debias.vec = est.debias.vec,
               se.vec         = se.vec,
-              ci.mat         = ci.mat)
+              ci.mat         = ci.mat,
+              proj.mat       = proj.mat)
   class(obj) = "LF"
   obj
 }

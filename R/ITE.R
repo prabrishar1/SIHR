@@ -9,7 +9,8 @@
 #' @param X2 Design matrix for the second sample, of dimension \eqn{n_2} x
 #'   \eqn{p}
 #' @param y2 Outcome vector for the second sample, of length \eqn{n_1}
-#' @param loading.mat Loading matrix, nrow=\eqn{p}
+#' @param loading.mat Loading matrix, nrow=\eqn{p}, each column corresponds to
+#'   a loading of interest
 #' @param model The high dimensional regression model, either \code{linear} or
 #'   \code{logistic} or \code{logistic alternative} or \code{probit}
 #' @param intercept Should intercept(s) be fitted for the initial estimators
@@ -30,7 +31,8 @@
 #'   increased/decreased to obtain the smallest \code{mu} such that the dual
 #'   optimization problem for constructing the projection direction converges
 #'   (default = 6)
-#' @param alpha Level of significance to construct two-sided confidence interval (default = 0.05)
+#' @param alpha Level of significance to construct two-sided confidence interval
+#'   (default = 0.05)
 #' @param verbose Should intermediate message(s) be printed (default =
 #'   \code{TRUE})
 #'
@@ -50,6 +52,7 @@
 #'   two.sided confidence interval for the linear combination, of dimension
 #'   \code{ncol(loading.mat)} x \eqn{2}; the row corresponding to different column
 #'   in \code{loading.mat}}
+#'
 #' @export
 #' @import CVXR glmnet
 #' @importFrom stats coef dnorm median pnorm qnorm
