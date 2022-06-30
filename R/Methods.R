@@ -227,7 +227,7 @@ confint.QF <- function(obj, alpha=0.05, alternative=c("two.sided","less","greate
 #' sEst = summary(Est)
 #' sEst
 #' }
-summary.QF <- function(obj, alpha=0.05, alternative=c("two.sided","less","greater"), digits=4){
+summary.QF <- function(obj){
   est.plugin = obj$est.plugin
   est.debias = obj$est.debias
   se.vec     = obj$se.vec
@@ -256,7 +256,7 @@ summary.QF <- function(obj, alpha=0.05, alternative=c("two.sided","less","greate
 #' #' ##-- Continuing the QF(.) example:
 #' summary(Est)
 #' }
-print.summary.QF <- function(obj){
+print.summary.QF <- function(obj, digits=4){
   output.est = obj$output.est
 
   cat("Call: \nInference for Quadratic Functional\n\n")

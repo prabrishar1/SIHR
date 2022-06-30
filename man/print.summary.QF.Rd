@@ -4,7 +4,7 @@
 \alias{print.summary.QF}
 \title{Printing ummarizing QF}
 \usage{
-\method{print}{summary.QF}(obj)
+\method{print}{summary.QF}(obj, digits = 4)
 }
 \arguments{
 \item{obj}{An object of class `summary.QF`, a result of a call to `summary.QF`}

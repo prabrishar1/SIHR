@@ -4,12 +4,7 @@
 \alias{summary.QF}
 \title{Summarizing QF}
 \usage{
-\method{summary}{QF}(
-  obj,
-  alpha = 0.05,
-  alternative = c("two.sided", "less", "greater"),
-  digits = 4
-)
+\method{summary}{QF}(obj)
 }
 \arguments{
 \item{obj}{An object of class `QF`, a result of a call to `QF`}
