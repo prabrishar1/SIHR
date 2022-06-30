@@ -8,9 +8,15 @@
 
 The goal of SIHR is to provide inference procedures in the
 high-dimensional setting for (1) linear functionals in generalized
-linear regression (GLM_LF), (2) quadratic functionals in linear
-regression (QF) (3) individual treatment effects in generalized linear
-regression (ITE). \## Installation
+linear regression, (2) individual treatment effects in generalized
+linear regression (ITE), (3) quadratic functionals in generalized linear
+regression (QF).
+
+Currently, we support different generalized linear regression, by
+specifying the argument `model` in “linear”, “logisitc”,
+“logistic_alternative” or “probit”.
+
+## Installation
 
 You can install the development version from
 [GitHub](https://github.com/) with:
@@ -92,6 +98,73 @@ summary(Est)
 #>  loading est.plugin est.debias Std. Error z value  Pr(>|z|)    
 #>        1     0.5591     0.8091     0.1670   4.846 1.258e-06 ***
 #>        2    -1.6136    -1.7912     0.1445 -12.398 2.687e-35 ***
+```
+
+### Inference for linear functional in high-dimensional logistic regression model
+
+Generate Data and find the truth linear functionals:
+
+``` r
+set.seed(0)
+X = matrix(rnorm(100*120), nrow=100, ncol=120)
+exp_val = -0.5 + X[,1] * 0.5 + X[,2] * 1
+prob = exp(exp_val) / (1+exp(exp_val))
+y = rbinom(100, 1, prob)
+loading1 = c(1, 1, rep(0, 118))
+loading2 = c(-0.5, -1, rep(0, 118))
+loading.mat = cbind(loading1, loading2)
+## consider the intercept.loading=TRUE
+truth1 = -0.5 + 0.5 * 1 + 1 * 1
+truth2 = -0.5 + 0.5 * -0.5 + 1 * -1
+truth = c(truth1, truth2)
+truth
+#> [1]  1.00 -1.75
+```
+
+Call `LF` with `model="logistic"`:
+
+``` r
+Est = LF(X, y, loading.mat, model="logistic", intercept.loading=TRUE, verbose=TRUE)
+#> Computing LF for loading (1/2)... 
+#> ---> Initial step set as: 3 
+#> ---> Finding Direction with step: 3 
+#> ---> Direction is identified at step: 3 
+#> Computing LF for loading (2/2)... 
+#> ---> Initial step set as: 3 
+#> ---> Finding Direction with step: 3 
+#> ---> Direction is identified at step: 3
+Est$est.plugin.vec ## plugin(biased) estimators
+#> [1]  0.5213585 -1.1018881
+Est$est.debias.vec ## bias-corrected estimators
+#> [1]  0.8592612 -1.3480456
+Est$se.vec ## standard errors for bias-corrected estimators
+#> [1] 0.4590642 0.4015254
+Est$ci.mat ## two-sided confidence interval for bias-corrected estimators
+#>                lower      upper
+#> loading1 -0.04048804  1.7590104
+#> loading2 -2.13502097 -0.5610702
+```
+
+`confint` method for `LF`
+
+``` r
+confint(Est)
+#>   loading       lower      upper
+#> 1       1 -0.04048804  1.7590104
+#> 2       2 -2.13502097 -0.5610702
+```
+
+`summary` method for `LF`
+
+``` r
+summary(Est)
+#> Call: 
+#> Inference for Linear Functional
+#> 
+#> Estimators: 
+#>  loading est.plugin est.debias Std. Error z value Pr(>|z|)    
+#>        1     0.5214     0.8593     0.4591   1.872 0.061239   .
+#>        2    -1.1019    -1.3480     0.4015  -3.357 0.000787 ***
 ```
 
 ### Inference for Treatment Effects in high-dimensional linear regression model

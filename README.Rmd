@@ -18,7 +18,10 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of SIHR is to provide inference procedures in the high-dimensional setting for (1) linear functionals in generalized linear regression (GLM_LF), (2) quadratic functionals in linear regression (QF) (3) individual treatment effects in generalized linear regression (ITE).
+The goal of SIHR is to provide inference procedures in the high-dimensional setting for (1) linear functionals in generalized linear regression, (2) individual treatment effects in generalized linear regression (ITE), (3) quadratic functionals in generalized linear regression (QF).
+
+Currently, we support different generalized linear regression, by specifying the argument `model` in "linear", "logisitc", "logistic_alternative" or "probit".
+
 ## Installation
 
 You can install the development version from [GitHub](https://github.com/) with:
@@ -67,6 +70,43 @@ confint(Est)
 
 `summary` method for `LF`
 ```{r Summary LF-linear}
+summary(Est)
+```
+
+### Inference for linear functional in high-dimensional logistic regression model
+Generate Data and find the truth linear functionals:
+```{r Generate Data LF-logistic}
+set.seed(0)
+X = matrix(rnorm(100*120), nrow=100, ncol=120)
+exp_val = -0.5 + X[,1] * 0.5 + X[,2] * 1
+prob = exp(exp_val) / (1+exp(exp_val))
+y = rbinom(100, 1, prob)
+loading1 = c(1, 1, rep(0, 118))
+loading2 = c(-0.5, -1, rep(0, 118))
+loading.mat = cbind(loading1, loading2)
+## consider the intercept.loading=TRUE
+truth1 = -0.5 + 0.5 * 1 + 1 * 1
+truth2 = -0.5 + 0.5 * -0.5 + 1 * -1
+truth = c(truth1, truth2)
+truth
+```
+
+Call `LF` with `model="logistic"`: 
+```{r LF-logistic}
+Est = LF(X, y, loading.mat, model="logistic", intercept.loading=TRUE, verbose=TRUE)
+Est$est.plugin.vec ## plugin(biased) estimators
+Est$est.debias.vec ## bias-corrected estimators
+Est$se.vec ## standard errors for bias-corrected estimators
+Est$ci.mat ## two-sided confidence interval for bias-corrected estimators
+```
+
+`confint` method for `LF`
+```{r confint LF-logistic}
+confint(Est)
+```
+
+`summary` method for `LF`
+```{r Summary LF-logistic}
 summary(Est)
 ```
 
