@@ -41,8 +41,10 @@ Generate Data and find the truth linear functionals:
 set.seed(0)
 X = matrix(rnorm(100*120), nrow=100, ncol=120)
 y = -0.5 + X[,1] * 0.5 + X[,2] * 1 + rnorm(100)
-loading.mat = cbind(c(1, 1, rep(0, 118)), c(-0.5, -1, rep(0, 118)))
-## consider the intercept.loading 
+loading1 = c(1, 1, rep(0, 118))
+loading2 = c(-0.5, -1, rep(0, 118))
+loading.mat = cbind(loading1, loading2)
+## consider the intercept.loading=TRUE
 truth1 = -0.5 + 0.5 * 1 + 1 * 1
 truth2 = -0.5 + 0.5 * -0.5 + 1 * -1
 truth = c(truth1, truth2)
@@ -58,8 +60,86 @@ Est$se.vec ## standard errors for bias-corrected estimators
 Est$ci.mat ## two-sided confidence interval for bias-corrected estimators
 ```
 
+`confint` method for `LF`
+```{r confint LF-linear}
+confint(Est)
+```
+
 `summary` method for `LF`
 ```{r Summary LF-linear}
 summary(Est)
 ```
 
+### Inference for Treatment Effects in high-dimensional linear regression model
+Generate Data and find the truth linear functionals:
+```{r Generate Data ITE-linear}
+set.seed(0)
+X1 = matrix(rnorm(100*120), nrow=100, ncol=120)
+y1 = -0.5 + X1[,1] * 0.5 + X1[,2] * 1 + rnorm(100)
+X2 = matrix(0.8*rnorm(100*120), nrow=100, ncol=120)
+y2 = 0.1 + X2[,1] * 0.8 + X2[,2] * 0.8 + rnorm(100)
+loading1 = c(1, 1, rep(0, 118))
+loading2 = c(-0.5, -1, rep(0, 118))
+## consider the intercept.loading=TRUE
+truth1 = (-0.5 + 0.5*1 + 1*1) - (0.1 + 0.8*1 + 0.8*1)
+truth2 = (-0.5 + 0.5*(-0.5) + 1*(-1)) - (0.1 + 0.8*(-0.5) + 0.8*(-1))
+truth = c(truth1, truth2)
+truth
+```
+
+Call `ITE` with `model="linear"`:
+```{r ITE-linear}
+Est = ITE(X1, y1, X2, y2, loading.mat, model="linear", intercept.loading=TRUE, verbose=TRUE)
+Est$est.plugin.vec ## plugin(biased) estimators
+Est$est.debias.vec ## bias-corrected estimators
+Est$se.vec ## standard errors for bias-corrected estimators
+Est$ci.mat ## two-sided confidence interval for bias-corrected estimators
+```
+
+`confint` method for `LF`
+```{r confint ITE-linear}
+confint(Est)
+```
+
+`summary` method for `LF`
+```{r Summary ITE-linear}
+summary(Est)
+```
+
+### Inference for Quadratic functional in high-dimensional linear regression
+Generate Data and find the truth quadratic functionals:
+```{r Generate Data QF-linear}
+set.seed(0)
+A1gen <- function(rho, p){
+  M = matrix(NA, nrow=p, ncol=p)
+  for(i in 1:p) for(j in 1:p) M[i,j] = rho^{abs(i-j)}
+  M
+}
+Cov = A1gen(0.5, 150)
+X = MASS::mvrnorm(n=200, mu=rep(0, 150), Sigma=Cov)
+beta = rep(0, 150); beta[25:50] = 0.2
+y = X%*%beta + rnorm(200)
+test.set = c(40:60)
+truth = as.numeric(t(beta[test.set])%*%Cov[test.set, test.set]%*%beta[test.set])
+truth
+```
+
+Call `QF` with `model="linear"`:
+```{r QF-linear}
+tau.vec = c(0, 0.5, 1)
+Est = QF(X, y, G=test.set, A=NULL, model="linear", tau.vec=tau.vec, verbose=TRUE)
+Est$est.plugin ## plugin(biased) estimator
+Est$est.debias ## bias-corrected estimator
+Est$se.vec ## standard errors for bias-corrected estimator
+Est$ci.mat ## two-sided confidence interval for bias-corrected estimators
+```
+
+`confint` method for `LF`
+```{r confint QF-linear}
+confint(Est)
+```
+
+`summary` method for `LF`
+```{r Summary QF-linear}
+summary(Est)
+```

@@ -4,23 +4,22 @@
 \alias{summary.QF}
 \title{Summarizing QF}
 \usage{
-\method{summary}{QF}(obj, alpha = 0.05, alternative = c("two.sided", "less", "greater"))
+\method{summary}{QF}(
+  obj,
+  alpha = 0.05,
+  alternative = c("two.sided", "less", "greater"),
+  digits = 4
+)
 }
 \arguments{
 \item{obj}{An object of class `QF`, a result of a call to `QF`}
-
-\item{alpha}{Level of significance to construct confidence interval}
-
-\item{alternative}{indicates the alternative hypothesis to construct confidence interval and must be one of "two.sided" (default), "less", or "greater".}
 }
 \value{
 The function `summary.QF` computes and returns a list of summary statistics
 of LF given `obj`
-\item{output.est}{a \eqn{length(tau.vec)} x 5 matrix with columns for the
-plugin(biased) estimators, bias-corrected estimators, its standard error, z-statistic and
-corresponding (two-sided) p-value; Each row corresponds to each tau.}
-\item{output.ci}{a \eqn{length(tau.vc)} x 2 matrix with columns for lower and upper
-of (two-sided) confidence intervals; Each row corresponds to each tau.}
+\item{output.est}{a \eqn{length(tau.vec)} x 7 matrix with columns for tau,
+plugin(biased) estimators, bias-corrected estimators, its standard error, z-statistic,
+corresponding (two-sided) p-value and significance stars; Each row corresponds to each tau.}
 }
 \description{
 `summary` method for class `QF`

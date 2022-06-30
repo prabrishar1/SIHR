@@ -29,25 +29,25 @@ Direction_fixedtuning <- function(X, loading, mu = NULL, weight = NULL, deriv.ve
     mu <- sqrt(2.01*log(pp)/n)
   }
   loading.norm <- sqrt(sum(loading^2))
-
-  if (loading.norm == 0){
-    H <- cbind(loading, diag(1, pp))
-  }else{
-    H <- cbind(loading / loading.norm, diag(1, pp))
+  ## loading too small, return 0 directly
+  if(loading.norm <= 1e-5){
+    direction = rep(0, length(loading))
+    return(list(proj = direction))
   }
+  ## loading not too small
+  H <- cbind(loading / loading.norm, diag(1, pp))
   v <- Variable(pp+1)
   obj <- 1/4*sum(((X%*%H%*%v)^2)*weight*deriv.vec)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
   prob <- Problem(Minimize(obj))
   result <- solve(prob)
-  if(result$status=="optimal" || result$status == "unbounded"){
+  if(result$status=="optimal"){
     opt.sol<-result$getValue(v)
     cvxr_status<-result$status
     direction<-(-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
+    return(list(proj=direction))
   }else{
-    direction <- numeric(0)
+    stop("FixTuning Step finds no optimal solution")
   }
-  returnList <- list("proj"=direction)
-  return(returnList)
 }
 
 # Searches for the best step size and computes the projection direction with the searched best step size
@@ -84,18 +84,20 @@ Direction_searchtuning <- function(X, loading, weight = NULL, deriv.vec = NULL, 
   lamstop <- 0
   cvxr_status <- "optimal"
   mu <- sqrt(2.01*log(pp)/n)
+  loading.norm <- sqrt(sum(loading^2))
+  ## loading too small, return 0 directly
+  if(loading.norm <= 1e-5){
+    direction = rep(0, length(loading))
+    return(list(proj = direction,
+                step = 1))
+  }
+  ## loading not too small
+  H <- cbind(loading / loading.norm, diag(1, pp))
   while (lamstop == 0 && tryno < maxiter){
     lastv <- opt.sol;
     lastresp <- cvxr_status;
-    loading.norm <- sqrt(sum(loading^2))
-    if (loading.norm == 0){
-      H <- cbind(loading, diag(1, pp))
-    }else{
-      H <- cbind(loading / loading.norm, diag(1, pp))
-    }
     v <- Variable(pp+1)
     obj <- 1/4*sum(((X%*%H%*%v)^2)*weight*deriv.vec)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
-
     prob <- Problem(Minimize(obj))
     result <- solve(prob)
     cvxr_status <- result$status
@@ -120,11 +122,10 @@ Direction_searchtuning <- function(X, loading, weight = NULL, deriv.vec = NULL, 
           mu <- mu*resol
         }
       } else {
-        if(cvxr_status == "optimal" && temp.sd < 3*initial.sd){
+        if(cvxr_status == "optimal"){ # && temp.sd < 3*initial.sd){
           mu <- mu/resol
           opt.sol <- result$getValue(v)
           temp.vec <- (-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
-
           temp.sd <- sqrt(sum(((X%*% temp.vec)^2)*weight*deriv.vec)/(n)^2)*loading.norm
         } else {
           mu <- mu*resol
@@ -138,7 +139,7 @@ Direction_searchtuning <- function(X, loading, weight = NULL, deriv.vec = NULL, 
   }
   direction <- (-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
   step <- tryno-1
-  returnList <- list("proj"=direction,
-                     "step"=step)
+  returnList <- list(proj = direction,
+                     step = step)
   return(returnList)
 }

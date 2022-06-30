@@ -2,17 +2,17 @@
 % Please edit documentation in R/Methods.R
 \name{print.summary.LF}
 \alias{print.summary.LF}
-\title{Summarizing LF}
+\title{Printing Summarizing LF}
 \usage{
-\method{print}{summary.LF}(obj, digits = 5)
+\method{print}{summary.LF}(obj, digits = 4)
 }
 \arguments{
 \item{obj}{An object of class `summary.LF`, a result of a call to `summary.LF`}
 
-\item{digits}{The number of digits to use when printing}
+\item{digits}{The number of digits to use when printing (default=4)}
 }
 \description{
-`summary` method for class `LF`
+`print` method for class `summary.LF`
 }
 \examples{
 \dontrun{
@@ -20,3 +20,4 @@
 summary(Est)
 }
 }
+\keyword{internal}

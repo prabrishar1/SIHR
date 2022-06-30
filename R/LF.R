@@ -70,6 +70,7 @@ LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alternat
   y = as.vector(y)
   loading.mat = as.matrix(loading.mat)
   nullmu = ifelse(is.null(mu), TRUE, FALSE)
+  null_initstep = ifelse(is.null(init.step), TRUE, FALSE)
 
   ### Check arguments ###
   if(!is.logical(verbose)) verbose=TRUE
@@ -78,9 +79,8 @@ LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alternat
     cat("Argument 'intercept.loading' is set to FALSE, because 'intercept' is FALSE")
   }
   check.args.LF(X=X, y=y, loading.mat=loading.mat, model=model, intercept=intercept,
-             intercept.loading=intercept.loading, lambda=lambda, mu=NULL, init.step=NULL,
+             intercept.loading=intercept.loading, lambda=lambda, mu=mu, init.step=init.step,
              resol=resol, maxiter=maxiter, alpha=alpha, verbose=verbose)
-  null_initstep = ifelse(is.null(init.step), TRUE, FALSE)
 
   ### specify relevant functions ###
   funs.all = relevant.funs(intercept=intercept, model=model)
@@ -134,28 +134,51 @@ LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alternat
       Sigma.hat = t(temp)%*%temp / n
       direction = solve(Sigma.hat) %*% loading / loading.norm
     } else {
-      ### find init.step ###
-      if(null_initstep){
-        step.vec <- rep(NA,3)
-        for(t in 1:3){
-          index.sel <- sample(1:n,size=ceiling(0.5*min(n,p)), replace=FALSE)
-          Direction.Est.temp <-  Direction_searchtuning(X[index.sel,], loading, weight = weight[index.sel], deriv.vec = deriv[index.sel], resol, maxiter)
-          step.vec[t] <- Direction.Est.temp$step
+      ### CVXR sometimes break down accidentally, we catch the error and offer an alternative ###
+      direction_alter = FALSE
+      tryCatch(
+        expr = {
+          ### find init.step ###
+          if(null_initstep){
+            step.vec <- rep(NA,3)
+            for(t in 1:3){
+              index.sel <- sample(1:n,size=ceiling(0.5*min(n,p)), replace=FALSE)
+              Direction.Est.temp <-  Direction_searchtuning(X[index.sel,], loading, weight = weight[index.sel], deriv.vec = deriv[index.sel], resol, maxiter)
+              step.vec[t] <- Direction.Est.temp$step
+            }
+            init.step<- getmode(step.vec)
+          }
+          ### for loop to find direction ###
+          if(verbose) cat(sprintf("---> Initial step set as: %s \n", init.step))
+          for(step in init.step:1){
+            if(verbose) cat(sprintf("---> Finding Direction with step: %s \n", step))
+            if(nullmu) mu = sqrt(2.01*log(p)/n)*resol^{-(step-1)}
+            Direction.Est <-  Direction_fixedtuning(X, loading, mu = mu, weight = weight, deriv.vec = deriv)
+            if(is.na(Direction.Est)|| length(Direction.Est$proj)==0){
+              step = step - 1
+            }else{
+              if(verbose) cat(sprintf("---> Direction is identified at step: %s \n", step))
+              direction <- Direction.Est$proj
+              break
+            }
+          }
+        },
+        error = function(e){
+          message("Caught an error in CVXR during computing direction")
+          print(e)
+          direction_alter <<- TRUE
+        },
+        warning = function(w){
+          message("Caught a warning in CVXR during computing direction")
+          print(w)
+          direction_alter <<- TRUE
         }
-        init.step<- getmode(step.vec)
-      }
-      ### for loop to find direction ###
-      for(step in init.step:1){
-        if(verbose) cat(sprintf("---> Finding Direction with step: %s \n", step))
-        if(nullmu) mu = sqrt(2.01*log(p)/n)*resol^{-(step-1)}
-        Direction.Est <-  Direction_fixedtuning(X, loading, mu = mu, weight = weight, deriv.vec = deriv)
-        if(is.na(Direction.Est)|| length(Direction.Est$proj)==0){
-          step = step - 1
-        }else{
-          if(verbose) cat(sprintf("---> Direction is identified at step: %s \n", step))
-          direction <- Direction.Est$proj
-          break
-        }
+      )
+      if(direction_alter){
+        temp = weight*deriv*X
+        Sigma.hat = t(temp)%*%temp / n
+        Sigma.hat.inv = diag(1/diag(Sigma.hat))
+        direction = Sigma.hat.inv %*% loading / loading.norm
       }
     }
 

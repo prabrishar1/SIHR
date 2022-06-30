@@ -13,8 +13,9 @@ relevant.funs <- function(intercept=TRUE, model=c("linear","logistic","logistic_
   ### init step function ###
   if(model=="linear"){
 
-    train.fun <- function(X, y, lambda=NULL){
+    train.fun <- function(X, y,lambda=NULL){
       if(is.null(lambda)) lambda = "CV.min"
+      p = ncol(X)
       htheta <- if (lambda == "CV.min") {
         outLas <- cv.glmnet(X, y, family = "gaussian", alpha = 1,
                             intercept = intercept, standardize = T)
@@ -43,6 +44,7 @@ relevant.funs <- function(intercept=TRUE, model=c("linear","logistic","logistic_
 
     train.fun <- function(X, y, lambda=NULL){
       if(is.null(lambda)) lambda = "CV.min"
+      p = ncol(X)
       htheta <- if (lambda == "CV.min") {
         outLas <- cv.glmnet(X, y, family = "binomial", alpha = 1,
                             intercept = intercept, standardize = T)

@@ -2,17 +2,15 @@
 % Please edit documentation in R/Methods.R
 \name{print.summary.QF}
 \alias{print.summary.QF}
-\title{Summarizing QF}
+\title{Printing ummarizing QF}
 \usage{
-\method{print}{summary.QF}(obj, digits = 5)
+\method{print}{summary.QF}(obj)
 }
 \arguments{
 \item{obj}{An object of class `summary.QF`, a result of a call to `summary.QF`}
-
-\item{digits}{The number of digits to use when printing}
 }
 \description{
-`summary` method for class `QF`
+`print` method for class `summary.QF`
 }
 \examples{
 \dontrun{
@@ -20,3 +18,4 @@
 summary(Est)
 }
 }
+\keyword{internal}

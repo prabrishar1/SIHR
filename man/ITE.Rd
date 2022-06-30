@@ -13,7 +13,7 @@ ITE(
   loading.mat,
   model = "linear",
   intercept = TRUE,
-  intercept.loading,
+  intercept.loading = TRUE,
   lambda = NULL,
   mu = NULL,
   init.step = NULL,
@@ -34,7 +34,8 @@ ITE(
 
 \item{y2}{Outcome vector for the second sample, of length \eqn{n_1}}
 
-\item{loading.mat}{Loading matrix, nrow=\eqn{p}}
+\item{loading.mat}{Loading matrix, nrow=\eqn{p}, each column corresponds to
+a loading of interest}
 
 \item{model}{The high dimensional regression model, either \code{linear} or
 \code{logistic} or \code{logistic alternative} or \code{probit}}
@@ -64,7 +65,8 @@ increased/decreased to obtain the smallest \code{mu} such that the dual
 optimization problem for constructing the projection direction converges
 (default = 6)}
 
-\item{alpha}{Level of significance to construct two-sided confidence interval (default = 0.05)}
+\item{alpha}{Level of significance to construct two-sided confidence interval
+(default = 0.05)}
 
 \item{verbose}{Should intermediate message(s) be printed (default =
 \code{TRUE})}

@@ -2,17 +2,17 @@
 % Please edit documentation in R/Methods.R
 \name{print.summary.ITE}
 \alias{print.summary.ITE}
-\title{Summarizing ITE}
+\title{Printing Summarizing ITE}
 \usage{
-\method{print}{summary.ITE}(obj, digits = 5)
+\method{print}{summary.ITE}(obj, digits = 4)
 }
 \arguments{
 \item{obj}{An object of class `summary.ITE`, a result of a call to `summary.ITE`}
 
-\item{digits}{The number of digits to use when printing}
+\item{digits}{The number of digits to use when printing (default=4)}
 }
 \description{
-`summary` method for class `ITE`
+`print` method for class `summary.ITE`
 }
 \examples{
 \dontrun{
@@ -20,3 +20,4 @@
 summary(Est)
 }
 }
+\keyword{internal}

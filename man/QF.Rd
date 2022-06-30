@@ -78,6 +78,7 @@ optimization problem for constructing the projection direction converges
 \item{ci.mat}{The matrix of two.sided confidence interval for the quadratic
   form of the regression vector; row corresponds to different values of
   \code{tau.vec}}
+\item{proj}{The projection direction}
 }
 \description{
 Inference for quadratic forms of the regression vector in high dimensional linear and logistic regressions

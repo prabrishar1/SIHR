@@ -4,23 +4,17 @@
 \alias{summary.LF}
 \title{Summarizing LF}
 \usage{
-\method{summary}{LF}(obj, alpha = 0.05, alternative = c("two.sided", "less", "greater"))
+\method{summary}{LF}(obj)
 }
 \arguments{
 \item{obj}{An object of class `LF`, a result of a call to `LF`}
-
-\item{alpha}{Level of significance to construct confidence interval}
-
-\item{alternative}{indicates the alternative hypothesis to construct confidence interval and must be one of "two.sided" (default), "less", or "greater".}
 }
 \value{
 The function `summary.LF` computes and returns a list of summary statistics
 of LF given `obj`
-\item{output.est}{a \eqn{ncol(loading.mat)} x 5 matrix with columns for the
-plugin(biased) estimators, bias-corrected estimators, its standard error, z-statistic and
-corresponding (two-sided) p-value; Each row corresponds to each loading.}
-\item{output.ci}{a \eqn{ncol(loading.mat)} x 2 matrix with columns for lower and upper
-of (two-sided) confidence intervals; Each row corresponds to each loading.}
+\item{output.est}{a \eqn{ncol(loading.mat)} x 7 matrix with columns for the loading,
+plugin(biased) estimators, bias-corrected estimators, its standard error, z-statistic,
+corresponding (two-sided) p-value and significance stars; Each row corresponds to each loading.}
 }
 \description{
 `summary` method for class `LF`

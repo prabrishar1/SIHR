@@ -26,7 +26,8 @@ LF(
 
 \item{y}{Outcome vector, of length \eqn{n}}
 
-\item{loading.mat}{Loading matrix, nrow=\eqn{p}}
+\item{loading.mat}{Loading matrix, nrow=\eqn{p}, each column corresponds to
+a loading of interest}
 
 \item{model}{The high dimensional regression model, either \code{linear} or
 \code{logistic} or \code{logistic_alternative} or \code{probit}}
@@ -34,7 +35,7 @@ LF(
 \item{intercept}{Should intercept be fitted for the initial estimator
 (default = \code{TRUE})}
 
-\item{intercept.loading}{Should intercept be included for the \code{loading}
+\item{intercept.loading}{Should intercept be included for the loading
 (default = \code{TRUE})}
 
 \item{lambda}{The tuning parameter in fitting model (default = \code{NULL})}
@@ -62,20 +63,20 @@ optimization problem for constructing the projection direction converges
 }
 \value{
 \item{est.plugin.vec}{The vector of plugin(biased) estimators for the
- linear combination of regression coefficients, length of
-  \code{ncol(loading.mat)}; corresponding to different column in
-   \code{loading.mat}}
+  linear combination of regression coefficients, length of
+  \code{ncol(loading.mat)}; each corresponding to a loading of interest}
 \item{est.debias.vec}{The vector of bias-corrected
   estimators for the linear combination of regression coefficients, length of
-  \code{ncol(loading.mat)}; corresponding to different column in
-  \code{loading.mat}}
+  \code{ncol(loading.mat)}; each corresponding to a loading of interest}
 \item{se.vec}{The vector of standard errors of the
-  bias-corrected estimators, length of \code{ncol(loading.mat)}; corresponding
-  to different column in \code{loading.mat}}
+  bias-corrected estimators, length of \code{ncol(loading.mat)}; each
+  corresponding to a loading of interest}
 \item{ci.mat}{The matrix of
   two.sided confidence interval for the linear combination, of dimension
-  \code{ncol(loading.mat)} x \eqn{2}; the row corresponding to different column
-  in \code{loading.mat}}
+  \code{ncol(loading.mat)} x \eqn{2}; each row corresponding to a loading of
+  interest}
+\item{proj.mat}{The matrix of projection directions; each column corresponding
+  to a loading of interest}
 }
 \description{
 Inference for linear combination of the regression vector in high dimensional

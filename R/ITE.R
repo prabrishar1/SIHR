@@ -71,7 +71,7 @@
 #' \dontrun{
 #' summary(Est)
 #' }
-ITE <- function(X1, y1, X2, y2, loading.mat, model="linear", intercept=TRUE, intercept.loading,
+ITE <- function(X1, y1, X2, y2, loading.mat, model="linear", intercept=TRUE, intercept.loading=TRUE,
                 lambda=NULL, mu=NULL, init.step=NULL, resol=1.5, maxiter=6, alpha=0.05,
                 verbose=TRUE){
   if(verbose) cat(sprintf("Call: Inference for Linear Functional ======> Data 1/2 \n"))
@@ -83,7 +83,7 @@ ITE <- function(X1, y1, X2, y2, loading.mat, model="linear", intercept=TRUE, int
   est.plugin.vec = Est1$est.plugin.vec - Est2$est.plugin.vec
   est.debias.vec = Est1$est.debias.vec - Est2$est.debias.vec
   se.vec = sqrt((Est1$se)^2 + (Est2$se)^2)
-  ci.mat <- cbind(est.vec - qnorm(1-alpha/2)*se.vec, est.vec + qnorm(1-alpha/2)*se.vec)
+  ci.mat <- cbind(est.debias.vec - qnorm(1-alpha/2)*se.vec, est.debias.vec + qnorm(1-alpha/2)*se.vec)
   rownames(ci.mat) = paste("loading", 1:nrow(ci.mat), sep="")
   colnames(ci.mat) = c("lower","upper")
 
