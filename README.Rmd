@@ -63,9 +63,9 @@ Est$se.vec ## standard errors for bias-corrected estimators
 Est$ci.mat ## two-sided confidence interval for bias-corrected estimators
 ```
 
-`confint` method for `LF`
-```{r confint LF-linear}
-confint(Est)
+`ci` method for `LF`
+```{r ci LF-linear}
+ci(Est)
 ```
 
 `summary` method for `LF`
@@ -91,8 +91,9 @@ truth = c(truth1, truth2)
 truth
 ```
 
-Call `LF` with `model="logistic"`: 
+Call `LF` with `model="logistic"` or `model=logistic_alternative"`: 
 ```{r LF-logistic}
+## model = "logisitc" or "logistic_alternative"
 Est = LF(X, y, loading.mat, model="logistic", intercept.loading=TRUE, verbose=TRUE)
 Est$est.plugin.vec ## plugin(biased) estimators
 Est$est.debias.vec ## bias-corrected estimators
@@ -100,9 +101,9 @@ Est$se.vec ## standard errors for bias-corrected estimators
 Est$ci.mat ## two-sided confidence interval for bias-corrected estimators
 ```
 
-`confint` method for `LF`
-```{r confint LF-logistic}
-confint(Est)
+`ci` method for `LF`
+```{r ci LF-logistic}
+ci(Est)
 ```
 
 `summary` method for `LF`
@@ -136,9 +137,9 @@ Est$se.vec ## standard errors for bias-corrected estimators
 Est$ci.mat ## two-sided confidence interval for bias-corrected estimators
 ```
 
-`confint` method for `LF`
-```{r confint ITE-linear}
-confint(Est)
+`ci` method for `LF`
+```{r ci ITE-linear}
+ci(Est)
 ```
 
 `summary` method for `LF`
@@ -174,9 +175,9 @@ Est$se.vec ## standard errors for bias-corrected estimator
 Est$ci.mat ## two-sided confidence interval for bias-corrected estimators
 ```
 
-`confint` method for `LF`
-```{r confint QF-linear}
-confint(Est)
+`ci` method for `LF`
+```{r ci QF-linear}
+ci(Est)
 ```
 
 `summary` method for `LF`

@@ -34,7 +34,7 @@ relevant.funs <- function(intercept=TRUE, model=c("linear","logistic","logistic_
       return(list(lasso.est = htheta))
     }
 
-    cond_var.fun <- function(pred, y){
+    cond_var.fun <- function(pred, y=NULL){
       n = length(y)
       sigma.sq = mean((y - pred)^2)
       return(rep(sigma.sq, n))
@@ -86,7 +86,7 @@ relevant.funs <- function(intercept=TRUE, model=c("linear","logistic","logistic_
     deriv.fun = function(x) dnorm(x)
     weight.fun = function(x){
       out = c()
-      out[abs(x)<5]=(fp(x)/f(x)/(1-f(x)))[abs(x)<5]
+      out[abs(x)<5]=(deriv.fun(x)/pred.fun(x)/(1-pred.fun(x)))[abs(x)<5]
       out[abs(x)>5]=((abs(x)+sqrt(x^2+8/pi))/2)[abs(x)>5]
       return(out)
     }

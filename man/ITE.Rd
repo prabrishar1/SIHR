@@ -94,17 +94,18 @@ Computes the bias-corrected estimator of the difference of
   generalized linear regressions and the corresponding standard error.
 }
 \examples{
-X1 = matrix(rnorm(100*120), nrow=100, ncol=120)
+X1 = matrix(rnorm(100*10), nrow=100, ncol=10)
 y1 = -0.5 + X1[,1] * 0.5 + X1[,2] * 1 + rnorm(100)
-X2 = matrix(rnorm(90*120), nrow=90, ncol=120)
+X2 = matrix(rnorm(90*10), nrow=90, ncol=10)
 y2 = -0.4 + X2[,1] * 0.48 + X2[,2] * 1.1 + rnorm(90)
-loading.mat = cbind(c(1, 1, rep(0, 118), c(-0.5, -1, rep(0, 118))))
+loading1 = c(1, 1, rep(0,8))
+loading2 = c(-0.5, -1, rep(0,8))
+loading.mat = cbind(loading1, loading2)
 Est = ITE(X1, y1, X2, y2, loading.mat, model="linear")
-Est$est.plugin.vec ## plugin(biased) estimators
-Est$est.debias.vec ## bias-corrected estimators
-Est$se.vec ## standard errors for bias-corrected estimators
-Est$ci.mat ## two-sided confidence interval for bias-corrected estimators
-\dontrun{
+
+## compute confidence intervals
+ci(Est, alpha=0.05, alternative="two.sided")
+
+## summary statistics
 summary(Est)
-}
 }

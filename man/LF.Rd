@@ -83,15 +83,16 @@ Inference for linear combination of the regression vector in high dimensional
 generalized linear regression
 }
 \examples{
-X = matrix(rnorm(100*120), nrow=100, ncol=120)
+X = matrix(rnorm(100*10), nrow=100, ncol=10)
 y = -0.5 + X[,1] * 0.5 + X[,2] * 1 + rnorm(100)
-loading.mat = cbind(c(1, 1, rep(0, 118), c(-0.5, -1, rep(0, 118))))
+loading1 = c(1, 1, rep(0, 8))
+loading2 = c(-0.5, -1, rep(0, 8))
+loading.mat = cbind(loading1, loading2)
 Est = LF(X, y, loading.mat, model="linear")
-Est$est.plugin.vec ## plugin(biased) estimators
-Est$est.debias.vec ## bias-corrected estimators
-Est$se.vec ## standard errors for bias-corrected estimators
-Est$ci.mat ## two-sided confidence interval for bias-corrected estimators
-\dontrun{
+
+## compute confidence intervals
+ci(Est, alpha=0.05, alternative="two.sided")
+
+## summary statistics
 summary(Est)
-}
 }

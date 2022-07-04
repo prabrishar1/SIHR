@@ -4,10 +4,14 @@
 \alias{print.summary.QF}
 \title{Printing ummarizing QF}
 \usage{
-\method{print}{summary.QF}(obj, digits = 4)
+\method{print}{summary.QF}(x, digits = max(3, getOption("digits") - 3), ...)
 }
 \arguments{
-\item{obj}{An object of class `summary.QF`, a result of a call to `summary.QF`}
+\item{x}{An object of class `summary.QF`, a result of a call to `summary.QF`}
+
+\item{digits}{The number of digits to use when printing}
+
+\item{...}{arguments to pass down}
 }
 \description{
 `print` method for class `summary.QF`

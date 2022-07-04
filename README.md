@@ -78,10 +78,10 @@ Est$ci.mat ## two-sided confidence interval for bias-corrected estimators
 #> loading2 -2.0743781 -1.508034
 ```
 
-`confint` method for `LF`
+`ci` method for `LF`
 
 ``` r
-confint(Est)
+ci(Est)
 #>   loading      lower     upper
 #> 1       1  0.4819024  1.136367
 #> 2       2 -2.0743781 -1.508034
@@ -121,9 +121,10 @@ truth
 #> [1]  1.00 -1.75
 ```
 
-Call `LF` with `model="logistic"`:
+Call `LF` with `model="logistic"` or `model=logistic_alternative"`:
 
 ``` r
+## model = "logisitc" or "logistic_alternative"
 Est = LF(X, y, loading.mat, model="logistic", intercept.loading=TRUE, verbose=TRUE)
 #> Computing LF for loading (1/2)... 
 #> ---> Initial step set as: 3 
@@ -145,10 +146,10 @@ Est$ci.mat ## two-sided confidence interval for bias-corrected estimators
 #> loading2 -2.13502097 -0.5610702
 ```
 
-`confint` method for `LF`
+`ci` method for `LF`
 
 ``` r
-confint(Est)
+ci(Est)
 #>   loading       lower      upper
 #> 1       1 -0.04048804  1.7590104
 #> 2       2 -2.13502097 -0.5610702
@@ -221,10 +222,10 @@ Est$ci.mat ## two-sided confidence interval for bias-corrected estimators
 #> loading2 -1.156795 -0.2534291
 ```
 
-`confint` method for `LF`
+`ci` method for `LF`
 
 ``` r
-confint(Est)
+ci(Est)
 #>   loading     lower      upper
 #> 1       1 -1.143552 -0.1461613
 #> 2       2 -1.156795 -0.2534291
@@ -286,10 +287,10 @@ Est$ci.mat ## two-sided confidence interval for bias-corrected estimators
 #> tau1   1.057332 1.766688
 ```
 
-`confint` method for `LF`
+`ci` method for `LF`
 
 ``` r
-confint(Est)
+ci(Est)
 #>   tau    lower    upper
 #> 1 0.0 1.085530 1.738490
 #> 2 0.5 1.071139 1.752881

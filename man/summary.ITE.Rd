@@ -4,14 +4,15 @@
 \alias{summary.ITE}
 \title{Summarizing ITE}
 \usage{
-\method{summary}{ITE}(obj)
+\method{summary}{ITE}(object, ...)
 }
 \arguments{
-\item{obj}{An object of class `ITE`, a result of a call to `ITE`}
+\item{object}{An object of class `ITE`, a result of a call to `ITE`}
+
+\item{...}{arguments to pass down}
 }
 \value{
-The function `summary.ITE` computes and returns a list of summary statistics
-of ITE given `obj`
+The function `summary.ITE` computes and returns a list of summary statistics.
 \item{output.est}{a \eqn{ncol(loading.mat)} x 7 matrix with columns for the loading,
 plugin(biased) estimators, bias-corrected estimators, its standard error, z-statistic,
 corresponding (two-sided) p-value and significance stars; Each row corresponds to each loading.}
@@ -26,3 +27,4 @@ sEst = summary(Est)
 sEst
 }
 }
+\keyword{internal}

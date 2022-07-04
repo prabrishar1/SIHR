@@ -4,14 +4,15 @@
 \alias{summary.QF}
 \title{Summarizing QF}
 \usage{
-\method{summary}{QF}(obj)
+\method{summary}{QF}(object, ...)
 }
 \arguments{
-\item{obj}{An object of class `QF`, a result of a call to `QF`}
+\item{object}{An object of class `QF`, a result of a call to `QF`}
+
+\item{...}{arguments to pass down}
 }
 \value{
-The function `summary.QF` computes and returns a list of summary statistics
-of LF given `obj`
+The function `summary.QF` computes and returns a list of summary statistics.
 \item{output.est}{a \eqn{length(tau.vec)} x 7 matrix with columns for tau,
 plugin(biased) estimators, bias-corrected estimators, its standard error, z-statistic,
 corresponding (two-sided) p-value and significance stars; Each row corresponds to each tau.}
@@ -26,3 +27,4 @@ sEst = summary(Est)
 sEst
 }
 }
+\keyword{internal}

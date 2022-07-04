@@ -4,12 +4,14 @@
 \alias{print.summary.LF}
 \title{Printing Summarizing LF}
 \usage{
-\method{print}{summary.LF}(obj, digits = 4)
+\method{print}{summary.LF}(x, digits = max(3, getOption("digits") - 3), ...)
 }
 \arguments{
-\item{obj}{An object of class `summary.LF`, a result of a call to `summary.LF`}
+\item{x}{An object of class `summary.LF`, a result of a call to `summary.LF`}
 
-\item{digits}{The number of digits to use when printing (default=4)}
+\item{digits}{The number of digits to use when printing}
+
+\item{...}{arguments to pass down}
 }
 \description{
 `print` method for class `summary.LF`

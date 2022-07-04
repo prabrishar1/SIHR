@@ -4,14 +4,15 @@
 \alias{summary.LF}
 \title{Summarizing LF}
 \usage{
-\method{summary}{LF}(obj)
+\method{summary}{LF}(object, ...)
 }
 \arguments{
-\item{obj}{An object of class `LF`, a result of a call to `LF`}
+\item{object}{An object of class `LF`, a result of a call to `LF`}
+
+\item{...}{arguments to pass down}
 }
 \value{
-The function `summary.LF` computes and returns a list of summary statistics
-of LF given `obj`
+The function `summary.LF` computes and returns a list of summary statistics.
 \item{output.est}{a \eqn{ncol(loading.mat)} x 7 matrix with columns for the loading,
 plugin(biased) estimators, bias-corrected estimators, its standard error, z-statistic,
 corresponding (two-sided) p-value and significance stars; Each row corresponds to each loading.}
@@ -26,3 +27,4 @@ sEst = summary(Est)
 sEst
 }
 }
+\keyword{internal}

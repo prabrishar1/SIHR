@@ -4,12 +4,14 @@
 \alias{print.summary.ITE}
 \title{Printing Summarizing ITE}
 \usage{
-\method{print}{summary.ITE}(obj, digits = 4)
+\method{print}{summary.ITE}(x, digits = max(3, getOption("digits") - 3), ...)
 }
 \arguments{
-\item{obj}{An object of class `summary.ITE`, a result of a call to `summary.ITE`}
+\item{x}{An object of class `summary.ITE`, a result of a call to `summary.ITE`}
 
-\item{digits}{The number of digits to use when printing (default=4)}
+\item{digits}{The number of digits to use when printing}
+
+\item{...}{arguments to pass down}
 }
 \description{
 `print` method for class `summary.ITE`

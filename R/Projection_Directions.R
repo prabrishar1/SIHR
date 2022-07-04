@@ -21,7 +21,6 @@
 # weight = rep(1, n)
 # deriv.vec = rep(1, n)
 # Est <- Direction_fixedtuning(X,loading=c(1,rep(0,(p-1))),mu=mu,weight=weight,deriv.vec=deriv.vec)
-
 Direction_fixedtuning <- function(X, loading, mu = NULL, weight = NULL, deriv.vec = NULL){
   pp <- ncol(X)
   n <- nrow(X)

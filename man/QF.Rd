@@ -9,7 +9,7 @@ QF(
   y,
   G,
   A = NULL,
-  model = c("linear", "logistic", "logistic_alternative"),
+  model = c("linear", "logistic", "logistic_alternative", "probit"),
   intercept = TRUE,
   tau.vec = c(0.5, 1),
   lambda = NULL,
@@ -34,7 +34,7 @@ covariance matrix corresponding to the index set \code{G} (default =
 \code{NULL})}
 
 \item{model}{The high dimensional regression model, either \code{linear} or
-\code{logistic} or \code{logistic_alternative}}
+\code{logistic} or \code{logistic_alternative} or \code{probit}}
 
 \item{intercept}{Should intercept be fitted for the initial estimator
 (default = \code{TRUE})}
@@ -84,16 +84,14 @@ optimization problem for constructing the projection direction converges
 Inference for quadratic forms of the regression vector in high dimensional linear and logistic regressions
 }
 \examples{
-X = matrix(rnorm(100*120), nrow=100, ncol=120)
+X = matrix(rnorm(100*10), nrow=100, ncol=10)
 y = X[,1] * 0.5 + X[,2] * 1 + rnorm(100)
 G = c(1,2)
 A = matrix(c(1.5, 0.8, 0.8, 1.5), nrow=2, ncol=2)
 Est = QF(X, y, G, A, model="linear")
-Est$est.plugin ## plugin(biased) estimator
-Est$est.debias ## bias-corrected estimator
-Est$se.vec ## standard errors for bias-corrected estimators for each tau
-Est$ci.mat ## two-sided confidence interval for bias-corrected estimator for each tau
-\dontrun{
+## compute confidence intervals
+ci(Est, alpha=0.05, alternative="two.sided")
+
+## summary statistics
 summary(Est)
-}
 }
