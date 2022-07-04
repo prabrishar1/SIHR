@@ -72,6 +72,7 @@ summary(Est)
 ### Linear functional in logistic regression model
 Generate Data and find the truth linear functionals:
 ```{r Generate Data LF-logistic}
+set.seed(0)
 X = matrix(rnorm(100*120), nrow=100, ncol=120)
 exp_val = -0.5 + X[,1] * 0.5 + X[,2] * 1
 prob = exp(exp_val) / (1+exp(exp_val))
@@ -110,6 +111,7 @@ summary(Est)
 ### Individualized Treatment Effect in linear regression model
 Generate Data and find the truth linear functionals:
 ```{r Generate Data ITE-linear}
+set.seed(0)
 ## 1st data
 X1 = matrix(rnorm(100*120), nrow=100, ncol=120)
 y1 = -0.5 + X1[,1] * 0.5 + X1[,2] * 1 + rnorm(100)
@@ -145,6 +147,7 @@ summary(Est)
 ### Individualized Treatment Effect in logistic regression model
 Generate Data and find the truth linear functionals:
 ```{r Generate Data ITE-logistic}
+set.seed(0)
 ## 1st data
 X1 = matrix(rnorm(100*120), nrow=100, ncol=120)
 exp_val1 = -0.5 + X1[,1] * 0.5 + X1[,2] * 1
@@ -193,6 +196,7 @@ summary(Est)
 ### Quadratic functional in linear regression
 Generate Data and find the truth quadratic functionals:
 ```{r Generate Data QF-linear}
+set.seed(0)
 A1gen <- function(rho, p){
   M = matrix(NA, nrow=p, ncol=p)
   for(i in 1:p) for(j in 1:p) M[i,j] = rho^{abs(i-j)}
@@ -226,6 +230,13 @@ summary(Est)
 ### Quadratic functional in logistic regression
 Generate Data and find the truth quadratic functional
 ```{r Generate Data QF-logistic}
+set.seed(0)
+A1gen <- function(rho, p){
+  M = matrix(NA, nrow=p, ncol=p)
+  for(i in 1:p) for(j in 1:p) M[i,j] = rho^{abs(i-j)}
+  M
+}
+Cov = A1gen(0.5, 150)
 X = MASS::mvrnorm(n=200, mu=rep(0, 150), Sigma=Cov)
 beta = rep(0, 150); beta[25:50] = 0.2
 exp_val = X%*%beta

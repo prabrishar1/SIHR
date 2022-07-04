@@ -86,6 +86,7 @@ Direction_searchtuning <- function(X, loading, weight = NULL, deriv.vec = NULL, 
   loading.norm <- sqrt(sum(loading^2))
   ## loading too small, return 0 directly
   if(loading.norm <= 1e-5){
+    cat("loading norm is too small, return direction as numeric(0) \n")
     direction = rep(0, length(loading))
     return(list(proj = direction,
                 step = 1))

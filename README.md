@@ -91,6 +91,7 @@ summary(Est)
 Generate Data and find the truth linear functionals:
 
 ``` r
+set.seed(0)
 X = matrix(rnorm(100*120), nrow=100, ncol=120)
 exp_val = -0.5 + X[,1] * 0.5 + X[,2] * 1
 prob = exp(exp_val) / (1+exp(exp_val))
@@ -125,14 +126,14 @@ Est = LF(X, y, loading.mat, model="logistic", intercept.loading=TRUE, verbose=TR
 ``` r
 ## confidence interval for linear combination
 ci(Est)
-#>   loading      lower      upper
-#> 1       1 -0.5006444  1.0388104
-#> 2       2 -1.9043064 -0.4210012
+#>   loading       lower      upper
+#> 1       1 -0.04048804  1.7590104
+#> 2       2 -2.13502097 -0.5610702
 ## confidence interval after probability transformation
 ci(Est, probability = TRUE)
 #>   loading     lower     upper
-#> 1       1 0.3773892 0.7386204
-#> 2       2 0.1296219 0.3962772
+#> 1       1 0.4898794 0.8530857
+#> 2       2 0.1057393 0.3632999
 ```
 
 `summary` method for `LF`
@@ -143,9 +144,9 @@ summary(Est)
 #> Inference for Linear Functional
 #> 
 #> Estimators: 
-#>  loading est.plugin est.debias Std. Error z value Pr(>|z|)   
-#>        1    -0.7933     0.2691     0.3927  0.6852 0.493238   
-#>        2    -0.7933    -1.1627     0.3784 -3.0725 0.002122 **
+#>  loading est.plugin est.debias Std. Error z value Pr(>|z|)    
+#>        1     0.5214     0.8593     0.4591   1.872 0.061239   .
+#>        2    -1.1019    -1.3480     0.4015  -3.357 0.000787 ***
 ```
 
 ### Individualized Treatment Effect in linear regression model
@@ -153,6 +154,7 @@ summary(Est)
 Generate Data and find the truth linear functionals:
 
 ``` r
+set.seed(0)
 ## 1st data
 X1 = matrix(rnorm(100*120), nrow=100, ncol=120)
 y1 = -0.5 + X1[,1] * 0.5 + X1[,2] * 1 + rnorm(100)
@@ -191,9 +193,9 @@ Est = ITE(X1, y1, X2, y2, loading.mat, model="linear", intercept.loading=TRUE, v
 
 ``` r
 ci(Est)
-#>   loading      lower      upper
-#> 1       1 -0.9387936  0.0701035
-#> 2       2 -1.4255105 -0.5516337
+#>   loading     lower      upper
+#> 1       1 -1.143552 -0.1461613
+#> 2       2 -1.156795 -0.2534291
 ```
 
 `summary` method for `ITE`
@@ -204,9 +206,9 @@ summary(Est)
 #> Inference for Treatment Effect
 #> 
 #> Estimators: 
-#>  loading est.plugin est.debias Std. Error z value  Pr(>|z|)    
-#>        1     -0.467    -0.4343     0.2574  -1.688 9.149e-02   .
-#>        2     -1.026    -0.9886     0.2229  -4.434 9.232e-06 ***
+#>  loading est.plugin est.debias Std. Error z value Pr(>|z|)   
+#>        1    -0.6267    -0.6449     0.2544  -2.534 0.011264  *
+#>        2    -0.8462    -0.7051     0.2305  -3.060 0.002216 **
 ```
 
 ### Individualized Treatment Effect in logistic regression model
@@ -214,6 +216,7 @@ summary(Est)
 Generate Data and find the truth linear functionals:
 
 ``` r
+set.seed(0)
 ## 1st data
 X1 = matrix(rnorm(100*120), nrow=100, ncol=120)
 exp_val1 = -0.5 + X1[,1] * 0.5 + X1[,2] * 1
@@ -255,7 +258,7 @@ Est = ITE(X1, y1, X2, y2, loading.mat, model="logistic", intercept.loading=TRUE,
 #> Computing LF for loading (1/2)... 
 #> ---> Direction is identified at step: 3 
 #> Computing LF for loading (2/2)... 
-#> ---> Direction is identified at step: 4
+#> ---> Direction is identified at step: 3
 ```
 
 `ci` method for `ITE`:
@@ -264,13 +267,13 @@ Est = ITE(X1, y1, X2, y2, loading.mat, model="logistic", intercept.loading=TRUE,
 ## confidence interval for linear combination
 ci(Est)
 #>   loading     lower     upper
-#> 1       1 -1.400813 0.9062710
-#> 2       2 -1.658636 0.5038927
+#> 1       1 -1.035232 1.3456405
+#> 2       2 -1.437821 0.7002374
 ## confidence interval after probability transformation
 ci(Est, probability = TRUE)
-#>   loading      lower      upper
-#> 1       1 -0.3213497 0.20759032
-#> 2       2 -0.2267113 0.07364488
+#>   loading      lower     upper
+#> 1       1 -0.2211644 0.2878642
+#> 2       2 -0.2582999 0.1251330
 ```
 
 `summary` method for `ITE`:
@@ -282,8 +285,8 @@ summary(Est)
 #> 
 #> Estimators: 
 #>  loading est.plugin est.debias Std. Error z value Pr(>|z|)  
-#>        1    0.06956    -0.2473     0.5886 -0.4201   0.6744  
-#>        2   -0.31106    -0.5774     0.5517 -1.0466   0.2953
+#>        1     0.6133     0.1552     0.6074  0.2555   0.7983  
+#>        2    -0.5946    -0.3688     0.5454 -0.6761   0.4989
 ```
 
 ### Quadratic functional in linear regression
@@ -291,6 +294,7 @@ summary(Est)
 Generate Data and find the truth quadratic functionals:
 
 ``` r
+set.seed(0)
 A1gen <- function(rho, p){
   M = matrix(NA, nrow=p, ncol=p)
   for(i in 1:p) for(j in 1:p) M[i,j] = rho^{abs(i-j)}
@@ -319,10 +323,10 @@ Est = QF(X, y, G=test.set, A=NULL, model="linear", tau.vec=tau.vec, verbose=TRUE
 
 ``` r
 ci(Est)
-#>   tau     lower    upper
-#> 1 0.0 0.8775150 1.462561
-#> 2 0.5 0.8615362 1.478539
-#> 3 1.0 0.8463452 1.493730
+#>   tau    lower    upper
+#> 1 0.0 1.085530 1.738490
+#> 2 0.5 1.071139 1.752881
+#> 3 1.0 1.057332 1.766688
 ```
 
 `summary` method for `QF`
@@ -333,9 +337,9 @@ summary(Est)
 #> Inference for Quadratic Functional
 #> 
 #>  tau est.plugin est.debias Std. Error z value  Pr(>|z|)    
-#>  0.0     0.8375       1.17     0.1492   7.839 4.441e-15 ***
-#>  0.5     0.8375       1.17     0.1574   7.433 1.057e-13 ***
-#>  1.0     0.8375       1.17     0.1652   7.085 1.394e-12 ***
+#>  0.0      1.119      1.412     0.1666   8.477 0.000e+00 ***
+#>  0.5      1.119      1.412     0.1739   8.119 4.441e-16 ***
+#>  1.0      1.119      1.412     0.1810   7.803 5.995e-15 ***
 ```
 
 ### Quadratic functional in logistic regression
@@ -343,6 +347,13 @@ summary(Est)
 Generate Data and find the truth quadratic functional
 
 ``` r
+set.seed(0)
+A1gen <- function(rho, p){
+  M = matrix(NA, nrow=p, ncol=p)
+  for(i in 1:p) for(j in 1:p) M[i,j] = rho^{abs(i-j)}
+  M
+}
+Cov = A1gen(0.5, 150)
 X = MASS::mvrnorm(n=200, mu=rep(0, 150), Sigma=Cov)
 beta = rep(0, 150); beta[25:50] = 0.2
 exp_val = X%*%beta
@@ -367,10 +378,10 @@ Est = QF(X, y, G=test.set, A=NULL, model="logistic", tau.vec = tau.vec, verbose=
 
 ``` r
 ci(Est)
-#>   tau     lower     upper
-#> 1 0.0 0.2141498 0.6366166
-#> 2 0.5 0.1925245 0.6582420
-#> 3 1.0 0.1727435 0.6780230
+#>   tau     lower    upper
+#> 1 0.0 0.7408816 1.983207
+#> 2 0.5 0.7331988 1.990890
+#> 3 1.0 0.7256086 1.998480
 ```
 
 `summary` method for `QF`:
@@ -381,7 +392,7 @@ summary(Est)
 #> Inference for Quadratic Functional
 #> 
 #>  tau est.plugin est.debias Std. Error z value  Pr(>|z|)    
-#>  0.0     0.1218     0.4254     0.1078   3.947 7.914e-05 ***
-#>  0.5     0.1218     0.4254     0.1188   3.580 3.430e-04 ***
-#>  1.0     0.1218     0.4254     0.1289   3.300 9.665e-04 ***
+#>  0.0     0.7146      1.362     0.3169   4.298 1.726e-05 ***
+#>  0.5     0.7146      1.362     0.3208   4.245 2.184e-05 ***
+#>  1.0     0.7146      1.362     0.3247   4.195 2.734e-05 ***
 ```
