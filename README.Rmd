@@ -84,7 +84,8 @@ loading.mat = cbind(loading1, loading2)
 truth1 = -0.5 + 0.5 * 1 + 1 * 1
 truth2 = -0.5 + 0.5 * -0.5 + 1 * -1
 truth = c(truth1, truth2)
-truth
+truth.prob = exp(truth) / (1 + exp(truth))
+truth; truth.prob
 ```
 
 Call `LF` with `model="logistic"` or `model="logistic_alternative"`: 
@@ -183,6 +184,11 @@ ci(Est)
 ci(Est, probability = TRUE)
 ```
 
+`summary` method for `ITE`:
+```{r summary ITE-logistic}
+summary(Est)
+```
+
 
 ### Quadratic functional in linear regression
 Generate Data and find the truth quadratic functionals:
@@ -205,10 +211,6 @@ Call `QF` with `model="linear"`:
 ```{r QF-linear}
 tau.vec = c(0, 0.5, 1)
 Est = QF(X, y, G=test.set, A=NULL, model="linear", tau.vec=tau.vec, verbose=TRUE)
-Est$est.plugin ## plugin(biased) estimator
-Est$est.debias ## bias-corrected estimator
-Est$se.vec ## standard errors for bias-corrected estimator
-Est$ci.mat ## two-sided confidence interval for bias-corrected estimators
 ```
 
 `ci` method for `QF`

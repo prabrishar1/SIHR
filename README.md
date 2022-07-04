@@ -103,8 +103,10 @@ loading.mat = cbind(loading1, loading2)
 truth1 = -0.5 + 0.5 * 1 + 1 * 1
 truth2 = -0.5 + 0.5 * -0.5 + 1 * -1
 truth = c(truth1, truth2)
-truth
+truth.prob = exp(truth) / (1 + exp(truth))
+truth; truth.prob
 #> [1]  1.00 -1.75
+#> [1] 0.7310586 0.1480472
 ```
 
 Call `LF` with `model="logistic"` or `model="logistic_alternative"`:
@@ -271,6 +273,19 @@ ci(Est, probability = TRUE)
 #> 2       2 -0.2267113 0.07364488
 ```
 
+`summary` method for `ITE`:
+
+``` r
+summary(Est)
+#> Call: 
+#> Inference for Treatment Effect
+#> 
+#> Estimators: 
+#>  loading est.plugin est.debias Std. Error z value Pr(>|z|)  
+#>        1    0.06956    -0.2473     0.5886 -0.4201   0.6744  
+#>        2   -0.31106    -0.5774     0.5517 -1.0466   0.2953
+```
+
 ### Quadratic functional in linear regression
 
 Generate Data and find the truth quadratic functionals:
@@ -298,17 +313,6 @@ tau.vec = c(0, 0.5, 1)
 Est = QF(X, y, G=test.set, A=NULL, model="linear", tau.vec=tau.vec, verbose=TRUE)
 #> Computing QF... 
 #> ---> Direction is identified at step: 5
-Est$est.plugin ## plugin(biased) estimator
-#> [1] 0.8375219
-Est$est.debias ## bias-corrected estimator
-#> [1] 1.170038
-Est$se.vec ## standard errors for bias-corrected estimator
-#> [1] 0.1492490 0.1574016 0.1651523
-Est$ci.mat ## two-sided confidence interval for bias-corrected estimators
-#>            lower    upper
-#> tau0   0.8775150 1.462561
-#> tau0.5 0.8615362 1.478539
-#> tau1   0.8463452 1.493730
 ```
 
 `ci` method for `QF`
