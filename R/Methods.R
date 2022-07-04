@@ -1,12 +1,13 @@
 #' Confidence Intervals for Bias-corrected Estimators
 #' @description generic function
 #' @param object An object of class
+#' @param probability Whether returns CI with probability transformation or not (default=\code{FALSE})
 #' @param alpha Level of significance to construct confidence interval (default=0.05)
 #' @param alternative Indicates the alternative hypothesis to construct confidence interval and must be one of "two.sided" (default), "less", or "greater".
 #' @param ... arguments to pass down
 #' @keywords internal
 #' @export
-ci <- function(object, alpha=0.05, alternative=c("two.sided","less","greater"), ...){
+ci <- function(object, probability=FALSE, alpha=0.05, alternative=c("two.sided","less","greater"), ...){
   UseMethod("ci")
 }
 ############################################
@@ -17,6 +18,7 @@ ci <- function(object, alpha=0.05, alternative=c("two.sided","less","greater"), 
 #' @description Computes confidence intervals for bias-corrected estimators; Each
 #' row corresponds to a loading.
 #' @param object An object of class `LF`, a result of a call to `LF`
+#' @param probability Whether returns CI with probability transformation or not (default=\code{FALSE})
 #' @param alpha Level of significance to construct confidence interval (default=0.05)
 #' @param alternative Indicates the alternative hypothesis to construct confidence interval and must be one of "two.sided" (default), "less", or "greater".
 #' @param ... arguments to pass down
@@ -30,7 +32,7 @@ ci <- function(object, alpha=0.05, alternative=c("two.sided","less","greater"), 
 #' out = ci(Est)
 #' out
 #' }
-ci.LF <- function(object, alpha=0.05, alternative=c("two.sided","less","greater"), ...){
+ci.LF <- function(object, probability=FALSE, alpha=0.05, alternative=c("two.sided","less","greater"), ...){
   alternative = match.arg(alternative)
   est.debias.vec = object$est.debias.vec
   se.vec         = object$se.vec
@@ -42,6 +44,7 @@ ci.LF <- function(object, alpha=0.05, alternative=c("two.sided","less","greater"
   }else if(alternative=="greater"){
     output.ci = cbind(est.debias.vec - qnorm(1-alpha)*se.vec, Inf)
   }
+  if(probability) output.ci = exp(output.ci) / (1 + exp(output.ci))
   output.ci = data.frame(cbind(1:n.loading, output.ci))
   colnames(output.ci) = c("loading","lower","upper")
   return(output.ci)
@@ -109,6 +112,7 @@ print.summary.LF <- function(x, digits = max(3, getOption("digits") - 3), ...){
 #' @description Computes confidence intervals for bias-corrected estimators; Each
 #' row corresponds to a loading.
 #' @param object An object of class `ITE`, a result of a call to `ITE`
+#' @param probability Whether returns CI with probability transformation or not (default=\code{FALSE})
 #' @param alpha Level of significance to construct confidence interval (default=0.05)
 #' @param alternative Indicates the alternative hypothesis to construct confidence interval and must be one of "two.sided" (default), "less", or "greater".
 #' @param ... arguments to pass down
@@ -122,18 +126,37 @@ print.summary.LF <- function(x, digits = max(3, getOption("digits") - 3), ...){
 #' out = ci(Est)
 #' out
 #' }
-ci.ITE <- function(object, alpha=0.05, alternative=c("two.sided","less","greater"), ...){
+ci.ITE <- function(object, probability=FALSE, alpha=0.05, alternative=c("two.sided","less","greater"), ...){
   alternative = match.arg(alternative)
-  est.debias.vec = object$est.debias.vec
-  se.vec         = object$se.vec
-  n.loading = length(se.vec)
-  if(alternative=="two.sided"){
-    output.ci = cbind(est.debias.vec - qnorm(1-alpha/2)*se.vec, est.debias.vec + qnorm(1-alpha/2)*se.vec)
-  }else if(alternative=="less"){
-    output.ci = cbind(-Inf, est.debias.vec + qnorm(1-alpha)*se.vec)
-  }else if(alternative=="greater"){
-    output.ci = cbind(est.debias.vec - qnorm(1-alpha)*se.vec, Inf)
+
+  if(probability==FALSE){
+    est.debias.vec = object$est.debias.vec
+    se.vec         = object$se.vec
+    n.loading = length(se.vec)
+    if(alternative=="two.sided"){
+      output.ci = cbind(est.debias.vec - qnorm(1-alpha/2)*se.vec, est.debias.vec + qnorm(1-alpha/2)*se.vec)
+    }else if(alternative=="less"){
+      output.ci = cbind(-Inf, est.debias.vec + qnorm(1-alpha)*se.vec)
+    }else if(alternative=="greater"){
+      output.ci = cbind(est.debias.vec - qnorm(1-alpha)*se.vec, Inf)
+    }
+  }else{
+    prob.debias.vec = object$prob.debias.vec
+    prob.se.vec = object$prob.se.vec
+    n.loading = length(prob.se.vec)
+    if(n.loading == 0){
+      stop("For linear model, argument 'probability' must be FALSE\n")
+    }
+    if(alternative=="two.sided"){
+      output.ci = cbind(prob.debias.vec - qnorm(1-alpha/2)*prob.se.vec,
+                        prob.debias.vec + qnorm(1-alpha/2)*prob.se.vec)
+    }else if(alternative=="less"){
+      output.ci = cbind(-1, prob.debias.vec + qnorm(1-alpha)*prob.se.vec)
+    }else if(alternative=="greater"){
+      output.ci = cbind(prob.debias.vec - qnorm(1-alpha)*prob.se.vec, 1)
+    }
   }
+
   output.ci = data.frame(cbind(1:n.loading, output.ci))
   colnames(output.ci) = c("loading","lower","upper")
   return(output.ci)
@@ -201,6 +224,7 @@ print.summary.ITE <- function(x, digits = max(3, getOption("digits") - 3), ...){
 #' @description Computes confidence intervals for bias-corrected estimators; Each
 #' row corresponds to a tau value.
 #' @param object An object of class `QF`, a result of a call to `QF`
+#' @param probability Whether returns CI with probability transformation or not (default=\code{FALSE})
 #' @param alpha Level of significance to construct confidence interval (default=0.05)
 #' @param alternative Indicates the alternative hypothesis to construct confidence interval and must be one of "two.sided" (default), "less", or "greater".
 #' @param ... arguments to pass down
@@ -214,7 +238,11 @@ print.summary.ITE <- function(x, digits = max(3, getOption("digits") - 3), ...){
 #' out = ci(Est)
 #' out
 #' }
-ci.QF <- function(object, alpha=0.05, alternative=c("two.sided","less","greater"), ...){
+ci.QF <- function(object, probability=FALSE, alpha=0.05, alternative=c("two.sided","less","greater"), ...){
+  if(probability==TRUE){
+    cat("QF only supports probability=FALSE \n")
+    probability=FALSE
+  }
   alternative = match.arg(alternative)
   est.debias = object$est.debias
   se.vec     = object$se.vec

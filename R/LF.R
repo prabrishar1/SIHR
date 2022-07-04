@@ -150,9 +150,9 @@ LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alternat
             init.step<- getmode(step.vec)
           }
           ### for loop to find direction ###
-          if(verbose) cat(sprintf("---> Initial step set as: %s \n", init.step))
+          # if(verbose) cat(sprintf("---> Initial step set as: %s \n", init.step))
           for(step in init.step:1){
-            if(verbose) cat(sprintf("---> Finding Direction with step: %s \n", step))
+            # if(verbose) cat(sprintf("---> Finding Direction with step: %s \n", step))
             if(nullmu) mu = sqrt(2.01*log(p)/n)*resol^{-(step-1)}
             Direction.Est <-  Direction_fixedtuning(X, loading, mu = mu, weight = weight, deriv.vec = deriv)
             if(is.na(Direction.Est)|| length(Direction.Est$proj)==0){

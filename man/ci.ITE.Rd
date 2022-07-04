@@ -4,10 +4,18 @@
 \alias{ci.ITE}
 \title{Confidence Intervals for Bias-corrected ITE Estimators}
 \usage{
-\method{ci}{ITE}(object, alpha = 0.05, alternative = c("two.sided", "less", "greater"), ...)
+\method{ci}{ITE}(
+  object,
+  probability = FALSE,
+  alpha = 0.05,
+  alternative = c("two.sided", "less", "greater"),
+  ...
+)
 }
 \arguments{
 \item{object}{An object of class `ITE`, a result of a call to `ITE`}
+
+\item{probability}{Whether returns CI with probability transformation or not (default=\code{FALSE})}
 
 \item{alpha}{Level of significance to construct confidence interval (default=0.05)}
 

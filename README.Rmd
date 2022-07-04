@@ -30,7 +30,7 @@ You can install the development version from [GitHub](https://github.com/) with:
 # install.packages("devtools")
 devtools::install_github("prabrishar1/SIHR")
 ```
-## Example
+## Examples
 
 These are basic examples which show how to solve the common high-dimensional inference problems:
 
@@ -38,7 +38,7 @@ These are basic examples which show how to solve the common high-dimensional inf
 library(SIHR)
 ```
 
-### Inference for linear functional in high-dimensional linear regression model
+### Linear functional in linear regression model
 Generate Data and find the truth linear functionals:
 ```{r Generate Data LF-linear}
 set.seed(0)
@@ -57,10 +57,6 @@ truth
 Call `LF` with `model="linear"`: 
 ```{r LF-linear}
 Est = LF(X, y, loading.mat, model="linear", intercept.loading=TRUE, verbose=TRUE)
-Est$est.plugin.vec ## plugin(biased) estimators
-Est$est.debias.vec ## bias-corrected estimators
-Est$se.vec ## standard errors for bias-corrected estimators
-Est$ci.mat ## two-sided confidence interval for bias-corrected estimators
 ```
 
 `ci` method for `LF`
@@ -73,14 +69,14 @@ ci(Est)
 summary(Est)
 ```
 
-### Inference for linear functional in high-dimensional logistic regression model
+### Linear functional in logistic regression model
 Generate Data and find the truth linear functionals:
 ```{r Generate Data LF-logistic}
-set.seed(0)
 X = matrix(rnorm(100*120), nrow=100, ncol=120)
 exp_val = -0.5 + X[,1] * 0.5 + X[,2] * 1
 prob = exp(exp_val) / (1+exp(exp_val))
 y = rbinom(100, 1, prob)
+## loadings
 loading1 = c(1, 1, rep(0, 118))
 loading2 = c(-0.5, -1, rep(0, 118))
 loading.mat = cbind(loading1, loading2)
@@ -91,19 +87,18 @@ truth = c(truth1, truth2)
 truth
 ```
 
-Call `LF` with `model="logistic"` or `model=logistic_alternative"`: 
+Call `LF` with `model="logistic"` or `model="logistic_alternative"`: 
 ```{r LF-logistic}
 ## model = "logisitc" or "logistic_alternative"
 Est = LF(X, y, loading.mat, model="logistic", intercept.loading=TRUE, verbose=TRUE)
-Est$est.plugin.vec ## plugin(biased) estimators
-Est$est.debias.vec ## bias-corrected estimators
-Est$se.vec ## standard errors for bias-corrected estimators
-Est$ci.mat ## two-sided confidence interval for bias-corrected estimators
 ```
 
 `ci` method for `LF`
 ```{r ci LF-logistic}
+## confidence interval for linear combination
 ci(Est)
+## confidence interval after probability transformation
+ci(Est, probability = TRUE)
 ```
 
 `summary` method for `LF`
@@ -111,16 +106,19 @@ ci(Est)
 summary(Est)
 ```
 
-### Inference for Treatment Effects in high-dimensional linear regression model
+### Individualized Treatment Effect in linear regression model
 Generate Data and find the truth linear functionals:
 ```{r Generate Data ITE-linear}
-set.seed(0)
+## 1st data
 X1 = matrix(rnorm(100*120), nrow=100, ncol=120)
 y1 = -0.5 + X1[,1] * 0.5 + X1[,2] * 1 + rnorm(100)
+## 2nd data
 X2 = matrix(0.8*rnorm(100*120), nrow=100, ncol=120)
 y2 = 0.1 + X2[,1] * 0.8 + X2[,2] * 0.8 + rnorm(100)
+## loadings
 loading1 = c(1, 1, rep(0, 118))
 loading2 = c(-0.5, -1, rep(0, 118))
+loading.mat = cbind(loading1, loading2)
 ## consider the intercept.loading=TRUE
 truth1 = (-0.5 + 0.5*1 + 1*1) - (0.1 + 0.8*1 + 0.8*1)
 truth2 = (-0.5 + 0.5*(-0.5) + 1*(-1)) - (0.1 + 0.8*(-0.5) + 0.8*(-1))
@@ -131,26 +129,64 @@ truth
 Call `ITE` with `model="linear"`:
 ```{r ITE-linear}
 Est = ITE(X1, y1, X2, y2, loading.mat, model="linear", intercept.loading=TRUE, verbose=TRUE)
-Est$est.plugin.vec ## plugin(biased) estimators
-Est$est.debias.vec ## bias-corrected estimators
-Est$se.vec ## standard errors for bias-corrected estimators
-Est$ci.mat ## two-sided confidence interval for bias-corrected estimators
 ```
 
-`ci` method for `LF`
+`ci` method for `ITE`
 ```{r ci ITE-linear}
 ci(Est)
 ```
 
-`summary` method for `LF`
+`summary` method for `ITE`
 ```{r Summary ITE-linear}
 summary(Est)
 ```
 
-### Inference for Quadratic functional in high-dimensional linear regression
+### Individualized Treatment Effect in logistic regression model
+Generate Data and find the truth linear functionals:
+```{r Generate Data ITE-logistic}
+## 1st data
+X1 = matrix(rnorm(100*120), nrow=100, ncol=120)
+exp_val1 = -0.5 + X1[,1] * 0.5 + X1[,2] * 1
+prob1 = exp(exp_val1) / (1 + exp(exp_val1))
+y1 = rbinom(100, 1, prob1)
+## 2nd data
+X2 = matrix(0.8*rnorm(100*120), nrow=100, ncol=120)
+exp_val2 = -0.5 + X2[,1] * 0.8 + X2[,2] * 0.8
+prob2 = exp(exp_val2) / (1 + exp(exp_val2))
+y2 = rbinom(100, 1, prob2)
+## loadings
+loading1 = c(1, 1, rep(0, 118))
+loading2 = c(-0.5, -1, rep(0, 118))
+loading.mat = cbind(loading1, loading2)
+## consider the intercept.loading=TRUE
+truth1 = (-0.5 + 0.5*1 + 1*1) - (-0.5 + 0.8*1 + 0.8*1)
+truth2 = (-0.5 + 0.5*(-0.5) + 1*(-1)) - (-0.5 + 0.8*(-0.5) + 0.8*(-1))
+truth = c(truth1, truth2)
+prob.fun = function(x) exp(x)/(1+exp(x))
+truth.prob1 = prob.fun(-0.5 + 0.5*1 + 1*1) - prob.fun(-0.5 + 0.8*1 + 0.8*1)
+truth.prob2 = prob.fun(-0.5 + 0.5*(-0.5) + 1*(-1)) - prob.fun(-0.5 + 0.8*(-0.5) + 0.8*(-1))
+truth.prob = c(truth.prob1, truth.prob2)
+
+truth; truth.prob
+```
+
+Call `ITE` with `model="logistic"` or `model="logisitc_alternative"`:
+```{r ITE-logisitc}
+Est = ITE(X1, y1, X2, y2, loading.mat, model="logistic", intercept.loading=TRUE, verbose = TRUE)
+```
+
+`ci` method for `ITE`:
+```{r ci ITE-logistic}
+## confidence interval for linear combination
+ci(Est)
+## confidence interval after probability transformation
+ci(Est, probability = TRUE)
+```
+
+
+### Quadratic functional in linear regression
 Generate Data and find the truth quadratic functionals:
 ```{r Generate Data QF-linear}
-set.seed(0)
 A1gen <- function(rho, p){
   M = matrix(NA, nrow=p, ncol=p)
   for(i in 1:p) for(j in 1:p) M[i,j] = rho^{abs(i-j)}
@@ -175,12 +211,42 @@ Est$se.vec ## standard errors for bias-corrected estimator
 Est$ci.mat ## two-sided confidence interval for bias-corrected estimators
 ```
 
-`ci` method for `LF`
+`ci` method for `QF`
 ```{r ci QF-linear}
 ci(Est)
 ```
 
-`summary` method for `LF`
+`summary` method for `QF`
 ```{r Summary QF-linear}
 summary(Est)
 ```
+
+### Quadratic functional in logistic regression
+Generate Data and find the truth quadratic functional
+```{r Generate Data QF-logistic}
+X = MASS::mvrnorm(n=200, mu=rep(0, 150), Sigma=Cov)
+beta = rep(0, 150); beta[25:50] = 0.2
+exp_val = X%*%beta
+prob = exp(exp_val) / (1+exp(exp_val))
+y = rbinom(200, 1, prob)
+test.set = c(40:60)
+truth = as.numeric(t(beta[test.set]%*%Cov[test.set, test.set]%*%beta[test.set]))
+truth
+```
+
+Call `QF` with `model="logistic"` or `model="logisitc_alternative"`:
+```{r QF-logisitc}
+tau.vec = c(0, 0.5, 1)
+Est = QF(X, y, G=test.set, A=NULL, model="logistic", tau.vec = tau.vec, verbose=TRUE)
+```
+
+`ci` method for `QF`:
+```{r ci QF-logistic}
+ci(Est)
+```
+
+`summary` method for `QF`:
+```{r summary QF-logistic}
+summary(Est)
+```
+

@@ -4,10 +4,18 @@
 \alias{ci}
 \title{Confidence Intervals for Bias-corrected Estimators}
 \usage{
-ci(object, alpha = 0.05, alternative = c("two.sided", "less", "greater"), ...)
+ci(
+  object,
+  probability = FALSE,
+  alpha = 0.05,
+  alternative = c("two.sided", "less", "greater"),
+  ...
+)
 }
 \arguments{
 \item{object}{An object of class}
+
+\item{probability}{Whether returns CI with probability transformation or not (default=\code{FALSE})}
 
 \item{alpha}{Level of significance to construct confidence interval (default=0.05)}
 

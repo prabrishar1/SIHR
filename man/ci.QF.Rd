@@ -4,10 +4,18 @@
 \alias{ci.QF}
 \title{Confidence Intervals for Bias-corrected QF Estimators}
 \usage{
-\method{ci}{QF}(object, alpha = 0.05, alternative = c("two.sided", "less", "greater"), ...)
+\method{ci}{QF}(
+  object,
+  probability = FALSE,
+  alpha = 0.05,
+  alternative = c("two.sided", "less", "greater"),
+  ...
+)
 }
 \arguments{
 \item{object}{An object of class `QF`, a result of a call to `QF`}
+
+\item{probability}{Whether returns CI with probability transformation or not (default=\code{FALSE})}
 
 \item{alpha}{Level of significance to construct confidence interval (default=0.05)}
 

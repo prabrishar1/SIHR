@@ -4,10 +4,18 @@
 \alias{ci.LF}
 \title{Confidence Intervals for Bias-corrected LF Estimators}
 \usage{
-\method{ci}{LF}(object, alpha = 0.05, alternative = c("two.sided", "less", "greater"), ...)
+\method{ci}{LF}(
+  object,
+  probability = FALSE,
+  alpha = 0.05,
+  alternative = c("two.sided", "less", "greater"),
+  ...
+)
 }
 \arguments{
 \item{object}{An object of class `LF`, a result of a call to `LF`}
+
+\item{probability}{Whether returns CI with probability transformation or not (default=\code{FALSE})}
 
 \item{alpha}{Level of significance to construct confidence interval (default=0.05)}
 

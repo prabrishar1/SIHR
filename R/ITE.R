@@ -52,6 +52,13 @@
 #'   two.sided confidence interval for the linear combination, of dimension
 #'   \code{ncol(loading.mat)} x \eqn{2}; the row corresponding to different column
 #'   in \code{loading.mat}}
+#' \item{prob.debias.vec}{The vector of bias-corrected estimators after probability
+#'   transformation, length of \code{ncol(loading.mat)}; corresponding to different
+#'   column in {loading.mat}. The value would be \code{NULL} for non-logistic model.}
+#' \item{prob.se.vec}{The vector of standard errors of the bias-corrected estimators
+#'   after probability transformation, length of \code{ncol(loading.mat)};
+#'   corresponding to different column in \code{loading.mat}. The value would be
+#'   \code{NULL} for non-logistic model.}
 #'
 #' @export
 #' @import CVXR glmnet
@@ -88,10 +95,23 @@ ITE <- function(X1, y1, X2, y2, loading.mat, model="linear", intercept=TRUE, int
   rownames(ci.mat) = paste("loading", 1:nrow(ci.mat), sep="")
   colnames(ci.mat) = c("lower","upper")
 
+  ### works for probability transformation
+  if(model %in% c("logistic", "logisitic_alternative")){
+    pred.fun = function(x) exp(x)/(1+exp(x))
+    deriv.fun = function(x) exp(x)/(1+exp(x))^2
+    prob.se.vec = sqrt((deriv.fun(Est1$est.debias.vec))^2 * (Est1$se)^2 + (deriv.fun(Est2$est.debias.vec))^2 * (Est2$se)^2)
+    prob.debias.vec = pred.fun(Est1$est.debias.vec) - pred.fun(Est2$est.debias.vec)
+  }else{
+    prob.se.vec = NULL
+    prob.debias.vec = NULL
+  }
+
   obj <- list(est.plugin.vec = est.plugin.vec,
               est.debias.vec = est.debias.vec,
               se.vec         = se.vec,
-              ci.mat         = ci.mat)
+              ci.mat         = ci.mat,
+              prob.debias.vec = prob.debias.vec,
+              prob.se.vec = prob.se.vec)
   class(obj) <- "ITE"
   obj
 }

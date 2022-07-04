@@ -87,6 +87,13 @@ optimization problem for constructing the projection direction converges
   two.sided confidence interval for the linear combination, of dimension
   \code{ncol(loading.mat)} x \eqn{2}; the row corresponding to different column
   in \code{loading.mat}}
+\item{prob.debias.vec}{The vector of bias-corrected estimators after probability
+  transformation, length of \code{ncol(loading.mat)}; corresponding to different
+  column in {loading.mat}. The value would be \code{NULL} for non-logistic model.}
+\item{prob.se.vec}{The vector of standard errors of the bias-corrected estimators
+  after probability transformation, length of \code{ncol(loading.mat)};
+  corresponding to different column in \code{loading.mat}. The value would be
+  \code{NULL} for non-logistic model.}
 }
 \description{
 Computes the bias-corrected estimator of the difference of

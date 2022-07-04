@@ -13,7 +13,7 @@
 #'   (default = \code{TRUE})
 #' @param tau.vec The vector of enlargement factors for asymptotic variance of
 #'   the bias-corrected estimator to handle super-efficiency (default =
-#'   \eqn{c(0.5, 1)})
+#'   \eqn{c(0, 0.5, 1)})
 #' @param lambda The tuning parameter in fitting model (default = \code{NULL})
 #' @param mu The dual tuning parameter used in the construction of the
 #'   projection direction (default = \code{NULL})
@@ -60,7 +60,7 @@
 #' ## summary statistics
 #' summary(Est)
 QF <- function(X, y, G, A=NULL, model=c("linear","logistic","logistic_alternative","probit"),
-               intercept=TRUE, tau.vec=c(0.5, 1), lambda=NULL, mu=NULL, init.step=NULL, resol=1.5,
+               intercept=TRUE, tau.vec=c(0, 0.5, 1), lambda=NULL, mu=NULL, init.step=NULL, resol=1.5,
                maxiter=6, alpha=0.05, verbose=TRUE){
   model = match.arg(model)
   X = as.matrix(X)
@@ -129,9 +129,9 @@ QF <- function(X, y, G, A=NULL, model=c("linear","logistic","logistic_alternativ
           init.step<- getmode(step.vec)
         }
         ### for loop to find direction ###
-        if(verbose) cat(sprintf("---> Initial step set as: %s \n", init.step))
+        # if(verbose) cat(sprintf("---> Initial step set as: %s \n", init.step))
         for(step in init.step:1){
-          if(verbose) cat(sprintf("---> Finding Direction with step: %s \n", step))
+          # if(verbose) cat(sprintf("---> Finding Direction with step: %s \n", step))
           if(nullmu) mu = sqrt(2.01*log(p)/n)*resol^{-(step-1)}
           Direction.Est <-  Direction_fixedtuning(X, loading, mu = mu, weight = weight, deriv.vec = deriv)
           if(is.na(Direction.Est)|| length(Direction.Est$proj)==0){
