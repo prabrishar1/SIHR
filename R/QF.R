@@ -135,7 +135,7 @@ QF <- function(X, y, G, A=NULL, model=c("linear","logistic","logistic_alternativ
           if(nullmu) mu = sqrt(2.01*log(p)/n)*resol^{-(step-1)}
           Direction.Est <-  Direction_fixedtuning(X, loading, mu = mu, weight = weight, deriv.vec = deriv)
           if(is.na(Direction.Est)|| length(Direction.Est$proj)==0){
-            step = step - 1
+            next
           }else{
             if(verbose) cat(sprintf("---> Direction is identified at step: %s \n", step))
             direction <- Direction.Est$proj
