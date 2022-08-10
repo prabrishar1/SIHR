@@ -12,6 +12,7 @@ QF(
   model = c("linear", "logistic", "logistic_alternative", "probit"),
   intercept = TRUE,
   tau.vec = c(0, 0.5, 1),
+  beta.init = NULL,
   lambda = NULL,
   mu = NULL,
   init.step = NULL,
@@ -42,6 +43,8 @@ covariance matrix corresponding to the index set \code{G} (default =
 \item{tau.vec}{The vector of enlargement factors for asymptotic variance of
 the bias-corrected estimator to handle super-efficiency (default =
 \eqn{c(0, 0.5, 1)})}
+
+\item{beta.init}{The initial estimator of the regression vector (default = \code{NULL})}
 
 \item{lambda}{The tuning parameter in fitting model (default = \code{NULL})}
 

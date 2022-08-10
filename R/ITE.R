@@ -16,7 +16,9 @@
 #' @param intercept Should intercept(s) be fitted for the initial estimators
 #'   (default = \code{TRUE})
 #' @param intercept.loading Should intercept be included for the \code{loading}
-#'   (default = \code{TRUE})
+#'   (default = \code{FALSE})
+#' @param beta.init1 The initial estimator of the regression vector for the 1st data (default = \code{NULL})
+#' @param beta.init2 The initial estimator of the regression vector for the 2nd data (default = \code{NULL})
 #' @param lambda lambda The tuning parameter in fitting model (default =
 #'   \code{NULL})
 #' @param mu The dual tuning parameter used in the construction of the
@@ -79,14 +81,14 @@
 #'
 #' ## summary statistics
 #' summary(Est)
-ITE <- function(X1, y1, X2, y2, loading.mat, model="linear", intercept=TRUE, intercept.loading=TRUE,
-                lambda=NULL, mu=NULL, init.step=NULL, resol=1.5, maxiter=6, alpha=0.05,
-                verbose=TRUE){
+ITE <- function(X1, y1, X2, y2, loading.mat, model="linear", intercept=TRUE, intercept.loading=FALSE,
+                beta.init1=NULL, beta.init2=NULL, lambda=NULL, mu=NULL, init.step=NULL,
+                resol=1.5, maxiter=6, alpha=0.05, verbose=TRUE){
   if(verbose) cat(sprintf("Call: Inference for Linear Functional ======> Data 1/2 \n"))
-  Est1 = LF(X1, y1, loading.mat, model, intercept, intercept.loading, lambda, mu, init.step,
+  Est1 = LF(X1, y1, loading.mat, model, intercept, intercept.loading, beta.init1, lambda, mu, init.step,
             resol, maxiter, alpha, verbose)
   if(verbose) cat(sprintf("Call: Inference for Linear Functional ======> Data 2/2 \n"))
-  Est2 = LF(X2, y2, loading.mat, model, intercept, intercept.loading, lambda, mu, init.step,
+  Est2 = LF(X2, y2, loading.mat, model, intercept, intercept.loading, beta.init2, lambda, mu, init.step,
             resol, maxiter, alpha, verbose)
   est.plugin.vec = Est1$est.plugin.vec - Est2$est.plugin.vec
   est.debias.vec = Est1$est.debias.vec - Est2$est.debias.vec

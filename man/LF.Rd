@@ -11,7 +11,8 @@ LF(
   loading.mat,
   model = c("linear", "logistic", "logistic_alternative", "probit"),
   intercept = TRUE,
-  intercept.loading = TRUE,
+  intercept.loading = FALSE,
+  beta.init = NULL,
   lambda = NULL,
   mu = NULL,
   init.step = NULL,
@@ -36,7 +37,9 @@ a loading of interest}
 (default = \code{TRUE})}
 
 \item{intercept.loading}{Should intercept be included for the loading
-(default = \code{TRUE})}
+(default = \code{FALSE})}
+
+\item{beta.init}{The initial estimator of the regression vector (default = \code{NULL})}
 
 \item{lambda}{The tuning parameter in fitting model (default = \code{NULL})}
 

@@ -13,7 +13,9 @@ ITE(
   loading.mat,
   model = "linear",
   intercept = TRUE,
-  intercept.loading = TRUE,
+  intercept.loading = FALSE,
+  beta.init1 = NULL,
+  beta.init2 = NULL,
   lambda = NULL,
   mu = NULL,
   init.step = NULL,
@@ -44,7 +46,11 @@ a loading of interest}
 (default = \code{TRUE})}
 
 \item{intercept.loading}{Should intercept be included for the \code{loading}
-(default = \code{TRUE})}
+(default = \code{FALSE})}
+
+\item{beta.init1}{The initial estimator of the regression vector for the 1st data (default = \code{NULL})}
+
+\item{beta.init2}{The initial estimator of the regression vector for the 2nd data (default = \code{NULL})}
 
 \item{lambda}{lambda The tuning parameter in fitting model (default =
 \code{NULL})}

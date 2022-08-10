@@ -38,7 +38,7 @@ These are basic examples which show how to solve the common high-dimensional inf
 library(SIHR)
 ```
 
-### Linear functional in linear regression model
+### Linear functional in linear regression model - 1
 Generate Data and find the truth linear functionals:
 ```{r Generate Data LF-linear}
 set.seed(0)
@@ -47,16 +47,17 @@ y = -0.5 + X[,1] * 0.5 + X[,2] * 1 + rnorm(100)
 loading1 = c(1, 1, rep(0, 118))
 loading2 = c(-0.5, -1, rep(0, 118))
 loading.mat = cbind(loading1, loading2)
-## consider the intercept.loading=TRUE
-truth1 = -0.5 + 0.5 * 1 + 1 * 1
-truth2 = -0.5 + 0.5 * -0.5 + 1 * -1
+## consider the intercept.loading=FALSE
+truth1 = 0.5 * 1 + 1 * 1
+truth2 = 0.5 * -0.5 + 1 * -1
 truth = c(truth1, truth2)
 truth
 ```
+In the example, the linear functional does not involve the intercept term, so we set `intercept.loading=FALSE` (default). If users want to include the intercept term, please set `intercept.loading=TRUE`, such that truth1 = -0.5 + 1.5 = 1; truth2 = -0.5 - 1.25 = -1.75
 
 Call `LF` with `model="linear"`: 
 ```{r LF-linear}
-Est = LF(X, y, loading.mat, model="linear", intercept.loading=TRUE, verbose=TRUE)
+Est = LF(X, y, loading.mat, model="linear", intercept=TRUE, intercept.loading=FALSE, verbose=TRUE)
 ```
 
 `ci` method for `LF`
@@ -68,6 +69,40 @@ ci(Est)
 ```{r Summary LF-linear}
 summary(Est)
 ```
+
+### Linear functional in linear regression model - 2
+
+Sometimes, we may be interested in multiple linear functionals, each with a separate loading. To be computationally efficient, we can specify the argument `beta.init` first, so that the program can save time to compute the initial estimator repeatedly.
+```{r Generate Data LF-linear-2}
+set.seed(1)
+X = matrix(rnorm(100*120), nrow=100, ncol=120)
+y = -0.5 + X[,1:10] %*% rep(0.5, 10) + rnorm(100)
+loading.mat = matrix(0, nrow=120, ncol=10)
+for(i in 1:ncol(loading.mat)){
+  loading.mat[i,i] =  1
+}
+```
+
+```{r initial estimator LF-linear-2}
+library(glmnet)
+cvfit = cv.glmnet(X, y, family = "gaussian", alpha = 1, intercept = TRUE, standardize = T)
+beta.init = as.vector(coef(cvfit, s = cvfit$lambda.min))
+```
+Call `LF` with `model="linear"`: 
+```{r LF-linear-2}
+Est = LF(X, y, loading.mat, model="linear", intercept=TRUE, beta.init=beta.init, verbose=TRUE)
+```
+
+`ci` method for `LF`
+```{r ci LF-linear-2}
+ci(Est)
+```
+
+`summary` method for `LF`
+```{r Summary LF-linear-2}
+summary(Est)
+```
+
 
 ### Linear functional in logistic regression model
 Generate Data and find the truth linear functionals:
@@ -82,8 +117,8 @@ loading1 = c(1, 1, rep(0, 118))
 loading2 = c(-0.5, -1, rep(0, 118))
 loading.mat = cbind(loading1, loading2)
 ## consider the intercept.loading=TRUE
-truth1 = -0.5 + 0.5 * 1 + 1 * 1
-truth2 = -0.5 + 0.5 * -0.5 + 1 * -1
+truth1 = 0.5 * 1 + 1 * 1
+truth2 = 0.5 * -0.5 + 1 * -1
 truth = c(truth1, truth2)
 truth.prob = exp(truth) / (1 + exp(truth))
 truth; truth.prob
@@ -92,7 +127,7 @@ truth; truth.prob
 Call `LF` with `model="logistic"` or `model="logistic_alternative"`: 
 ```{r LF-logistic}
 ## model = "logisitc" or "logistic_alternative"
-Est = LF(X, y, loading.mat, model="logistic", intercept.loading=TRUE, verbose=TRUE)
+Est = LF(X, y, loading.mat, model="logistic", verbose=TRUE)
 ```
 
 `ci` method for `LF`
@@ -122,16 +157,15 @@ y2 = 0.1 + X2[,1] * 0.8 + X2[,2] * 0.8 + rnorm(100)
 loading1 = c(1, 1, rep(0, 118))
 loading2 = c(-0.5, -1, rep(0, 118))
 loading.mat = cbind(loading1, loading2)
-## consider the intercept.loading=TRUE
-truth1 = (-0.5 + 0.5*1 + 1*1) - (0.1 + 0.8*1 + 0.8*1)
-truth2 = (-0.5 + 0.5*(-0.5) + 1*(-1)) - (0.1 + 0.8*(-0.5) + 0.8*(-1))
+truth1 = (0.5*1 + 1*1) - (0.8*1 + 0.8*1)
+truth2 = (0.5*(-0.5) + 1*(-1)) - (0.8*(-0.5) + 0.8*(-1))
 truth = c(truth1, truth2)
 truth
 ```
 
 Call `ITE` with `model="linear"`:
 ```{r ITE-linear}
-Est = ITE(X1, y1, X2, y2, loading.mat, model="linear", intercept.loading=TRUE, verbose=TRUE)
+Est = ITE(X1, y1, X2, y2, loading.mat, model="linear", verbose=TRUE)
 ```
 
 `ci` method for `ITE`
@@ -162,13 +196,12 @@ y2 = rbinom(100, 1, prob2)
 loading1 = c(1, 1, rep(0, 118))
 loading2 = c(-0.5, -1, rep(0, 118))
 loading.mat = cbind(loading1, loading2)
-## consider the intercept.loading=TRUE
-truth1 = (-0.5 + 0.5*1 + 1*1) - (-0.5 + 0.8*1 + 0.8*1)
-truth2 = (-0.5 + 0.5*(-0.5) + 1*(-1)) - (-0.5 + 0.8*(-0.5) + 0.8*(-1))
+truth1 = (0.5*1 + 1*1) - (0.8*1 + 0.8*1)
+truth2 = (0.5*(-0.5) + 1*(-1)) - (0.8*(-0.5) + 0.8*(-1))
 truth = c(truth1, truth2)
 prob.fun = function(x) exp(x)/(1+exp(x))
-truth.prob1 = prob.fun(-0.5 + 0.5*1 + 1*1) - prob.fun(-0.5 + 0.8*1 + 0.8*1)
-truth.prob2 = prob.fun(-0.5 + 0.5*(-0.5) + 1*(-1)) - prob.fun(-0.5 + 0.8*(-0.5) + 0.8*(-1))
+truth.prob1 = prob.fun(0.5*1 + 1*1) - prob.fun(0.8*1 + 0.8*1)
+truth.prob2 = prob.fun(0.5*(-0.5) + 1*(-1)) - prob.fun(0.8*(-0.5) + 0.8*(-1))
 truth.prob = c(truth.prob1, truth.prob2)
 
 truth; truth.prob
@@ -176,7 +209,7 @@ truth; truth.prob
 
 Call `ITE` with `model="logistic"` or `model="logisitc_alternative"`:
 ```{r ITE-logisitc}
-Est = ITE(X1, y1, X2, y2, loading.mat, model="logistic", intercept.loading=TRUE, verbose = TRUE)
+Est = ITE(X1, y1, X2, y2, loading.mat, model="logistic", verbose = TRUE)
 ```
 
 `ci` method for `ITE`:

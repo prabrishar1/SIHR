@@ -1,5 +1,5 @@
 check.args.LF <- function(X=NULL, y=NULL, loading.mat=NULL, model=NULL, intercept=NULL, intercept.loading=NULL,
-                          lambda=NULL, mu=NULL, init.step=NULL, resol=NULL, maxiter=NULL, alpha=NULL,
+                          beta.init=NULL, lambda=NULL, mu=NULL, init.step=NULL, resol=NULL, maxiter=NULL, alpha=NULL,
                           verbose=NULL){
   if(is.null(X) || !is.numeric(X)) stop("X must be a numeric matrix")
   if(is.null(y) || !is.numeric(y)) stop("y must be a numeric vector")
@@ -14,6 +14,18 @@ check.args.LF <- function(X=NULL, y=NULL, loading.mat=NULL, model=NULL, intercep
   }
   if(is.null(intercept.loading) || length(intercept.loading)!=1 || !is.logical(intercept)){
     stop("intercept must be a Boolean")
+  }
+  if(!is.null(beta.init)){
+    if(!is.numeric(beta.init)) stop("beta.init must be numeric")
+    if(is.vector(beta.init)){
+      if(intercept) if(length(beta.init)!=(ncol(X)+1)) stop("intercept is TRUE, beta.init must be length of ncol(X)+1")
+      if(!intercept) if(length(beta.init)!=ncol(X)) stop("intercept is FALSE, beta.init must be length of ncol(X)")
+    }
+    if(is.matrix(beta.init)){
+      if(ncol(beta.init)!=1) stop("If beta.init is a matrix, ncol(beta.init) must be 1")
+      if(intercept) if(nrow(beta.init)!=(ncol(X)+1)) stop("intercept is TRUE, beta.init must be length of ncol(X)+1")
+      if(!intercept) if(nrow(beta.init)!=ncol(X)) stop("intercept is FALSE, beta.init must be length of ncol(X)")
+    }
   }
   if(!is.null(lambda)){
     if(!(lambda %in% c("CV.min","CV")) || length(lambda)!=1 || !is.numeric(lambda)) stop("lambda must be a number, except from 'CV.min','CV'.")
@@ -34,8 +46,9 @@ check.args.LF <- function(X=NULL, y=NULL, loading.mat=NULL, model=NULL, intercep
   if(is.null(verbose) || !is.logical(verbose) || length(verbose)!=1 ) stop("verbose must be a Boolean")
 }
 
-check.args.QF <- function(X=NULL, y=NULL, G=NULL, A=NULL, model=NULL, 
-                          intercept=NULL, tau.vec=NULL, lambda=NULL, mu=NULL, init.step=NULL, resol=NULL, 
+check.args.QF <- function(X=NULL, y=NULL, G=NULL, A=NULL, model=NULL,
+                          intercept=NULL, tau.vec=NULL, beta.init=NULL,lambda=NULL,
+                          mu=NULL, init.step=NULL, resol=NULL,
                           maxiter=NULL, alpha=NULL, verbose=NULL){
   if(is.null(X) || !is.numeric(X)) stop("X must be a numeric matrix")
   if(is.null(y) || !is.numeric(y)) stop("y must be a numeric vector")
@@ -50,6 +63,18 @@ check.args.QF <- function(X=NULL, y=NULL, G=NULL, A=NULL, model=NULL,
     stop("intercept must be a Boolean")
   }
   if(is.null(tau.vec) || !is.numeric(tau.vec) || any(tau.vec < 0)) stop("tau.vec must be a numeric vector")
+  if(!is.null(beta.init)){
+    if(!is.numeric(beta.init)) stop("beta.init must be numeric")
+    if(is.vector(beta.init)){
+      if(intercept) if(length(beta.init)!=(ncol(X)+1)) stop("intercept is TRUE, beta.init must be length of ncol(X)+1")
+      if(!intercept) if(length(beta.init)!=ncol(X)) stop("intercept is FALSE, beta.init must be length of ncol(X)")
+    }
+    if(is.matrix(beta.init)){
+      if(ncol(beta.init)!=1) stop("If beta.init is a matrix, ncol(beta.init) must be 1")
+      if(intercept) if(nrow(beta.init)!=(ncol(X)+1)) stop("intercept is TRUE, beta.init must be length of ncol(X)+1")
+      if(!intercept) if(nrow(beta.init)!=ncol(X)) stop("intercept is FALSE, beta.init must be length of ncol(X)")
+    }
+  }
   if(!is.null(lambda)){
     if(!(lambda %in% c("CV.min","CV")) || length(lambda)!=1 || !is.numeric(lambda)) stop("lambda must be a number, except from 'CV.min','CV'.")
   }

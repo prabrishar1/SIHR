@@ -10,7 +10,8 @@
 #' @param intercept Should intercept be fitted for the initial estimator
 #'   (default = \code{TRUE})
 #' @param intercept.loading Should intercept be included for the loading
-#'   (default = \code{TRUE})
+#'   (default = \code{FALSE})
+#' @param beta.init The initial estimator of the regression vector (default = \code{NULL})
 #' @param lambda The tuning parameter in fitting model (default = \code{NULL})
 #' @param mu The dual tuning parameter used in the construction of the
 #'   projection direction (default = \code{NULL})
@@ -63,7 +64,7 @@
 #' ## summary statistics
 #' summary(Est)
 LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alternative","probit"),
-               intercept=TRUE, intercept.loading=TRUE, lambda=NULL,
+               intercept=TRUE, intercept.loading=FALSE, beta.init=NULL, lambda=NULL,
                mu=NULL, init.step=NULL, resol=1.5, maxiter=6, alpha=0.05,
                verbose=TRUE){
   model = match.arg(model)
@@ -80,8 +81,9 @@ LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alternat
     cat("Argument 'intercept.loading' is set to FALSE, because 'intercept' is FALSE")
   }
   check.args.LF(X=X, y=y, loading.mat=loading.mat, model=model, intercept=intercept,
-             intercept.loading=intercept.loading, lambda=lambda, mu=mu, init.step=init.step,
-             resol=resol, maxiter=maxiter, alpha=alpha, verbose=verbose)
+                intercept.loading=intercept.loading, beta.init=beta.init, lambda=lambda,
+                mu=mu, init.step=init.step, resol=resol, maxiter=maxiter,
+                alpha=alpha, verbose=verbose)
 
   ### specify relevant functions ###
   funs.all = relevant.funs(intercept=intercept, model=model)
@@ -96,7 +98,8 @@ LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alternat
   X = scale(X, center=TRUE, scale=F)
 
   ### Initial lasso estimator of beta ###
-  beta.init = train.fun(X, y, lambda=lambda)$lasso.est
+  if(is.null(beta.init)) beta.init = train.fun(X, y, lambda=lambda)$lasso.est
+  beta.init = as.vector(beta.init)
 
   ### prepare values ###
   if(intercept) X = cbind(1, X)
@@ -198,7 +201,7 @@ LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alternat
     est.debias.vec[i.loading] = est.debias
     se.vec[i.loading] = se
     ci.mat[i.loading, ] = ci
-    proj.mat[, i.loading] = direction
+    proj.mat[, i.loading] = direction * loading.norm
   }
 
   obj <- list(est.plugin.vec = est.plugin.vec,

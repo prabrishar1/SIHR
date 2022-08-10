@@ -14,6 +14,7 @@
 #' @param tau.vec The vector of enlargement factors for asymptotic variance of
 #'   the bias-corrected estimator to handle super-efficiency (default =
 #'   \eqn{c(0, 0.5, 1)})
+#' @param beta.init The initial estimator of the regression vector (default = \code{NULL})
 #' @param lambda The tuning parameter in fitting model (default = \code{NULL})
 #' @param mu The dual tuning parameter used in the construction of the
 #'   projection direction (default = \code{NULL})
@@ -60,8 +61,8 @@
 #' ## summary statistics
 #' summary(Est)
 QF <- function(X, y, G, A=NULL, model=c("linear","logistic","logistic_alternative","probit"),
-               intercept=TRUE, tau.vec=c(0, 0.5, 1), lambda=NULL, mu=NULL, init.step=NULL, resol=1.5,
-               maxiter=6, alpha=0.05, verbose=TRUE){
+               intercept=TRUE, tau.vec=c(0, 0.5, 1), beta.init=NULL, lambda=NULL, mu=NULL,
+               init.step=NULL, resol=1.5, maxiter=6, alpha=0.05, verbose=TRUE){
   model = match.arg(model)
   X = as.matrix(X)
   y = as.vector(y)
@@ -72,8 +73,8 @@ QF <- function(X, y, G, A=NULL, model=c("linear","logistic","logistic_alternativ
 
   ### check arguments ###
   check.args.QF(X=X, y=y, G=G, A=A, model=model, intercept=intercept, tau.vec=tau.vec,
-                lambda=lambda, mu=mu, init.step=init.step, resol=resol, maxiter=maxiter,
-                alpha=alpha, verbose=verbose)
+                beta.init=beta.init, lambda=lambda, mu=mu, init.step=init.step, resol=resol,
+                maxiter=maxiter, alpha=alpha, verbose=verbose)
 
   ### specify relevant functions ###
   funs.all = relevant.funs(intercept=intercept, model=model)
@@ -87,7 +88,8 @@ QF <- function(X, y, G, A=NULL, model=c("linear","logistic","logistic_alternativ
   X = scale(X, center=TRUE, scale=F)
 
   ### Compute initial lasso estimator of beta ###
-  beta.init = train.fun(X, y, lambda=lambda)$lasso.est
+  if(is.null(beta.init)) beta.init = train.fun(X, y, lambda=lambda)$lasso.est
+  beta.init = as.vector(beta.init)
 
   ### prepare values ###
   if(intercept) X = cbind(1, X)
@@ -129,9 +131,7 @@ QF <- function(X, y, G, A=NULL, model=c("linear","logistic","logistic_alternativ
           init.step<- getmode(step.vec)
         }
         ### for loop to find direction ###
-        # if(verbose) cat(sprintf("---> Initial step set as: %s \n", init.step))
         for(step in init.step:1){
-          # if(verbose) cat(sprintf("---> Finding Direction with step: %s \n", step))
           if(nullmu) mu = sqrt(2.01*log(p)/n)*resol^{-(step-1)}
           Direction.Est <-  Direction_fixedtuning(X, loading, mu = mu, weight = weight, deriv.vec = deriv)
           if(is.na(Direction.Est)|| length(Direction.Est$proj)==0){
@@ -185,7 +185,7 @@ QF <- function(X, y, G, A=NULL, model=c("linear","logistic","logistic_alternativ
               se.vec     = se.vec,
               ci.mat     = ci.mat,
               tau.vec    = tau.vec,
-              proj       = direction)
+              proj       = direction * loading.norm)
   class(obj) = "QF"
   obj
 }
