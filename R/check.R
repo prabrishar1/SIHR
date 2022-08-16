@@ -28,7 +28,8 @@ check.args.LF <- function(X=NULL, y=NULL, loading.mat=NULL, model=NULL, intercep
     }
   }
   if(!is.null(lambda)){
-    if(!(lambda %in% c("CV.min","CV")) || length(lambda)!=1 || !is.numeric(lambda)) stop("lambda must be a number, except from 'CV.min','CV'.")
+    if(length(lambda)!=1) stop("lambda must be length of 1")
+    if(!is.numeric(lambda)) if(!(lambda %in% c("CV.min","CV"))) stop("lambda must be a number, except from 'CV.min','CV'.")
   }
   if(!is.null(mu)) if(!is.numeric(mu) || length(mu)!=1) stop("mu must be a number")
   if(!is.null(init.step) && (!is.integer(init.step) || length(init.step)!=1 || init.step <= 0)){
@@ -76,7 +77,8 @@ check.args.QF <- function(X=NULL, y=NULL, G=NULL, A=NULL, model=NULL,
     }
   }
   if(!is.null(lambda)){
-    if(!(lambda %in% c("CV.min","CV")) || length(lambda)!=1 || !is.numeric(lambda)) stop("lambda must be a number, except from 'CV.min','CV'.")
+    if(length(lambda)!=1) stop("lambda must be length of 1")
+    if(!is.numeric(lambda)) if(!(lambda %in% c("CV.min","CV"))) stop("lambda must be a number, except from 'CV.min','CV'.")
   }
   if(!is.null(mu)) if(!is.numeric(mu) || length(mu)!=1) stop("mu must be a number")
   if(!is.null(init.step) && (!is.integer(init.step) || length(init.step)!=1 || init.step <= 0)){

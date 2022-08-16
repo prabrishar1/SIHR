@@ -103,7 +103,7 @@ QF <- function(X, y, G, A=NULL, model=c("linear","logistic","logistic_alternativ
   if(intercept) G = G+1
   if(nullA){
     A = t(X)%*%X / nrow(X)
-    A = A[G,G]
+    A = A[G,G,drop=F]
   }
   loading = rep(0, p)
   loading[G] = A%*%beta.init[G]
@@ -169,7 +169,7 @@ QF <- function(X, y, G, A=NULL, model=c("linear","logistic","logistic_alternativ
   ############## Compute SE and Construct CI ###############
   V = 4 * sum(((sqrt(weight^2 * cond_var) * X) %*% direction)^2)/n * loading.norm^2
   if(nullA){
-    V.add = sum((as.vector((X[,G]%*%beta.init[G])^2) -
+    V.add = sum((as.vector((X[,G,drop=F]%*%beta.init[G])^2) -
                    as.numeric(t(beta.init[G]) %*% A %*% beta.init[G]))^2) / n
   } else {
     V.add = 0
@@ -185,7 +185,8 @@ QF <- function(X, y, G, A=NULL, model=c("linear","logistic","logistic_alternativ
               se.vec     = se.vec,
               ci.mat     = ci.mat,
               tau.vec    = tau.vec,
-              proj       = direction * loading.norm)
+              proj       = direction * loading.norm,
+              beta.init  = beta.init)
   class(obj) = "QF"
   obj
 }
