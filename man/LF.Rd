@@ -15,9 +15,7 @@ LF(
   beta.init = NULL,
   lambda = NULL,
   mu = NULL,
-  init.step = NULL,
-  resol = 1.5,
-  maxiter = 6,
+  rescale = 1,
   alpha = 0.05,
   verbose = TRUE
 )
@@ -27,59 +25,52 @@ LF(
 
 \item{y}{Outcome vector, of length \eqn{n}}
 
-\item{loading.mat}{Loading matrix, nrow=\eqn{p}, each column corresponds to
-a loading of interest}
+\item{loading.mat}{Loading matrix, nrow=\eqn{p}, each column corresponds to a
+loading of interest}
 
-\item{model}{The high dimensional regression model, either \code{linear} or
-\code{logistic} or \code{logistic_alternative} or \code{probit}}
+\item{model}{The high dimensional regression model, either \code{``linear''}
+or \code{``logistic''} or \code{``logistic_alternative''} or
+\code{``probit''}}
 
 \item{intercept}{Should intercept be fitted for the initial estimator
 (default = \code{TRUE})}
 
-\item{intercept.loading}{Should intercept be included for the loading
+\item{intercept.loading}{Should intercept term be included for the loading
 (default = \code{FALSE})}
 
-\item{beta.init}{The initial estimator of the regression vector (default = \code{NULL})}
+\item{beta.init}{The initial estimator of the regression vector (default =
+\code{NULL})}
 
-\item{lambda}{The tuning parameter in fitting model (default = \code{NULL})}
+\item{lambda}{The tuning parameter in fitting initial model. If \code{NULL},
+it will be picked by cross-validation. (default = \code{NULL})}
 
 \item{mu}{The dual tuning parameter used in the construction of the
-projection direction (default = \code{NULL})}
+projection direction. If \code{NULL} it will be searched automatically.
+(default = \code{NULL})}
 
-\item{init.step}{The initial step size used to compute \code{mu}; if set to
-\code{NULL} it is computed to be the number of steps (\code{maxiter}) to
-obtain the smallest \code{mu}}
+\item{rescale}{The constant to enlarge the standard error, considering finite
+sample bias. (default = 1.0)}
 
-\item{resol}{The factor by which \code{mu} is increased/decreased to obtain
-the smallest \code{mu} such that the dual optimization problem for
-constructing the projection direction converges (default = 1.5)}
-
-\item{maxiter}{Maximum number of steps along which \code{mu} is
-increased/decreased to obtain the smallest \code{mu} such that the dual
-optimization problem for constructing the projection direction converges
-(default = 6)}
-
-\item{alpha}{Level of significance to construct two-sided confidence interval (default = 0.05)}
+\item{alpha}{Level of significance to construct two-sided confidence interval
+(default = 0.05)}
 
 \item{verbose}{Should intermediate message(s) be printed (default =
 \code{TRUE})}
 }
 \value{
 \item{est.plugin.vec}{The vector of plugin(biased) estimators for the
-  linear combination of regression coefficients, length of
-  \code{ncol(loading.mat)}; each corresponding to a loading of interest}
-\item{est.debias.vec}{The vector of bias-corrected
-  estimators for the linear combination of regression coefficients, length of
-  \code{ncol(loading.mat)}; each corresponding to a loading of interest}
-\item{se.vec}{The vector of standard errors of the
-  bias-corrected estimators, length of \code{ncol(loading.mat)}; each
-  corresponding to a loading of interest}
-\item{ci.mat}{The matrix of
-  two.sided confidence interval for the linear combination, of dimension
-  \code{ncol(loading.mat)} x \eqn{2}; each row corresponding to a loading of
-  interest}
+linear combination of regression coefficients, length of
+\code{ncol(loading.mat)}; each corresponding to a loading of interest}
+\item{est.debias.vec}{The vector of bias-corrected estimators for the linear
+combination of regression coefficients, length of \code{ncol(loading.mat)};
+each corresponding to a loading of interest}
+\item{se.vec}{The vector of standard errors of the bias-corrected estimators,
+length of \code{ncol(loading.mat)}; each corresponding to a loading of interest}
+\item{ci.mat}{The matrix of two.sided confidence interval for the linear
+combination, of dimension \code{ncol(loading.mat)} x \eqn{2}; each row
+corresponding to a loading of interest}
 \item{proj.mat}{The matrix of projection directions; each column corresponding
-  to a loading of interest}
+to a loading of interest}
 }
 \description{
 Inference for linear combination of the regression vector in high dimensional

@@ -34,9 +34,9 @@ relevant.funs <- function(intercept=TRUE, model=c("linear","logistic","logistic_
       return(list(lasso.est = htheta))
     }
 
-    cond_var.fun <- function(pred, y=NULL){
+    cond_var.fun <- function(pred, y=NULL, sparsity=NULL){
       n = length(y)
-      sigma.sq = mean((y - pred)^2)
+      sigma.sq = sum((y - pred)^2) / max(0.7*n, n-sparsity)
       return(rep(sigma.sq, n))
     }
 
@@ -63,7 +63,7 @@ relevant.funs <- function(intercept=TRUE, model=c("linear","logistic","logistic_
       return(list(lasso.est = htheta))
     }
 
-    cond_var.fun <- function(pred, y=NULL){
+    cond_var.fun <- function(pred, y=NULL, sparsity=NULL){
       cond_var = pred * (1 - pred)
       return(cond_var)
     }
@@ -103,4 +103,87 @@ stars.pval <- function(p.value){
   unclass(symnum(p.value, corr = FALSE, na = FALSE,
                  cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
                  symbols = c("***", "**", "*", ".", " ")))
+}
+
+Direction_searchtuning <- function(X, loading, weight, deriv, resol=1.5, maxiter=10){
+  p = ncol(X)
+  n = nrow(X)
+  mu = sqrt(2.01*log(p)/n)
+  opt.sol = rep(0, p+1)
+  loading.norm = sqrt(sum(loading^2))
+  H = cbind(loading/loading.norm, diag(1, p))
+  
+  ## 1st iteration to decide whether increase mu or decrease mu
+  iter = 1
+  v = Variable(p+1)
+  obj = 1/4*sum(((X%*%H%*%v)^2)*weight*deriv)/n + sum((loading/loading.norm)*(H%*%v)) + mu*sum(abs(v))
+  prob = Problem(Minimize(obj))
+  result = solve(prob)
+  status = result$status
+  if(status=="optimal"){
+    incr = -1
+    v_opt = result$getValue(v)
+  }else{
+    incr = 1
+  }
+  
+  ## while loop to find the best mu (the smallest mu satisfying optimal status)
+  while(iter <= maxiter){
+    laststatus = status
+    mu = mu*(resol^incr)
+    obj = 1/4*sum(((X%*%H%*%v)^2)*weight*deriv)/n + sum((loading/loading.norm)*(H%*%v)) + mu*sum(abs(v))
+    prob = Problem(Minimize(obj))
+    result = solve(prob)
+    status = result$status
+    if(incr==-1){
+      if(status=='optimal'){
+        v_opt = result$getValue(v)
+        iter = iter+1
+        next
+      }else{
+        step = iter - 1
+        break
+      }
+    }
+    if(incr==1){
+      if(status!='optimal'){
+        iter = iter+1
+        next
+      }else{
+        step = iter
+        v_opt = result$getValue(v)
+        break
+      }
+    }
+  }
+  
+  direction = -(1/2)*(v_opt[-1] + v_opt[1]*loading/loading.norm)
+  return(list(proj = direction,
+              step = step,
+              incr = incr,
+              laststatus = laststatus,
+              curstatus = status,
+              mu = mu))
+}
+
+Direction_fixedtuning <- function(X, loading, weight, deriv, mu=NULL, resol=1.5, step=3, incr=-1){
+  p <- ncol(X)
+  n <- nrow(X)
+  if(is.null(mu)){
+    mu = sqrt(2.01*log(p)/n)
+    mu = mu * resol^{incr*step}
+  }
+  loading.norm <- sqrt(sum(loading^2))
+  
+  H <- cbind(loading / loading.norm, diag(1, p))
+  v <- Variable(p+1)
+  obj <- 1/4*sum(((X%*%H%*%v)^2)*weight*deriv)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))
+  prob <- Problem(Minimize(obj))
+  result <- solve(prob)
+  opt.sol<-result$getValue(v)
+  status<-result$status
+  direction<-(-1)/2*(opt.sol[-1]+opt.sol[1]*loading/loading.norm)
+  return(list(proj=direction,
+              status = status,
+              mu=mu))
 }

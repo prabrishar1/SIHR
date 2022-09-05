@@ -18,9 +18,7 @@ ITE(
   beta.init2 = NULL,
   lambda = NULL,
   mu = NULL,
-  init.step = NULL,
-  resol = 1.5,
-  maxiter = 6,
+  rescale = 1.1,
   alpha = 0.05,
   verbose = TRUE
 )
@@ -36,40 +34,34 @@ ITE(
 
 \item{y2}{Outcome vector for the second sample, of length \eqn{n_1}}
 
-\item{loading.mat}{Loading matrix, nrow=\eqn{p}, each column corresponds to
-a loading of interest}
+\item{loading.mat}{Loading matrix, nrow=\eqn{p}, each column corresponds to a
+loading of interest}
 
-\item{model}{The high dimensional regression model, either \code{linear} or
-\code{logistic} or \code{logistic alternative} or \code{probit}}
+\item{model}{The high dimensional regression model, either \code{``linear''}
+or \code{``logistic''} or \code{``logistic_alternative''} or
+\code{``probit''}}
 
 \item{intercept}{Should intercept(s) be fitted for the initial estimators
 (default = \code{TRUE})}
 
-\item{intercept.loading}{Should intercept be included for the \code{loading}
-(default = \code{FALSE})}
+\item{intercept.loading}{Should intercept term be included for the
+\code{loading} (default = \code{FALSE})}
 
-\item{beta.init1}{The initial estimator of the regression vector for the 1st data (default = \code{NULL})}
+\item{beta.init1}{The initial estimator of the regression vector for the 1st
+data (default = \code{NULL})}
 
-\item{beta.init2}{The initial estimator of the regression vector for the 2nd data (default = \code{NULL})}
+\item{beta.init2}{The initial estimator of the regression vector for the 2nd
+data (default = \code{NULL})}
 
-\item{lambda}{lambda The tuning parameter in fitting model (default =
-\code{NULL})}
+\item{lambda}{The tuning parameter in fitting initial model. If \code{NULL},
+it will be picked by cross-validation. (default = \code{NULL})}
 
 \item{mu}{The dual tuning parameter used in the construction of the
-projection direction (default = \code{NULL})}
+projection direction. If \code{NULL} it will be searched automatically.
+(default = \code{NULL})}
 
-\item{init.step}{The initial step size used to compute \code{mu}; if set to
-\code{NULL} it is computed to be the number of steps (\code{maxiter}) to
-obtain the smallest \code{mu}}
-
-\item{resol}{The factor by which \code{mu} is increased/decreased to obtain
-the smallest \code{mu} such that the dual optimization problem for
-constructing the projection direction converges (default = 1.5)}
-
-\item{maxiter}{Maximum number of steps along which \code{mu} is
-increased/decreased to obtain the smallest \code{mu} such that the dual
-optimization problem for constructing the projection direction converges
-(default = 6)}
+\item{rescale}{The constant to enlarge the standard error, considering finite
+sample bias. (default = 1.0)}
 
 \item{alpha}{Level of significance to construct two-sided confidence interval
 (default = 0.05)}
@@ -79,27 +71,24 @@ optimization problem for constructing the projection direction converges
 }
 \value{
 \item{est.plugin.vec}{The vector of plugin(biased) estimators for the
- linear combination of regression coefficients, length of
-  \code{ncol(loading.mat)}; corresponding to different column in
-   \code{loading.mat}}
-\item{est.debias.vec}{The vector of bias-corrected
-  estimators for the linear combination of regression coefficients, length of
-  \code{ncol(loading.mat)}; corresponding to different column in
-  \code{loading.mat}}
-\item{se.vec}{The vector of standard errors of the
-  bias-corrected estimators, length of \code{ncol(loading.mat)}; corresponding
-  to different column in \code{loading.mat}}
-\item{ci.mat}{The matrix of
-  two.sided confidence interval for the linear combination, of dimension
-  \code{ncol(loading.mat)} x \eqn{2}; the row corresponding to different column
-  in \code{loading.mat}}
-\item{prob.debias.vec}{The vector of bias-corrected estimators after probability
-  transformation, length of \code{ncol(loading.mat)}; corresponding to different
-  column in {loading.mat}. The value would be \code{NULL} for non-logistic model.}
-\item{prob.se.vec}{The vector of standard errors of the bias-corrected estimators
-  after probability transformation, length of \code{ncol(loading.mat)};
-  corresponding to different column in \code{loading.mat}. The value would be
-  \code{NULL} for non-logistic model.}
+linear combination of regression coefficients, length of \code{ncol(loading.mat)}; 
+corresponding to different column in \code{loading.mat}} 
+\item{est.debias.vec}{The vector of bias-corrected estimators for the linear 
+combination of regression coefficients, length of \code{ncol(loading.mat)}; 
+corresponding to different column in \code{loading.mat}} 
+\item{se.vec}{The vector of standard errors of the bias-corrected estimators, 
+length of \code{ncol(loading.mat)}; corresponding to different column in 
+\code{loading.mat}} 
+\item{ci.mat}{The matrix of two.sided confidence interval for the linear 
+combination, of dimension \code{ncol(loading.mat)} x \eqn{2}; the row 
+corresponding to different column in \code{loading.mat}} 
+\item{prob.debias.vec}{The vector of bias-corrected estimators after probability 
+transformation, length of \code{ncol(loading.mat)}; corresponding to different 
+column in {loading.mat}. The value would be \code{NULL} for non-logistic model.}
+\item{prob.se.vec}{The vector of standard errors of the bias-corrected
+estimators after probability transformation, length of \code{ncol(loading.mat)}; 
+corresponding to different column in \code{loading.mat}. The value would be 
+\code{NULL} for non-logistic model.}
 }
 \description{
 Computes the bias-corrected estimator of the difference of

@@ -3,48 +3,43 @@
 #'
 #' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
 #' @param y Outcome vector, of length \eqn{n}
-#' @param loading.mat Loading matrix, nrow=\eqn{p}, each column corresponds to
-#'   a loading of interest
-#' @param model The high dimensional regression model, either \code{linear} or
-#'   \code{logistic} or \code{logistic_alternative} or \code{probit}
+#' @param loading.mat Loading matrix, nrow=\eqn{p}, each column corresponds to a
+#'   loading of interest
+#' @param model The high dimensional regression model, either \code{``linear''}
+#'   or \code{``logistic''} or \code{``logistic_alternative''} or
+#'   \code{``probit''}
 #' @param intercept Should intercept be fitted for the initial estimator
 #'   (default = \code{TRUE})
-#' @param intercept.loading Should intercept be included for the loading
+#' @param intercept.loading Should intercept term be included for the loading
 #'   (default = \code{FALSE})
-#' @param beta.init The initial estimator of the regression vector (default = \code{NULL})
-#' @param lambda The tuning parameter in fitting model (default = \code{NULL})
+#' @param beta.init The initial estimator of the regression vector (default =
+#'   \code{NULL})
+#' @param lambda The tuning parameter in fitting initial model. If \code{NULL},
+#'   it will be picked by cross-validation. (default = \code{NULL})
 #' @param mu The dual tuning parameter used in the construction of the
-#'   projection direction (default = \code{NULL})
-#' @param init.step The initial step size used to compute \code{mu}; if set to
-#'   \code{NULL} it is computed to be the number of steps (\code{maxiter}) to
-#'   obtain the smallest \code{mu}
-#' @param resol The factor by which \code{mu} is increased/decreased to obtain
-#'   the smallest \code{mu} such that the dual optimization problem for
-#'   constructing the projection direction converges (default = 1.5)
-#' @param maxiter Maximum number of steps along which \code{mu} is
-#'   increased/decreased to obtain the smallest \code{mu} such that the dual
-#'   optimization problem for constructing the projection direction converges
-#'   (default = 6)
-#' @param alpha Level of significance to construct two-sided confidence interval (default = 0.05)
+#'   projection direction. If \code{NULL} it will be searched automatically.
+#'   (default = \code{NULL})
+#' @param rescale The constant to enlarge the standard error, considering finite
+#'   sample bias. (default = 1.0)
+#' @param alpha Level of significance to construct two-sided confidence interval
+#'   (default = 0.05)
 #' @param verbose Should intermediate message(s) be printed (default =
 #'   \code{TRUE})
 #'
 #' @return
 #' \item{est.plugin.vec}{The vector of plugin(biased) estimators for the
-#'   linear combination of regression coefficients, length of
-#'   \code{ncol(loading.mat)}; each corresponding to a loading of interest}
-#' \item{est.debias.vec}{The vector of bias-corrected
-#'   estimators for the linear combination of regression coefficients, length of
-#'   \code{ncol(loading.mat)}; each corresponding to a loading of interest}
-#' \item{se.vec}{The vector of standard errors of the
-#'   bias-corrected estimators, length of \code{ncol(loading.mat)}; each
-#'   corresponding to a loading of interest}
-#' \item{ci.mat}{The matrix of
-#'   two.sided confidence interval for the linear combination, of dimension
-#'   \code{ncol(loading.mat)} x \eqn{2}; each row corresponding to a loading of
-#'   interest}
+#' linear combination of regression coefficients, length of
+#' \code{ncol(loading.mat)}; each corresponding to a loading of interest}
+#' \item{est.debias.vec}{The vector of bias-corrected estimators for the linear
+#' combination of regression coefficients, length of \code{ncol(loading.mat)};
+#' each corresponding to a loading of interest}
+#' \item{se.vec}{The vector of standard errors of the bias-corrected estimators,
+#' length of \code{ncol(loading.mat)}; each corresponding to a loading of interest}
+#' \item{ci.mat}{The matrix of two.sided confidence interval for the linear
+#' combination, of dimension \code{ncol(loading.mat)} x \eqn{2}; each row
+#' corresponding to a loading of interest}
 #' \item{proj.mat}{The matrix of projection directions; each column corresponding
-#'   to a loading of interest}
+#' to a loading of interest}
 #'
 #' @export
 #' @import CVXR glmnet
@@ -65,32 +60,28 @@
 #' summary(Est)
 LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alternative","probit"),
                intercept=TRUE, intercept.loading=FALSE, beta.init=NULL, lambda=NULL,
-               mu=NULL, init.step=NULL, resol=1.5, maxiter=6, alpha=0.05,
-               verbose=TRUE){
+               mu=NULL, rescale=1.0, alpha=0.05, verbose=TRUE){
   model = match.arg(model)
   X = as.matrix(X)
   y = as.vector(y)
   loading.mat = as.matrix(loading.mat)
-  nullmu = ifelse(is.null(mu), TRUE, FALSE)
-  null_initstep = ifelse(is.null(init.step), TRUE, FALSE)
 
   ### Check arguments ###
   if(!is.logical(verbose)) verbose=TRUE
   if(intercept==FALSE && intercept.loading==TRUE){
     intercept.loading = FALSE
-    cat("Argument 'intercept.loading' is set to FALSE, because 'intercept' is FALSE")
+    cat("Argument 'intercept.loading' is set to FALSE, because 'intercept' is FALSE \n")
   }
   check.args.LF(X=X, y=y, loading.mat=loading.mat, model=model, intercept=intercept,
                 intercept.loading=intercept.loading, beta.init=beta.init, lambda=lambda,
-                mu=mu, init.step=init.step, resol=resol, maxiter=maxiter,
-                alpha=alpha, verbose=verbose)
+                mu=mu, rescale=rescale, alpha=alpha, verbose=verbose)
 
   ### specify relevant functions ###
   funs.all = relevant.funs(intercept=intercept, model=model)
   train.fun = funs.all$train.fun
   pred.fun = funs.all$pred.fun
   deriv.fun = funs.all$deriv.fun
-  weight.fun = funs.all$deriv.fun
+  weight.fun = funs.all$weight.fun
   cond_var.fun = funs.all$cond_var.fun
 
   ### centralize X ###
@@ -100,6 +91,7 @@ LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alternat
   ### Initial lasso estimator of beta ###
   if(is.null(beta.init)) beta.init = train.fun(X, y, lambda=lambda)$lasso.est
   beta.init = as.vector(beta.init)
+  sparsity = sum(abs(beta.init)>1e-4)
 
   ### prepare values ###
   if(intercept) X = cbind(1, X)
@@ -107,7 +99,7 @@ LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alternat
   pred = as.vector(pred.fun(X%*%beta.init))
   deriv = as.vector(deriv.fun(X%*%beta.init))
   weight = as.vector(weight.fun(X%*%beta.init))
-  cond_var = as.vector(cond_var.fun(pred, y))
+  cond_var = as.vector(cond_var.fun(pred, y, sparsity))
 
   ### storing infos ###
   n.loading = ncol(loading.mat)
@@ -133,56 +125,66 @@ LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alternat
 
     ############### Correction Direction #################
     if(verbose) cat(sprintf("Computing LF for loading (%i/%i)... \n", i.loading, n.loading))
-    if (n >= 6*p){
-      temp = weight*deriv*X
-      Sigma.hat = t(temp)%*%temp / n
-      direction = solve(Sigma.hat) %*% loading / loading.norm
-    } else {
-      ### CVXR sometimes break down accidentally, we catch the error and offer an alternative ###
-      direction_alter = FALSE
-      tryCatch(
-        expr = {
-          ### find init.step ###
-          if(null_initstep){
-            step.vec <- rep(NA,3)
-            for(t in 1:3){
-              index.sel <- sample(1:n,size=ceiling(0.5*min(n,p)), replace=FALSE)
-              Direction.Est.temp <-  Direction_searchtuning(X[index.sel,], loading, weight = weight[index.sel], deriv.vec = deriv[index.sel], resol, maxiter)
-              step.vec[t] <- Direction.Est.temp$step
-            }
-            init.step<- getmode(step.vec)
-          }
-          ### for loop to find direction ###
-          # if(verbose) cat(sprintf("---> Initial step set as: %s \n", init.step))
-          for(step in init.step:1){
-            # if(verbose) cat(sprintf("---> Finding Direction with step: %s \n", step))
-            if(nullmu) mu = sqrt(2.01*log(p)/n)*resol^{-(step-1)}
-            Direction.Est <-  Direction_fixedtuning(X, loading, mu = mu, weight = weight, deriv.vec = deriv)
-            if(is.na(Direction.Est) || length(Direction.Est$proj)==0){
-              next
-            }else{
-              if(verbose) cat(sprintf("---> Direction is identified at step: %s \n", step))
-              direction <- Direction.Est$proj
-              break
-            }
-          }
-        },
-        error = function(e){
-          message("Caught an error in CVXR during computing direction")
-          print(e)
-          direction_alter <<- TRUE
-        },
-        warning = function(w){
-          message("Caught a warning in CVXR during computing direction")
-          print(w)
-          direction_alter <<- TRUE
-        }
-      )
-      if(direction_alter){
+    ### loading.norm too small, direction is set as 0 ###
+    if(loading.norm <= 1e-5){
+      cat("loading norm is too small, set projection direction as numeric(0) \n")
+      direction = rep(0, length(loading))
+    }
+    ### loading.norm large enough ###
+    if(loading.norm > 1e-5){
+      if (n >= 6*p){
         temp = weight*deriv*X
         Sigma.hat = t(temp)%*%temp / n
-        Sigma.hat.inv = diag(1/diag(Sigma.hat))
-        direction = Sigma.hat.inv %*% loading / loading.norm
+        direction = solve(Sigma.hat) %*% loading / loading.norm
+      } else {
+        ### CVXR sometimes break down accidentally, we catch the error and offer an alternative ###
+        direction_alter = FALSE
+        tryCatch(
+          expr = {
+            ### cases when no mu specified ###
+            if(is.null(mu)){
+              if(n >= 0.9*p){
+                step.vec = incr.vec = rep(NA, 3)
+                for(t in 1:3){
+                  index.sel = sample(1:n, size=round(0.9*p), replace=FALSE)
+                  Direction.Est.temp = Direction_searchtuning(X[index.sel,], loading, weight=weight[index.sel], deriv= deriv[index.sel])
+                  step.vec[t] = Direction.Est.temp$step
+                  incr.vec[t] = Direction.Est.temp$incr
+                }
+                step = getmode(step.vec)
+                incr = getmode(incr.vec)
+                Direction.Est = Direction_fixedtuning(X, loading, weight=weight, deriv=deriv, step=step, incr=incr)
+                while(Direction.Est$status!='optimal'){
+                  step = step + incr
+                  Direction.Est =  Direction_fixedtuning(X, loading, weight=weight, deriv=deriv, step=step, incr=incr)
+                }
+              }else{
+                Direction.Est = Direction_searchtuning(X, loading, weight=weight, deriv=deriv)
+              }
+            }
+            ### cases when mu specified ###
+            if(!is.null(mu)){
+              Direction.Est = Direction_fixedtuning(X, loading, weight=weight, deriv=deriv, mu=mu)
+              while(Direction.Est$status!='optimal'){
+                mu = mu*1.5
+                Direction.Est = Direction_fixedtuning(X, loading, weight=weight, deriv=deriv, mu=mu)
+              }
+            }
+            direction = Direction.Est$proj
+            if(verbose) cat(paste0('The projection direction is identified at mu = ', round(Direction.Est$mu, 6), '\n'))
+          },
+          error = function(e){
+            message("Caught an error in CVXR during computing direction, switch to the alternative method")
+            print(e)
+            direction_alter <<- TRUE
+          }
+        )
+        if(direction_alter){
+          temp = weight*deriv*X
+          Sigma.hat = t(temp)%*%temp / n
+          Sigma.hat.inv = diag(1/diag(Sigma.hat))
+          direction = Sigma.hat.inv %*% loading / loading.norm
+        }
       }
     }
 
@@ -193,7 +195,7 @@ LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alternat
 
     ############## Compute SE and Construct CI ###############
     V = sum(((sqrt(weight^2 * cond_var) * X) %*% direction)^2)/n * loading.norm^2
-    se = sqrt(V/n)
+    se = rescale*sqrt(V/n)
     ci = c(est.debias - qnorm(1-alpha/2)*se, est.debias + qnorm(1-alpha/2)*se)
 
     ############## Store Infos ###############

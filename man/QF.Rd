@@ -2,7 +2,8 @@
 % Please edit documentation in R/QF.R
 \name{QF}
 \alias{QF}
-\title{Inference for quadratic forms of the regression vector in high dimensional linear and logistic regressions}
+\title{Inference for quadratic forms of the regression vector in high dimensional
+generalized linear regressions}
 \usage{
 QF(
   X,
@@ -15,9 +16,6 @@ QF(
   beta.init = NULL,
   lambda = NULL,
   mu = NULL,
-  init.step = NULL,
-  resol = 1.5,
-  maxiter = 6,
   alpha = 0.05,
   verbose = TRUE
 )
@@ -29,10 +27,10 @@ QF(
 
 \item{G}{The set of indices, \code{G} in the quadratic form}
 
-\item{A}{The matrix A in the quadratic form, of dimension \eqn{|G|\times}\eqn{|G|}.
-If \code{NULL} A would be set as the \eqn{|G|\times}\eqn{|G|} submatrix of the population
-covariance matrix corresponding to the index set \code{G} (default =
-\code{NULL})}
+\item{A}{The matrix A in the quadratic form, of dimension
+\eqn{|G|\times}\eqn{|G|}. If \code{NULL} A would be set as the
+\eqn{|G|\times}\eqn{|G|} submatrix of the population covariance matrix
+corresponding to the index set \code{G} (default = \code{NULL})}
 
 \item{model}{The high dimensional regression model, either \code{linear} or
 \code{logistic} or \code{logistic_alternative} or \code{probit}}
@@ -44,47 +42,36 @@ covariance matrix corresponding to the index set \code{G} (default =
 the bias-corrected estimator to handle super-efficiency (default =
 \eqn{c(0, 0.5, 1)})}
 
-\item{beta.init}{The initial estimator of the regression vector (default = \code{NULL})}
+\item{beta.init}{The initial estimator of the regression vector (default =
+\code{NULL})}
 
-\item{lambda}{The tuning parameter in fitting model (default = \code{NULL})}
+\item{lambda}{The tuning parameter in fitting initial model. If \code{NULL},
+it will be picked by cross-validation. (default = \code{NULL})}
 
 \item{mu}{The dual tuning parameter used in the construction of the
-projection direction (default = \code{NULL})}
+projection direction. If \code{NULL} it will be searched automatically.
+(default = \code{NULL})}
 
-\item{init.step}{The initial step size used to compute \code{mu}; if set to
-\code{NULL} it is computed to be the number of steps (< \code{maxiter}) to
-obtain the smallest \code{mu} such that the dual optimization problem for
-constructing the projection direction converges (default = \code{NULL})}
-
-\item{resol}{Resolution or the factor by which \code{mu} is
-increased/decreased to obtain the smallest \code{mu} such that the dual
-optimization problem for constructing the projection direction converges
-(default = 1.5)}
-
-\item{maxiter}{aximum number of steps along which \code{mu} is
-increased/decreased to obtain the smallest \code{mu} such that the dual
-optimization problem for constructing the projection direction converges
-(default = 6)}
-
-\item{alpha}{Level of significance to construct two-sided confidence interval (default = 0.05)}
+\item{alpha}{Level of significance to construct two-sided confidence interval
+(default = 0.05)}
 
 \item{verbose}{Should intermediate message(s) be printed (default =
 \code{TRUE})}
 }
 \value{
-\item{est.plugin}{The plugin(biased) estimator for the quadratic form
-  of the regression vector restricted to \code{G}}
-\item{est.debias}{The
-  bias-corrected estimator of the quadratic form of the regression vector}
+\item{est.plugin}{The plugin(biased) estimator for the quadratic form of the
+regression vector restricted to \code{G}}
+\item{est.debias}{The bias-corrected estimator of the quadratic form of the
+regression vector}
 \item{se.vec}{The vector of standard errors of the bias-corrected estimator,
-  length of \code{tau.vec}; corrsponding to different values of \code{tau.vec}}
+length of \code{tau.vec}; corrsponding to different values of \code{tau.vec}}
 \item{ci.mat}{The matrix of two.sided confidence interval for the quadratic
-  form of the regression vector; row corresponds to different values of
-  \code{tau.vec}}
+form of the regression vector; row corresponds to different values of \code{tau.vec}}
 \item{proj}{The projection direction}
 }
 \description{
-Inference for quadratic forms of the regression vector in high dimensional linear and logistic regressions
+Inference for quadratic forms of the regression vector in high dimensional
+generalized linear regressions
 }
 \examples{
 X = matrix(rnorm(100*10), nrow=100, ncol=10)

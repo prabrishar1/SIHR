@@ -1,12 +1,13 @@
-#' Inference for quadratic forms of the regression vector in high dimensional linear and logistic regressions
+#' Inference for quadratic forms of the regression vector in high dimensional
+#' generalized linear regressions
 #'
 #' @param X Design matrix, of dimension \eqn{n} x \eqn{p}
 #' @param y Outcome vector, of length \eqn{n}
 #' @param G The set of indices, \code{G} in the quadratic form
-#' @param A The matrix A in the quadratic form, of dimension \eqn{|G|\times}\eqn{|G|}.
-#' If \code{NULL} A would be set as the \eqn{|G|\times}\eqn{|G|} submatrix of the population
-#' covariance matrix corresponding to the index set \code{G} (default =
-#' \code{NULL})
+#' @param A The matrix A in the quadratic form, of dimension
+#'   \eqn{|G|\times}\eqn{|G|}. If \code{NULL} A would be set as the
+#'   \eqn{|G|\times}\eqn{|G|} submatrix of the population covariance matrix
+#'   corresponding to the index set \code{G} (default = \code{NULL})
 #' @param model The high dimensional regression model, either \code{linear} or
 #'   \code{logistic} or \code{logistic_alternative} or \code{probit}
 #' @param intercept Should intercept be fitted for the initial estimator
@@ -14,36 +15,27 @@
 #' @param tau.vec The vector of enlargement factors for asymptotic variance of
 #'   the bias-corrected estimator to handle super-efficiency (default =
 #'   \eqn{c(0, 0.5, 1)})
-#' @param beta.init The initial estimator of the regression vector (default = \code{NULL})
-#' @param lambda The tuning parameter in fitting model (default = \code{NULL})
+#' @param beta.init The initial estimator of the regression vector (default =
+#'   \code{NULL})
+#' @param lambda The tuning parameter in fitting initial model. If \code{NULL},
+#'   it will be picked by cross-validation. (default = \code{NULL})
 #' @param mu The dual tuning parameter used in the construction of the
-#'   projection direction (default = \code{NULL})
-#' @param init.step The initial step size used to compute \code{mu}; if set to
-#'   \code{NULL} it is computed to be the number of steps (< \code{maxiter}) to
-#'   obtain the smallest \code{mu} such that the dual optimization problem for
-#'   constructing the projection direction converges (default = \code{NULL})
-#' @param resol Resolution or the factor by which \code{mu} is
-#'   increased/decreased to obtain the smallest \code{mu} such that the dual
-#'   optimization problem for constructing the projection direction converges
-#'   (default = 1.5)
-#' @param maxiter aximum number of steps along which \code{mu} is
-#'   increased/decreased to obtain the smallest \code{mu} such that the dual
-#'   optimization problem for constructing the projection direction converges
-#'   (default = 6)
-#' @param alpha Level of significance to construct two-sided confidence interval (default = 0.05)
+#'   projection direction. If \code{NULL} it will be searched automatically.
+#'   (default = \code{NULL})
+#' @param alpha Level of significance to construct two-sided confidence interval
+#'   (default = 0.05)
 #' @param verbose Should intermediate message(s) be printed (default =
 #'   \code{TRUE})
 #'
 #' @return
-#' \item{est.plugin}{The plugin(biased) estimator for the quadratic form
-#'   of the regression vector restricted to \code{G}}
-#' \item{est.debias}{The
-#'   bias-corrected estimator of the quadratic form of the regression vector}
+#' \item{est.plugin}{The plugin(biased) estimator for the quadratic form of the
+#' regression vector restricted to \code{G}}
+#' \item{est.debias}{The bias-corrected estimator of the quadratic form of the
+#' regression vector}
 #' \item{se.vec}{The vector of standard errors of the bias-corrected estimator,
-#'   length of \code{tau.vec}; corrsponding to different values of \code{tau.vec}}
+#' length of \code{tau.vec}; corrsponding to different values of \code{tau.vec}}
 #' \item{ci.mat}{The matrix of two.sided confidence interval for the quadratic
-#'   form of the regression vector; row corresponds to different values of
-#'   \code{tau.vec}}
+#' form of the regression vector; row corresponds to different values of \code{tau.vec}}
 #' \item{proj}{The projection direction}
 #' @export
 #'
@@ -62,26 +54,23 @@
 #' summary(Est)
 QF <- function(X, y, G, A=NULL, model=c("linear","logistic","logistic_alternative","probit"),
                intercept=TRUE, tau.vec=c(0, 0.5, 1), beta.init=NULL, lambda=NULL, mu=NULL,
-               init.step=NULL, resol=1.5, maxiter=6, alpha=0.05, verbose=TRUE){
+               alpha=0.05, verbose=TRUE){
   model = match.arg(model)
   X = as.matrix(X)
   y = as.vector(y)
   G = sort(as.vector(G))
   nullA = ifelse(is.null(A), TRUE, FALSE)
-  nullmu = ifelse(is.null(mu), TRUE, FALSE)
-  null_initstep = ifelse(is.null(init.step), TRUE, FALSE)
 
   ### check arguments ###
   check.args.QF(X=X, y=y, G=G, A=A, model=model, intercept=intercept, tau.vec=tau.vec,
-                beta.init=beta.init, lambda=lambda, mu=mu, init.step=init.step, resol=resol,
-                maxiter=maxiter, alpha=alpha, verbose=verbose)
+                beta.init=beta.init, lambda=lambda, mu=mu, alpha=alpha, verbose=verbose)
 
   ### specify relevant functions ###
   funs.all = relevant.funs(intercept=intercept, model=model)
   train.fun = funs.all$train.fun
   pred.fun = funs.all$pred.fun
   deriv.fun = funs.all$deriv.fun
-  weight.fun = funs.all$deriv.fun
+  weight.fun = funs.all$weight.fun
   cond_var.fun = funs.all$cond_var.fun
 
   ### centralize X ###
@@ -111,56 +100,69 @@ QF <- function(X, y, G, A=NULL, model=c("linear","logistic","logistic_alternativ
 
   ################# Correction Direction ####################
   if(verbose) cat("Computing QF... \n")
-  if (n >= 6*p){
-    temp = weight*deriv*X
-    Sigma.hat = t(temp)%*%temp / n
-    direction = solve(Sigma.hat) %*% loading / loading.norm
-  }else{
-    ### CVXR sometimes break down accidentally, we catch the error and offer an alternative ###
-    direction_alter = FALSE
-    tryCatch(
-      expr = {
-        ### find init.step ###
-        if(null_initstep){
-          step.vec <- rep(NA,3)
-          for(t in 1:3){
-            index.sel <- sample(1:n,size=ceiling(0.5*min(n,p)), replace=FALSE)
-            Direction.Est.temp <-  Direction_searchtuning(X[index.sel,], loading, weight = weight[index.sel], deriv.vec = deriv[index.sel], resol, maxiter)
-            step.vec[t] <- Direction.Est.temp$step
-          }
-          init.step<- getmode(step.vec)
-        }
-        ### for loop to find direction ###
-        for(step in init.step:1){
-          if(nullmu) mu = sqrt(2.01*log(p)/n)*resol^{-(step-1)}
-          Direction.Est <-  Direction_fixedtuning(X, loading, mu = mu, weight = weight, deriv.vec = deriv)
-          if(is.na(Direction.Est)|| length(Direction.Est$proj)==0){
-            next
-          }else{
-            if(verbose) cat(sprintf("---> Direction is identified at step: %s \n", step))
-            direction <- Direction.Est$proj
-            break
-          }
-        }
-      },
-      error = function(e){
-        message("Caught an error in CVXR during computing direction")
-        print(e)
-        direction_alter <<- TRUE
-      },
-      warning = function(w){
-        message("Caught a warning in CVXR during computing direction")
-        print(w)
-        direction_alter <<- TRUE
-      }
-    )
-    if(direction_alter){
+  ### loading.norm too small, direction is set as 0 ###
+  if(loading.norm <= 1e-5){
+    cat("loading norm is too small, set projection direction as numeric(0) \n")
+    direction = rep(0, length(loading))
+  }
+  ### loading.norm large enough ###
+  if(loading.norm > 1e-5){
+    if (n >= 6*p){
       temp = weight*deriv*X
       Sigma.hat = t(temp)%*%temp / n
-      Sigma.hat.inv = diag(1/diag(Sigma.hat))
-      direction = Sigma.hat.inv %*% loading / loading.norm
+      direction = solve(Sigma.hat) %*% loading / loading.norm
+    }else{
+      ### CVXR sometimes break down accidentally, we catch the error and offer an alternative ###
+      direction_alter = FALSE
+      tryCatch(
+        expr = {
+          ### cases when no mu specified ###
+          if(is.null(mu)){
+            if(n >= 0.9*p){
+              step.vec = incr.vec = rep(NA, 3)
+              for(t in 1:3){
+                index.sel = sample(1:n, size=round(0.9*p), replace=FALSE)
+                Direction.Est.temp = Direction_searchtuning(X[index.sel,], loading, weight=weight[index.sel], deriv= deriv[index.sel])
+                step.vec[t] = Direction.Est.temp$step
+                incr.vec[t] = Direction.Est.temp$incr
+              }
+              step = getmode(step.vec)
+              incr = getmode(incr.vec)
+              Direction.Est = Direction_fixedtuning(X, loading, weight=weight, deriv=deriv, step=step, incr=incr)
+              while(Direction.Est$status!='optimal'){
+                step = step + incr
+                Direction.Est =  Direction_fixedtuning(X, loading, weight=weight, deriv=deriv, step=step, incr=incr)
+              }
+            }else{
+              Direction.Est = Direction_searchtuning(X, loading, weight=weight, deriv=deriv)
+            }
+          }
+          ### cases when mu specified ###
+          if(!is.null(mu)){
+            Direction.Est = Direction_fixedtuning(X, loading, weight=weight, deriv=deriv, mu=mu)
+            while(Direction.Est$status!='optimal'){
+              mu = mu*1.5
+              Direction.Est = Direction_fixedtuning(X, loading, weight=weight, deriv=deriv, mu=mu)
+            }
+          }
+          direction = Direction.Est$proj
+          if(verbose) cat(paste0('The projection direction is identified at mu=', round(Direction.Est$mu, 6), '\n'))
+        },
+        error = function(e){
+          message("Caught an error in CVXR during computing direction, switch to the alternative method")
+          print(e)
+          direction_alter <<- TRUE
+        }
+      )
+      if(direction_alter){
+        temp = weight*deriv*X
+        Sigma.hat = t(temp)%*%temp / n
+        Sigma.hat.inv = diag(1/diag(Sigma.hat))
+        direction = Sigma.hat.inv %*% loading / loading.norm
+      }
     }
   }
+
   ################# Bias Correction ################
   est.plugin = as.numeric(t(beta.init[G]) %*% A %*% beta.init[G])
   correction = 2 * mean((weight * (y-pred) * X) %*% direction)
@@ -171,7 +173,7 @@ QF <- function(X, y, G, A=NULL, model=c("linear","logistic","logistic_alternativ
   if(nullA){
     V.add = sum((as.vector((X[,G,drop=F]%*%beta.init[G])^2) -
                    as.numeric(t(beta.init[G]) %*% A %*% beta.init[G]))^2) / n
-  } else {
+  }else{
     V.add = 0
   }
   V.vec = (V + V.add + tau.vec)
@@ -185,8 +187,7 @@ QF <- function(X, y, G, A=NULL, model=c("linear","logistic","logistic_alternativ
               se.vec     = se.vec,
               ci.mat     = ci.mat,
               tau.vec    = tau.vec,
-              proj       = direction * loading.norm,
-              beta.init  = beta.init)
+              proj       = direction * loading.norm)
   class(obj) = "QF"
   obj
 }
