@@ -5,9 +5,8 @@
 #' @param y Outcome vector, of length \eqn{n}
 #' @param loading.mat Loading matrix, nrow=\eqn{p}, each column corresponds to a
 #'   loading of interest
-#' @param model The high dimensional regression model, either \code{``linear''}
-#'   or \code{``logistic''} or \code{``logistic_alternative''} or
-#'   \code{``probit''}
+#' @param model The high dimensional regression model, either \code{"linear"}
+#'   or \code{"logistic"} or \code{"logistic_alternative"} or \code{"probit"}
 #' @param intercept Should intercept be fitted for the initial estimator
 #'   (default = \code{TRUE})
 #' @param intercept.loading Should intercept term be included for the loading

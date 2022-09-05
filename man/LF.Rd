@@ -28,9 +28,8 @@ LF(
 \item{loading.mat}{Loading matrix, nrow=\eqn{p}, each column corresponds to a
 loading of interest}
 
-\item{model}{The high dimensional regression model, either \code{``linear''}
-or \code{``logistic''} or \code{``logistic_alternative''} or
-\code{``probit''}}
+\item{model}{The high dimensional regression model, either \code{"linear"}
+or \code{"logistic"} or \code{"logistic_alternative"} or \code{"probit"}}
 
 \item{intercept}{Should intercept be fitted for the initial estimator
 (default = \code{TRUE})}

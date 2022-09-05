@@ -11,14 +11,14 @@ ITE(
   X2,
   y2,
   loading.mat,
-  model = "linear",
+  model = c("linear", "logistic", "logistic_alternative", "probit"),
   intercept = TRUE,
   intercept.loading = FALSE,
   beta.init1 = NULL,
   beta.init2 = NULL,
   lambda = NULL,
   mu = NULL,
-  rescale = 1.1,
+  rescale = 1,
   alpha = 0.05,
   verbose = TRUE
 )
@@ -37,9 +37,8 @@ ITE(
 \item{loading.mat}{Loading matrix, nrow=\eqn{p}, each column corresponds to a
 loading of interest}
 
-\item{model}{The high dimensional regression model, either \code{``linear''}
-or \code{``logistic''} or \code{``logistic_alternative''} or
-\code{``probit''}}
+\item{model}{The high dimensional regression model, either \code{"linear"}
+or \code{"logistic"} or \code{"logistic_alternative"} or \code{"probit"}}
 
 \item{intercept}{Should intercept(s) be fitted for the initial estimators
 (default = \code{TRUE})}
@@ -71,23 +70,23 @@ sample bias. (default = 1.0)}
 }
 \value{
 \item{est.plugin.vec}{The vector of plugin(biased) estimators for the
-linear combination of regression coefficients, length of \code{ncol(loading.mat)}; 
-corresponding to different column in \code{loading.mat}} 
-\item{est.debias.vec}{The vector of bias-corrected estimators for the linear 
-combination of regression coefficients, length of \code{ncol(loading.mat)}; 
-corresponding to different column in \code{loading.mat}} 
-\item{se.vec}{The vector of standard errors of the bias-corrected estimators, 
-length of \code{ncol(loading.mat)}; corresponding to different column in 
-\code{loading.mat}} 
-\item{ci.mat}{The matrix of two.sided confidence interval for the linear 
-combination, of dimension \code{ncol(loading.mat)} x \eqn{2}; the row 
-corresponding to different column in \code{loading.mat}} 
-\item{prob.debias.vec}{The vector of bias-corrected estimators after probability 
-transformation, length of \code{ncol(loading.mat)}; corresponding to different 
+linear combination of regression coefficients, length of \code{ncol(loading.mat)};
+corresponding to different column in \code{loading.mat}}
+\item{est.debias.vec}{The vector of bias-corrected estimators for the linear
+combination of regression coefficients, length of \code{ncol(loading.mat)};
+corresponding to different column in \code{loading.mat}}
+\item{se.vec}{The vector of standard errors of the bias-corrected estimators,
+length of \code{ncol(loading.mat)}; corresponding to different column in
+\code{loading.mat}}
+\item{ci.mat}{The matrix of two.sided confidence interval for the linear
+combination, of dimension \code{ncol(loading.mat)} x \eqn{2}; the row
+corresponding to different column in \code{loading.mat}}
+\item{prob.debias.vec}{The vector of bias-corrected estimators after probability
+transformation, length of \code{ncol(loading.mat)}; corresponding to different
 column in {loading.mat}. The value would be \code{NULL} for non-logistic model.}
 \item{prob.se.vec}{The vector of standard errors of the bias-corrected
-estimators after probability transformation, length of \code{ncol(loading.mat)}; 
-corresponding to different column in \code{loading.mat}. The value would be 
+estimators after probability transformation, length of \code{ncol(loading.mat)};
+corresponding to different column in \code{loading.mat}. The value would be
 \code{NULL} for non-logistic model.}
 }
 \description{

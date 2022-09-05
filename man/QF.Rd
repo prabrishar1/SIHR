@@ -32,8 +32,8 @@ QF(
 \eqn{|G|\times}\eqn{|G|} submatrix of the population covariance matrix
 corresponding to the index set \code{G} (default = \code{NULL})}
 
-\item{model}{The high dimensional regression model, either \code{linear} or
-\code{logistic} or \code{logistic_alternative} or \code{probit}}
+\item{model}{The high dimensional regression model, either \code{"linear"}
+or \code{"logistic"} or \code{"logistic_alternative"} or \code{"probit"}}
 
 \item{intercept}{Should intercept be fitted for the initial estimator
 (default = \code{TRUE})}

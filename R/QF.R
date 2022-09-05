@@ -8,8 +8,8 @@
 #'   \eqn{|G|\times}\eqn{|G|}. If \code{NULL} A would be set as the
 #'   \eqn{|G|\times}\eqn{|G|} submatrix of the population covariance matrix
 #'   corresponding to the index set \code{G} (default = \code{NULL})
-#' @param model The high dimensional regression model, either \code{linear} or
-#'   \code{logistic} or \code{logistic_alternative} or \code{probit}
+#' @param model The high dimensional regression model, either \code{"linear"}
+#'   or \code{"logistic"} or \code{"logistic_alternative"} or \code{"probit"}
 #' @param intercept Should intercept be fitted for the initial estimator
 #'   (default = \code{TRUE})
 #' @param tau.vec The vector of enlargement factors for asymptotic variance of
