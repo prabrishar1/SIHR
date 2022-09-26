@@ -10,12 +10,16 @@ QF(
   y,
   G,
   A = NULL,
-  model = c("linear", "logistic", "logistic_alternative", "probit"),
+  model = c("linear", "logistic", "logistic_alter"),
   intercept = TRUE,
-  tau.vec = c(0, 0.5, 1),
   beta.init = NULL,
+  split = TRUE,
   lambda = NULL,
   mu = NULL,
+  prob.filter = 0.05,
+  rescale = 1.1,
+  tau1 = c(0.5, 1),
+  tau2 = 0,
   alpha = 0.05,
   verbose = TRUE
 )
@@ -33,17 +37,15 @@ QF(
 corresponding to the index set \code{G} (default = \code{NULL})}
 
 \item{model}{The high dimensional regression model, either \code{"linear"}
-or \code{"logistic"} or \code{"logistic_alternative"} or \code{"probit"}}
+or \code{"logistic"} or \code{"logistic_alter"}}
 
 \item{intercept}{Should intercept be fitted for the initial estimator
 (default = \code{TRUE})}
 
-\item{tau.vec}{The vector of enlargement factors for asymptotic variance of
-the bias-corrected estimator to handle super-efficiency (default =
-\eqn{c(0, 0.5, 1)})}
-
 \item{beta.init}{The initial estimator of the regression vector (default =
 \code{NULL})}
+
+\item{split}{Sampling splitting or not (default = \code{TRUE})}
 
 \item{lambda}{The tuning parameter in fitting initial model. If \code{NULL},
 it will be picked by cross-validation. (default = \code{NULL})}
@@ -52,22 +54,39 @@ it will be picked by cross-validation. (default = \code{NULL})}
 projection direction. If \code{NULL} it will be searched automatically.
 (default = \code{NULL})}
 
+\item{prob.filter}{The threshold of estimated probabilities for filtering
+observations in logistic regression. (default = 0.05)}
+
+\item{rescale}{The enlargement factor for asymptotic variance of the
+bias-corrected estimator to handle super-efficiency. (default = 1.1)}
+
+\item{tau1}{The enlargement factor for asymptotic variance of the
+bias-corrected estimator to handle super-efficiency. It allows for a scalar
+or vector. (default = \code{c(0.5,1)})}
+
+\item{tau2}{The enlargement factor for asymptotic variance of the
+initial estimator to handle super-efficiency. It allows for a scalar
+or vector (default = 0)}
+
 \item{alpha}{Level of significance to construct two-sided confidence interval
 (default = 0.05)}
 
-\item{verbose}{Should intermediate message(s) be printed (default =
-\code{TRUE})}
+\item{verbose}{Should intermediate message(s) be printed, the projection
+direction be returned. (default = \code{TRUE})}
 }
 \value{
 \item{est.plugin}{The plugin(biased) estimator for the quadratic form of the
 regression vector restricted to \code{G}}
 \item{est.debias}{The bias-corrected estimator of the quadratic form of the
 regression vector}
-\item{se.vec}{The vector of standard errors of the bias-corrected estimator,
-length of \code{tau.vec}; corrsponding to different values of \code{tau.vec}}
+\item{se}{Standard errors of the bias-corrected estimator,
+length of \code{tau1}; corrsponding to different values of \code{tau1}}
+\item{add.len}{Added lengths accounted for asymptotic variance of the
+  initial estimators}
 \item{ci.mat}{The matrix of two.sided confidence interval for the quadratic
-form of the regression vector; row corresponds to different values of \code{tau.vec}}
-\item{proj}{The projection direction}
+form of the regression vector; row corresponds to different values of
+\code{tau1} and \code{tau2}}
+\item{proj}{The projection direction. It will be returned only if \code{verbose} set as TRUE}
 }
 \description{
 Inference for quadratic forms of the regression vector in high dimensional

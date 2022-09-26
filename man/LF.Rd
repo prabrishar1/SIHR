@@ -9,13 +9,14 @@ LF(
   X,
   y,
   loading.mat,
-  model = c("linear", "logistic", "logistic_alternative", "probit"),
+  model = c("linear", "logistic", "logistic_alter"),
   intercept = TRUE,
   intercept.loading = FALSE,
   beta.init = NULL,
   lambda = NULL,
   mu = NULL,
-  rescale = 1,
+  prob.filter = 0.05,
+  rescale = 1.1,
   alpha = 0.05,
   verbose = TRUE
 )
@@ -29,7 +30,7 @@ LF(
 loading of interest}
 
 \item{model}{The high dimensional regression model, either \code{"linear"}
-or \code{"logistic"} or \code{"logistic_alternative"} or \code{"probit"}}
+or \code{"logistic"} or \code{"logistic_alter"}}
 
 \item{intercept}{Should intercept be fitted for the initial estimator
 (default = \code{TRUE})}
@@ -47,14 +48,14 @@ it will be picked by cross-validation. (default = \code{NULL})}
 projection direction. If \code{NULL} it will be searched automatically.
 (default = \code{NULL})}
 
-\item{rescale}{The constant to enlarge the standard error, considering finite
-sample bias. (default = 1.0)}
+\item{rescale}{The enlargement factor for asymptotic variance of the
+bias-corrected estimator to handle super-efficiency. (default = 1.1)}
 
 \item{alpha}{Level of significance to construct two-sided confidence interval
 (default = 0.05)}
 
-\item{verbose}{Should intermediate message(s) be printed (default =
-\code{TRUE})}
+\item{verbose}{Should intermediate message(s) be printed, the projection
+direction be returned. (default = \code{TRUE})}
 }
 \value{
 \item{est.plugin.vec}{The vector of plugin(biased) estimators for the
@@ -69,7 +70,7 @@ length of \code{ncol(loading.mat)}; each corresponding to a loading of interest}
 combination, of dimension \code{ncol(loading.mat)} x \eqn{2}; each row
 corresponding to a loading of interest}
 \item{proj.mat}{The matrix of projection directions; each column corresponding
-to a loading of interest}
+to a loading of interest. It will be returned only if \code{verbose} set as TRUE}
 }
 \description{
 Inference for linear combination of the regression vector in high dimensional

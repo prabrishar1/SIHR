@@ -14,7 +14,7 @@ regression (QF).
 
 Currently, we support different generalized linear regression, by
 specifying the argument `model` in “linear”, “logisitc”,
-“logistic_alternative” or “probit”.
+“logistic_alter” or “probit”.
 
 ## Installation
 
@@ -64,9 +64,9 @@ Call `LF` with `model="linear"`:
 ``` r
 Est = LF(X, y, loading.mat, model="linear", intercept=TRUE, intercept.loading=FALSE, verbose=TRUE)
 #> Computing LF for loading (1/2)... 
-#> The projection direction is identified at mu = 0.061329
+#> The projection direction is identified at mu = 0.061329at step =3
 #> Computing LF for loading (2/2)... 
-#> The projection direction is identified at mu = 0.061329
+#> The projection direction is identified at mu = 0.061329at step =3
 ```
 
 `ci` method for `LF`
@@ -74,8 +74,8 @@ Est = LF(X, y, loading.mat, model="linear", intercept=TRUE, intercept.loading=FA
 ``` r
 ci(Est)
 #>   loading     lower     upper
-#> 1       1  1.139676  1.694804
-#> 2       2 -1.506535 -1.043502
+#> 1       1  1.111919  1.722561
+#> 2       2 -1.529687 -1.020350
 ```
 
 `summary` method for `LF`
@@ -87,8 +87,8 @@ summary(Est)
 #> 
 #> Estimators: 
 #>  loading est.plugin est.debias Std. Error z value  Pr(>|z|)    
-#>        1      1.158      1.417     0.1416   10.01 0.000e+00 ***
-#>        2     -1.015     -1.275     0.1181  -10.79 3.674e-27 ***
+#>        1      1.158      1.417     0.1558   9.098 0.000e+00 ***
+#>        2     -1.015     -1.275     0.1299  -9.813 9.924e-23 ***
 ```
 
 ### Linear functional in linear regression model - 2
@@ -121,25 +121,25 @@ Call `LF` with `model="linear"`:
 ``` r
 Est = LF(X, y, loading.mat, model="linear", intercept=TRUE, beta.init=beta.init, verbose=TRUE)
 #> Computing LF for loading (1/10)... 
-#> The projection direction is identified at mu = 0.040886
+#> The projection direction is identified at mu = 0.040886at step =4
 #> Computing LF for loading (2/10)... 
-#> The projection direction is identified at mu = 0.040886
+#> The projection direction is identified at mu = 0.040886at step =4
 #> Computing LF for loading (3/10)... 
-#> The projection direction is identified at mu = 0.040886
+#> The projection direction is identified at mu = 0.040886at step =4
 #> Computing LF for loading (4/10)... 
-#> The projection direction is identified at mu = 0.040886
+#> The projection direction is identified at mu = 0.040886at step =4
 #> Computing LF for loading (5/10)... 
-#> The projection direction is identified at mu = 0.040886
+#> The projection direction is identified at mu = 0.040886at step =4
 #> Computing LF for loading (6/10)... 
-#> The projection direction is identified at mu = 0.040886
+#> The projection direction is identified at mu = 0.040886at step =4
 #> Computing LF for loading (7/10)... 
-#> The projection direction is identified at mu = 0.027257
+#> The projection direction is identified at mu = 0.027257at step =5
 #> Computing LF for loading (8/10)... 
-#> The projection direction is identified at mu = 0.027257
+#> The projection direction is identified at mu = 0.027257at step =5
 #> Computing LF for loading (9/10)... 
-#> The projection direction is identified at mu = 0.040886
+#> The projection direction is identified at mu = 0.040886at step =4
 #> Computing LF for loading (10/10)... 
-#> The projection direction is identified at mu = 0.040886
+#> The projection direction is identified at mu = 0.040886at step =4
 ```
 
 `ci` method for `LF`
@@ -147,16 +147,16 @@ Est = LF(X, y, loading.mat, model="linear", intercept=TRUE, beta.init=beta.init,
 ``` r
 ci(Est)
 #>    loading       lower     upper
-#> 1        1  0.04983623 0.7442021
-#> 2        2  0.22550997 1.1867197
-#> 3        3  0.18050861 0.8728558
-#> 4        4  0.08456954 0.7045124
-#> 5        5  0.21977022 0.9906651
-#> 6        6 -0.25811918 0.6589827
-#> 7        7  0.36302046 0.9668954
-#> 8        8  0.04997011 0.7365193
-#> 9        9  0.48755974 1.0346292
-#> 10      10  0.14951052 0.7344981
+#> 1        1  0.01511794 0.7789204
+#> 2        2  0.17744949 1.2347802
+#> 3        3  0.14589125 0.9074732
+#> 4        4  0.05357240 0.7355096
+#> 5        5  0.18122547 1.0292098
+#> 6        6 -0.30397428 0.7048378
+#> 7        7  0.33282671 0.9970891
+#> 8        8  0.01564265 0.7708467
+#> 9        9  0.46020627 1.0619827
+#> 10      10  0.12026114 0.7637474
 ```
 
 `summary` method for `LF`
@@ -168,16 +168,16 @@ summary(Est)
 #> 
 #> Estimators: 
 #>  loading est.plugin est.debias Std. Error z value  Pr(>|z|)    
-#>        1     0.2698     0.3970     0.1771  2.2413 2.501e-02   *
-#>        2     0.4145     0.7061     0.2452  2.8796 3.982e-03  **
-#>        3     0.4057     0.5267     0.1766  2.9820 2.864e-03  **
-#>        4     0.2631     0.3945     0.1582  2.4947 1.261e-02   *
-#>        5     0.3773     0.6052     0.1967  3.0775 2.088e-03  **
-#>        6     0.2730     0.2004     0.2340  0.8567 3.916e-01    
-#>        7     0.3664     0.6650     0.1541  4.3164 1.586e-05 ***
-#>        8     0.2911     0.3932     0.1751  2.2453 2.475e-02   *
-#>        9     0.5699     0.7611     0.1396  5.4535 4.939e-08 ***
-#>       10     0.2839     0.4420     0.1492  2.9618 3.058e-03  **
+#>        1     0.2698     0.3970     0.1949  2.0376 4.159e-02   *
+#>        2     0.4145     0.7061     0.2697  2.6178 8.849e-03  **
+#>        3     0.4057     0.5267     0.1943  2.7109 6.711e-03  **
+#>        4     0.2631     0.3945     0.1740  2.2679 2.333e-02   *
+#>        5     0.3773     0.6052     0.2163  2.7977 5.147e-03  **
+#>        6     0.2730     0.2004     0.2574  0.7788 4.361e-01    
+#>        7     0.3664     0.6650     0.1695  3.9240 8.708e-05 ***
+#>        8     0.2911     0.3932     0.1927  2.0412 4.124e-02   *
+#>        9     0.5699     0.7611     0.1535  4.9577 7.133e-07 ***
+#>       10     0.2839     0.4420     0.1642  2.6926 7.091e-03  **
 ```
 
 ### Linear functional in logistic regression model
@@ -204,15 +204,15 @@ truth; truth.prob
 #> [1] 0.8175745 0.2227001
 ```
 
-Call `LF` with `model="logistic"` or `model="logistic_alternative"`:
+Call `LF` with `model="logistic"` or `model="logistic_alter"`:
 
 ``` r
-## model = "logisitc" or "logistic_alternative"
+## model = "logisitc"
 Est = LF(X, y, loading.mat, model="logistic", verbose=TRUE)
 #> Computing LF for loading (1/2)... 
-#> The projection direction is identified at mu = 0.061329
+#> The projection direction is identified at mu = 0.061329at step =3
 #> Computing LF for loading (2/2)... 
-#> The projection direction is identified at mu = 0.061329
+#> The projection direction is identified at mu = 0.061329at step =3
 ```
 
 `ci` method for `LF`
@@ -221,13 +221,13 @@ Est = LF(X, y, loading.mat, model="logistic", verbose=TRUE)
 ## confidence interval for linear combination
 ci(Est)
 #>   loading      lower      upper
-#> 1       1  0.7134236  2.1958503
-#> 2       2 -1.9003228 -0.6180052
+#> 1       1  0.6393023  2.2699716
+#> 2       2 -1.9644387 -0.5538893
 ## confidence interval after probability transformation
 ci(Est, probability = TRUE)
 #>   loading     lower     upper
-#> 1       1 0.6711572 0.8998762
-#> 2       2 0.1300719 0.3502353
+#> 1       1 0.6545957 0.9063594
+#> 2       2 0.1229875 0.3649625
 ```
 
 `summary` method for `LF`
@@ -239,8 +239,47 @@ summary(Est)
 #> 
 #> Estimators: 
 #>  loading est.plugin est.debias Std. Error z value  Pr(>|z|)    
-#>        1     0.8116      1.455     0.3782   3.846 0.0001198 ***
-#>        2    -0.8116     -1.259     0.3271  -3.849 0.0001185 ***
+#>        1     0.8116      1.455     0.4160   3.497 0.0004709 ***
+#>        2    -0.8116     -1.259     0.3598  -3.499 0.0004666 ***
+```
+
+Call `LF` with `model="logistic_alter"`:
+
+``` r
+## model = "logistic_alter"
+Est = LF(X, y, loading.mat, model="logistic_alter", verbose=TRUE)
+#> Computing LF for loading (1/2)... 
+#> The projection direction is identified at mu = 0.061329at step =3
+#> Computing LF for loading (2/2)... 
+#> The projection direction is identified at mu = 0.061329at step =3
+```
+
+`ci` method for `LF`
+
+``` r
+## confidence interval for linear combination
+ci(Est)
+#>   loading      lower      upper
+#> 1       1  0.6121908  2.1603820
+#> 2       2 -1.8474229 -0.5201972
+## confidence interval after probability transformation
+ci(Est, probability = TRUE)
+#>   loading     lower     upper
+#> 1       1 0.6484404 0.8966350
+#> 2       2 0.1361758 0.3728061
+```
+
+`summary` method for `LF`
+
+``` r
+summary(Est)
+#> Call: 
+#> Inference for Linear Functional
+#> 
+#> Estimators: 
+#>  loading est.plugin est.debias Std. Error z value  Pr(>|z|)    
+#>        1     0.7597      1.386     0.3950   3.510 0.0004481 ***
+#>        2    -0.7597     -1.184     0.3386  -3.496 0.0004717 ***
 ```
 
 ### Individualized Treatment Effect in linear regression model
@@ -272,14 +311,14 @@ Call `ITE` with `model="linear"`:
 Est = ITE(X1, y1, X2, y2, loading.mat, model="linear", verbose=TRUE)
 #> Call: Inference for Linear Functional ======> Data 1/2 
 #> Computing LF for loading (1/2)... 
-#> The projection direction is identified at mu = 0.061329
+#> The projection direction is identified at mu = 0.061329at step =3
 #> Computing LF for loading (2/2)... 
-#> The projection direction is identified at mu = 0.061329
+#> The projection direction is identified at mu = 0.061329at step =3
 #> Call: Inference for Linear Functional ======> Data 2/2 
 #> Computing LF for loading (1/2)... 
-#> The projection direction is identified at mu = 0.027257
+#> The projection direction is identified at mu = 0.027257at step =5
 #> Computing LF for loading (2/2)... 
-#> The projection direction is identified at mu = 0.040886
+#> The projection direction is identified at mu = 0.040886at step =4
 ```
 
 `ci` method for `ITE`
@@ -337,20 +376,20 @@ truth; truth.prob
 #> [1] -0.014443909 -0.008775078
 ```
 
-Call `ITE` with `model="logistic"` or `model="logisitc_alternative"`:
+Call `ITE` with `model="logistic"` or `model="logisitc_alter"`:
 
 ``` r
 Est = ITE(X1, y1, X2, y2, loading.mat, model="logistic", verbose = TRUE)
 #> Call: Inference for Linear Functional ======> Data 1/2 
 #> Computing LF for loading (1/2)... 
-#> The projection direction is identified at mu = 0.061329
+#> The projection direction is identified at mu = 0.061329at step =3
 #> Computing LF for loading (2/2)... 
-#> The projection direction is identified at mu = 0.061329
+#> The projection direction is identified at mu = 0.061329at step =3
 #> Call: Inference for Linear Functional ======> Data 2/2 
 #> Computing LF for loading (1/2)... 
-#> The projection direction is identified at mu = 0.040886
+#> The projection direction is identified at mu = 0.040886at step =4
 #> Computing LF for loading (2/2)... 
-#> The projection direction is identified at mu = 0.040886
+#> The projection direction is identified at mu = 0.040886at step =4
 ```
 
 `ci` method for `ITE`:
@@ -405,20 +444,20 @@ truth
 Call `QF` with `model="linear"`:
 
 ``` r
-tau.vec = c(0, 0.5, 1)
-Est = QF(X, y, G=test.set, A=NULL, model="linear", tau.vec=tau.vec, verbose=TRUE)
+tau1 = c(0.5, 1)
+tau2 = 0
+Est = QF(X, y, G=test.set, A=NULL, model="linear", tau1=tau1, tau2=tau2, verbose=TRUE)
 #> Computing QF... 
-#> The projection direction is identified at mu=0.013143
+#> The projection direction is identified at mu = 0.027879at step =5
 ```
 
 `ci` method for `QF`
 
 ``` r
 ci(Est)
-#>   tau    lower    upper
-#> 1 0.0 1.046298 1.888180
-#> 2 0.5 1.035042 1.899436
-#> 3 1.0 1.024071 1.910407
+#>      tau1 tau2     lower    upper
+#> [1,]  0.5    0 0.2906880 1.871378
+#> [2,]  1.0    0 0.2786288 1.883437
 ```
 
 `summary` method for `QF`
@@ -428,10 +467,9 @@ summary(Est)
 #> Call: 
 #> Inference for Quadratic Functional
 #> 
-#>  tau est.plugin est.debias Std. Error z value  Pr(>|z|)    
-#>  0.0      1.119      1.467     0.2148   6.832 8.392e-12 ***
-#>  0.5      1.119      1.467     0.2205   6.654 2.857e-11 ***
-#>  1.0      1.119      1.467     0.2261   6.489 8.639e-11 ***
+#>  tau1 est.plugin est.debias Std. Error z value Pr(>|z|)   
+#>   0.5      1.219      1.081     0.4032   2.681 0.007344 **
+#>   1.0      1.219      1.081     0.4094   2.641 0.008277 **
 ```
 
 ### Quadratic functional in logistic regression
@@ -457,23 +495,23 @@ truth
 #> [1] 1.160078
 ```
 
-Call `QF` with `model="logistic"` or `model="logisitc_alternative"`:
+Call `QF` with `model="logistic"` or `model="logisitc"`:
 
 ``` r
-tau.vec = c(0, 0.5, 1)
-Est = QF(X, y, G=test.set, A=NULL, model="logistic", tau.vec = tau.vec, verbose=TRUE)
+tau1 = c(0.5, 1)
+tau2 = 0
+Est = QF(X, y, G=test.set, A=NULL, model="logistic", tau1=tau1, tau2=tau2, verbose=TRUE)
 #> Computing QF... 
-#> The projection direction is identified at mu=0.019714
+#> The projection direction is identified at mu = 0.027879at step =5
 ```
 
 `ci` method for `QF`:
 
 ``` r
 ci(Est)
-#>   tau     lower    upper
-#> 1 0.0 0.7642630 2.204158
-#> 2 0.5 0.7576239 2.210797
-#> 3 1.0 0.7510450 2.217376
+#>      tau1 tau2       lower     upper
+#> [1,]  0.5    0 0.032805536 0.8075954
+#> [2,]  1.0    0 0.008761374 0.8316395
 ```
 
 `summary` method for `QF`:
@@ -483,8 +521,38 @@ summary(Est)
 #> Call: 
 #> Inference for Quadratic Functional
 #> 
-#>  tau est.plugin est.debias Std. Error z value  Pr(>|z|)    
-#>  0.0     0.7146      1.484     0.3673   4.041 5.332e-05 ***
-#>  0.5     0.7146      1.484     0.3707   4.004 6.237e-05 ***
-#>  1.0     0.7146      1.484     0.3741   3.968 7.256e-05 ***
+#>  tau1 est.plugin est.debias Std. Error z value Pr(>|z|)  
+#>   0.5      0.116     0.4202     0.1977   2.126  0.03351 *
+#>   1.0      0.116     0.4202     0.2099   2.002  0.04532 *
+```
+
+Call `QF` with `model="logisitc"`:
+
+``` r
+tau1 = c(0.5, 1)
+tau2 = 0
+Est = QF(X, y, G=test.set, A=NULL, model="logistic_alter", tau1=tau1, tau2=tau2, verbose=TRUE)
+#> Computing QF... 
+#> The projection direction is identified at mu = 0.041819at step =4
+```
+
+`ci` method for `QF`:
+
+``` r
+ci(Est)
+#>      tau1 tau2 lower    upper
+#> [1,]  0.5    0     0 1.281445
+#> [2,]  1.0    0     0 1.295508
+```
+
+`summary` method for `QF`:
+
+``` r
+summary(Est)
+#> Call: 
+#> Inference for Quadratic Functional
+#> 
+#>  tau1 est.plugin est.debias Std. Error z value Pr(>|z|)  
+#>   0.5      0.397     0.6056     0.3448   1.756  0.07908 .
+#>   1.0      0.397     0.6056     0.3520   1.720  0.08538 .
 ```

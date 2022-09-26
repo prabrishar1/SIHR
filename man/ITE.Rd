@@ -11,14 +11,15 @@ ITE(
   X2,
   y2,
   loading.mat,
-  model = c("linear", "logistic", "logistic_alternative", "probit"),
+  model = c("linear", "logistic", "logistic_alter"),
   intercept = TRUE,
   intercept.loading = FALSE,
   beta.init1 = NULL,
   beta.init2 = NULL,
   lambda = NULL,
   mu = NULL,
-  rescale = 1,
+  prob.filter = 0.05,
+  rescale = 1.1,
   alpha = 0.05,
   verbose = TRUE
 )
@@ -38,7 +39,7 @@ ITE(
 loading of interest}
 
 \item{model}{The high dimensional regression model, either \code{"linear"}
-or \code{"logistic"} or \code{"logistic_alternative"} or \code{"probit"}}
+or \code{"logistic"} or \code{"logistic_alter"}}
 
 \item{intercept}{Should intercept(s) be fitted for the initial estimators
 (default = \code{TRUE})}
@@ -60,7 +61,7 @@ projection direction. If \code{NULL} it will be searched automatically.
 (default = \code{NULL})}
 
 \item{rescale}{The constant to enlarge the standard error, considering finite
-sample bias. (default = 1.0)}
+sample bias. (default = 1.1)}
 
 \item{alpha}{Level of significance to construct two-sided confidence interval
 (default = 0.05)}
@@ -69,6 +70,8 @@ sample bias. (default = 1.0)}
 \code{TRUE})}
 }
 \value{
+A list consists of plugin estimators, debiased estimators, and confidence intervals.
+For logistic regression, it also returns those items after probability transformation.
 \item{est.plugin.vec}{The vector of plugin(biased) estimators for the
 linear combination of regression coefficients, length of \code{ncol(loading.mat)};
 corresponding to different column in \code{loading.mat}}
@@ -79,15 +82,17 @@ corresponding to different column in \code{loading.mat}}
 length of \code{ncol(loading.mat)}; corresponding to different column in
 \code{loading.mat}}
 \item{ci.mat}{The matrix of two.sided confidence interval for the linear
-combination, of dimension \code{ncol(loading.mat)} x \eqn{2}; the row
+combination, dimension of \code{ncol(loading.mat)} x \eqn{2}; the row
 corresponding to different column in \code{loading.mat}}
 \item{prob.debias.vec}{The vector of bias-corrected estimators after probability
 transformation, length of \code{ncol(loading.mat)}; corresponding to different
-column in {loading.mat}. The value would be \code{NULL} for non-logistic model.}
+column in \code{loading.mat}.}
 \item{prob.se.vec}{The vector of standard errors of the bias-corrected
 estimators after probability transformation, length of \code{ncol(loading.mat)};
-corresponding to different column in \code{loading.mat}. The value would be
-\code{NULL} for non-logistic model.}
+corresponding to different column in \code{loading.mat}.}
+\item{prob.ci.mat}{The matrix of two.sided confidence interval of the bias-corrected
+estimators after probability transformation, dimension of \code{ncol(loading.mat)} x \eqn{2};
+the row corresponding to different column in \code{loading.mat}.}
 }
 \description{
 Computes the bias-corrected estimator of the difference of

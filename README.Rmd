@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 
 The goal of SIHR is to provide inference procedures in the high-dimensional setting for (1) linear functionals in generalized linear regression, (2) individual treatment effects in generalized linear regression (ITE), (3) quadratic functionals in generalized linear regression (QF).
 
-Currently, we support different generalized linear regression, by specifying the argument `model` in "linear", "logisitc", "logistic_alternative" or "probit".
+Currently, we support different generalized linear regression, by specifying the argument `model` in "linear", "logisitc", "logistic_alter" or "probit".
 
 ## Installation
 
@@ -88,7 +88,7 @@ library(glmnet)
 cvfit = cv.glmnet(X, y, family = "gaussian", alpha = 1, intercept = TRUE, standardize = T)
 beta.init = as.vector(coef(cvfit, s = cvfit$lambda.min))
 ```
-Call `LF` with `model="linear"`: 
+Call `LF` with `model="linear"`:
 ```{r LF-linear-2}
 Est = LF(X, y, loading.mat, model="linear", intercept=TRUE, beta.init=beta.init, verbose=TRUE)
 ```
@@ -124,9 +124,9 @@ truth.prob = exp(truth) / (1 + exp(truth))
 truth; truth.prob
 ```
 
-Call `LF` with `model="logistic"` or `model="logistic_alternative"`: 
+Call `LF` with `model="logistic"` or `model="logistic_alter"`: 
 ```{r LF-logistic}
-## model = "logisitc" or "logistic_alternative"
+## model = "logisitc"
 Est = LF(X, y, loading.mat, model="logistic", verbose=TRUE)
 ```
 
@@ -140,6 +140,25 @@ ci(Est, probability = TRUE)
 
 `summary` method for `LF`
 ```{r Summary LF-logistic}
+summary(Est)
+```
+
+Call `LF` with `model="logistic_alter"`: 
+```{r LF-logistic-alter}
+## model = "logistic_alter"
+Est = LF(X, y, loading.mat, model="logistic_alter", verbose=TRUE)
+```
+
+`ci` method for `LF`
+```{r ci LF-logistic-alter}
+## confidence interval for linear combination
+ci(Est)
+## confidence interval after probability transformation
+ci(Est, probability = TRUE)
+```
+
+`summary` method for `LF`
+```{r Summary LF-logistic-alter}
 summary(Est)
 ```
 
@@ -207,7 +226,7 @@ truth.prob = c(truth.prob1, truth.prob2)
 truth; truth.prob
 ```
 
-Call `ITE` with `model="logistic"` or `model="logisitc_alternative"`:
+Call `ITE` with `model="logistic"` or `model="logisitc_alter"`:
 ```{r ITE-logisitc}
 Est = ITE(X1, y1, X2, y2, loading.mat, model="logistic", verbose = TRUE)
 ```
@@ -246,8 +265,9 @@ truth
 
 Call `QF` with `model="linear"`:
 ```{r QF-linear}
-tau.vec = c(0, 0.5, 1)
-Est = QF(X, y, G=test.set, A=NULL, model="linear", tau.vec=tau.vec, verbose=TRUE)
+tau1 = c(0.5, 1)
+tau2 = 0
+Est = QF(X, y, G=test.set, A=NULL, model="linear", tau1=tau1, tau2=tau2, verbose=TRUE)
 ```
 
 `ci` method for `QF`
@@ -280,10 +300,11 @@ truth = as.numeric(t(beta[test.set]%*%Cov[test.set, test.set]%*%beta[test.set]))
 truth
 ```
 
-Call `QF` with `model="logistic"` or `model="logisitc_alternative"`:
+Call `QF` with `model="logistic"` or `model="logisitc"`:
 ```{r QF-logisitc}
-tau.vec = c(0, 0.5, 1)
-Est = QF(X, y, G=test.set, A=NULL, model="logistic", tau.vec = tau.vec, verbose=TRUE)
+tau1 = c(0.5, 1)
+tau2 = 0
+Est = QF(X, y, G=test.set, A=NULL, model="logistic", tau1=tau1, tau2=tau2, verbose=TRUE)
 ```
 
 `ci` method for `QF`:
@@ -296,3 +317,19 @@ ci(Est)
 summary(Est)
 ```
 
+Call `QF` with `model="logisitc"`:
+```{r QF-logisitc-alter}
+tau1 = c(0.5, 1)
+tau2 = 0
+Est = QF(X, y, G=test.set, A=NULL, model="logistic_alter", tau1=tau1, tau2=tau2, verbose=TRUE)
+```
+
+`ci` method for `QF`:
+```{r ci QF-logistic-alter}
+ci(Est)
+```
+
+`summary` method for `QF`:
+```{r summary QF-logistic-alter}
+summary(Est)
+```

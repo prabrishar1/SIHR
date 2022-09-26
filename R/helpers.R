@@ -7,7 +7,7 @@ getmode <- function(v) {
   }
 }
 
-relevant.funs <- function(intercept=TRUE, model=c("linear","logistic","logistic_alternative","probit")){
+relevant.funs <- function(intercept=TRUE, model=c("linear","logistic","logistic_alter")){
   model = match.arg(model)
 
   ### init step function ###
@@ -77,20 +77,21 @@ relevant.funs <- function(intercept=TRUE, model=c("linear","logistic","logistic_
     pred.fun = function(x) exp(x)/(1+exp(x))
     deriv.fun = function(x) exp(x)/(1+exp(x))^2
     weight.fun = function(x) (1+exp(x))^2/exp(x)
-  }else if(model=="logistic_alternative"){
+  }else if(model=="logistic_alter"){
     pred.fun = function(x) exp(x)/(1+exp(x))
     deriv.fun = function(x) exp(x)/(1+exp(x))^2
     weight.fun = function(x) rep(1, length(x))
-  }else if(model=="probit"){
-    pred.fun = function(x) pnorm(x)
-    deriv.fun = function(x) dnorm(x)
-    weight.fun = function(x){
-      out = c()
-      out[abs(x)<5]=(deriv.fun(x)/pred.fun(x)/(1-pred.fun(x)))[abs(x)<5]
-      out[abs(x)>5]=((abs(x)+sqrt(x^2+8/pi))/2)[abs(x)>5]
-      return(out)
-    }
   }
+  # else if(model=="probit"){
+  #   pred.fun = function(x) pnorm(x)
+  #   deriv.fun = function(x) dnorm(x)
+  #   weight.fun = function(x){
+  #     out = c()
+  #     out[abs(x)<5]=(deriv.fun(x)/pred.fun(x)/(1-pred.fun(x)))[abs(x)<5]
+  #     out[abs(x)>5]=((abs(x)+sqrt(x^2+8/pi))/2)[abs(x)>5]
+  #     return(out)
+  #   }
+  # }
 
   return(list(train.fun    = train.fun,
               pred.fun     = pred.fun,
@@ -112,7 +113,7 @@ Direction_searchtuning <- function(X, loading, weight, deriv, resol=1.5, maxiter
   opt.sol = rep(0, p+1)
   loading.norm = sqrt(sum(loading^2))
   H = cbind(loading/loading.norm, diag(1, p))
-  
+
   ## 1st iteration to decide whether increase mu or decrease mu
   iter = 1
   v = Variable(p+1)
@@ -126,7 +127,7 @@ Direction_searchtuning <- function(X, loading, weight, deriv, resol=1.5, maxiter
   }else{
     incr = 1
   }
-  
+
   ## while loop to find the best mu (the smallest mu satisfying optimal status)
   while(iter <= maxiter){
     laststatus = status
@@ -156,7 +157,7 @@ Direction_searchtuning <- function(X, loading, weight, deriv, resol=1.5, maxiter
       }
     }
   }
-  
+
   direction = -(1/2)*(v_opt[-1] + v_opt[1]*loading/loading.norm)
   return(list(proj = direction,
               step = step,
@@ -174,7 +175,7 @@ Direction_fixedtuning <- function(X, loading, weight, deriv, mu=NULL, resol=1.5,
     mu = mu * resol^{incr*step}
   }
   loading.norm <- sqrt(sum(loading^2))
-  
+
   H <- cbind(loading / loading.norm, diag(1, p))
   v <- Variable(p+1)
   obj <- 1/4*sum(((X%*%H%*%v)^2)*weight*deriv)/n+sum((loading/loading.norm)*(H%*%v))+mu*sum(abs(v))

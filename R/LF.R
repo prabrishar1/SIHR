@@ -6,7 +6,7 @@
 #' @param loading.mat Loading matrix, nrow=\eqn{p}, each column corresponds to a
 #'   loading of interest
 #' @param model The high dimensional regression model, either \code{"linear"}
-#'   or \code{"logistic"} or \code{"logistic_alternative"} or \code{"probit"}
+#'   or \code{"logistic"} or \code{"logistic_alter"}
 #' @param intercept Should intercept be fitted for the initial estimator
 #'   (default = \code{TRUE})
 #' @param intercept.loading Should intercept term be included for the loading
@@ -18,12 +18,12 @@
 #' @param mu The dual tuning parameter used in the construction of the
 #'   projection direction. If \code{NULL} it will be searched automatically.
 #'   (default = \code{NULL})
-#' @param rescale The constant to enlarge the standard error, considering finite
-#'   sample bias. (default = 1.0)
+#' @param rescale The enlargement factor for asymptotic variance of the
+#'   bias-corrected estimator to handle super-efficiency. (default = 1.1)
 #' @param alpha Level of significance to construct two-sided confidence interval
 #'   (default = 0.05)
-#' @param verbose Should intermediate message(s) be printed (default =
-#'   \code{TRUE})
+#' @param verbose Should intermediate message(s) be printed, the projection
+#'   direction be returned. (default = \code{TRUE})
 #'
 #' @return
 #' \item{est.plugin.vec}{The vector of plugin(biased) estimators for the
@@ -38,7 +38,7 @@
 #' combination, of dimension \code{ncol(loading.mat)} x \eqn{2}; each row
 #' corresponding to a loading of interest}
 #' \item{proj.mat}{The matrix of projection directions; each column corresponding
-#' to a loading of interest}
+#' to a loading of interest. It will be returned only if \code{verbose} set as TRUE}
 #'
 #' @export
 #' @import CVXR glmnet
@@ -57,9 +57,9 @@
 #'
 #' ## summary statistics
 #' summary(Est)
-LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alternative","probit"),
+LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alter"),
                intercept=TRUE, intercept.loading=FALSE, beta.init=NULL, lambda=NULL,
-               mu=NULL, rescale=1.0, alpha=0.05, verbose=TRUE){
+               mu=NULL, prob.filter=0.05, rescale=1.1, alpha=0.05, verbose=TRUE){
   model = match.arg(model)
   X = as.matrix(X)
   y = as.vector(y)
@@ -73,7 +73,8 @@ LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alternat
   }
   check.args.LF(X=X, y=y, loading.mat=loading.mat, model=model, intercept=intercept,
                 intercept.loading=intercept.loading, beta.init=beta.init, lambda=lambda,
-                mu=mu, rescale=rescale, alpha=alpha, verbose=verbose)
+                mu=mu, rescale=rescale, prob.filter=prob.filter, alpha=alpha,
+                verbose=verbose)
 
   ### specify relevant functions ###
   funs.all = relevant.funs(intercept=intercept, model=model)
@@ -100,6 +101,21 @@ LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alternat
   weight = as.vector(weight.fun(X%*%beta.init))
   cond_var = as.vector(cond_var.fun(pred, y, sparsity))
 
+  ### prob.filter ###
+  if(model!='linear'){
+    idx = as.logical((pred>prob.filter)*(pred <(1-prob.filter)))
+    if(mean(idx) < 0.8) warning("More than 20 % observations are filtered out
+                                as their estimated probabilities are too close to the
+                                boundary 0 or 1.")
+  }else{
+    idx = rep(TRUE, n)
+  }
+  X.filter = X[idx,]
+  y.filter = y[idx]
+  weight.filter = weight[idx]
+  deriv.filter = deriv[idx]
+  n.filter = nrow(X.filter)
+
   ### storing infos ###
   n.loading = ncol(loading.mat)
   est.plugin.vec = rep(NA, n.loading)
@@ -109,20 +125,8 @@ LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alternat
   colnames(ci.mat) = c("lower","upper"); rownames(ci.mat) = paste("loading",1:n.loading,sep="")
   proj.mat = matrix(NA, nrow=p, ncol=n.loading)
 
-  for(i.loading in 1:n.loading){
-    ### adjust loading ###
-    loading = as.vector(loading.mat[,i.loading])
-    if(intercept){
-      if(intercept.loading){
-        loading = loading - X_means
-        loading = c(1, loading)
-      }else{
-        loading = c(0, loading)
-      }
-    }
-    loading.norm = sqrt(sum(loading^2))
-
-    ############### Correction Direction #################
+  ############### Function of Computing Direction #################
+  compute_direction <- function(loading, X, weight, deriv, n){
     if(verbose) cat(sprintf("Computing LF for loading (%i/%i)... \n", i.loading, n.loading))
     ### loading.norm too small, direction is set as 0 ###
     if(loading.norm <= 1e-5){
@@ -132,7 +136,7 @@ LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alternat
     ### loading.norm large enough ###
     if(loading.norm > 1e-5){
       if (n >= 6*p){
-        temp = weight*deriv*X
+        temp = sqrt(weight*deriv)*X
         Sigma.hat = t(temp)%*%temp / n
         direction = solve(Sigma.hat) %*% loading / loading.norm
       } else {
@@ -157,8 +161,12 @@ LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alternat
                   step = step + incr
                   Direction.Est =  Direction_fixedtuning(X, loading, weight=weight, deriv=deriv, step=step, incr=incr)
                 }
+                if(verbose) cat(paste0('The projection direction is identified at mu = ', round(Direction.Est$mu, 6),
+                                       'at step =',step ,'\n'))
               }else{
                 Direction.Est = Direction_searchtuning(X, loading, weight=weight, deriv=deriv)
+                if(verbose) cat(paste0('The projection direction is identified at mu = ', round(Direction.Est$mu, 6),
+                                       'at step =',Direction.Est$step ,'\n'))
               }
             }
             ### cases when mu specified ###
@@ -168,9 +176,9 @@ LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alternat
                 mu = mu*1.5
                 Direction.Est = Direction_fixedtuning(X, loading, weight=weight, deriv=deriv, mu=mu)
               }
+              if(verbose) cat(paste0('The projection direction is identified at mu = ', round(Direction.Est$mu, 6), '\n'))
             }
             direction = Direction.Est$proj
-            if(verbose) cat(paste0('The projection direction is identified at mu = ', round(Direction.Est$mu, 6), '\n'))
           },
           error = function(e){
             message("Caught an error in CVXR during computing direction, switch to the alternative method")
@@ -179,13 +187,31 @@ LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alternat
           }
         )
         if(direction_alter){
-          temp = weight*deriv*X
+          temp = sqrt(weight*deriv)*X
           Sigma.hat = t(temp)%*%temp / n
           Sigma.hat.inv = diag(1/diag(Sigma.hat))
           direction = Sigma.hat.inv %*% loading / loading.norm
         }
       }
     }
+    return(direction)
+  }
+  ############### Filtering ###############
+  for(i.loading in 1:n.loading){
+    ### adjust loading ###
+    loading = as.vector(loading.mat[,i.loading])
+    if(intercept){
+      if(intercept.loading){
+        loading = loading - X_means
+        loading = c(1, loading)
+      }else{
+        loading = c(0, loading)
+      }
+    }
+    loading.norm = sqrt(sum(loading^2))
+
+    ############## Correction Direction ###############
+    direction = compute_direction(loading, X.filter, weight.filter, deriv.filter, n.filter)
 
     ############## Bias Correction ###############
     est.plugin = sum(beta.init * loading)
@@ -194,7 +220,7 @@ LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alternat
 
     ############## Compute SE and Construct CI ###############
     V = sum(((sqrt(weight^2 * cond_var) * X) %*% direction)^2)/n * loading.norm^2
-    se = rescale*sqrt(V/n)
+    if((n>0.9*p)&(model=='linear')) se = sqrt(V/n) else se = rescale*sqrt(V/n)
     ci = c(est.debias - qnorm(1-alpha/2)*se, est.debias + qnorm(1-alpha/2)*se)
 
     ############## Store Infos ###############
@@ -205,11 +231,19 @@ LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alternat
     proj.mat[, i.loading] = direction * loading.norm
   }
 
-  obj <- list(est.plugin.vec = est.plugin.vec,
-              est.debias.vec = est.debias.vec,
-              se.vec         = se.vec,
-              ci.mat         = ci.mat,
-              proj.mat       = proj.mat)
+  if(verbose){
+    obj <- list(est.plugin.vec = est.plugin.vec,
+                est.debias.vec = est.debias.vec,
+                se.vec         = se.vec,
+                ci.mat         = ci.mat,
+                proj.mat       = proj.mat)
+  }else{
+    obj <- list(est.plugin.vec = est.plugin.vec,
+                est.debias.vec = est.debias.vec,
+                se.vec         = se.vec,
+                ci.mat         = ci.mat)
+  }
+
   class(obj) = "LF"
   obj
 }
