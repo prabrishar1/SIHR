@@ -2,7 +2,7 @@ Package: SIHR
 Type: Package
 Title: Statistical Inference in High Dimensional Regression
 Version: 1.1.0
-Author: Prabrisha Rakshit, Zhenyu Wang, Zijian Guo, Tony Cai
+Author: Prabrisha Rakshit, Zhenyu Wang, Tony Cai, Zijian Guo
 Maintainer: Zijian Guo <zijguo@stat.rutgers.edu>
 Description: Inference procedures in the high-dimensional setting for 
     (1) linear functionals in generalized linear regression ('Cai et al.' (2019) <arXiv:1904.12891>, 'Guo et al.' (2020) <arXiv:2012.07133>, 'Cai et al.' (2021)),

@@ -80,10 +80,10 @@ Inference for linear combination of the regression vector in high dimensional
 generalized linear regression
 }
 \examples{
-X = matrix(rnorm(100*10), nrow=100, ncol=10)
+X = matrix(rnorm(100*5), nrow=100, ncol=5)
 y = -0.5 + X[,1] * 0.5 + X[,2] * 1 + rnorm(100)
-loading1 = c(1, 1, rep(0, 8))
-loading2 = c(-0.5, -1, rep(0, 8))
+loading1 = c(1, 1, rep(0, 3))
+loading2 = c(-0.5, -1, rep(0, 3))
 loading.mat = cbind(loading1, loading2)
 Est = LF(X, y, loading.mat, model="linear")
 

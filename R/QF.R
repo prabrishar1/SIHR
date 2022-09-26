@@ -48,7 +48,7 @@
 #' @import CVXR glmnet
 #' @importFrom stats coef dnorm median pnorm qnorm symnum
 #' @examples
-#' X = matrix(rnorm(100*10), nrow=100, ncol=10)
+#' X = matrix(rnorm(100*5), nrow=100, ncol=5)
 #' y = X[,1] * 0.5 + X[,2] * 1 + rnorm(100)
 #' G = c(1,2)
 #' A = matrix(c(1.5, 0.8, 0.8, 1.5), nrow=2, ncol=2)
