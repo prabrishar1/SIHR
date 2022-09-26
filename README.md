@@ -441,13 +441,17 @@ truth
 #> [1] 0.5800391
 ```
 
-Call `QF` with `model="linear"`:
+Call `QF` with `model="linear"` with intial estimator given:
 
 ``` r
+library(glmnet)
+outLas <- cv.glmnet(X, y, family = "gaussian", alpha = 1,
+                            intercept = T, standardize = T)
+beta.init = as.vector(coef(outLas, s = outLas$lambda.min))
 tau = c(0.25, 0.5)
-Est = QF(X, y, G=test.set, A=NULL, model="linear", split=T, tau=tau, verbose=TRUE)
+Est = QF(X, y, G=test.set, A=NULL, model="linear", beta.init=beta.init, tau=tau, verbose=TRUE)
 #> Computing QF... 
-#> The projection direction is identified at mu = 0.013143at step =7
+#> The projection direction is identified at mu = 0.01394at step =6
 ```
 
 `ci` method for `QF`
@@ -455,8 +459,8 @@ Est = QF(X, y, G=test.set, A=NULL, model="linear", split=T, tau=tau, verbose=TRU
 ``` r
 ci(Est)
 #>    tau     lower     upper
-#> 1 0.25 0.2540450 0.7905963
-#> 2 0.50 0.2193974 0.8252439
+#> 1 0.25 0.4442377 0.7842335
+#> 2 0.50 0.4197381 0.8087330
 ```
 
 `summary` method for `QF`
@@ -467,8 +471,8 @@ summary(Est)
 #> Inference for Quadratic Functional
 #> 
 #>   tau est.plugin est.debias Std. Error z value  Pr(>|z|)    
-#>  0.25     0.2631     0.5223     0.1369   3.816 0.0001357 ***
-#>  0.50     0.2631     0.5223     0.1546   3.380 0.0007262 ***
+#>  0.25     0.4958     0.6142    0.08674   7.082 1.424e-12 ***
+#>  0.50     0.4958     0.6142    0.09924   6.190 6.028e-10 ***
 ```
 
 ### Quadratic functional in logistic regression

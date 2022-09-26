@@ -14,7 +14,8 @@
 #'   (default = \code{TRUE})
 #' @param beta.init The initial estimator of the regression vector (default =
 #'   \code{NULL})
-#' @param split Sampling splitting or not (default = \code{TRUE})
+#' @param split Sampling splitting or not for computing the initial estimator.
+#'   It take effects only when \code{beta.init =  NULL}. (default = \code{TRUE})
 #' @param lambda The tuning parameter in fitting initial model. If \code{NULL},
 #'   it will be picked by cross-validation. (default = \code{NULL})
 #' @param mu The dual tuning parameter used in the construction of the
@@ -83,18 +84,18 @@ QF <- function(X, y, G, A=NULL, model=c("linear","logistic","logistic_alter"),
   ### centralize X ###
   X = scale(X, center=TRUE, scale=F)
 
-  ### split data ###
-  if(split){
-    idx1 = sample(1:nrow(X),size=round(nrow(X)/2), replace = F)
-    idx2 = setdiff(1:nrow(X), idx1)
-    X1 = X[idx1,]; y1 = y[idx1]
-    X = X[idx2,]; y = y[idx2]
-  }else{
-    X1 = X; y1 = y
+  if(is.null(beta.init)){
+    ### split data ###
+    if(split){
+      idx1 = sample(1:nrow(X),size=round(nrow(X)/2), replace = F)
+      idx2 = setdiff(1:nrow(X), idx1)
+      X1 = X[idx1,]; y1 = y[idx1]
+      X = X[idx2,]; y = y[idx2]
+    }else{
+      X1 = X; y1 = y
+    }
+    beta.init = train.fun(X1, y1, lambda=lambda)$lasso.est
   }
-
-  ### Compute initial lasso estimator of beta ###
-  if(is.null(beta.init)) beta.init = train.fun(X1, y1, lambda=lambda)$lasso.est
   beta.init = as.vector(beta.init)
   sparsity = sum(abs(beta.init)>1e-4)
 

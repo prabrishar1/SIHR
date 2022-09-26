@@ -263,10 +263,14 @@ truth = as.numeric(t(beta[test.set])%*%Cov[test.set, test.set]%*%beta[test.set])
 truth
 ```
 
-Call `QF` with `model="linear"`:
+Call `QF` with `model="linear"` with intial estimator given:
 ```{r QF-linear}
+library(glmnet)
+outLas <- cv.glmnet(X, y, family = "gaussian", alpha = 1,
+                            intercept = T, standardize = T)
+beta.init = as.vector(coef(outLas, s = outLas$lambda.min))
 tau = c(0.25, 0.5)
-Est = QF(X, y, G=test.set, A=NULL, model="linear", split=T, tau=tau, verbose=TRUE)
+Est = QF(X, y, G=test.set, A=NULL, model="linear", beta.init=beta.init, tau=tau, verbose=TRUE)
 ```
 
 `ci` method for `QF`

@@ -44,7 +44,8 @@ or \code{"logistic"} or \code{"logistic_alter"}}
 \item{beta.init}{The initial estimator of the regression vector (default =
 \code{NULL})}
 
-\item{split}{Sampling splitting or not (default = \code{TRUE})}
+\item{split}{Sampling splitting or not for computing the initial estimator.
+It take effects only when \code{beta.init =  NULL}. (default = \code{TRUE})}
 
 \item{lambda}{The tuning parameter in fitting initial model. If \code{NULL},
 it will be picked by cross-validation. (default = \code{NULL})}
