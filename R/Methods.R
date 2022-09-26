@@ -243,31 +243,21 @@ ci.QF <- function(object, probability=FALSE, alpha=0.05, alternative=c("two.side
     cat("QF only supports probability=FALSE \n")
     probability=FALSE
   }
+
   alternative = match.arg(alternative)
   est.debias = object$est.debias
-  se = object$se
-  add.len = object$add.len
-  tau1 = object$tau1
-  tau2 = object$tau2
-  output.ci = matrix(NA, nrow=length(tau1)*length(tau2), ncol=4)
-  colnames(output.ci) = c("tau1","tau2","lower", "upper")
-  for(i.tau1 in 1:length(tau1)){
-    for(i.tau2 in 1:length(tau2)){
-      idx.ci = (i.tau1-1)*length(tau2)+i.tau2
-      output.ci[idx.ci,1:2] = c(tau1[i.tau1], tau2[i.tau2])
-      if(alternative=="two.sided"){
-        output.ci[idx.ci,3:4] = c(max(est.debias - qnorm(1-alpha/2)*se[i.tau1] - add.len[i.tau2], 0),
-                                max(est.debias + qnorm(1-alpha/2)*se[i.tau1] + add.len[i.tau2], 0))
-      }
-      else if(alternative=="less"){
-        output.ci[idx.ci,3:4] = c(0,
-                               max(est.debias + qnorm(1-alpha)*se[i.tau1] + add.len[i.tau2], 0))
-      }else if(alternative=="greater"){
-        output.ci[idx.ci,3:4] = c(max(est.debias - qnorm(1-alpha)*se[i.tau1] - add.len[i.tau2], 0),
-                               Inf)
-      }
-    }
+  se     = object$se
+  tau    = object$tau
+  n.tau = length(tau)
+  if(alternative=="two.sided"){
+    output.ci = cbind(pmax(est.debias - qnorm(1-alpha/2)*se,0), pmax(est.debias + qnorm(1-alpha/2)*se,0))
+  }else if(alternative=="less"){
+    output.ci = cbind(0, pmax(est.debias + qnorm(1-alpha)*se,0))
+  }else if(alternative=="greater"){
+    output.ci = cbind(pmax(est.debias - qnorm(1-alpha)*se,0), Inf)
   }
+  output.ci = data.frame(cbind(tau, output.ci))
+  colnames(output.ci) = c("tau","lower","upper")
   return(output.ci)
 }
 
@@ -291,12 +281,12 @@ summary.QF <- function(object, ...){
   est.plugin = object$est.plugin
   est.debias = object$est.debias
   se = object$se
-  tau1 = object$tau1
+  tau = object$tau
 
-  n.tau = length(tau1)
+  n.tau = length(tau)
   output.est = data.frame(matrix(NA, nrow=n.tau, ncol=7))
-  colnames(output.est) = c("tau1","est.plugin","est.debias","Std. Error","z value","Pr(>|z|)", "")
-  output.est[,1] = tau1
+  colnames(output.est) = c("tau","est.plugin","est.debias","Std. Error","z value","Pr(>|z|)", "")
+  output.est[,1] = tau
   output.est[,c(2,3,4)] = cbind(rep(est.plugin, n.tau), rep(est.debias, n.tau), se)
   output.est[,5] = rep(est.debias, n.tau) / se
   output.est[,6] = apply(cbind(pnorm(output.est[,5]), 1-pnorm(output.est[,5])), MARGIN = 1, FUN=min)*2

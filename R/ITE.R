@@ -26,12 +26,14 @@
 #' @param mu The dual tuning parameter used in the construction of the
 #'   projection direction. If \code{NULL} it will be searched automatically.
 #'   (default = \code{NULL})
-#' @param rescale The constant to enlarge the standard error, considering finite
-#'   sample bias. (default = 1.1)
+#' @param prob.filter The threshold of estimated probabilities for filtering
+#'   observations in logistic regression. (default = 0.05)
+#' @param rescale The factor to enlarge the standard error to account for the
+#'   finite sample bias. (default = 1.1)
 #' @param alpha Level of significance to construct two-sided confidence interval
 #'   (default = 0.05)
 #' @param verbose Should intermediate message(s) be printed (default =
-#'   \code{TRUE})
+#'   \code{FALSE})
 #'
 #' @return A list consists of plugin estimators, debiased estimators, and confidence intervals.
 #' For logistic regression, it also returns those items after probability transformation.
@@ -78,7 +80,7 @@
 #' summary(Est)
 ITE <- function(X1, y1, X2, y2, loading.mat, model=c("linear","logistic","logistic_alter"),
                 intercept=TRUE, intercept.loading=FALSE, beta.init1=NULL, beta.init2=NULL, lambda=NULL, mu=NULL,
-                prob.filter=0.05, rescale=1.1, alpha=0.05, verbose=TRUE){
+                prob.filter=0.05, rescale=1.1, alpha=0.05, verbose=FALSE){
   model = match.arg(model)
   if(verbose) cat(sprintf("Call: Inference for Linear Functional ======> Data 1/2 \n"))
   Est1 = LF(X1, y1, loading.mat, model, intercept, intercept.loading, beta.init1, lambda, mu, prob.filter, rescale, alpha, verbose)

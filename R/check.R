@@ -45,7 +45,7 @@ check.args.LF <- function(X=NULL, y=NULL, loading.mat=NULL, model=NULL, intercep
 
 check.args.QF <- function(X=NULL, y=NULL, G=NULL, A=NULL, model=NULL,
                           intercept=NULL, beta.init=NULL, split=NULL, lambda=NULL,
-                          mu=NULL, prob.filter=0.05, rescale=NULL, tau1=NULL, tau2=NULL, alpha=NULL, verbose=NULL){
+                          mu=NULL, prob.filter=0.05, rescale=NULL, tau=NULL, alpha=NULL, verbose=NULL){
   if(is.null(X) || !is.numeric(X)) stop("X must be a numeric matrix")
   if(is.null(y) || !is.numeric(y)) stop("y must be a numeric vector")
   if(nrow(X) != length(y)) stop("nrow(X) and length(y) must match")
@@ -84,8 +84,7 @@ check.args.QF <- function(X=NULL, y=NULL, G=NULL, A=NULL, model=NULL,
   }
   if(is.null(rescale) || !is.numeric(rescale) || length(rescale)!=1) stop("rescale must be numeric")
   if(is.null(prob.filter) || !is.numeric(prob.filter) || length(prob.filter)!=1 || prob.filter < 0 || prob.filter > 0.5) stop("prob.filter must be numeric in (0,0.5)")
-  if(is.null(tau1) || !is.numeric(tau1) || any(tau1 < 0)) stop("tau1 must be numeric")
-  if(is.null(tau2) || !is.numeric(tau2) || any(tau2 < 0)) stop("tau2 must be numeric")
+  if(is.null(tau) || !is.numeric(tau) || any(tau < 0)) stop("tau must be numeric")
   if(is.null(alpha) || length(alpha)!= 1 || !is.numeric(alpha) || alpha < 0 || alpha > 1){
     stop("alpha must be a number between 0 and 1")
   }

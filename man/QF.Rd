@@ -18,10 +18,9 @@ QF(
   mu = NULL,
   prob.filter = 0.05,
   rescale = 1.1,
-  tau1 = 0.5,
-  tau2 = c(0, 0.5, 1),
+  tau = c(0.25, 0.5),
   alpha = 0.05,
-  verbose = TRUE
+  verbose = FALSE
 )
 }
 \arguments{
@@ -57,22 +56,18 @@ projection direction. If \code{NULL} it will be searched automatically.
 \item{prob.filter}{The threshold of estimated probabilities for filtering
 observations in logistic regression. (default = 0.05)}
 
-\item{rescale}{The enlargement factor for asymptotic variance of the
-bias-corrected estimator to handle super-efficiency. (default = 1.1)}
+\item{rescale}{The factor to enlarge the standard error to account for the
+finite sample bias. (default = 1.1)}
 
-\item{tau1}{The enlargement factor for asymptotic variance of the
+\item{tau}{The enlargement factor for asymptotic variance of the
 bias-corrected estimator to handle super-efficiency. It allows for a scalar
-or vector. (default = 0.5)}
-
-\item{tau2}{The enlargement factor for asymptotic variance of the
-initial estimator to handle super-efficiency. It allows for a scalar
-or vector (default = \code{c(0, 0.5,1)})}
+or vector. (default = \code{c(0.25,0.5)})}
 
 \item{alpha}{Level of significance to construct two-sided confidence interval
 (default = 0.05)}
 
 \item{verbose}{Should intermediate message(s) be printed, the projection
-direction be returned. (default = \code{TRUE})}
+direction be returned. (default = \code{FALSE})}
 }
 \value{
 \item{est.plugin}{The plugin(biased) estimator for the quadratic form of the
@@ -80,12 +75,10 @@ regression vector restricted to \code{G}}
 \item{est.debias}{The bias-corrected estimator of the quadratic form of the
 regression vector}
 \item{se}{Standard errors of the bias-corrected estimator,
-length of \code{tau1}; corrsponding to different values of \code{tau1}}
-\item{add.len}{Added lengths accounted for asymptotic variance of the
-  initial estimators}
+length of \code{tau}; corrsponding to different values of \code{tau}}
 \item{ci.mat}{The matrix of two.sided confidence interval for the quadratic
 form of the regression vector; row corresponds to different values of
-\code{tau1} and \code{tau2}}
+\code{tau}}
 \item{proj}{The projection direction. It will be returned only if \code{verbose} set as TRUE}
 }
 \description{

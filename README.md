@@ -444,9 +444,8 @@ truth
 Call `QF` with `model="linear"`:
 
 ``` r
-tau1 = 1
-tau2 = c(0, 0.5, 1)
-Est = QF(X, y, G=test.set, A=NULL, model="linear", split=T, tau1=tau1, tau2=tau2, verbose=TRUE)
+tau = c(0.25, 0.5)
+Est = QF(X, y, G=test.set, A=NULL, model="linear", split=T, tau=tau, verbose=TRUE)
 #> Computing QF... 
 #> The projection direction is identified at mu = 0.013143at step =7
 ```
@@ -455,10 +454,9 @@ Est = QF(X, y, G=test.set, A=NULL, model="linear", split=T, tau1=tau1, tau2=tau2
 
 ``` r
 ci(Est)
-#>      tau1 tau2     lower     upper
-#> [1,]    1  0.0 0.2506786 0.7939627
-#> [2,]    1  0.5 0.0000000 1.3584066
-#> [3,]    1  1.0 0.0000000 1.9228506
+#>    tau     lower     upper
+#> 1 0.25 0.2540450 0.7905963
+#> 2 0.50 0.2193974 0.8252439
 ```
 
 `summary` method for `QF`
@@ -468,8 +466,9 @@ summary(Est)
 #> Call: 
 #> Inference for Quadratic Functional
 #> 
-#>  tau1 est.plugin est.debias Std. Error z value  Pr(>|z|)    
-#>     1     0.2631     0.5223     0.1386   3.769 0.0001641 ***
+#>   tau est.plugin est.debias Std. Error z value  Pr(>|z|)    
+#>  0.25     0.2631     0.5223     0.1369   3.816 0.0001357 ***
+#>  0.50     0.2631     0.5223     0.1546   3.380 0.0007262 ***
 ```
 
 ### Quadratic functional in logistic regression
@@ -498,9 +497,8 @@ truth
 Call `QF` with `model="logistic"` or `model="logisitc"`:
 
 ``` r
-tau1 = 1
-tau2 = c(0, 0.5, 1)
-Est = QF(X, y, G=test.set, A=NULL, model="logistic", split=T, tau1=tau1, tau2=tau2, verbose=TRUE)
+tau = c(0.25, 0.5)
+Est = QF(X, y, G=test.set, A=NULL, model="logistic", split=T, tau=tau, verbose=TRUE)
 #> Computing QF... 
 #> The projection direction is identified at mu = 0.013143at step =7
 ```
@@ -509,10 +507,9 @@ Est = QF(X, y, G=test.set, A=NULL, model="logistic", split=T, tau1=tau1, tau2=ta
 
 ``` r
 ci(Est)
-#>      tau1 tau2 lower     upper
-#> [1,]    1  0.0     0 0.6165343
-#> [2,]    1  0.5     0 0.9426575
-#> [3,]    1  1.0     0 1.2687807
+#>    tau lower     upper
+#> 1 0.25     0 0.9120369
+#> 2 0.50     0 1.2316317
 ```
 
 `summary` method for `QF`:
@@ -522,16 +519,16 @@ summary(Est)
 #> Call: 
 #> Inference for Quadratic Functional
 #> 
-#>  tau1 est.plugin est.debias Std. Error z value Pr(>|z|)  
-#>     1     0.2174     0.2059     0.2095  0.9825   0.3258
+#>   tau est.plugin est.debias Std. Error z value Pr(>|z|)  
+#>  0.25     0.2174     0.2059     0.3603  0.5714   0.5677  
+#>  0.50     0.2174     0.2059     0.5234  0.3934   0.6941
 ```
 
 Call `QF` with `model="logisitc_alter"`:
 
 ``` r
-tau1 = 0
-tau2 = c(0, 0.5, 1)
-Est = QF(X, y, G=test.set, A=NULL, model="logistic_alter", split=T, tau1=tau1, tau2=tau2, verbose=TRUE)
+tau = c(0.25, 0.5)
+Est = QF(X, y, G=test.set, A=NULL, model="logistic_alter", split=T, tau=tau, verbose=TRUE)
 #> Computing QF... 
 #> The projection direction is identified at mu = 0.013143at step =7
 ```
@@ -540,10 +537,9 @@ Est = QF(X, y, G=test.set, A=NULL, model="logistic_alter", split=T, tau1=tau1, t
 
 ``` r
 ci(Est)
-#>      tau1 tau2 lower     upper
-#> [1,]    0  0.0     0 0.6782901
-#> [2,]    0  0.5     0 1.1298452
-#> [3,]    0  1.0     0 1.5814004
+#>    tau lower    upper
+#> 1 0.25     0 1.120806
+#> 2 0.50     0 1.563322
 ```
 
 `summary` method for `QF`:
@@ -553,6 +549,7 @@ summary(Est)
 #> Call: 
 #> Inference for Quadratic Functional
 #> 
-#>  tau1 est.plugin est.debias Std. Error z value Pr(>|z|)  
-#>     0      0.191     0.2804      0.203   1.381   0.1672
+#>   tau est.plugin est.debias Std. Error z value Pr(>|z|)  
+#>  0.25      0.191     0.2804     0.4288  0.6540   0.5131  
+#>  0.50      0.191     0.2804     0.6546  0.4284   0.6684
 ```

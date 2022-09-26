@@ -18,12 +18,14 @@
 #' @param mu The dual tuning parameter used in the construction of the
 #'   projection direction. If \code{NULL} it will be searched automatically.
 #'   (default = \code{NULL})
-#' @param rescale The enlargement factor for asymptotic variance of the
-#'   bias-corrected estimator to handle super-efficiency. (default = 1.1)
+#' @param prob.filter The threshold of estimated probabilities for filtering
+#'   observations in logistic regression. (default = 0.05)
+#' @param rescale The factor to enlarge the standard error to account for the
+#'   finite sample bias. (default = 1.1)
 #' @param alpha Level of significance to construct two-sided confidence interval
 #'   (default = 0.05)
 #' @param verbose Should intermediate message(s) be printed, the projection
-#'   direction be returned. (default = \code{TRUE})
+#'   direction be returned. (default = \code{FALSE})
 #'
 #' @return
 #' \item{est.plugin.vec}{The vector of plugin(biased) estimators for the
@@ -59,7 +61,7 @@
 #' summary(Est)
 LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alter"),
                intercept=TRUE, intercept.loading=FALSE, beta.init=NULL, lambda=NULL,
-               mu=NULL, prob.filter=0.05, rescale=1.1, alpha=0.05, verbose=TRUE){
+               mu=NULL, prob.filter=0.05, rescale=1.1, alpha=0.05, verbose=FALSE){
   model = match.arg(model)
   X = as.matrix(X)
   y = as.vector(y)

@@ -265,9 +265,8 @@ truth
 
 Call `QF` with `model="linear"`:
 ```{r QF-linear}
-tau1 = 1
-tau2 = c(0, 0.5, 1)
-Est = QF(X, y, G=test.set, A=NULL, model="linear", split=T, tau1=tau1, tau2=tau2, verbose=TRUE)
+tau = c(0.25, 0.5)
+Est = QF(X, y, G=test.set, A=NULL, model="linear", split=T, tau=tau, verbose=TRUE)
 ```
 
 `ci` method for `QF`
@@ -302,9 +301,8 @@ truth
 
 Call `QF` with `model="logistic"` or `model="logisitc"`:
 ```{r QF-logisitc}
-tau1 = 1
-tau2 = c(0, 0.5, 1)
-Est = QF(X, y, G=test.set, A=NULL, model="logistic", split=T, tau1=tau1, tau2=tau2, verbose=TRUE)
+tau = c(0.25, 0.5)
+Est = QF(X, y, G=test.set, A=NULL, model="logistic", split=T, tau=tau, verbose=TRUE)
 ```
 
 `ci` method for `QF`:
@@ -319,9 +317,8 @@ summary(Est)
 
 Call `QF` with `model="logisitc_alter"`:
 ```{r QF-logisitc-alter}
-tau1 = 0
-tau2 = c(0, 0.5, 1)
-Est = QF(X, y, G=test.set, A=NULL, model="logistic_alter", split=T, tau1=tau1, tau2=tau2, verbose=TRUE)
+tau = c(0.25, 0.5)
+Est = QF(X, y, G=test.set, A=NULL, model="logistic_alter", split=T, tau=tau, verbose=TRUE)
 ```
 
 `ci` method for `QF`:

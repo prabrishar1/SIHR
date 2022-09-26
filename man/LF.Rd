@@ -18,7 +18,7 @@ LF(
   prob.filter = 0.05,
   rescale = 1.1,
   alpha = 0.05,
-  verbose = TRUE
+  verbose = FALSE
 )
 }
 \arguments{
@@ -48,14 +48,17 @@ it will be picked by cross-validation. (default = \code{NULL})}
 projection direction. If \code{NULL} it will be searched automatically.
 (default = \code{NULL})}
 
-\item{rescale}{The enlargement factor for asymptotic variance of the
-bias-corrected estimator to handle super-efficiency. (default = 1.1)}
+\item{prob.filter}{The threshold of estimated probabilities for filtering
+observations in logistic regression. (default = 0.05)}
+
+\item{rescale}{The factor to enlarge the standard error to account for the
+finite sample bias. (default = 1.1)}
 
 \item{alpha}{Level of significance to construct two-sided confidence interval
 (default = 0.05)}
 
 \item{verbose}{Should intermediate message(s) be printed, the projection
-direction be returned. (default = \code{TRUE})}
+direction be returned. (default = \code{FALSE})}
 }
 \value{
 \item{est.plugin.vec}{The vector of plugin(biased) estimators for the

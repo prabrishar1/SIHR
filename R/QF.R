@@ -22,18 +22,15 @@
 #'   (default = \code{NULL})
 #' @param prob.filter The threshold of estimated probabilities for filtering
 #'   observations in logistic regression. (default = 0.05)
-#' @param rescale The enlargement factor for asymptotic variance of the
-#'   bias-corrected estimator to handle super-efficiency. (default = 1.1)
-#' @param tau1 The enlargement factor for asymptotic variance of the
+#' @param rescale The factor to enlarge the standard error to account for the
+#'   finite sample bias. (default = 1.1)
+#' @param tau The enlargement factor for asymptotic variance of the
 #'   bias-corrected estimator to handle super-efficiency. It allows for a scalar
-#'   or vector. (default = 0.5)
-#' @param tau2 The enlargement factor for asymptotic variance of the
-#'   initial estimator to handle super-efficiency. It allows for a scalar
-#'   or vector (default = \code{c(0, 0.5,1)})
+#'   or vector. (default = \code{c(0.25,0.5)})
 #' @param alpha Level of significance to construct two-sided confidence interval
 #'   (default = 0.05)
 #' @param verbose Should intermediate message(s) be printed, the projection
-#'   direction be returned. (default = \code{TRUE})
+#'   direction be returned. (default = \code{FALSE})
 #'
 #' @return
 #' \item{est.plugin}{The plugin(biased) estimator for the quadratic form of the
@@ -41,12 +38,10 @@
 #' \item{est.debias}{The bias-corrected estimator of the quadratic form of the
 #' regression vector}
 #' \item{se}{Standard errors of the bias-corrected estimator,
-#' length of \code{tau1}; corrsponding to different values of \code{tau1}}
-#' \item{add.len}{Added lengths accounted for asymptotic variance of the
-#'   initial estimators}
+#' length of \code{tau}; corrsponding to different values of \code{tau}}
 #' \item{ci.mat}{The matrix of two.sided confidence interval for the quadratic
 #' form of the regression vector; row corresponds to different values of
-#' \code{tau1} and \code{tau2}}
+#' \code{tau}}
 #' \item{proj}{The projection direction. It will be returned only if \code{verbose} set as TRUE}
 #' @export
 #'
@@ -65,7 +60,7 @@
 #' summary(Est)
 QF <- function(X, y, G, A=NULL, model=c("linear","logistic","logistic_alter"),
                intercept=TRUE, beta.init=NULL, split=TRUE, lambda=NULL, mu=NULL,
-               prob.filter=0.05, rescale=1.1, tau1=0.5, tau2=c(0,0.5,1), alpha=0.05, verbose=TRUE){
+               prob.filter=0.05, rescale=1.1, tau=c(0.25, 0.5), alpha=0.05, verbose=FALSE){
   model = match.arg(model)
   X = as.matrix(X)
   y = as.vector(y)
@@ -75,7 +70,7 @@ QF <- function(X, y, G, A=NULL, model=c("linear","logistic","logistic_alter"),
   ### check arguments ###
   check.args.QF(X=X, y=y, G=G, A=A, model=model, intercept=intercept, beta.init=beta.init,
                 split=split, lambda=lambda, mu=mu, prob.filter=prob.filter,
-                rescale=rescale, tau1=tau1, tau2=tau2, alpha=alpha, verbose=verbose)
+                rescale=rescale, tau=tau, alpha=alpha, verbose=verbose)
 
   ### specify relevant functions ###
   funs.all = relevant.funs(intercept=intercept, model=model)
@@ -220,44 +215,35 @@ QF <- function(X, y, G, A=NULL, model=c("linear","logistic","logistic_alter"),
   V.base = 4 * sum(((sqrt(weight^2 * cond_var) * X) %*% direction)^2)/n * loading.norm^2
   if((n>0.9*p)&(model=='linear')) V.base = V.base else V.base = rescale^2 * V.base
   if(nullA){
-    V.add = sum((as.vector((X[,G,drop=F]%*%beta.init[G])^2) -
+    V.A = sum((as.vector((X[,G,drop=F]%*%beta.init[G])^2) -
                  as.numeric(t(beta.init[G]) %*% A %*% beta.init[G]))^2) / n
   }else{
-    V.add = 0
+    V.A = 0
   }
-  V = (V.base + V.add + tau1)
-  se = sqrt(V/n)
-  add.len = tau2*max(1/sqrt(n), sparsity*log(p)/n)
+  V = (V.base + V.A)
+  if(model=='linear'){
+    se.add = tau*(1/sqrt(n))
+  }else{
+    se.add = tau*max(1/sqrt(n), sparsity*log(p)/n)
+  }
+  se = sqrt(V/n) + se.add
 
-  ci.mat = matrix(NA, nrow=length(tau1)*length(tau2), ncol=2)
+  ci.mat = cbind(pmax(est.debias - qnorm(1-alpha/2)*se,0), pmax(est.debias + qnorm(1-alpha/2)*se,0))
   colnames(ci.mat) = c("lower", "upper")
-  rowname.vec = rep(0, length(tau1)*length(tau2))
-  for(i.tau1 in 1:length(tau1)){
-    for(i.tau2 in 1:length(tau2)){
-      idx.ci = (i.tau1-1)*length(tau2)+i.tau2
-      ci.mat[idx.ci, ] = c(max(est.debias - qnorm(1-alpha/2)*se[i.tau1] - add.len[i.tau2], 0),
-                           max(est.debias + qnorm(1-alpha/2)*se[i.tau1] + add.len[i.tau2], 0))
-      rowname.vec[idx.ci] = paste0('tau1=',tau1[i.tau1],';tau2=',tau2[i.tau2])
-    }
-  }
-  rownames(ci.mat) = rowname.vec
+  rownames(ci.mat) = paste0('tau',tau)
   if(verbose){
     obj <- list(est.plugin = est.plugin,
                 est.debias = est.debias,
                 se         = se,
-                add.len    = add.len,
                 ci.mat     = ci.mat,
-                tau1       = tau1,
-                tau2       = tau2,
+                tau        = tau,
                 proj       = direction * loading.norm)
   }else{
     obj <- list(est.plugin = est.plugin,
                 est.debias = est.debias,
                 se         = se,
-                add.len    = add.len,
                 ci.mat     = ci.mat,
-                tau1       = tau1,
-                tau2       = tau2)
+                tau        = tau)
   }
 
   class(obj) = "QF"
