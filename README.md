@@ -431,33 +431,34 @@ A1gen <- function(rho, p){
   for(i in 1:p) for(j in 1:p) M[i,j] = rho^{abs(i-j)}
   M
 }
-Cov = A1gen(0.5, 150)
-X = MASS::mvrnorm(n=200, mu=rep(0, 150), Sigma=Cov)
+Cov = A1gen(0.5, 150)/2
+X = MASS::mvrnorm(n=400, mu=rep(0, 150), Sigma=Cov)
 beta = rep(0, 150); beta[25:50] = 0.2
-y = X%*%beta + rnorm(200)
+y = X%*%beta + rnorm(400)
 test.set = c(40:60)
 truth = as.numeric(t(beta[test.set])%*%Cov[test.set, test.set]%*%beta[test.set])
 truth
-#> [1] 1.160078
+#> [1] 0.5800391
 ```
 
 Call `QF` with `model="linear"`:
 
 ``` r
-tau1 = c(0.5, 1)
-tau2 = 0
-Est = QF(X, y, G=test.set, A=NULL, model="linear", tau1=tau1, tau2=tau2, verbose=TRUE)
+tau1 = 1
+tau2 = c(0, 0.5, 1)
+Est = QF(X, y, G=test.set, A=NULL, model="linear", split=T, tau1=tau1, tau2=tau2, verbose=TRUE)
 #> Computing QF... 
-#> The projection direction is identified at mu = 0.027879at step =5
+#> The projection direction is identified at mu = 0.013143at step =7
 ```
 
 `ci` method for `QF`
 
 ``` r
 ci(Est)
-#>      tau1 tau2     lower    upper
-#> [1,]  0.5    0 0.2906880 1.871378
-#> [2,]  1.0    0 0.2786288 1.883437
+#>      tau1 tau2     lower     upper
+#> [1,]    1  0.0 0.2506786 0.7939627
+#> [2,]    1  0.5 0.0000000 1.3584066
+#> [3,]    1  1.0 0.0000000 1.9228506
 ```
 
 `summary` method for `QF`
@@ -467,9 +468,8 @@ summary(Est)
 #> Call: 
 #> Inference for Quadratic Functional
 #> 
-#>  tau1 est.plugin est.debias Std. Error z value Pr(>|z|)   
-#>   0.5      1.219      1.081     0.4032   2.681 0.007344 **
-#>   1.0      1.219      1.081     0.4094   2.641 0.008277 **
+#>  tau1 est.plugin est.debias Std. Error z value  Pr(>|z|)    
+#>     1     0.2631     0.5223     0.1386   3.769 0.0001641 ***
 ```
 
 ### Quadratic functional in logistic regression
@@ -483,35 +483,36 @@ A1gen <- function(rho, p){
   for(i in 1:p) for(j in 1:p) M[i,j] = rho^{abs(i-j)}
   M
 }
-Cov = A1gen(0.5, 150)
-X = MASS::mvrnorm(n=200, mu=rep(0, 150), Sigma=Cov)
+Cov = A1gen(0.5, 150)/2
+X = MASS::mvrnorm(n=400, mu=rep(0, 150), Sigma=Cov)
 beta = rep(0, 150); beta[25:50] = 0.2
 exp_val = X%*%beta
 prob = exp(exp_val) / (1+exp(exp_val))
-y = rbinom(200, 1, prob)
+y = rbinom(400, 1, prob)
 test.set = c(40:60)
 truth = as.numeric(t(beta[test.set]%*%Cov[test.set, test.set]%*%beta[test.set]))
 truth
-#> [1] 1.160078
+#> [1] 0.5800391
 ```
 
 Call `QF` with `model="logistic"` or `model="logisitc"`:
 
 ``` r
-tau1 = c(0.5, 1)
-tau2 = 0
-Est = QF(X, y, G=test.set, A=NULL, model="logistic", tau1=tau1, tau2=tau2, verbose=TRUE)
+tau1 = 1
+tau2 = c(0, 0.5, 1)
+Est = QF(X, y, G=test.set, A=NULL, model="logistic", split=T, tau1=tau1, tau2=tau2, verbose=TRUE)
 #> Computing QF... 
-#> The projection direction is identified at mu = 0.027879at step =5
+#> The projection direction is identified at mu = 0.013143at step =7
 ```
 
 `ci` method for `QF`:
 
 ``` r
 ci(Est)
-#>      tau1 tau2       lower     upper
-#> [1,]  0.5    0 0.032805536 0.8075954
-#> [2,]  1.0    0 0.008761374 0.8316395
+#>      tau1 tau2 lower     upper
+#> [1,]    1  0.0     0 0.6165343
+#> [2,]    1  0.5     0 0.9426575
+#> [3,]    1  1.0     0 1.2687807
 ```
 
 `summary` method for `QF`:
@@ -522,27 +523,27 @@ summary(Est)
 #> Inference for Quadratic Functional
 #> 
 #>  tau1 est.plugin est.debias Std. Error z value Pr(>|z|)  
-#>   0.5      0.116     0.4202     0.1977   2.126  0.03351 *
-#>   1.0      0.116     0.4202     0.2099   2.002  0.04532 *
+#>     1     0.2174     0.2059     0.2095  0.9825   0.3258
 ```
 
-Call `QF` with `model="logisitc"`:
+Call `QF` with `model="logisitc_alter"`:
 
 ``` r
-tau1 = c(0.5, 1)
-tau2 = 0
-Est = QF(X, y, G=test.set, A=NULL, model="logistic_alter", tau1=tau1, tau2=tau2, verbose=TRUE)
+tau1 = 0
+tau2 = c(0, 0.5, 1)
+Est = QF(X, y, G=test.set, A=NULL, model="logistic_alter", split=T, tau1=tau1, tau2=tau2, verbose=TRUE)
 #> Computing QF... 
-#> The projection direction is identified at mu = 0.041819at step =4
+#> The projection direction is identified at mu = 0.013143at step =7
 ```
 
 `ci` method for `QF`:
 
 ``` r
 ci(Est)
-#>      tau1 tau2 lower    upper
-#> [1,]  0.5    0     0 1.281445
-#> [2,]  1.0    0     0 1.295508
+#>      tau1 tau2 lower     upper
+#> [1,]    0  0.0     0 0.6782901
+#> [2,]    0  0.5     0 1.1298452
+#> [3,]    0  1.0     0 1.5814004
 ```
 
 `summary` method for `QF`:
@@ -553,6 +554,5 @@ summary(Est)
 #> Inference for Quadratic Functional
 #> 
 #>  tau1 est.plugin est.debias Std. Error z value Pr(>|z|)  
-#>   0.5      0.397     0.6056     0.3448   1.756  0.07908 .
-#>   1.0      0.397     0.6056     0.3520   1.720  0.08538 .
+#>     0      0.191     0.2804      0.203   1.381   0.1672
 ```

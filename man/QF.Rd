@@ -18,8 +18,8 @@ QF(
   mu = NULL,
   prob.filter = 0.05,
   rescale = 1.1,
-  tau1 = c(0.5, 1),
-  tau2 = 0,
+  tau1 = 0.5,
+  tau2 = c(0, 0.5, 1),
   alpha = 0.05,
   verbose = TRUE
 )
@@ -62,11 +62,11 @@ bias-corrected estimator to handle super-efficiency. (default = 1.1)}
 
 \item{tau1}{The enlargement factor for asymptotic variance of the
 bias-corrected estimator to handle super-efficiency. It allows for a scalar
-or vector. (default = \code{c(0.5,1)})}
+or vector. (default = 0.5)}
 
 \item{tau2}{The enlargement factor for asymptotic variance of the
 initial estimator to handle super-efficiency. It allows for a scalar
-or vector (default = 0)}
+or vector (default = \code{c(0, 0.5,1)})}
 
 \item{alpha}{Level of significance to construct two-sided confidence interval
 (default = 0.05)}

@@ -26,10 +26,10 @@
 #'   bias-corrected estimator to handle super-efficiency. (default = 1.1)
 #' @param tau1 The enlargement factor for asymptotic variance of the
 #'   bias-corrected estimator to handle super-efficiency. It allows for a scalar
-#'   or vector. (default = \code{c(0.5,1)})
+#'   or vector. (default = 0.5)
 #' @param tau2 The enlargement factor for asymptotic variance of the
 #'   initial estimator to handle super-efficiency. It allows for a scalar
-#'   or vector (default = 0)
+#'   or vector (default = \code{c(0, 0.5,1)})
 #' @param alpha Level of significance to construct two-sided confidence interval
 #'   (default = 0.05)
 #' @param verbose Should intermediate message(s) be printed, the projection
@@ -65,7 +65,7 @@
 #' summary(Est)
 QF <- function(X, y, G, A=NULL, model=c("linear","logistic","logistic_alter"),
                intercept=TRUE, beta.init=NULL, split=TRUE, lambda=NULL, mu=NULL,
-               prob.filter=0.05, rescale=1.1, tau1=c(0.5,1), tau2=0, alpha=0.05, verbose=TRUE){
+               prob.filter=0.05, rescale=1.1, tau1=0.5, tau2=c(0,0.5,1), alpha=0.05, verbose=TRUE){
   model = match.arg(model)
   X = as.matrix(X)
   y = as.vector(y)
@@ -114,6 +114,9 @@ QF <- function(X, y, G, A=NULL, model=c("linear","logistic","logistic_alter"),
   ### prob.filter ###
   if(model!='linear'){
     idx = as.logical((pred>prob.filter)*(pred <(1-prob.filter)))
+    if(mean(idx) < 0.8) warning("More than 20 % observations are filtered out
+                                as their estimated probabilities are too close to the
+                                boundary 0 or 1.")
   }else{
     idx = rep(TRUE, n)
   }
