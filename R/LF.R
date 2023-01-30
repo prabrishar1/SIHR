@@ -112,7 +112,7 @@ LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alter"),
   }else{
     idx = rep(TRUE, n)
   }
-  X.filter = X[idx,]
+  X.filter = X[idx,,drop=F]
   y.filter = y[idx]
   weight.filter = weight[idx]
   deriv.filter = deriv[idx]
@@ -152,7 +152,7 @@ LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alter"),
                 step.vec = incr.vec = rep(NA, 3)
                 for(t in 1:3){
                   index.sel = sample(1:n, size=round(0.9*p), replace=FALSE)
-                  Direction.Est.temp = Direction_searchtuning(X[index.sel,], loading, weight=weight[index.sel], deriv= deriv[index.sel])
+                  Direction.Est.temp = Direction_searchtuning(X[index.sel,,drop=F], loading, weight=weight[index.sel], deriv= deriv[index.sel])
                   step.vec[t] = Direction.Est.temp$step
                   incr.vec[t] = Direction.Est.temp$incr
                 }

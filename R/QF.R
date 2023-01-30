@@ -89,8 +89,8 @@ QF <- function(X, y, G, A=NULL, model=c("linear","logistic","logistic_alter"),
     if(split){
       idx1 = sample(1:nrow(X),size=round(nrow(X)/2), replace = F)
       idx2 = setdiff(1:nrow(X), idx1)
-      X1 = X[idx1,]; y1 = y[idx1]
-      X = X[idx2,]; y = y[idx2]
+      X1 = X[idx1,,drop=F]; y1 = y[idx1]
+      X = X[idx2,,drop=F]; y = y[idx2]
     }else{
       X1 = X; y1 = y
     }
@@ -116,8 +116,8 @@ QF <- function(X, y, G, A=NULL, model=c("linear","logistic","logistic_alter"),
   }else{
     idx = rep(TRUE, n)
   }
-  X.filter = X[idx,]
-  y.filter = y[idx]
+  X.filter = X[idx,,drop=F]
+  y.filter = y[idx,,drop=F]
   weight.filter = weight[idx]
   deriv.filter = deriv[idx]
   n.filter = nrow(X.filter)
@@ -157,7 +157,7 @@ QF <- function(X, y, G, A=NULL, model=c("linear","logistic","logistic_alter"),
                 step.vec = incr.vec = rep(NA, 3)
                 for(t in 1:3){
                   index.sel = sample(1:n, size=round(0.9*p), replace=FALSE)
-                  Direction.Est.temp = Direction_searchtuning(X[index.sel,], loading, weight=weight[index.sel], deriv= deriv[index.sel])
+                  Direction.Est.temp = Direction_searchtuning(X[index.sel,,drop=F], loading, weight=weight[index.sel], deriv= deriv[index.sel])
                   step.vec[t] = Direction.Est.temp$step
                   incr.vec[t] = Direction.Est.temp$incr
                 }

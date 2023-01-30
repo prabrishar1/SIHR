@@ -157,6 +157,7 @@ Direction_searchtuning <- function(X, loading, weight, deriv, resol=1.5, maxiter
       }
     }
   }
+  if(iter > maxiter) step = maxiter
 
   direction = -(1/2)*(v_opt[-1] + v_opt[1]*loading/loading.norm)
   return(list(proj = direction,
