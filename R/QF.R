@@ -117,7 +117,7 @@ QF <- function(X, y, G, A=NULL, model=c("linear","logistic","logistic_alter"),
     idx = rep(TRUE, n)
   }
   X.filter = X[idx,,drop=F]
-  y.filter = y[idx,,drop=F]
+  y.filter = y[idx]
   weight.filter = weight[idx]
   deriv.filter = deriv[idx]
   n.filter = nrow(X.filter)
