@@ -18,7 +18,7 @@ QF(
   mu = NULL,
   prob.filter = 0.05,
   rescale = 1.1,
-  tau = c(0.25, 0.5),
+  tau = c(0.25, 0.5, 1),
   alpha = 0.05,
   verbose = FALSE
 )
@@ -62,7 +62,7 @@ finite sample bias. (default = 1.1)}
 
 \item{tau}{The enlargement factor for asymptotic variance of the
 bias-corrected estimator to handle super-efficiency. It allows for a scalar
-or vector. (default = \code{c(0.25,0.5)})}
+or vector. (default = \code{c(0.25,0.5,1)})}
 
 \item{alpha}{Level of significance to construct two-sided confidence interval
 (default = 0.05)}

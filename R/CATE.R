@@ -117,6 +117,6 @@ CATE <- function(X1, y1, X2, y2, loading.mat, model=c("linear","logistic","logis
                 ci.mat         = ci.mat)
   }
 
-  class(obj) <- "ITE"
+  class(obj) <- "CATE"
   obj
 }

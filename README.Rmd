@@ -18,9 +18,9 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of SIHR is to provide inference procedures in the high-dimensional setting for (1) linear functionals in generalized linear regression, (2) individual treatment effects in generalized linear regression (ITE), (3) quadratic functionals in generalized linear regression (QF).
+The goal of SIHR is to provide inference procedures in the high-dimensional setting for (1) linear functionals in generalized linear regression, (2) individual treatment effects in generalized linear regression (CATE), (3) quadratic functionals in generalized linear regression (QF) (4) inner product in generalized linear regression (InnProd) and (5) distance in generalized linear regression (Dist).
 
-Currently, we support different generalized linear regression, by specifying the argument `model` in "linear", "logisitc", "logistic_alter" or "probit".
+Currently, we support different generalized linear regression, by specifying the argument `model` in "linear", "logisitc", "logistic_alter".
 
 ## Installation
 
@@ -64,11 +64,13 @@ Est = LF(X, y, loading.mat, model="linear", intercept=TRUE, intercept.loading=FA
 ```{r ci LF-linear}
 ci(Est)
 ```
+Note that both true values are included in their corresponding confidence intervals.
 
 `summary` method for `LF`
 ```{r Summary LF-linear}
 summary(Est)
 ```
+`summary()` function returns the summary statistics, including the plugin estimator, the bias-corrected estimator, standard errors.
 
 ### Linear functional in linear regression model - 2
 
@@ -90,7 +92,7 @@ beta.init = as.vector(coef(cvfit, s = cvfit$lambda.min))
 ```
 Call `LF` with `model="linear"`:
 ```{r LF-linear-2}
-Est = LF(X, y, loading.mat, model="linear", intercept=TRUE, beta.init=beta.init, verbose=TRUE)
+Est = LF(X, y, loading.mat, model="linear", intercept=TRUE, beta.init=beta.init, verbose=FALSE)
 ```
 
 `ci` method for `LF`
@@ -162,44 +164,44 @@ ci(Est, probability = TRUE)
 summary(Est)
 ```
 
-### Individualized Treatment Effect in linear regression model
+### Conditional Average Treatment Effect in linear regression model
 Generate Data and find the truth linear functionals:
-```{r Generate Data ITE-linear}
+```{r Generate Data CATE-linear}
 set.seed(0)
 ## 1st data
 X1 = matrix(rnorm(100*120), nrow=100, ncol=120)
 y1 = -0.5 + X1[,1] * 0.5 + X1[,2] * 1 + rnorm(100)
 ## 2nd data
 X2 = matrix(0.8*rnorm(100*120), nrow=100, ncol=120)
-y2 = 0.1 + X2[,1] * 0.8 + X2[,2] * 0.8 + rnorm(100)
+y2 = 0.1 + X2[,1] * 1.8 + X2[,2] * 1.8 + rnorm(100)
 ## loadings
 loading1 = c(1, 1, rep(0, 118))
 loading2 = c(-0.5, -1, rep(0, 118))
 loading.mat = cbind(loading1, loading2)
-truth1 = (0.5*1 + 1*1) - (0.8*1 + 0.8*1)
-truth2 = (0.5*(-0.5) + 1*(-1)) - (0.8*(-0.5) + 0.8*(-1))
+truth1 = (1.8*1 + 1.8*1) - (0.5*1 + 1*1)
+truth2 = (1.8*(-0.5) + 1.8*(-1))- (0.5*(-0.5) + 1*(-1))
 truth = c(truth1, truth2)
 truth
 ```
 
-Call `ITE` with `model="linear"`:
-```{r ITE-linear}
-Est = ITE(X1, y1, X2, y2, loading.mat, model="linear", verbose=TRUE)
+Call `CATE` with `model="linear"`:
+```{r CATE-linear}
+Est = CATE(X1, y1, X2, y2, loading.mat, model="linear")
 ```
 
-`ci` method for `ITE`
-```{r ci ITE-linear}
+`ci` method for `CATE`
+```{r ci CATE-linear}
 ci(Est)
 ```
 
-`summary` method for `ITE`
-```{r Summary ITE-linear}
+`summary` method for `CATE`
+```{r Summary CATE-linear}
 summary(Est)
 ```
 
-### Individualized Treatment Effect in logistic regression model
+### Conditional Average Treatment Effect in logistic regression model
 Generate Data and find the truth linear functionals:
-```{r Generate Data ITE-logistic}
+```{r Generate Data CATE-logistic}
 set.seed(0)
 ## 1st data
 X1 = matrix(rnorm(100*120), nrow=100, ncol=120)
@@ -208,39 +210,39 @@ prob1 = exp(exp_val1) / (1 + exp(exp_val1))
 y1 = rbinom(100, 1, prob1)
 ## 2nd data
 X2 = matrix(0.8*rnorm(100*120), nrow=100, ncol=120)
-exp_val2 = -0.5 + X2[,1] * 0.8 + X2[,2] * 0.8
+exp_val2 = -0.5 + X2[,1] * 1.8 + X2[,2] * 1.8
 prob2 = exp(exp_val2) / (1 + exp(exp_val2))
 y2 = rbinom(100, 1, prob2)
 ## loadings
 loading1 = c(1, 1, rep(0, 118))
 loading2 = c(-0.5, -1, rep(0, 118))
 loading.mat = cbind(loading1, loading2)
-truth1 = (0.5*1 + 1*1) - (0.8*1 + 0.8*1)
-truth2 = (0.5*(-0.5) + 1*(-1)) - (0.8*(-0.5) + 0.8*(-1))
+truth1 = (1.8*1 + 1.8*1) - (0.5*1 + 1*1)
+truth2 = (0.8*(-0.5) + 0.8*(-1)) - (0.5*(-0.5) + 1*(-1)) 
 truth = c(truth1, truth2)
 prob.fun = function(x) exp(x)/(1+exp(x))
-truth.prob1 = prob.fun(0.5*1 + 1*1) - prob.fun(0.8*1 + 0.8*1)
-truth.prob2 = prob.fun(0.5*(-0.5) + 1*(-1)) - prob.fun(0.8*(-0.5) + 0.8*(-1))
+truth.prob1 = prob.fun(1.8*1 + 1.8*1) - prob.fun(0.5*1 + 1*1)
+truth.prob2 = prob.fun(1.8*(-0.5) + 1.8*(-1)) - prob.fun(0.5*(-0.5) + 1*(-1)) 
 truth.prob = c(truth.prob1, truth.prob2)
 
 truth; truth.prob
 ```
 
-Call `ITE` with `model="logistic"` or `model="logisitc_alter"`:
-```{r ITE-logisitc}
-Est = ITE(X1, y1, X2, y2, loading.mat, model="logistic", verbose = TRUE)
+Call `CATE` with `model="logistic"` or `model="logisitc_alter"`:
+```{r CATE-logisitc}
+Est = CATE(X1, y1, X2, y2, loading.mat, model="logistic", verbose = FALSE)
 ```
 
-`ci` method for `ITE`:
-```{r ci ITE-logistic}
+`ci` method for `CATE`:
+```{r ci CATE-logistic}
 ## confidence interval for linear combination
 ci(Est)
 ## confidence interval after probability transformation
 ci(Est, probability = TRUE)
 ```
 
-`summary` method for `ITE`:
-```{r summary ITE-logistic}
+`summary` method for `CATE`:
+```{r summary CATE-logistic}
 summary(Est)
 ```
 
@@ -269,8 +271,7 @@ library(glmnet)
 outLas <- cv.glmnet(X, y, family = "gaussian", alpha = 1,
                             intercept = T, standardize = T)
 beta.init = as.vector(coef(outLas, s = outLas$lambda.min))
-tau = c(0.25, 0.5)
-Est = QF(X, y, G=test.set, A=NULL, model="linear", beta.init=beta.init, tau=tau, verbose=TRUE)
+Est = QF(X, y, G=test.set, A=NULL, model="linear", beta.init=beta.init, verbose=FALSE)
 ```
 
 `ci` method for `QF`
@@ -283,54 +284,81 @@ ci(Est)
 summary(Est)
 ```
 
-### Quadratic functional in logistic regression
-Generate Data and find the truth quadratic functional
-```{r Generate Data QF-logistic}
+### Inner product in linear regression model
+Generate Data and find the true inner product:
+```{r Generate Data InnProd-linear}
 set.seed(0)
-A1gen <- function(rho, p){
-  M = matrix(NA, nrow=p, ncol=p)
-  for(i in 1:p) for(j in 1:p) M[i,j] = rho^{abs(i-j)}
-  M
-}
-Cov = A1gen(0.5, 150)/2
-X = MASS::mvrnorm(n=400, mu=rep(0, 150), Sigma=Cov)
-beta = rep(0, 150); beta[25:50] = 0.2
-exp_val = X%*%beta
-prob = exp(exp_val) / (1+exp(exp_val))
-y = rbinom(400, 1, prob)
-test.set = c(40:60)
-truth = as.numeric(t(beta[test.set]%*%Cov[test.set, test.set]%*%beta[test.set]))
+p = 120
+mu = rep(0,p)
+Cov = diag(p)
+## 1st data
+n1 = 200
+X1 = MASS::mvrnorm(n1,mu,Cov)
+beta1 = rep(0, p); beta1[c(1,2)] = c(0.5, 1)
+y1 = X1%*%beta1 + rnorm(n1)
+## 2nd data
+n2 = 200
+X2 = MASS::mvrnorm(n2,mu,Cov)
+beta2 = rep(0, p); beta2[c(1,2)] = c(1.8, 0.8)
+y2 = X2%*%beta2 + rnorm(n2)
+## test.set
+G =c(1:10)
+
+truth <- as.numeric(t(beta1[G])%*%Cov[G,G]%*%beta2[G])
 truth
 ```
 
-Call `QF` with `model="logistic"` or `model="logisitc"`:
-```{r QF-logisitc}
-tau = c(0.25, 0.5)
-Est = QF(X, y, G=test.set, A=NULL, model="logistic", split=T, tau=tau, verbose=TRUE)
+Call `InnProd` with `model="linear"`:
+```{r InnProd-linear}
+Est = InnProd(X1, y1, X2, y2, G, model="linear")
 ```
 
-`ci` method for `QF`:
-```{r ci QF-logistic}
+`ci` method for `InnProd`
+```{r ci InnProd-linear}
 ci(Est)
 ```
 
-`summary` method for `QF`:
-```{r summary QF-logistic}
+`summary` method for `InnProd`
+```{r Summary InnProd-linear}
 summary(Est)
 ```
 
-Call `QF` with `model="logisitc_alter"`:
-```{r QF-logisitc-alter}
-tau = c(0.25, 0.5)
-Est = QF(X, y, G=test.set, A=NULL, model="logistic_alter", split=T, tau=tau, verbose=TRUE)
+
+### Distance in linear regression model
+Generate Data and find the true distance:
+```{r Generate Data Dist-linear}
+set.seed(0)
+p = 120
+mu = rep(0,p)
+Cov = diag(p)
+## 1st data
+n1 = 200
+X1 = MASS::mvrnorm(n1,mu,Cov)
+beta1 = rep(0, p); beta1[c(1,2)] = c(0.5, 1)
+y1 = X1%*%beta1 + rnorm(n1)
+## 2nd data
+n2 = 200
+X2 = MASS::mvrnorm(n2,mu,Cov)
+beta2 = rep(0, p); beta2[c(1,2)] = c(1.8, 1.8)
+y2 = X2%*%beta2 + rnorm(n2)
+## test.set
+G =c(1:10)
+
+truth <- as.numeric(t(beta1[G]-beta2[G])%*%(beta1[G]-beta2[G]))
+truth
 ```
 
-`ci` method for `QF`:
-```{r ci QF-logistic-alter}
+Call `Dist` with `model="linear"`:
+```{r Dist-linear}
+Est = Dist(X1, y1, X2, y2, G, model="linear", A = diag(length(G)))
+```
+
+`ci` method for `Dist`
+```{r ci Dist-linear}
 ci(Est)
 ```
 
-`summary` method for `QF`:
-```{r summary QF-logistic-alter}
+`summary` method for `Dist`
+```{r Summary Dist-linear}
 summary(Est)
 ```

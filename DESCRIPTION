@@ -1,17 +1,19 @@
 Package: SIHR
 Type: Package
 Title: Statistical Inference in High Dimensional Regression
-Version: 1.1.0
+Version: 2.0.0
 Author: Prabrisha Rakshit, Zhenyu Wang, Tony Cai, Zijian Guo
 Maintainer: Zijian Guo <zijguo@stat.rutgers.edu>
-Description: Inference procedures in the high-dimensional setting for 
+Description: The goal of SIHR is to provide inference procedures in the high-dimensional setting for 
     (1) linear functionals in generalized linear regression ('Cai et al.' (2019) <arXiv:1904.12891>, 'Guo et al.' (2020) <arXiv:2012.07133>, 'Cai et al.' (2021)),
-    (2) individual treatment effects in generalized linear regression,
+    (2) conditional average treatment effects in generalized linear regression,
     (3) quadratic functionals in generalized linear regression ('Guo et al.' (2019) <arXiv:1909.01503>).
+    (4) inner product in generalized linear regression
+    (5) distance in generalized linear regression.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.3
 URL: https://github.com/prabrishar1/SIHR
 Imports: 
     CVXR,

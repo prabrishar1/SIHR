@@ -1,5 +1,5 @@
-#' Inference for weighted quadratic functional of difference of the regression vectors in
-#' high dimensional generalized linear regressions
+#' Inference for weighted quadratic functional of difference of the regression vectors (excluding the intercept term) in
+#' high dimensional generalized linear regressions.
 #'
 #' @param X1 Design matrix for the first sample, of dimension \eqn{n_1} x \eqn{p}
 #' @param y1 Outcome vector for the first sample, of length \eqn{n_1}
@@ -114,12 +114,13 @@ Dist <- function(X1, y1, X2, y2, G, A= NULL, model = c("linear","logistic","logi
   }
   loading = rep(0,p)
   loading[G] = A%*%gamma.init[G]
+  if(intercept) loading = loading[-1]
 
   ### Run LF twice ###
   Est1 <- LF(X1, y1, loading.mat = loading, model = model, intercept = intercept, intercept.loading = FALSE, beta.init = beta.init1, lambda = lambda, mu = mu, prob.filter = prob.filter, rescale = rescale, alpha = alpha, verbose = verbose)
   Est2 <- LF(X2, y2, loading.mat = loading, model = model, intercept = intercept, intercept.loading = FALSE, beta.init = beta.init2, lambda = lambda, mu = mu, prob.filter = prob.filter, rescale = rescale, alpha = alpha, verbose = verbose)
 
-  est.plugin <- t(gamma.init[G])%*%A%*%gamma.init[G]
+  est.plugin <- as.numeric(t(gamma.init[G])%*%A%*%gamma.init[G])
   est.debias <- est.plugin + 2*(Est2$est.debias.vec - Est2$est.plugin.vec) - 2*(Est1$est.debias.vec - Est1$est.plugin.vec)
 
   V.base = 4*Est1$se.vec^2 + 4*Est2$se.vec^2
@@ -130,9 +131,9 @@ Dist <- function(X1, y1, X2, y2, G, A= NULL, model = c("linear","logistic","logi
     V.A = 0
   }
   if(model == 'linear'){
-    se.add = tau*(1/sqrt(n))
+    se.add = tau*(1/sqrt(n.min))
   }else{
-    se.add = tau*max(1/sqrt(n), sparsity*log(p)/n)
+    se.add = tau*max(1/sqrt(n.min), sparsity*log(p)/n.min)
   }
   se = sqrt(V.base + V.A) + se.add
 

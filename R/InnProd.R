@@ -112,9 +112,11 @@ InnProd <- function(X1, y1, X2, y2, G, A = NULL, model = c("linear","logistic","
   # loading1 is for 2nd sample
   loading1 = rep(0, p)
   loading1[G] = A%*%beta.init1[G]
+  if(intercept) loading1 = loading1[-1]
   # loading2 is for 1st sample
   loading2 = rep(0, p)
   loading2[G] = A%*%beta.init2[G]
+  if(intercept) loading2 = loading2[-1]
 
   ### Run LF twice ###
   Est1 <- LF(X1, y1, loading.mat = loading2, model = model, intercept = intercept, intercept.loading = FALSE, beta.init = beta.init1, lambda = lambda, mu = mu, prob.filter = prob.filter, rescale = rescale, alpha = alpha, verbose = verbose)
@@ -127,17 +129,17 @@ InnProd <- function(X1, y1, X2, y2, G, A = NULL, model = c("linear","logistic","
   V.base = Est1$se.vec^2 + Est2$se.vec^2
   V.A = 0
   if(nullA){
-    for(i in 1:n){
-      V.A = V.A + as.numeric((t(beta.init1[G])%*%(X[i,G,drop=F]%*%t(X[i,G,drop=F])-A)%*%beta.init2[G])^2)
+    for(i in 1:nrow(X)){
+      V.A = V.A + as.numeric((t(beta.init1[G])%*%(t(X[i,G,drop=F])%*%X[i,G,drop=F]-A)%*%beta.init2[G])^2)
     }
-    V.A = V.A/n^2
+    V.A = V.A/nrow(X)^2
   }
   if(model=='linear'){
     se.add = tau*(1/sqrt(n.min))
   }else{
     se.add = tau*max(1/sqrt(n.min), sparsity*log(p)/n.min)
   }
-  se <- sqrt(V.base + V.add) + se.add
+  se <- sqrt(V.base + V.A) + se.add
 
   ci.mat = cbind(est.debias - qnorm(1-alpha/2)*se, est.debias + qnorm(1-alpha/2)*se)
   colnames(ci.mat) = c('lower','upper')

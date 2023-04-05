@@ -9,12 +9,14 @@
 The goal of SIHR is to provide inference procedures in the
 high-dimensional setting for (1) linear functionals in generalized
 linear regression, (2) individual treatment effects in generalized
-linear regression (ITE), (3) quadratic functionals in generalized linear
-regression (QF).
+linear regression (CATE), (3) quadratic functionals in generalized
+linear regression (QF) (4) inner product in generalized linear
+regression (InnProd) and (5) distance in generalized linear regression
+(Dist).
 
 Currently, we support different generalized linear regression, by
 specifying the argument `model` in “linear”, “logisitc”,
-“logistic_alter” or “probit”.
+“logistic_alter”.
 
 ## Installation
 
@@ -78,6 +80,9 @@ ci(Est)
 #> 2       2 -1.529687 -1.020350
 ```
 
+Note that both true values are included in their corresponding
+confidence intervals.
+
 `summary` method for `LF`
 
 ``` r
@@ -90,6 +95,9 @@ summary(Est)
 #>        1      1.158      1.417     0.1558   9.098 0.000e+00 ***
 #>        2     -1.015     -1.275     0.1299  -9.813 9.924e-23 ***
 ```
+
+`summary()` function returns the summary statistics, including the
+plugin estimator, the bias-corrected estimator, standard errors.
 
 ### Linear functional in linear regression model - 2
 
@@ -119,27 +127,7 @@ beta.init = as.vector(coef(cvfit, s = cvfit$lambda.min))
 Call `LF` with `model="linear"`:
 
 ``` r
-Est = LF(X, y, loading.mat, model="linear", intercept=TRUE, beta.init=beta.init, verbose=TRUE)
-#> Computing LF for loading (1/10)... 
-#> The projection direction is identified at mu = 0.040886at step =4
-#> Computing LF for loading (2/10)... 
-#> The projection direction is identified at mu = 0.040886at step =4
-#> Computing LF for loading (3/10)... 
-#> The projection direction is identified at mu = 0.040886at step =4
-#> Computing LF for loading (4/10)... 
-#> The projection direction is identified at mu = 0.040886at step =4
-#> Computing LF for loading (5/10)... 
-#> The projection direction is identified at mu = 0.040886at step =4
-#> Computing LF for loading (6/10)... 
-#> The projection direction is identified at mu = 0.040886at step =4
-#> Computing LF for loading (7/10)... 
-#> The projection direction is identified at mu = 0.027257at step =5
-#> Computing LF for loading (8/10)... 
-#> The projection direction is identified at mu = 0.027257at step =5
-#> Computing LF for loading (9/10)... 
-#> The projection direction is identified at mu = 0.040886at step =4
-#> Computing LF for loading (10/10)... 
-#> The projection direction is identified at mu = 0.040886at step =4
+Est = LF(X, y, loading.mat, model="linear", intercept=TRUE, beta.init=beta.init, verbose=FALSE)
 ```
 
 `ci` method for `LF`
@@ -259,14 +247,14 @@ Est = LF(X, y, loading.mat, model="logistic_alter", verbose=TRUE)
 ``` r
 ## confidence interval for linear combination
 ci(Est)
-#>   loading      lower      upper
-#> 1       1  0.6121908  2.1603820
-#> 2       2 -1.8474229 -0.5201972
+#>   loading      lower     upper
+#> 1       1  0.6077181  2.191417
+#> 2       2 -1.8922856 -0.530151
 ## confidence interval after probability transformation
 ci(Est, probability = TRUE)
 #>   loading     lower     upper
-#> 1       1 0.6484404 0.8966350
-#> 2       2 0.1361758 0.3728061
+#> 1       1 0.6474201 0.8994761
+#> 2       2 0.1309841 0.3704817
 ```
 
 `summary` method for `LF`
@@ -278,11 +266,11 @@ summary(Est)
 #> 
 #> Estimators: 
 #>  loading est.plugin est.debias Std. Error z value  Pr(>|z|)    
-#>        1     0.7597      1.386     0.3950   3.510 0.0004481 ***
-#>        2    -0.7597     -1.184     0.3386  -3.496 0.0004717 ***
+#>        1     0.7942      1.400     0.4040   3.464 0.0005319 ***
+#>        2    -0.7942     -1.211     0.3475  -3.486 0.0004910 ***
 ```
 
-### Individualized Treatment Effect in linear regression model
+### Conditional Average Treatment Effect in linear regression model
 
 Generate Data and find the truth linear functionals:
 
@@ -293,44 +281,34 @@ X1 = matrix(rnorm(100*120), nrow=100, ncol=120)
 y1 = -0.5 + X1[,1] * 0.5 + X1[,2] * 1 + rnorm(100)
 ## 2nd data
 X2 = matrix(0.8*rnorm(100*120), nrow=100, ncol=120)
-y2 = 0.1 + X2[,1] * 0.8 + X2[,2] * 0.8 + rnorm(100)
+y2 = 0.1 + X2[,1] * 1.8 + X2[,2] * 1.8 + rnorm(100)
 ## loadings
 loading1 = c(1, 1, rep(0, 118))
 loading2 = c(-0.5, -1, rep(0, 118))
 loading.mat = cbind(loading1, loading2)
-truth1 = (0.5*1 + 1*1) - (0.8*1 + 0.8*1)
-truth2 = (0.5*(-0.5) + 1*(-1)) - (0.8*(-0.5) + 0.8*(-1))
+truth1 = (1.8*1 + 1.8*1) - (0.5*1 + 1*1)
+truth2 = (1.8*(-0.5) + 1.8*(-1))- (0.5*(-0.5) + 1*(-1))
 truth = c(truth1, truth2)
 truth
-#> [1] -0.10 -0.05
+#> [1]  2.10 -1.45
 ```
 
-Call `ITE` with `model="linear"`:
+Call `CATE` with `model="linear"`:
 
 ``` r
-Est = ITE(X1, y1, X2, y2, loading.mat, model="linear", verbose=TRUE)
-#> Call: Inference for Linear Functional ======> Data 1/2 
-#> Computing LF for loading (1/2)... 
-#> The projection direction is identified at mu = 0.061329at step =3
-#> Computing LF for loading (2/2)... 
-#> The projection direction is identified at mu = 0.061329at step =3
-#> Call: Inference for Linear Functional ======> Data 2/2 
-#> Computing LF for loading (1/2)... 
-#> The projection direction is identified at mu = 0.027257at step =5
-#> Computing LF for loading (2/2)... 
-#> The projection direction is identified at mu = 0.040886at step =4
+Est = CATE(X1, y1, X2, y2, loading.mat, model="linear")
 ```
 
-`ci` method for `ITE`
+`ci` method for `CATE`
 
 ``` r
 ci(Est)
-#>   loading      lower     upper
-#> 1       1 -0.9634614 0.6422924
-#> 2       2 -0.5728741 0.4081881
+#>   loading     lower      upper
+#> 1       1  1.338908  2.9843155
+#> 2       2 -1.931858 -0.9300702
 ```
 
-`summary` method for `ITE`
+`summary` method for `CATE`
 
 ``` r
 summary(Est)
@@ -338,12 +316,12 @@ summary(Est)
 #> Inference for Treatment Effect
 #> 
 #> Estimators: 
-#>  loading est.plugin est.debias Std. Error z value Pr(>|z|)  
-#>        1   -0.03658   -0.16058     0.4096  -0.392   0.6950  
-#>        2   -0.14526   -0.08234     0.2503  -0.329   0.7421
+#>  loading est.plugin est.debias Std. Error z value  Pr(>|z|)    
+#>        1      1.991      2.162     0.4198   5.150 2.609e-07 ***
+#>        2     -1.321     -1.431     0.2556  -5.599 2.153e-08 ***
 ```
 
-### Individualized Treatment Effect in logistic regression model
+### Conditional Average Treatment Effect in logistic regression model
 
 Generate Data and find the truth linear functionals:
 
@@ -356,58 +334,48 @@ prob1 = exp(exp_val1) / (1 + exp(exp_val1))
 y1 = rbinom(100, 1, prob1)
 ## 2nd data
 X2 = matrix(0.8*rnorm(100*120), nrow=100, ncol=120)
-exp_val2 = -0.5 + X2[,1] * 0.8 + X2[,2] * 0.8
+exp_val2 = -0.5 + X2[,1] * 1.8 + X2[,2] * 1.8
 prob2 = exp(exp_val2) / (1 + exp(exp_val2))
 y2 = rbinom(100, 1, prob2)
 ## loadings
 loading1 = c(1, 1, rep(0, 118))
 loading2 = c(-0.5, -1, rep(0, 118))
 loading.mat = cbind(loading1, loading2)
-truth1 = (0.5*1 + 1*1) - (0.8*1 + 0.8*1)
-truth2 = (0.5*(-0.5) + 1*(-1)) - (0.8*(-0.5) + 0.8*(-1))
+truth1 = (1.8*1 + 1.8*1) - (0.5*1 + 1*1)
+truth2 = (0.8*(-0.5) + 0.8*(-1)) - (0.5*(-0.5) + 1*(-1)) 
 truth = c(truth1, truth2)
 prob.fun = function(x) exp(x)/(1+exp(x))
-truth.prob1 = prob.fun(0.5*1 + 1*1) - prob.fun(0.8*1 + 0.8*1)
-truth.prob2 = prob.fun(0.5*(-0.5) + 1*(-1)) - prob.fun(0.8*(-0.5) + 0.8*(-1))
+truth.prob1 = prob.fun(1.8*1 + 1.8*1) - prob.fun(0.5*1 + 1*1)
+truth.prob2 = prob.fun(1.8*(-0.5) + 1.8*(-1)) - prob.fun(0.5*(-0.5) + 1*(-1)) 
 truth.prob = c(truth.prob1, truth.prob2)
 
 truth; truth.prob
-#> [1] -0.10 -0.05
-#> [1] -0.014443909 -0.008775078
+#> [1] 2.10 0.05
+#> [1]  0.1558285 -0.1597268
 ```
 
-Call `ITE` with `model="logistic"` or `model="logisitc_alter"`:
+Call `CATE` with `model="logistic"` or `model="logisitc_alter"`:
 
 ``` r
-Est = ITE(X1, y1, X2, y2, loading.mat, model="logistic", verbose = TRUE)
-#> Call: Inference for Linear Functional ======> Data 1/2 
-#> Computing LF for loading (1/2)... 
-#> The projection direction is identified at mu = 0.061329at step =3
-#> Computing LF for loading (2/2)... 
-#> The projection direction is identified at mu = 0.061329at step =3
-#> Call: Inference for Linear Functional ======> Data 2/2 
-#> Computing LF for loading (1/2)... 
-#> The projection direction is identified at mu = 0.040886at step =4
-#> Computing LF for loading (2/2)... 
-#> The projection direction is identified at mu = 0.040886at step =4
+Est = CATE(X1, y1, X2, y2, loading.mat, model="logistic", verbose = FALSE)
 ```
 
-`ci` method for `ITE`:
+`ci` method for `CATE`:
 
 ``` r
 ## confidence interval for linear combination
 ci(Est)
-#>   loading     lower     upper
-#> 1       1 -1.463932 1.7455369
-#> 2       2 -1.841519 0.8706693
+#>   loading      lower    upper
+#> 1       1 -0.4253334 3.397421
+#> 2       2 -3.3720814 1.259623
 ## confidence interval after probability transformation
 ci(Est, probability = TRUE)
-#>   loading      lower     upper
-#> 1       1 -0.2378692 0.2826141
-#> 2       2 -0.3697559 0.1819994
+#>   loading       lower      upper
+#> 1       1 -0.01213062 0.28746833
+#> 2       2 -0.34578964 0.08603778
 ```
 
-`summary` method for `ITE`:
+`summary` method for `CATE`:
 
 ``` r
 summary(Est)
@@ -416,8 +384,8 @@ summary(Est)
 #> 
 #> Estimators: 
 #>  loading est.plugin est.debias Std. Error z value Pr(>|z|)  
-#>        1     0.5027     0.1408     0.8188  0.1720   0.8635  
-#>        2    -0.6654    -0.4854     0.6919 -0.7016   0.4829
+#>        1     0.9234      1.486     0.9752  1.5238   0.1276  
+#>        2    -0.3643     -1.056     1.1816 -0.8939   0.3714
 ```
 
 ### Quadratic functional in linear regression
@@ -448,10 +416,7 @@ library(glmnet)
 outLas <- cv.glmnet(X, y, family = "gaussian", alpha = 1,
                             intercept = T, standardize = T)
 beta.init = as.vector(coef(outLas, s = outLas$lambda.min))
-tau = c(0.25, 0.5)
-Est = QF(X, y, G=test.set, A=NULL, model="linear", beta.init=beta.init, tau=tau, verbose=TRUE)
-#> Computing QF... 
-#> The projection direction is identified at mu = 0.01394at step =6
+Est = QF(X, y, G=test.set, A=NULL, model="linear", beta.init=beta.init, verbose=FALSE)
 ```
 
 `ci` method for `QF`
@@ -459,8 +424,9 @@ Est = QF(X, y, G=test.set, A=NULL, model="linear", beta.init=beta.init, tau=tau,
 ``` r
 ci(Est)
 #>    tau     lower     upper
-#> 1 0.25 0.4442377 0.7842335
-#> 2 0.50 0.4197381 0.8087330
+#> 1 0.25 0.4397755 0.7416457
+#> 2 0.50 0.4320213 0.7494000
+#> 3 1.00 0.4175514 0.7638699
 ```
 
 `summary` method for `QF`
@@ -471,89 +437,119 @@ summary(Est)
 #> Inference for Quadratic Functional
 #> 
 #>   tau est.plugin est.debias Std. Error z value  Pr(>|z|)    
-#>  0.25     0.4958     0.6142    0.08674   7.082 1.424e-12 ***
-#>  0.50     0.4958     0.6142    0.09924   6.190 6.028e-10 ***
+#>  0.25     0.4547     0.5907    0.07701   7.671 1.710e-14 ***
+#>  0.50     0.4547     0.5907    0.08097   7.296 2.969e-13 ***
+#>  1.00     0.4547     0.5907    0.08835   6.686 2.291e-11 ***
 ```
 
-### Quadratic functional in logistic regression
+### Inner product in linear regression model
 
-Generate Data and find the truth quadratic functional
+Generate Data and find the true inner product:
 
 ``` r
 set.seed(0)
-A1gen <- function(rho, p){
-  M = matrix(NA, nrow=p, ncol=p)
-  for(i in 1:p) for(j in 1:p) M[i,j] = rho^{abs(i-j)}
-  M
-}
-Cov = A1gen(0.5, 150)/2
-X = MASS::mvrnorm(n=400, mu=rep(0, 150), Sigma=Cov)
-beta = rep(0, 150); beta[25:50] = 0.2
-exp_val = X%*%beta
-prob = exp(exp_val) / (1+exp(exp_val))
-y = rbinom(400, 1, prob)
-test.set = c(40:60)
-truth = as.numeric(t(beta[test.set]%*%Cov[test.set, test.set]%*%beta[test.set]))
+p = 120
+mu = rep(0,p)
+Cov = diag(p)
+## 1st data
+n1 = 200
+X1 = MASS::mvrnorm(n1,mu,Cov)
+beta1 = rep(0, p); beta1[c(1,2)] = c(0.5, 1)
+y1 = X1%*%beta1 + rnorm(n1)
+## 2nd data
+n2 = 200
+X2 = MASS::mvrnorm(n2,mu,Cov)
+beta2 = rep(0, p); beta2[c(1,2)] = c(1.8, 0.8)
+y2 = X2%*%beta2 + rnorm(n2)
+## test.set
+G =c(1:10)
+
+truth <- as.numeric(t(beta1[G])%*%Cov[G,G]%*%beta2[G])
 truth
-#> [1] 0.5800391
+#> [1] 1.7
 ```
 
-Call `QF` with `model="logistic"` or `model="logisitc"`:
+Call `InnProd` with `model="linear"`:
 
 ``` r
-tau = c(0.25, 0.5)
-Est = QF(X, y, G=test.set, A=NULL, model="logistic", split=T, tau=tau, verbose=TRUE)
-#> Computing QF... 
-#> The projection direction is identified at mu = 0.013143at step =7
+Est = InnProd(X1, y1, X2, y2, G, model="linear")
 ```
 
-`ci` method for `QF`:
+`ci` method for `InnProd`
 
 ``` r
 ci(Est)
-#>    tau lower     upper
-#> 1 0.25     0 0.9120369
-#> 2 0.50     0 1.2316317
+#>    tau     lower    upper
+#> 1 0.25 0.8118224 2.376767
+#> 2 0.50 0.7628233 2.425767
+#> 3 1.00 0.6648251 2.523765
 ```
 
-`summary` method for `QF`:
+`summary` method for `InnProd`
 
 ``` r
 summary(Est)
 #> Call: 
-#> Inference for Quadratic Functional
+#> Inference for Inner Product
 #> 
-#>   tau est.plugin est.debias Std. Error z value Pr(>|z|)  
-#>  0.25     0.2174     0.2059     0.3603  0.5714   0.5677  
-#>  0.50     0.2174     0.2059     0.5234  0.3934   0.6941
+#>   tau est.plugin est.debias Std. Error z value  Pr(>|z|)    
+#>  0.25     0.9745      1.594     0.3992   3.993 6.512e-05 ***
+#>  0.50     0.9745      1.594     0.4242   3.758 1.712e-04 ***
+#>  1.00     0.9745      1.594     0.4742   3.362 7.742e-04 ***
 ```
 
-Call `QF` with `model="logisitc_alter"`:
+### Distance in linear regression model
+
+Generate Data and find the true distance:
 
 ``` r
-tau = c(0.25, 0.5)
-Est = QF(X, y, G=test.set, A=NULL, model="logistic_alter", split=T, tau=tau, verbose=TRUE)
-#> Computing QF... 
-#> The projection direction is identified at mu = 0.013143at step =7
+set.seed(0)
+p = 120
+mu = rep(0,p)
+Cov = diag(p)
+## 1st data
+n1 = 200
+X1 = MASS::mvrnorm(n1,mu,Cov)
+beta1 = rep(0, p); beta1[c(1,2)] = c(0.5, 1)
+y1 = X1%*%beta1 + rnorm(n1)
+## 2nd data
+n2 = 200
+X2 = MASS::mvrnorm(n2,mu,Cov)
+beta2 = rep(0, p); beta2[c(1,2)] = c(1.8, 1.8)
+y2 = X2%*%beta2 + rnorm(n2)
+## test.set
+G =c(1:10)
+
+truth <- as.numeric(t(beta1[G]-beta2[G])%*%(beta1[G]-beta2[G]))
+truth
+#> [1] 2.33
 ```
 
-`ci` method for `QF`:
+Call `Dist` with `model="linear"`:
+
+``` r
+Est = Dist(X1, y1, X2, y2, G, model="linear", A = diag(length(G)))
+```
+
+`ci` method for `Dist`
 
 ``` r
 ci(Est)
-#>    tau lower    upper
-#> 1 0.25     0 1.120806
-#> 2 0.50     0 1.563322
+#>    tau     lower    upper
+#> 1 0.25 0.7528571 3.721829
+#> 2 0.50 0.7038580 3.770828
+#> 3 1.00 0.6058598 3.868826
 ```
 
-`summary` method for `QF`:
+`summary` method for `Dist`
 
 ``` r
 summary(Est)
 #> Call: 
-#> Inference for Quadratic Functional
+#> Inference for Distance
 #> 
-#>   tau est.plugin est.debias Std. Error z value Pr(>|z|)  
-#>  0.25      0.191     0.2804     0.4288  0.6540   0.5131  
-#>  0.50      0.191     0.2804     0.6546  0.4284   0.6684
+#>   tau est.plugin est.debias Std. Error z value Pr(>|z|)   
+#>  0.25      1.716      2.237     0.7574   2.954 0.003137 **
+#>  0.50      1.716      2.237     0.7824   2.860 0.004242 **
+#>  1.00      1.716      2.237     0.8324   2.688 0.007192 **
 ```
