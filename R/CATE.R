@@ -1,7 +1,7 @@
 #' Inference for difference of linear combinations of the regression vectors in
 #' high dimensional generalized linear regressions
 #' @description Computes the bias-corrected estimator of the difference of
-#'   linearcombinations of the regression vectors for the high dimensional
+#'   linear combinations of the regression vectors for the high dimensional
 #'   generalized linear regressions and the corresponding standard error.
 #' @param X1 Design matrix for the first sample, of dimension \eqn{n_1} x
 #'   \eqn{p}
@@ -71,14 +71,14 @@
 #' loading1 = c(1, 1, rep(0,3))
 #' loading2 = c(-0.5, -1, rep(0,3))
 #' loading.mat = cbind(loading1, loading2)
-#' Est = ITE(X1, y1, X2, y2, loading.mat, model="linear")
+#' Est = CATE(X1, y1, X2, y2, loading.mat, model="linear")
 #'
 #' ## compute confidence intervals
 #' ci(Est, alpha=0.05, alternative="two.sided")
 #'
 #' ## summary statistics
 #' summary(Est)
-ITE <- function(X1, y1, X2, y2, loading.mat, model=c("linear","logistic","logistic_alter"),
+CATE <- function(X1, y1, X2, y2, loading.mat, model=c("linear","logistic","logistic_alter"),
                 intercept=TRUE, intercept.loading=FALSE, beta.init1=NULL, beta.init2=NULL, lambda=NULL, mu=NULL,
                 prob.filter=0.05, rescale=1.1, alpha=0.05, verbose=FALSE){
   model = match.arg(model)
@@ -86,8 +86,8 @@ ITE <- function(X1, y1, X2, y2, loading.mat, model=c("linear","logistic","logist
   Est1 = LF(X1, y1, loading.mat, model, intercept, intercept.loading, beta.init1, lambda, mu, prob.filter, rescale, alpha, verbose)
   if(verbose) cat(sprintf("Call: Inference for Linear Functional ======> Data 2/2 \n"))
   Est2 = LF(X2, y2, loading.mat, model, intercept, intercept.loading, beta.init2, lambda, mu, prob.filter, rescale, alpha, verbose)
-  est.plugin.vec = Est1$est.plugin.vec - Est2$est.plugin.vec
-  est.debias.vec = Est1$est.debias.vec - Est2$est.debias.vec
+  est.plugin.vec = Est2$est.plugin.vec - Est1$est.plugin.vec
+  est.debias.vec = Est2$est.debias.vec - Est1$est.debias.vec
   se.vec = sqrt((Est1$se.vec)^2 + (Est2$se.vec)^2)
   ci.mat <- cbind(est.debias.vec - qnorm(1-alpha/2)*se.vec, est.debias.vec + qnorm(1-alpha/2)*se.vec)
   rownames(ci.mat) = paste("loading", 1:nrow(ci.mat), sep="")
@@ -98,7 +98,7 @@ ITE <- function(X1, y1, X2, y2, loading.mat, model=c("linear","logistic","logist
     pred.fun = function(x) exp(x)/(1+exp(x))
     deriv.fun = function(x) exp(x)/(1+exp(x))^2
     prob.se.vec = sqrt((deriv.fun(Est1$est.debias.vec))^2 * (Est1$se.vec)^2 + (deriv.fun(Est2$est.debias.vec))^2 * (Est2$se.vec)^2)
-    prob.debias.vec = pred.fun(Est1$est.debias.vec) - pred.fun(Est2$est.debias.vec)
+    prob.debias.vec = pred.fun(Est2$est.debias.vec) - pred.fun(Est1$est.debias.vec)
     prob.ci.mat = cbind(prob.debias.vec - qnorm(1-alpha/2)*prob.se.vec,
                         prob.debias.vec + qnorm(1-alpha/2)*prob.se.vec)
     rownames(prob.ci.mat) = paste("loading", 1:nrow(ci.mat), sep="")

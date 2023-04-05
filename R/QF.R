@@ -27,7 +27,7 @@
 #'   finite sample bias. (default = 1.1)
 #' @param tau The enlargement factor for asymptotic variance of the
 #'   bias-corrected estimator to handle super-efficiency. It allows for a scalar
-#'   or vector. (default = \code{c(0.25,0.5)})
+#'   or vector. (default = \code{c(0.25,0.5,1)})
 #' @param alpha Level of significance to construct two-sided confidence interval
 #'   (default = 0.05)
 #' @param verbose Should intermediate message(s) be printed, the projection
@@ -61,7 +61,7 @@
 #' summary(Est)
 QF <- function(X, y, G, A=NULL, model=c("linear","logistic","logistic_alter"),
                intercept=TRUE, beta.init=NULL, split=TRUE, lambda=NULL, mu=NULL,
-               prob.filter=0.05, rescale=1.1, tau=c(0.25, 0.5), alpha=0.05, verbose=FALSE){
+               prob.filter=0.05, rescale=1.1, tau=c(0.25, 0.5, 1), alpha=0.05, verbose=FALSE){
   model = match.arg(model)
   X = as.matrix(X)
   y = as.vector(y)
@@ -213,21 +213,27 @@ QF <- function(X, y, G, A=NULL, model=c("linear","logistic","logistic_alter"),
   est.debias = max(as.numeric(est.plugin + correction * loading.norm), 0)
 
   ############## Compute SE and Construct CI ###############
-  V.base = 4 * sum(((sqrt(weight^2 * cond_var) * X) %*% direction)^2)/n * loading.norm^2
+  V.base = 4 * sum(((sqrt(weight^2 * cond_var) * X) %*% direction)^2)/n^2 * loading.norm^2
   if((n>0.9*p)&(model=='linear')) V.base = V.base else V.base = rescale^2 * V.base
   if(nullA){
     V.A = sum((as.vector((X[,G,drop=F]%*%beta.init[G])^2) -
-                 as.numeric(t(beta.init[G]) %*% A %*% beta.init[G]))^2) / n
+                 as.numeric(t(beta.init[G]) %*% A %*% beta.init[G]))^2) / n^2
   }else{
     V.A = 0
   }
-  V = (V.base + V.A)
   if(model=='linear'){
-    se.add = tau*(1/sqrt(n))
+    V.add = tau/n
   }else{
-    se.add = tau*max(1/sqrt(n), sparsity*log(p)/n)
+    V.add = tau*max(1/n, (sparsity*log(p)/n)^2)
   }
-  se = sqrt(V/n) + se.add
+  V = (V.base + V.A + V.add)
+  se = sqrt(V)
+  # if(model=='linear'){
+  #   se.add = tau*(1/sqrt(n))
+  # }else{
+  #   se.add = tau*max(1/sqrt(n), sparsity*log(p)/n)
+  # }
+  # se = sqrt(V/n) + se.add
 
   ci.mat = cbind(pmax(est.debias - qnorm(1-alpha/2)*se,0), pmax(est.debias + qnorm(1-alpha/2)*se,0))
   colnames(ci.mat) = c("lower", "upper")
