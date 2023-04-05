@@ -8,7 +8,7 @@
 
 The goal of SIHR is to provide inference procedures in the
 high-dimensional setting for (1) linear functionals in generalized
-linear regression, (2) individual treatment effects in generalized
+linear regression, (2) conditional average treatment effects in generalized
 linear regression (CATE), (3) quadratic functionals in generalized
 linear regression (QF) (4) inner product in generalized linear
 regression (InnProd) and (5) distance in generalized linear regression
