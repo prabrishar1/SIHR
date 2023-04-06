@@ -94,7 +94,7 @@ CATE <- function(X1, y1, X2, y2, loading.mat, model=c("linear","logistic","logis
   colnames(ci.mat) = c("lower","upper")
 
   ### works for probability transformation
-  if(model %in% c("logistic", "logisitic_alter")){
+  if(model %in% c("logistic", "logistic_alter")){
     pred.fun = function(x) exp(x)/(1+exp(x))
     deriv.fun = function(x) exp(x)/(1+exp(x))^2
     prob.se.vec = sqrt((deriv.fun(Est1$est.debias.vec))^2 * (Est1$se.vec)^2 + (deriv.fun(Est2$est.debias.vec))^2 * (Est2$se.vec)^2)

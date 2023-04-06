@@ -447,11 +447,11 @@ ci.Dist <- function(object, probability=FALSE, alpha=0.05, alternative=c("two.si
   tau    = object$tau
   n.tau = length(tau)
   if(alternative=="two.sided"){
-    output.ci = cbind(est.debias - qnorm(1-alpha/2)*se, est.debias + qnorm(1-alpha/2)*se)
+    output.ci = cbind(pmax(est.debias - qnorm(1-alpha/2)*se,0), pmax(est.debias + qnorm(1-alpha/2)*se,0))
   }else if(alternative=="less"){
-    output.ci = cbind(-Inf, est.debias + qnorm(1-alpha)*se)
+    output.ci = cbind(0, pmax(est.debias + qnorm(1-alpha)*se,0))
   }else if(alternative=="greater"){
-    output.ci = cbind(est.debias - qnorm(1-alpha)*se, Inf)
+    output.ci = cbind(pmax(est.debias - qnorm(1-alpha)*se,0), Inf)
   }
   output.ci = data.frame(cbind(tau, output.ci))
   colnames(output.ci) = c("tau","lower","upper")

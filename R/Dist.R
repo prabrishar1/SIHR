@@ -122,6 +122,10 @@ Dist <- function(X1, y1, X2, y2, G, A= NULL, model = c("linear","logistic","logi
 
   est.plugin <- as.numeric(t(gamma.init[G])%*%A%*%gamma.init[G])
   est.debias <- est.plugin + 2*(Est2$est.debias.vec - Est2$est.plugin.vec) - 2*(Est1$est.debias.vec - Est1$est.plugin.vec)
+  if(est.debias < 0){
+    cat('The bias-corrected estimator is negative, it will be truncated to 0')
+    est.debias = 0
+  }
 
   V.base = 4*Est1$se.vec^2 + 4*Est2$se.vec^2
   if(nullA){
