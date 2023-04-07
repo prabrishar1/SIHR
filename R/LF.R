@@ -24,8 +24,7 @@
 #'   finite sample bias. (default = 1.1)
 #' @param alpha Level of significance to construct two-sided confidence interval
 #'   (default = 0.05)
-#' @param verbose Should intermediate message(s) be printed, the projection
-#'   direction be returned. (default = \code{FALSE})
+#' @param verbose Should intermediate message(s) be printed. (default = \code{FALSE})
 #'
 #' @return
 #' \item{est.plugin.vec}{The vector of plugin(biased) estimators for the
@@ -40,7 +39,7 @@
 #' combination, of dimension \code{ncol(loading.mat)} x \eqn{2}; each row
 #' corresponding to a loading of interest}
 #' \item{proj.mat}{The matrix of projection directions; each column corresponding
-#' to a loading of interest. It will be returned only if \code{verbose} set as TRUE}
+#' to a loading of interest.}
 #'
 #' @export
 #' @import CVXR glmnet
@@ -72,6 +71,12 @@ LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alter"),
   if(intercept==FALSE && intercept.loading==TRUE){
     intercept.loading = FALSE
     cat("Argument 'intercept.loading' is set to FALSE, because 'intercept' is FALSE \n")
+  }
+  if(ncol(X)==(nrow(loading.mat)-1)){
+    loading_include_intercept = TRUE
+    intercept=TRUE
+  }else{
+    loading_include_intercept = FALSE
   }
   check.args.LF(X=X, y=y, loading.mat=loading.mat, model=model, intercept=intercept,
                 intercept.loading=intercept.loading, beta.init=beta.init, lambda=lambda,
@@ -202,12 +207,16 @@ LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alter"),
   for(i.loading in 1:n.loading){
     ### adjust loading ###
     loading = as.vector(loading.mat[,i.loading])
-    if(intercept){
-      if(intercept.loading){
-        loading = loading - X_means
-        loading = c(1, loading)
-      }else{
-        loading = c(0, loading)
+    if(loading_include_intercept){
+      loading = loading
+    }else{
+      if(intercept){
+        if(intercept.loading){
+          loading = loading - X_means
+          loading = c(1, loading)
+        }else{
+          loading = c(0, loading)
+        }
       }
     }
     loading.norm = sqrt(sum(loading^2))
@@ -233,18 +242,11 @@ LF <- function(X, y, loading.mat, model=c("linear","logistic","logistic_alter"),
     proj.mat[, i.loading] = direction * loading.norm
   }
 
-  if(verbose){
-    obj <- list(est.plugin.vec = est.plugin.vec,
-                est.debias.vec = est.debias.vec,
-                se.vec         = se.vec,
-                ci.mat         = ci.mat,
-                proj.mat       = proj.mat)
-  }else{
-    obj <- list(est.plugin.vec = est.plugin.vec,
-                est.debias.vec = est.debias.vec,
-                se.vec         = se.vec,
-                ci.mat         = ci.mat)
-  }
+  obj <- list(est.plugin.vec = est.plugin.vec,
+              est.debias.vec = est.debias.vec,
+              se.vec         = se.vec,
+              ci.mat         = ci.mat,
+              proj.mat       = proj.mat)
 
   class(obj) = "LF"
   obj

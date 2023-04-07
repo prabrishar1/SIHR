@@ -30,8 +30,7 @@
 #'   or vector. (default = \code{c(0.25,0.5,1)})
 #' @param alpha Level of significance to construct two-sided confidence interval
 #'   (default = 0.05)
-#' @param verbose Should intermediate message(s) be printed, the projection
-#'   direction be returned. (default = \code{FALSE})
+#' @param verbose Should intermediate message(s) be printed. (default = \code{FALSE})
 #'
 #' @return
 #' \item{est.plugin}{The plugin(biased) estimator for the quadratic form of the
@@ -43,7 +42,6 @@
 #' \item{ci.mat}{The matrix of two.sided confidence interval for the quadratic
 #' form of the regression vector; row corresponds to different values of
 #' \code{tau}}
-#' \item{proj}{The projection direction. It will be returned only if \code{verbose} set as TRUE}
 #' @export
 #'
 #' @import CVXR glmnet
@@ -238,20 +236,11 @@ QF <- function(X, y, G, A=NULL, model=c("linear","logistic","logistic_alter"),
   ci.mat = cbind(pmax(est.debias - qnorm(1-alpha/2)*se,0), pmax(est.debias + qnorm(1-alpha/2)*se,0))
   colnames(ci.mat) = c("lower", "upper")
   rownames(ci.mat) = paste0('tau',tau)
-  if(verbose){
-    obj <- list(est.plugin = est.plugin,
-                est.debias = est.debias,
-                se         = se,
-                ci.mat     = ci.mat,
-                tau        = tau,
-                proj       = direction * loading.norm)
-  }else{
-    obj <- list(est.plugin = est.plugin,
+  obj <- list(est.plugin = est.plugin,
                 est.debias = est.debias,
                 se         = se,
                 ci.mat     = ci.mat,
                 tau        = tau)
-  }
 
   class(obj) = "QF"
   obj

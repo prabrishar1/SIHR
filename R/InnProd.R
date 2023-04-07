@@ -20,8 +20,7 @@
 #'   bias-corrected estimator to handle super-efficiency. It allows for a scalar
 #'   or vector. (default = \code{c(0.25,0.5, 1)})
 #' @param alpha Level of significance to construct two-sided confidence interval (default = 0.05)
-#' @param verbose Should intermediate message(s) be printed, the projection
-#'   direction be returned. (default = \code{FALSE})
+#' @param verbose Should intermediate message(s) be printed. (default = \code{FALSE})
 #'
 #' @return
 #' \item{est.plugin}{The plugin(biased) estimator for the inner product form of the regression vectors restricted to \code{G}}
@@ -31,8 +30,6 @@
 #' \item{ci.mat}{The matrix of two.sided confidence interval for the inner product
 #' form of the regression vector; row corresponds to different values of
 #' \code{tau}}
-#' \item{proj1}{The projection direction for the first sample. It will be returned only if \code{verbose} set as TRUE}
-#' \item{proj2}{The projection direction for the second sample. It will be returned only if \code{verbose} set as TRUE}
 #' @export
 #'
 #' @import CVXR glmnet
@@ -144,21 +141,12 @@ InnProd <- function(X1, y1, X2, y2, G, A = NULL, model = c("linear","logistic","
   ci.mat = cbind(est.debias - qnorm(1-alpha/2)*se, est.debias + qnorm(1-alpha/2)*se)
   colnames(ci.mat) = c('lower','upper')
   rownames(ci.mat) = paste0('tau', tau)
-  if(verbose){
-    obj <- list(est.plugin = est.plugin,
-                est.debias = est.debias,
-                se         = se,
-                ci.mat     = ci.mat,
-                tau        = tau,
-                proj1      = Est1$proj,
-                proj2      = Est2$proj)
-  }else{
-    obj <- list(est.plugin = est.plugin,
-                est.debias = est.debias,
-                se         = se,
-                ci.mat     = ci.mat,
-                tau        = tau)
-  }
+
+  obj <- list(est.plugin = est.plugin,
+              est.debias = est.debias,
+              se         = se,
+              ci.mat     = ci.mat,
+              tau        = tau)
   class(obj) = "InnProd"
   return(obj)
 }

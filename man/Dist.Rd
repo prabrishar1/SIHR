@@ -64,8 +64,7 @@ or vector. (default = \code{c(0.25,0.5, 1)})}
 
 \item{alpha}{Level of significance to construct two-sided confidence interval (default = 0.05)}
 
-\item{verbose}{Should intermediate message(s) be printed, the projection
-direction be returned. (default = \code{FALSE})}
+\item{verbose}{Should intermediate message(s) be printed. (default = \code{FALSE})}
 }
 \value{
 \item{est.plugin}{The plugin(biased) estimator for the quadratic form of the regression vectors restricted to \code{G}}
@@ -75,8 +74,6 @@ length of \code{tau}; corrsponding to different values of \code{tau}}
 \item{ci.mat}{The matrix of two.sided confidence interval for the quadratic
 form of the regression vector; row corresponds to different values of
 \code{tau}}
-\item{proj1}{The projection direction for the first sample. It will be returned only if \code{verbose} set as TRUE}
-\item{proj2}{The projection direction for the second sample. It will be returned only if \code{verbose} set as TRUE}
 }
 \description{
 Inference for weighted quadratic functional of difference of the regression vectors (excluding the intercept term) in

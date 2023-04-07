@@ -4,15 +4,17 @@ check.args.LF <- function(X=NULL, y=NULL, loading.mat=NULL, model=NULL, intercep
   if(is.null(y) || !is.numeric(y)) stop("y must be a numeric vector")
   if(nrow(X) != length(y)) stop("nrow(X) and length(y) must match")
   if(is.null(loading.mat) || !is.numeric(loading.mat)) stop("loading must be a numeric matrix")
-  if(ncol(X) != nrow(loading.mat)) stop("ncol(X) and nrow(loading) must match")
+  if(ncol(X) != nrow(loading.mat)){
+    if(ncol(X) != (nrow(loading.mat)-1)) stop("ncol(X) and nrow(loading) must match")
+  }
   if(is.null(model) || !model%in%c("linear","logistic","logistic_alter","probit")){
     stop("specified model has not been developed yet")
   }
   if(is.null(intercept) || length(intercept)!=1 || !is.logical(intercept)){
     stop("intercept must be a Boolean")
   }
-  if(is.null(intercept.loading) || length(intercept.loading)!=1 || !is.logical(intercept)){
-    stop("intercept must be a Boolean")
+  if(is.null(intercept.loading) || length(intercept.loading)!=1 || !is.logical(intercept.loading)){
+    stop("intercept.loading must be a Boolean")
   }
   if(!is.null(beta.init)){
     if(!is.numeric(beta.init)) stop("beta.init must be numeric")

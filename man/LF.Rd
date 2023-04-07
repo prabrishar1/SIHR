@@ -57,8 +57,7 @@ finite sample bias. (default = 1.1)}
 \item{alpha}{Level of significance to construct two-sided confidence interval
 (default = 0.05)}
 
-\item{verbose}{Should intermediate message(s) be printed, the projection
-direction be returned. (default = \code{FALSE})}
+\item{verbose}{Should intermediate message(s) be printed. (default = \code{FALSE})}
 }
 \value{
 \item{est.plugin.vec}{The vector of plugin(biased) estimators for the
@@ -73,7 +72,7 @@ length of \code{ncol(loading.mat)}; each corresponding to a loading of interest}
 combination, of dimension \code{ncol(loading.mat)} x \eqn{2}; each row
 corresponding to a loading of interest}
 \item{proj.mat}{The matrix of projection directions; each column corresponding
-to a loading of interest. It will be returned only if \code{verbose} set as TRUE}
+to a loading of interest.}
 }
 \description{
 Inference for linear combination of the regression vector in high dimensional
