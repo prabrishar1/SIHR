@@ -1,7 +1,7 @@
 Package: SIHR
 Type: Package
 Title: Statistical Inference in High Dimensional Regression
-Version: 2.0.0
+Version: 2.0.1
 Author: Prabrisha Rakshit, Zhenyu Wang, Tony Cai, Zijian Guo
 Maintainer: Zijian Guo <zijguo@stat.rutgers.edu>
 Description: The goal of SIHR is to provide inference procedures in the high-dimensional setting for 
